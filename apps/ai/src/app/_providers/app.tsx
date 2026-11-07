@@ -8,7 +8,14 @@ import type { FC, PropsWithChildren } from 'react';
 import '@/i18n';
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => (
-  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+  // color-scheme は @k8ordo/ui の CSS が class から決める。next-themes に inline で書かせると、
+  // ui が印刷で light に戻す規則より強くなる
+  <ThemeProvider
+    attribute="class"
+    defaultTheme="system"
+    enableColorScheme={false}
+    enableSystem
+  >
     <UIProvider>
       <ToastProvider>{children}</ToastProvider>
     </UIProvider>

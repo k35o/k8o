@@ -1,20 +1,17 @@
-import { cacheLife } from 'next/cache';
+import { notFound } from '@k8ordo/framework';
 
-import { getTag as _getTag } from '../application/tag';
-import { getTags as _getTags } from '../application/tags';
+import { getTag as _getTag } from '@/features/tags/application/tag';
+import { getTags as _getTags } from '@/features/tags/application/tags';
+import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
-export async function getTags() {
-  'use cache';
-  cacheLife('max');
+export const getTags = memoizeInBuild(_getTags);
 
-  const tags = await _getTags();
-  return tags;
-}
+const findTag = memoizeInBuild(_getTag);
 
-export async function getTag(id: number) {
-  'use cache';
-  cacheLife('max');
-
-  const tag = await _getTag(id);
+export const getTag = async (id: number) => {
+  const tag = await findTag(id);
+  if (tag === null) {
+    notFound();
+  }
   return tag;
-}
+};

@@ -4,15 +4,20 @@ import { Button } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './scope-limit-demo.module.css';
 
 export function ScopeLimitDemo() {
+  const Heading = useDemoHeading();
   const [useScopeSelector, setUseScopeSelector] = useState(true);
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h3 className={styles.title}>:scopeを使ったスコープリミット</h3>
+        <Heading className={styles.title}>
+          :scopeを使ったスコープリミット
+        </Heading>
         <Button
           color={useScopeSelector ? 'primary' : 'base'}
           onClick={() => {

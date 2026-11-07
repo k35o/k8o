@@ -1,47 +1,28 @@
+import { ColorSchemeProvider, colorSchemeState } from '@k8ordo/color-scheme';
+import type { ColorScheme } from '@k8ordo/color-scheme';
 import { resetStateRegistry } from '@k8ordo/state';
 import addonA11y from '@storybook/addon-a11y';
 // root entry ('@storybook/addon-docs') は 'mdx/types' への module augmentation で
-// @types/mdx の JSX 参照を React の JSX.Element に差し替え、アプリ側の
-// mdx-base / mdx-parts の型付けを壊す。augmentation を持たない
+// @types/mdx の JSX 参照を React の JSX.Element に差し替える。augmentation を持たない
 // preview entry から素の annotations を読み込んで合成する
 import * as addonDocs from '@storybook/addon-docs/preview';
-import { definePreview } from '@storybook/nextjs-vite';
+import { definePreview } from '@storybook/react-vite';
 import addonMsw from 'msw-storybook-addon';
 import { setupWorker } from 'msw/browser';
-import { useTheme } from 'next-themes';
-import Script from 'next/script';
-import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
-import { memo, useEffect } from 'react';
-import type { FC } from 'react';
 import addonDeterminism from 'storybook-addon-determinism';
 import addonMockDate from 'storybook-addon-mock-date';
-import { sb } from 'storybook/test';
 
-import { Background } from '../src/app/_components/global-layout/background/background';
-import { AppProvider } from '../src/app/_providers/app';
-import { mPlus2 } from '../src/app/_styles/font';
+import { AppProvider } from '../src/components/site/app-provider';
+import { Background } from '../src/components/site/global-layout/background/background';
 import { handlers } from '../src/mocks/handlers';
 import { resetLiveSnapshots } from '../src/shared/api/live-snapshot';
 
-import '../src/app/_styles/globals.css';
+import '@fontsource-variable/m-plus-2';
+
+import '../src/i18n';
+
+import '../src/styles/globals.css';
 import './preview.css';
-
-sb.mock(import('./../src/features/blog/interface/queries.ts'));
-sb.mock(import('@repo/database'));
-
-const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
-  function ApplyThemeByStorybook({ theme }) {
-    const { theme: currentTheme, setTheme } = useTheme();
-
-    useEffect(() => {
-      if (currentTheme !== theme) {
-        setTheme(theme === 'dark' ? 'dark' : 'light');
-      }
-    }, [theme, currentTheme, setTheme]);
-
-    return null;
-  },
-);
 
 export default definePreview({
   globalTypes: {
@@ -60,8 +41,10 @@ export default definePreview({
   },
 
   // Story は同じページで続けて実行されるため、前の Story で更新した @k8ordo/state の
-  // 状態と、差し替えで読んだ api の値が残らないよう Story ごとに初期化する
+  // 状態と、差し替えで読んだ api の値が残らないよう Story ごとに初期化する。テーマは
+  // localStorage に保存されるので、その行も消して toolbar と parameters のテーマから始める
   beforeEach: () => {
+    localStorage.removeItem(colorSchemeState.storageKey);
     resetStateRegistry();
     resetLiveSnapshots();
   },
@@ -89,9 +72,6 @@ export default definePreview({
     // スクリーンショット撮影がスキップされる（capture はエラーを持つtaskを
     // 撮影しない）。render時の現在日時に依存するStoryでのみ、個別に
     // parameters.mockingDate を指定すること
-    nextjs: {
-      appDirectory: true,
-    },
     a11y: {
       test: 'error',
       options: {
@@ -105,24 +85,20 @@ export default definePreview({
 
   decorators: [
     function WithAppProvider(Story, { globals, parameters }) {
+      const theme = (parameters['theme'] ??
+        globals['theme'] ??
+        'light') as ColorScheme;
+
       return (
-        <AppProvider>
-          <Script id="storybook-body-class">
-            {`document.body.classList.add('${mPlus2.variable}')`}
-          </Script>
-          <div className="story-canvas">
-            <Background />
-            {/* 本物の NuqsAdapter より内側に挟み、VRT 並列実行での Story 間 URL 状態リークを防ぐ */}
-            <NuqsTestingAdapter>
+        // 何も保存していないときは defaultPreference のテーマで描く
+        <ColorSchemeProvider defaultPreference={theme}>
+          <AppProvider>
+            <div className="story-canvas">
+              <Background />
               <Story />
-            </NuqsTestingAdapter>
-          </div>
-          <ApplyThemeByStorybook
-            theme={
-              (parameters['theme'] ?? globals['theme'] ?? 'light') as string
-            }
-          />
-        </AppProvider>
+            </div>
+          </AppProvider>
+        </ColorSchemeProvider>
       );
     },
   ],

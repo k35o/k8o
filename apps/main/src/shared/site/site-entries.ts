@@ -1,5 +1,3 @@
-import type { Route } from 'next';
-
 export type SiteEntryKind = 'tool' | 'reading';
 
 export type SiteEntryIcon =
@@ -18,9 +16,9 @@ export type SiteEntryIcon =
   | 'artifacts'
   | 'readings';
 
-export type SiteEntry = {
+type SiteEntry = {
   title: string;
-  link: Route | `https://${string}`;
+  link: `/${string}` | `https://${string}`;
   description: string;
   kind: SiteEntryKind;
   icon: SiteEntryIcon;

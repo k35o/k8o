@@ -9,6 +9,7 @@ import {
   useSyncExternalStore,
 } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
 import { findOtherLoadedPathname } from './loaded-pathname';
 
 import styles from './lcp-demo.module.css';
@@ -50,6 +51,7 @@ type LCPEntry = {
 };
 
 export function LCPDemo() {
+  const Heading = useDemoHeading();
   const [entries, setEntries] = useState<LCPEntry[]>([]);
   const isSupported = useSyncExternalStore(
     subscribeNoop,
@@ -162,11 +164,11 @@ export function LCPDemo() {
         <div>
           <div className={styles.latestHeader}>
             <div className={styles.latestTitle}>
-              <h4 className={styles.heading}>
+              <Heading className={styles.heading}>
                 {otherLoadedPathname === null
                   ? '現在のLCP'
                   : '文書を読み込んだページのLCP'}
-              </h4>
+              </Heading>
               {latestEntry.element !== null && (
                 <code className={styles.tag}>{latestEntry.element}</code>
               )}
@@ -220,7 +222,7 @@ export function LCPDemo() {
 
       {entries.length > 1 && (
         <div className={styles.history}>
-          <h4 className={styles.historyHeading}>LCP候補の履歴</h4>
+          <Heading className={styles.historyHeading}>LCP候補の履歴</Heading>
           <div className={styles.historyList}>
             {entries.slice(1).map((entry) => (
               <div className={styles.historyItem} key={entry.id}>

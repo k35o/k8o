@@ -1,8 +1,8 @@
-import { notFound } from 'next/navigation';
+import { isNotFound } from '@k8ordo/framework';
 import { describe, expect, it, vi } from 'vitest';
 
 import { findBlog, findBlogMetadata } from '@/features/blog/application/blog';
-import { getBlogs } from '@/features/blog/application/blogs';
+import { getBlogs, getBlogsByTags } from '@/features/blog/application/blogs';
 
 import { getMarkdown } from './markdown';
 import {
@@ -10,17 +10,10 @@ import {
   findBlogMarkdown,
   getBlogContent,
   getBlogContents,
+  getBlogsByTags as getRelatedBlogs,
   isPublishedBlog,
 } from './queries';
 
-vi.mock('next/cache', () => ({
-  cacheLife: vi.fn(),
-}));
-vi.mock('next/navigation', () => ({
-  notFound: vi.fn(() => {
-    throw new Error('NEXT_NOT_FOUND');
-  }),
-}));
 vi.mock('@/features/blog/application/blog', () => ({
   findBlog: vi.fn(),
   findBlogMetadata: vi.fn(),
@@ -29,9 +22,6 @@ vi.mock('@/features/blog/application/blog', () => ({
 vi.mock('@/features/blog/application/blogs', () => ({
   getBlogs: vi.fn(),
   getBlogsByTags: vi.fn(),
-}));
-vi.mock('@/features/blog/application/feature-blog-map', () => ({
-  getFeatureBlogMap: vi.fn(),
 }));
 vi.mock('@/features/blog/application/og-code', () => ({
   getBlogOgCode: vi.fn(),
@@ -49,14 +39,11 @@ const metadata = (title: string) => ({
 
 describe('getBlogContents', () => {
   describe('正常系', () => {
-    it('ブログ一覧をメタデータ・読了時間つきで返す', async () => {
+    it('記事の一覧に読了時間を足して返す', async () => {
       vi.mocked(getBlogs).mockResolvedValue([
-        { id: 1, slug: 'blog-a', tags: ['TypeScript'] },
-        { id: 2, slug: 'blog-b', tags: [] },
+        { id: 1, slug: 'blog-a', tags: ['TypeScript'], ...metadata('記事A') },
+        { id: 2, slug: 'blog-b', tags: [], ...metadata('記事B') },
       ]);
-      vi.mocked(findBlogMetadata).mockImplementation((slug) =>
-        Promise.resolve(metadata(`タイトル: ${slug}`)),
-      );
       vi.mocked(getMarkdown).mockResolvedValue('本文');
 
       const result = await getBlogContents();
@@ -66,7 +53,7 @@ describe('getBlogContents', () => {
           id: 1,
           slug: 'blog-a',
           tags: ['TypeScript'],
-          title: 'タイトル: blog-a',
+          title: '記事A',
           description: null,
           createdAt: '2026-01-01T00:00:00.000Z',
           updatedAt: '2026-01-01T00:00:00.000Z',
@@ -76,34 +63,13 @@ describe('getBlogContents', () => {
           id: 2,
           slug: 'blog-b',
           tags: [],
-          title: 'タイトル: blog-b',
+          title: '記事B',
           description: null,
           createdAt: '2026-01-01T00:00:00.000Z',
           updatedAt: '2026-01-01T00:00:00.000Z',
           readingTime: 1,
         },
       ]);
-    });
-  });
-
-  describe('異常系', () => {
-    it('MDXファイルが無いブログは一覧から除外される', async () => {
-      vi.mocked(getBlogs).mockResolvedValue([
-        { id: 1, slug: 'blog-a', tags: [] },
-        { id: 2, slug: 'missing-blog', tags: [] },
-      ]);
-      // getBlogsの並び順どおりに呼ばれる: blog-a → missing-blog
-      vi.mocked(findBlogMetadata)
-        .mockResolvedValueOnce(metadata('記事A'))
-        .mockResolvedValueOnce(null);
-      vi.mocked(getMarkdown).mockResolvedValue('本文');
-
-      const result = await getBlogContents();
-
-      expect(result).toHaveLength(1);
-      expect(result[0]?.slug).toBe('blog-a');
-      // 欠損slugでは読了時間算出のためのMDX読み込みも行わない
-      expect(getMarkdown).not.toHaveBeenCalledWith('missing-blog');
     });
   });
 });
@@ -119,10 +85,9 @@ describe('getBlogContent', () => {
       });
       vi.mocked(findBlogMetadata).mockResolvedValue(null);
 
-      await expect(getBlogContent('missing-blog')).rejects.toThrow(
-        'NEXT_NOT_FOUND',
+      await expect(getBlogContent('missing-blog')).rejects.toSatisfy(
+        isNotFound,
       );
-      expect(notFound).toHaveBeenCalledTimes(1);
     });
   });
 });
@@ -181,10 +146,7 @@ describe('getBlogContent の 404', () => {
   it('未公開または存在しない記事は notFound() で 404 にする', async () => {
     vi.mocked(findBlog).mockResolvedValue(null);
 
-    await expect(getBlogContent('draft-blog')).rejects.toThrow(
-      'NEXT_NOT_FOUND',
-    );
-    expect(notFound).toHaveBeenCalledTimes(1);
+    await expect(getBlogContent('draft-blog')).rejects.toSatisfy(isNotFound);
   });
 });
 
@@ -239,6 +201,50 @@ describe('findBlogMarkdown', () => {
 
       expect(result).toBeNull();
       expect(getMarkdown).not.toHaveBeenCalledWith('missing-blog');
+    });
+  });
+});
+
+describe('getBlogsByTags', () => {
+  describe('正常系', () => {
+    it('記事のタグの ID で、タグを共有する記事を引く', async () => {
+      vi.mocked(findBlog).mockResolvedValue({
+        id: 1,
+        slug: 'blog-a',
+        tags: [
+          { id: 3, name: 'CSS' },
+          { id: 5, name: 'Baseline' },
+        ],
+        slideUrl: undefined,
+      });
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('記事A'));
+      const related = [
+        {
+          id: 2,
+          slug: 'blog-b',
+          title: '記事B',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          tags: ['CSS'],
+        },
+      ];
+      vi.mocked(getBlogsByTags).mockResolvedValue(related);
+
+      const result = await getRelatedBlogs('blog-a');
+
+      expect(getBlogsByTags).toHaveBeenCalledWith('blog-a', [3, 5]);
+      expect(result).toBe(related);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('記事が無ければ、関連記事を引かずに空の配列を返す', async () => {
+      vi.mocked(findBlog).mockResolvedValue(null);
+      vi.mocked(getBlogsByTags).mockClear();
+
+      const result = await getRelatedBlogs('missing-blog');
+
+      expect(result).toStrictEqual([]);
+      expect(getBlogsByTags).not.toHaveBeenCalled();
     });
   });
 });

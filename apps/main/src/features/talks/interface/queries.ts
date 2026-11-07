@@ -1,11 +1,4 @@
-import { cacheLife } from 'next/cache';
+import { getTalks as _getTalks } from '@/features/talks/application/talks';
+import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
-import { getTalks as _getTalks } from '../application/talks';
-
-export async function getTalks() {
-  'use cache';
-  cacheLife('max');
-
-  const talks = await _getTalks();
-  return talks;
-}
+export const getTalks = memoizeInBuild(_getTalks);

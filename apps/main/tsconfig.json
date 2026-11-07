@@ -1,21 +1,28 @@
 {
-  "extends": "@repo/typescript-config/next.json",
+  "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "incremental": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@content/*": ["./src/content/*"],
+      "@playgrounds/*": ["./src/playgrounds/*"]
     },
-    "types": ["node", "vitest/importMeta", "next/image-types/global"],
+    "types": ["node", "vite/client", "vitest/importMeta"],
     "rootDirs": [".", "./__generated__"]
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
+    ".k8ordo/**/*.ts",
     ".storybook/*.ts",
     ".storybook/*.tsx",
     "__generated__"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

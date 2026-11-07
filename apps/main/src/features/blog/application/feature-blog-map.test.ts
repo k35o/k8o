@@ -7,7 +7,16 @@ import { getFeatureBlogMap } from './feature-blog-map';
 vi.mock('./blog', () => ({ findBlogMetadata: vi.fn() }));
 vi.mock('./blogs', () => ({ getBlogs: vi.fn() }));
 
-const blogRow = (id: number, slug: string) => ({ id, slug, tags: [] });
+// getBlogs は MDX の無い記事を外し、frontmatter の題などを持つ
+const blogRow = (id: number, slug: string) => ({
+  id,
+  slug,
+  tags: [],
+  title: slug,
+  description: null,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+});
 
 const metadata = (title: string, featureIds?: string[]) => ({
   title,

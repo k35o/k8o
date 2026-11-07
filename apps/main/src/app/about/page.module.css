@@ -1,9 +1,0 @@
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 3);
-}
-
-.paragraph {
-  line-height: var(--line-height-relaxed);
-}

@@ -1,5 +1,6 @@
 import { join } from 'node:path';
-import { cwd } from 'node:process';
+
+import { CONTENT_DIR } from '@/shared/site/content-dir';
 
 // パストラバーサル対策: slug をファイルパスに渡す前に厳格に検証する。
 // %2F デコードで `../` 脱出を許さないよう、英小文字・数字・ハイフンのみ許可。
@@ -9,5 +10,5 @@ export const blogPath = (slug: string): string => {
   if (!SLUG_RE.test(slug)) {
     throw new Error(`Invalid slug: ${slug}`);
   }
-  return join(cwd(), `src/content/blog/${slug}/article.mdx`);
+  return join(CONTENT_DIR, `blog/${slug}/article.mdx`);
 };

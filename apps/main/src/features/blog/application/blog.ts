@@ -1,27 +1,15 @@
 import { readFile } from 'node:fs/promises';
 
-import { db } from '@repo/database';
 import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
 
 import { getTocTree } from '@/shared/mdx/toc-tree';
 
+import { findPublishedBlogRow } from '../infrastructure/blog-repository';
 import { blogPath } from './path';
 
-// 未公開の記事は URL 直打ちでも見せない（published は一覧だけでなく詳細にも効く）
 export const findBlog = async (slug: string) => {
-  const blog = await db.query.blogs.findFirst({
-    where: (blogFields, { and, eq }) =>
-      and(eq(blogFields.slug, slug), eq(blogFields.published, true)),
-    with: {
-      blogTag: {
-        with: {
-          tag: true,
-        },
-      },
-      talks: true,
-    },
-  });
+  const blog = await findPublishedBlogRow(slug);
 
   if (!blog) {
     return null;

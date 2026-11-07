@@ -6,16 +6,10 @@
   ],
   "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
-  "ignoreBinaries": ["mise", "vercel"],
+  "ignoreBinaries": ["fnox", "mise", "vercel"],
   "workspaces": {
     "apps/main": {
       "ignoreDependencies": ["chromatic"],
-      "entry": [
-        "better-css-modules.config.ts",
-        "src/content/blog/*/article.mdx"
-      ]
-    },
-    "apps/main-k8ordo": {
       "entry": [
         "better-css-modules.config.ts",
         "src/routes/**/{page,layout,not-found,error}.tsx",

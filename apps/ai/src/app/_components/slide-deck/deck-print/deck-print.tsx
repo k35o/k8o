@@ -26,6 +26,15 @@ const enablePrintRules = (style: HTMLStyleElement): (() => void) => {
   };
 };
 
+// print-as-shown は、それを含む .dark（<html>）の印刷の色を文書全体で dark のまま残す。
+// 隠れた画面のポータルも body に残るので、印刷の規則と同じく ref が付いているあいだだけ付ける
+const markPrintAsShown = (root: HTMLDivElement): (() => void) => {
+  root.classList.add('print-as-shown');
+  return () => {
+    root.classList.remove('print-as-shown');
+  };
+};
+
 type DeckPrintProps = { slides: DeckSlide[] };
 
 const DeckPrintPortal: FC<DeckPrintProps> = ({ slides }) => {
@@ -38,7 +47,11 @@ const DeckPrintPortal: FC<DeckPrintProps> = ({ slides }) => {
       <style media="not all" ref={enablePrintRules}>
         {PRINT_RULES}
       </style>
-      <div className={styles.root} data-slide-print="true">
+      <div
+        className={styles.root}
+        data-slide-print="true"
+        ref={markPrintAsShown}
+      >
         {slides.map((slide, index) => (
           // スライドは並び替わらないため index を key に使う
           <div className={styles.page} key={index}>

@@ -1,4 +1,4 @@
-import { db } from '@repo/database';
+import { findTagRow } from '../infrastructure/tag-repository';
 
 export async function getTag(id: number): Promise<{
   id: number;
@@ -12,23 +12,9 @@ export async function getTag(id: number): Promise<{
     title: string;
   }>;
 } | null> {
-  const tag = await db.query.tags.findFirst({
-    where: (tags, { eq }) => eq(tags.id, id),
-    with: {
-      blogTag: {
-        with: {
-          blog: true,
-        },
-      },
-      talkTag: {
-        with: {
-          talk: true,
-        },
-      },
-    },
-  });
+  const tag = await findTagRow(id);
 
-  if (!tag) {
+  if (tag === undefined) {
     return null;
   }
 

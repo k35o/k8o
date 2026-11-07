@@ -1,57 +1,33 @@
-import { db } from '@repo/database';
-
+import {
+  findPublishedBlogRows,
+  findPublishedBlogRowsByTags,
+} from '../infrastructure/blog-repository';
 import { findBlogMetadata } from './blog';
 
 export const getBlogs = async () => {
-  const blogRows = await db.query.blogs.findMany({
-    with: {
-      blogTag: {
-        with: {
-          tag: true,
-        },
-      },
-    },
-    where: (blogFields, { eq }) => eq(blogFields.published, true),
-    orderBy(fields, operators) {
-      return [operators.desc(fields.createdAt), operators.desc(fields.id)];
-    },
-  });
-
-  return blogRows.map((blog) => ({
-    id: blog.id,
-    slug: blog.slug,
-    tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
-  }));
+  const blogRows = await findPublishedBlogRows();
+  const blogs = await Promise.all(
+    blogRows.map(async (blog) => {
+      const metadata = await findBlogMetadata(blog.slug);
+      if (metadata === null) {
+        return null;
+      }
+      return {
+        id: blog.id,
+        slug: blog.slug,
+        tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
+        title: metadata.title,
+        description: metadata.description,
+        createdAt: metadata.createdAt,
+        updatedAt: metadata.updatedAt,
+      };
+    }),
+  );
+  return blogs.filter((blog) => blog !== null);
 };
 
 export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
-  const blogIds = (
-    await db.query.blogTag.findMany({
-      where: (blogTag, { inArray }) => inArray(blogTag.tagId, tagIds),
-      columns: {
-        blogId: true,
-      },
-    })
-  ).map((blogTag) => blogTag.blogId);
-
-  const blogRows = await db.query.blogs.findMany({
-    where: (blogFields, { not, eq, inArray, and }) =>
-      and(
-        not(eq(db._schema.blogs.slug, slug)),
-        inArray(blogFields.id, blogIds),
-        eq(db._schema.blogs.published, true),
-      ),
-    with: {
-      blogTag: {
-        with: {
-          tag: true,
-        },
-      },
-    },
-    orderBy(fields, operators) {
-      return [operators.desc(fields.createdAt), operators.desc(fields.id)];
-    },
-  });
+  const blogRows = await findPublishedBlogRowsByTags(slug, tagIds);
 
   const blogs = await Promise.all(
     blogRows

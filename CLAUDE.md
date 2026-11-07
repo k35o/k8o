@@ -1,12 +1,11 @@
 # CLAUDE.md
 
-k8oは個人ポートフォリオサイト。Next.js App Router（main・ai）と Hono（api）の Turborepo モノレポ。ブログ(MDX)、トーク、開発者向けツール群、AIツール群を提供する。
+k8oは個人ポートフォリオサイト。k8ordo の static（main）、Next.js App Router（ai）と Hono（api）の Turborepo モノレポ。ブログ(MDX)、トーク、開発者向けツール群、AIツール群を提供する。
 
 ## コマンド
 
 ```bash
-pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動。main-k8ordo は除く）
-pnpm run dev:k8ordo           # main の代わりに main-k8ordo を起こす（どちらも main.k8o の名前を使うので、同時には起こさない）
+pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動）
 pnpm run build
 pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
 pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）
@@ -27,8 +26,7 @@ pnpm -F main exec svrt approve   # 変更を新しいベースラインとして
 ## モノレポ構成
 
 ```
-apps/main/          → Next.jsアプリ（メイン）            → apps/main/CLAUDE.md
-apps/main-k8ordo/   → main の k8ordo 版（並走中。preview にだけ出す） → apps/main-k8ordo/CLAUDE.md
+apps/main/          → k8o.me（k8ordo の static）         → apps/main/CLAUDE.md
 apps/api/           → Hono の API（api.k8o.me）          → apps/api/CLAUDE.md
 apps/ai/            → AIツール群（ai.k8o.me）            → apps/ai/CLAUDE.md
 packages/auth-shell/→ aiの認証ゲートとアプリシェル      → packages/auth-shell/CLAUDE.md
@@ -42,7 +40,7 @@ packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール�
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。
 
-DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。`app/` や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（`@repo/auth-shell` に乗らないアプリ固有の認可ゲート用。現状は ai の `require-allowed-session` が該当）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
+DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。route と部品（ai の `app/`、main の `routes/`・`components/`）や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（`@repo/auth-shell` に乗らないアプリ固有の認可ゲート用。現状は ai の `require-allowed-session` が該当）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
 
 ## コーディング規約
 
@@ -56,7 +54,7 @@ DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/a
 | 対象 | 手法 | 場所 |
 |------|------|------|
 | Helpers | In-source testing (`if (import.meta.vitest)`) | `packages/helpers/src/**/*.ts` |
-| Components | Storybook stories + play関数 | `apps/main/src/app/**/*.stories.tsx`・`apps/main/src/playgrounds/**/*.stories.tsx` |
+| Components | Storybook stories + play関数 | `apps/main/src/components/**/*.stories.tsx`・`apps/main/src/playgrounds/**/*.stories.tsx` |
 | Features | Vitest unit tests | `apps/main/src/features/**/*.test.ts` |
 | Shared | Vitest unit tests | `apps/main/src/shared/**/*.test.ts` |
 
@@ -82,7 +80,8 @@ k8o でしか使わない秘密は、ルートの `fnox.toml` に age で暗号�
 - 追加・更新はリポジトリ直下で `fnox set -P bot -p age <KEY>` を実行し、値は stdin で渡す。サブディレクトリで実行すると、そこに新しい `fnox.toml` ができる
 - `fnox edit` は使わない。編集後のファイルだけで再暗号化するので、providers を持たないこのファイルでは値が平文で書き戻される
 - グローバル設定に同名のエントリがあると、その `default`（平文）が持ち越されて書き込まれる。先に `fnox remove -g` で消す
-- コミット前に、エントリが `provider = "age"` を持ち `default` を持たないことを確かめる。確かめるときに値を表示しない
+- コミット前に、bot の profile のエントリが `provider = "age"` を持ち `default` を持たないことを確かめる。確かめるときに値を表示しない
+- main の profile は秘密ではない手元の値（`apps/main/CLAUDE.md` の環境変数）なので、ファイルを直に編集して `default` で平文に置く。秘密をここに足さない
 - `fnox set` は `KEY= { ... }` の形で書き戻し、`vp check` のフォーマット検査に落ちる。コミット前に `pnpm run check:write` を通す
 - グローバルの age の recipients や identity を入れ替えるときは、古い identity を捨てる前にリポジトリ直下で `fnox reencrypt -P bot` を実行してコミットする。リポジトリの外で実行しても、この `fnox.toml` は対象にならない
 

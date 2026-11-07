@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { etag } from 'hono/etag';
 import { createMiddleware } from 'hono/factory';
 
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
@@ -25,12 +26,12 @@ export const redirectReadingListFeedQuery = createMiddleware(
 );
 
 export const readingListPublicRoutes = new Hono()
-  .get('/', async (c) =>
+  .get('/', etag(), async (c) =>
     c.json(await getReadingList(Date.now()), 200, {
       'Cache-Control': CACHE_CONTROL,
     }),
   )
-  .get('/feed', async (c) =>
+  .get('/feed', etag(), async (c) =>
     c.body(await getReadingListFeed(Date.now()), 200, {
       'Content-Type': 'application/rss+xml; charset=utf-8',
       'Cache-Control': CACHE_CONTROL,

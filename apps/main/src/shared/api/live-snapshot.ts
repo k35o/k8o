@@ -4,9 +4,35 @@ type Load = () => Promise<unknown>;
 type Subscribe = (onChange: () => void) => () => void;
 
 type LiveSnapshotStore = {
-  subscriber: (key: string, load: Load) => Subscribe;
+  subscriber: (key: string, load: Load, initial: unknown) => Subscribe;
   getSnapshot: (key: string) => unknown;
   reset: () => void;
+};
+
+// api の応答とビルドの値は別の問い合わせから作るので、キーの並びがそろうとは限らない。
+// JSON.stringify で比べずに、キーごとに比べ、違いを見つけた所で止める
+const isSameJson = (left: unknown, right: unknown): boolean => {
+  if (Object.is(left, right)) {
+    return true;
+  }
+  if (
+    typeof left !== 'object' ||
+    typeof right !== 'object' ||
+    left === null ||
+    right === null ||
+    Array.isArray(left) !== Array.isArray(right)
+  ) {
+    return false;
+  }
+  const entries = Object.entries(left);
+  return (
+    entries.length === Object.keys(right).length &&
+    entries.every(
+      ([key, value]) =>
+        Object.hasOwn(right, key) &&
+        isSameJson(value, (right as Record<string, unknown>)[key]),
+    )
+  );
 };
 
 export const createLiveSnapshotStore = (): LiveSnapshotStore => {
@@ -16,14 +42,14 @@ export const createLiveSnapshotStore = (): LiveSnapshotStore => {
   const listeners = new Map<string, Set<() => void>>();
   const subscribers = new Map<string, Subscribe>();
 
-  const start = (key: string, load: Load): void => {
+  const start = (key: string, load: Load, initial: unknown): void => {
     if (started.has(key)) {
       return;
     }
     started.add(key);
     const target = values;
     void load().then((value) => {
-      if (value === null) {
+      if (value === null || isSameJson(value, initial)) {
         return;
       }
       target.set(key, value);
@@ -34,7 +60,7 @@ export const createLiveSnapshotStore = (): LiveSnapshotStore => {
   };
 
   return {
-    subscriber: (key, load) => {
+    subscriber: (key, load, initial) => {
       const existing = subscribers.get(key);
       if (existing !== undefined) {
         return existing;
@@ -43,7 +69,7 @@ export const createLiveSnapshotStore = (): LiveSnapshotStore => {
         const keyListeners = listeners.get(key) ?? new Set();
         keyListeners.add(onChange);
         listeners.set(key, keyListeners);
-        start(key, load);
+        start(key, load, initial);
         return () => {
           keyListeners.delete(onChange);
         };
@@ -55,6 +81,7 @@ export const createLiveSnapshotStore = (): LiveSnapshotStore => {
     reset: () => {
       values = new Map();
       started = new Set();
+      subscribers.clear();
     },
   };
 };
@@ -69,7 +96,7 @@ export const useLiveSnapshot = <T>(
   initial: T,
 ): T => {
   const live = useSyncExternalStore(
-    store.subscriber(key, load),
+    store.subscriber(key, load, initial),
     () => store.getSnapshot(key),
     // プリレンダーとハイドレーションはビルド時の値で描き、HTML とずらさない
     () => undefined,

@@ -50,6 +50,16 @@ const tagNamesOf = (tree: Root): string[] => {
   return tagNames;
 };
 
+const tabIndexesOf = (tree: Root): unknown[] => {
+  const tabIndexes: unknown[] = [];
+  visit(tree, 'element', (node) => {
+    if (node.properties.tabIndex !== undefined) {
+      tabIndexes.push(node.properties.tabIndex);
+    }
+  });
+  return tabIndexes;
+};
+
 describe('rehypeMath', () => {
   describe('正常系', () => {
     it('インラインの数式を KaTeX の HTML に置き換える', () => {
@@ -103,6 +113,24 @@ describe('rehypeMath', () => {
       expect(tagNamesOf(tree)).not.toContain('pre');
     });
 
+    it('ブロックの数式は、横にスクロールしてもキーボードで届くよう Tab で止まれる箱にする', () => {
+      const { tree } = run([
+        element(
+          'pre',
+          [],
+          [element('code', ['language-math', 'math-display'], [text('a + b')])],
+        ),
+      ]);
+
+      expect(tree.children).toMatchObject([
+        {
+          tagName: 'span',
+          properties: { className: ['katex-display'], tabIndex: 0 },
+        },
+      ]);
+      expect(tabIndexesOf(tree)).toStrictEqual([0]);
+    });
+
     it('```math のコードブロックも display モードで描く', () => {
       const { tree } = run([
         element(
@@ -132,6 +160,12 @@ describe('rehypeMath', () => {
       const { tree } = run([element('pre', [], [code])]);
 
       expect(tree.children).toStrictEqual([element('pre', [], [code])]);
+    });
+
+    it('インラインの数式は文の中で折り返すので、Tab の順に入れない', () => {
+      const { tree } = run([element('p', [], [inlineMath('x^2')])]);
+
+      expect(tabIndexesOf(tree)).toStrictEqual([]);
     });
   });
 });

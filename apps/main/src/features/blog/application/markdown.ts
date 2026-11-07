@@ -13,7 +13,7 @@ type Edit = { start: number; end: number; text: string };
 
 const SITE_URL = 'https://k8o.me';
 
-// 本番のMDX (next.config.ts) と同じ remark の preset で読む。remark-math がないと
+// 本番のMDX（vite.config.ts の @mdx-js/rollup）と同じ remark の preset で読む。remark-math がないと
 // $\mathbb{N}$ のような数式内の {} がMDX式として解釈されてパースに失敗する
 const parser = remark().use(remarkMdx).use(remarkPreset);
 

@@ -1,0 +1,16 @@
+/* better-css-modules-disable tokens/spacing, tokens/font-size -- スライドはコンテナ幅（cqi）に比例させる */
+.root {
+  font-size: 1.6cqi;
+  margin: 0 0 1.2cqi;
+  padding: 1.2cqi 1.6cqi;
+  border-radius: var(--radius-md);
+  overflow: auto;
+  max-width: 100%;
+  /* better-css-modules-disable-next-line pure/important -- shiki が pre の style に書くテーマの背景より、スライドの面を勝たせる */
+  background-color: var(--color-bg-subtle) !important;
+
+  :root[class~='dark'] & {
+    /* better-css-modules-disable-next-line pure/important -- dark では .dark .shiki がテーマの背景を !important で書くので、詳細度で勝つ */
+    background-color: var(--color-bg-subtle) !important;
+  }
+}

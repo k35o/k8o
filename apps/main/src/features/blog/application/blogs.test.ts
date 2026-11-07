@@ -1,372 +1,199 @@
-import { db } from '@repo/database';
 import { describe, expect, it, vi } from 'vitest';
 
+import {
+  findPublishedBlogRows,
+  findPublishedBlogRowsByTags,
+} from '../infrastructure/blog-repository';
 import { findBlogMetadata } from './blog';
 import { getBlogs, getBlogsByTags } from './blogs';
 
-vi.mock('@repo/database', () => ({
-  db: {
-    query: {
-      blogs: {
-        findMany: vi.fn(),
-      },
-      blogTag: {
-        findMany: vi.fn(),
-      },
-    },
-  },
+vi.mock('../infrastructure/blog-repository', () => ({
+  findPublishedBlogRows: vi.fn(),
+  findPublishedBlogRowsByTags: vi.fn(),
 }));
 vi.mock('./blog');
 
-describe('blogs service', () => {
-  describe('getBlogs', () => {
-    it('公開されたブログの一覧を取得できる', async () => {
-      const mockBlogs = [
-        {
-          id: 1,
-          slug: 'blog-1',
-          published: true,
-          createdAt: new Date().toISOString(),
-          blogTag: [
-            {
-              tag: {
-                name: 'TypeScript',
-              },
-            },
-            {
-              tag: {
-                name: 'React',
-              },
-            },
-          ],
-        },
-        {
-          id: 2,
-          slug: 'blog-2',
-          published: true,
-          createdAt: new Date().toISOString(),
-          blogTag: [
-            {
-              tag: {
-                name: 'Next.js',
-              },
-            },
-          ],
-        },
-      ];
+type BlogRow = Awaited<ReturnType<typeof findPublishedBlogRows>>[number];
 
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
+const row = (id: number, slug: string, tagNames: string[]): BlogRow => ({
+  id,
+  slug,
+  published: true,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  blogTag: tagNames.map((name, index) => ({
+    blogId: id,
+    tagId: index + 1,
+    tag: { id: index + 1, name },
+  })),
+});
+
+const metadata = (title: string) => ({
+  title,
+  description: null,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+});
+
+describe('getBlogs', () => {
+  describe('正常系', () => {
+    it('公開された記事を、タグの名前と MDX のメタデータつきで一覧の並びのまま返す', async () => {
+      vi.mocked(findPublishedBlogRows).mockResolvedValue([
+        row(2, 'blog-b', ['TypeScript', 'React']),
+        row(1, 'blog-a', ['Next.js']),
+      ]);
+      vi.mocked(findBlogMetadata).mockImplementation((slug) =>
+        Promise.resolve(metadata(`タイトル: ${slug}`)),
+      );
 
       const result = await getBlogs();
 
       expect(result).toStrictEqual([
         {
-          id: 1,
-          slug: 'blog-1',
+          id: 2,
+          slug: 'blog-b',
           tags: ['TypeScript', 'React'],
+          title: 'タイトル: blog-b',
+          description: null,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
         },
         {
-          id: 2,
-          slug: 'blog-2',
+          id: 1,
+          slug: 'blog-a',
           tags: ['Next.js'],
+          title: 'タイトル: blog-a',
+          description: null,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
         },
       ]);
     });
+  });
 
-    it('空の配列が返された場合は空の配列を返す', async () => {
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue([]);
+  describe('異常系', () => {
+    it('DB では公開済みでも MDX が無い記事は挙げない', async () => {
+      vi.mocked(findPublishedBlogRows).mockResolvedValue([
+        row(1, 'blog-a', []),
+        row(2, 'missing-blog', []),
+      ]);
+      vi.mocked(findBlogMetadata).mockImplementation((slug) =>
+        Promise.resolve(slug === 'missing-blog' ? null : metadata('記事A')),
+      );
+
+      const result = await getBlogs();
+
+      expect(result.map((blog) => blog.slug)).toStrictEqual(['blog-a']);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('公開された記事が無ければ空の配列を返す', async () => {
+      vi.mocked(findPublishedBlogRows).mockResolvedValue([]);
 
       const result = await getBlogs();
 
       expect(result).toStrictEqual([]);
     });
-
-    it('公開記事が100件を超えても全件取得する', async () => {
-      // RSS・サイトマップ・llms.txt が getBlogContents 経由でこの結果を全件前提で
-      // 使うため、クエリに件数上限を設けないことを保証する
-      const mockBlogs = Array.from({ length: 150 }, (_, i) => ({
-        id: i + 1,
-        slug: `blog-${(i + 1).toString()}`,
-        published: true,
-        createdAt: new Date().toISOString(),
-        blogTag: [],
-      }));
-
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-
-      const result = await getBlogs();
-
-      expect(result).toHaveLength(150);
-      expect(db.query.blogs.findMany).toHaveBeenCalledWith(
-        expect.not.objectContaining({ limit: expect.anything() }),
-      );
-    });
   });
+});
 
-  describe('getBlogsByTags', () => {
-    it('指定されたタグを持つブログを取得できる', async () => {
-      const mockBlogTags = [
-        { tagId: 1, blogId: 1 },
-        { tagId: 1, blogId: 2 },
-        { tagId: 2, blogId: 3 },
-      ];
+const taggedRow = (
+  id: number,
+  slug: string,
+  tags: ReadonlyArray<{ id: number; name: string }>,
+): BlogRow => ({
+  id,
+  slug,
+  published: true,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  blogTag: tags.map((tag) => ({ blogId: id, tagId: tag.id, tag })),
+});
 
-      const mockBlogs = [
+const TYPESCRIPT = { id: 1, name: 'TypeScript' };
+const REACT = { id: 2, name: 'React' };
+
+describe('getBlogsByTags', () => {
+  describe('正常系', () => {
+    it('タグを共有する記事を、題・公開日・タグの名前つきで返す', async () => {
+      vi.mocked(findPublishedBlogRowsByTags).mockResolvedValue([
+        taggedRow(2, 'blog-b', [TYPESCRIPT, REACT]),
+      ]);
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('タイトル'));
+
+      const result = await getBlogsByTags('blog-a', [1, 2]);
+
+      expect(findPublishedBlogRowsByTags).toHaveBeenCalledWith(
+        'blog-a',
+        [1, 2],
+      );
+      expect(result).toStrictEqual([
         {
           id: 2,
-          slug: 'blog-2',
-          published: true,
-          createdAt: '2023-01-02T00:00:00.000Z',
-          blogTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'TypeScript',
-              },
-            },
-            {
-              tag: {
-                id: 2,
-                name: 'React',
-              },
-            },
-          ],
+          slug: 'blog-b',
+          title: 'タイトル',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          tags: ['TypeScript', 'React'],
         },
-        {
-          id: 3,
-          slug: 'blog-3',
-          published: true,
-          createdAt: '2023-01-03T00:00:00.000Z',
-          blogTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'TypeScript',
-              },
-            },
-          ],
-        },
-      ];
-
-      const mockMetadata = {
-        title: 'Test Blog',
-        description: 'Test Description',
-        createdAt: '2023-01-01T00:00:00.000Z',
-        updatedAt: '2023-01-01T00:00:00.000Z',
-      };
-
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      vi.mocked(findBlogMetadata).mockResolvedValue(mockMetadata);
-
-      const result = await getBlogsByTags('blog-1', [1, 2]);
-
-      expect(result).toHaveLength(2);
-      expect(result[0]).toStrictEqual({
-        id: 2,
-        slug: 'blog-2',
-        title: 'Test Blog',
-        createdAt: mockMetadata.createdAt,
-        tags: ['TypeScript', 'React'],
-      });
+      ]);
     });
 
-    it('タグマッチ数でソートされる', async () => {
-      const mockBlogTags = [
-        { tagId: 1, blogId: 1 },
-        { tagId: 1, blogId: 2 },
-      ];
-
-      const mockBlogs = [
-        {
-          id: 1,
-          slug: 'blog-1',
-          published: true,
-          createdAt: '2023-01-01T00:00:00.000Z',
-          blogTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'TypeScript',
-              },
-            },
-          ],
-        },
-        {
-          id: 2,
-          slug: 'blog-2',
-          published: true,
-          createdAt: '2023-01-02T00:00:00.000Z',
-          blogTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'TypeScript',
-              },
-            },
-            {
-              tag: {
-                id: 2,
-                name: 'React',
-              },
-            },
-          ],
-        },
-      ];
-
-      const mockMetadata = {
-        title: 'Test Blog',
-        description: 'Test Description',
-        createdAt: '2023-01-01T00:00:00.000Z',
-        updatedAt: '2023-01-01T00:00:00.000Z',
-      };
-
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      vi.mocked(findBlogMetadata).mockResolvedValue(mockMetadata);
+    it('共有するタグの多い記事から並べる', async () => {
+      vi.mocked(findPublishedBlogRowsByTags).mockResolvedValue([
+        taggedRow(1, 'blog-one-tag', [TYPESCRIPT]),
+        taggedRow(2, 'blog-two-tags', [TYPESCRIPT, REACT]),
+      ]);
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('タイトル'));
 
       const result = await getBlogsByTags('current-blog', [1, 2]);
 
-      expect(result[0]?.id).toBe(2);
-      expect(result[1]?.id).toBe(1);
+      expect(result.map((blog) => blog.slug)).toStrictEqual([
+        'blog-two-tags',
+        'blog-one-tag',
+      ]);
     });
 
-    it('最大6件のブログを返す', async () => {
-      const mockBlogTags = Array.from({ length: 10 }, (_, i) => ({
-        tagId: 1,
-        blogId: i + 1,
-      }));
-      const mockBlogs = Array.from({ length: 10 }, (_, i) => ({
-        id: i + 1,
-        slug: `blog-${(i + 1).toString()}`,
-        published: true,
-        createdAt: `2023-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z`,
-        blogTag: [
-          {
-            tag: {
-              id: 1,
-              name: 'TypeScript',
-            },
-          },
-        ],
-      }));
-
-      const mockMetadata = {
-        title: 'Test Blog',
-        description: 'Test Description',
-        createdAt: '2023-01-01T00:00:00.000Z',
-        updatedAt: '2023-01-01T00:00:00.000Z',
-      };
-
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      vi.mocked(findBlogMetadata).mockResolvedValue(mockMetadata);
+    it('最大6件を返す', async () => {
+      vi.mocked(findPublishedBlogRowsByTags).mockResolvedValue(
+        Array.from({ length: 10 }, (_, i) =>
+          taggedRow(i + 1, `blog-${(i + 1).toString()}`, [TYPESCRIPT]),
+        ),
+      );
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('タイトル'));
 
       const result = await getBlogsByTags('current-blog', [1]);
 
       expect(result).toHaveLength(6);
     });
+  });
 
-    it('上位候補にMDX欠損があっても後続候補で最大6件を維持する', async () => {
-      const mockBlogTags = Array.from({ length: 7 }, (_, i) => ({
-        tagId: 1,
-        blogId: i + 1,
-      }));
-      const mockBlogs = Array.from({ length: 7 }, (_, i) => ({
-        id: i + 1,
-        slug: `blog-${(i + 1).toString()}`,
-        published: true,
-        createdAt: `2023-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z`,
-        blogTag: [
-          {
-            tag: {
-              id: 1,
-              name: 'TypeScript',
-            },
-          },
-        ],
-      }));
-
-      const mockMetadata = {
-        title: 'Test Blog',
-        description: 'Test Description',
-        createdAt: '2023-01-01T00:00:00.000Z',
-        updatedAt: '2023-01-01T00:00:00.000Z',
-      };
-
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      // タグマッチ数が同数のためDBの並び順どおりに呼ばれる: 先頭のblog-1だけ欠損
+  describe('異常系', () => {
+    it('MDX が無い記事を外し、後ろの候補で6件を保つ', async () => {
+      vi.mocked(findPublishedBlogRowsByTags).mockResolvedValue(
+        Array.from({ length: 7 }, (_, i) =>
+          taggedRow(i + 1, `blog-${(i + 1).toString()}`, [TYPESCRIPT]),
+        ),
+      );
+      // 共有するタグの数が同じなので、DB の並びのまま blog-1 から読む
       vi.mocked(findBlogMetadata)
         .mockResolvedValueOnce(null)
-        .mockResolvedValue(mockMetadata);
+        .mockResolvedValue(metadata('タイトル'));
 
       const result = await getBlogsByTags('current-blog', [1]);
 
-      expect(result).toHaveLength(6);
-      expect(result.map((blog) => blog.slug)).not.toContain('blog-1');
+      expect(result.map((blog) => blog.slug)).toStrictEqual([
+        'blog-2',
+        'blog-3',
+        'blog-4',
+        'blog-5',
+        'blog-6',
+        'blog-7',
+      ]);
     });
+  });
 
-    it('MDXファイルが無いブログは結果から除外される', async () => {
-      const mockBlogTags = [
-        { tagId: 1, blogId: 1 },
-        { tagId: 1, blogId: 2 },
-      ];
-
-      const mockBlogs = [
-        {
-          id: 1,
-          slug: 'blog-1',
-          published: true,
-          createdAt: '2023-01-01T00:00:00.000Z',
-          blogTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'TypeScript',
-              },
-            },
-          ],
-        },
-        {
-          id: 2,
-          slug: 'missing-blog',
-          published: true,
-          createdAt: '2023-01-02T00:00:00.000Z',
-          blogTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'TypeScript',
-              },
-            },
-          ],
-        },
-      ];
-
-      const mockMetadata = {
-        title: 'Test Blog',
-        description: 'Test Description',
-        createdAt: '2023-01-01T00:00:00.000Z',
-        updatedAt: '2023-01-01T00:00:00.000Z',
-      };
-
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      // タグマッチ数が同数のためDBの並び順どおりに呼ばれる: blog-1 → missing-blog
-      vi.mocked(findBlogMetadata)
-        .mockResolvedValueOnce(mockMetadata)
-        .mockResolvedValueOnce(null);
-
-      const result = await getBlogsByTags('current-blog', [1]);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]?.slug).toBe('blog-1');
-    });
-
-    it('該当するブログがない場合は空の配列を返す', async () => {
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue([]);
-      vi.mocked(db.query.blogs.findMany).mockResolvedValue([]);
+  describe('エッジケース', () => {
+    it('タグを共有する記事が無ければ空の配列を返す', async () => {
+      vi.mocked(findPublishedBlogRowsByTags).mockResolvedValue([]);
 
       const result = await getBlogsByTags('current-blog', [1]);
 

@@ -1,106 +1,85 @@
-import { db } from '@repo/database';
 import { describe, expect, it, vi } from 'vitest';
 
+import { findTagRow } from '../infrastructure/tag-repository';
 import { getTag } from './tag';
 
-vi.mock('@repo/database', () => ({
-  db: {
-    query: {
-      tags: {
-        findFirst: vi.fn(),
-      },
-    },
-  },
+vi.mock('../infrastructure/tag-repository', () => ({
+  findTagRow: vi.fn(),
 }));
 
+type TagRow = NonNullable<Awaited<ReturnType<typeof findTagRow>>>;
+
+const blogTag = (
+  blogId: number,
+  slug: string,
+  published: boolean,
+): TagRow['blogTag'][number] => ({
+  blogId,
+  tagId: 1,
+  blog: {
+    id: blogId,
+    slug,
+    published,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+});
+
+const talkTag = (talkId: number, title: string): TagRow['talkTag'][number] => ({
+  talkId,
+  tagId: 1,
+  talk: {
+    id: talkId,
+    title,
+    eventUrl: 'https://example.com/event',
+    eventName: 'Event',
+    eventDate: '2026-01-01',
+    eventLocation: null,
+    slideUrl: 'https://example.com/slide',
+    blogId: 1,
+  },
+});
+
 describe('getTag', () => {
-  it('タグの詳細を取得できる', async () => {
-    const mockFirst = vi.fn().mockResolvedValue({
-      id: 1,
-      name: 'tag1',
-      blogTag: [
-        {
-          id: 1,
-          blog: {
-            id: 1,
-            slug: 'blog1',
-            published: true,
-          },
-        },
-      ],
-      talkTag: [
-        {
-          id: 1,
-          talk: {
-            id: 1,
-            title: 'Talk Title',
-          },
-        },
-      ],
-    });
-    vi.mocked(db.query.tags.findFirst).mockImplementation(mockFirst);
-
-    const tag = await getTag(1);
-
-    expect(tag).toStrictEqual({
-      id: 1,
-      name: 'tag1',
-      blogs: [
-        {
-          id: 1,
-          slug: 'blog1',
-        },
-      ],
-      talks: [
-        {
-          id: 1,
-          title: 'Talk Title',
-        },
-      ],
-    });
-  });
-  it('非公開のブログはタグ詳細から除外される', async () => {
-    const mockFirst = vi.fn().mockResolvedValue({
-      id: 1,
-      name: 'tag1',
-      blogTag: [
-        {
-          id: 1,
-          blog: {
-            id: 1,
-            slug: 'blog1',
-            published: true,
-          },
-        },
-        {
-          id: 2,
-          blog: {
-            id: 2,
-            slug: 'draft-blog',
-            published: false,
-          },
-        },
-      ],
-      talkTag: [],
-    });
-    vi.mocked(db.query.tags.findFirst).mockImplementation(mockFirst);
-
-    const tag = await getTag(1);
-
-    expect(tag?.blogs).toStrictEqual([
-      {
+  describe('正常系', () => {
+    it('タグの名前と、記事の slug とトークの題を返す', async () => {
+      vi.mocked(findTagRow).mockResolvedValue({
         id: 1,
-        slug: 'blog1',
-      },
-    ]);
+        name: 'CSS',
+        blogTag: [blogTag(1, 'blog1', true)],
+        talkTag: [talkTag(1, 'Talk Title')],
+      });
+
+      const tag = await getTag(1);
+
+      expect(tag).toStrictEqual({
+        id: 1,
+        name: 'CSS',
+        blogs: [{ id: 1, slug: 'blog1' }],
+        talks: [{ id: 1, title: 'Talk Title' }],
+      });
+    });
+
+    it('下書きの記事は除く', async () => {
+      vi.mocked(findTagRow).mockResolvedValue({
+        id: 1,
+        name: 'CSS',
+        blogTag: [blogTag(1, 'blog1', true), blogTag(2, 'draft-blog', false)],
+        talkTag: [],
+      });
+
+      const tag = await getTag(1);
+
+      expect(tag?.blogs).toStrictEqual([{ id: 1, slug: 'blog1' }]);
+    });
   });
 
-  it('タグが存在しない場合はnullを返す', async () => {
-    const mockFirst = vi.fn().mockResolvedValue(null);
-    vi.mocked(db.query.tags.findFirst).mockImplementation(mockFirst);
+  describe('異常系', () => {
+    it('タグが無ければ null を返す', async () => {
+      vi.mocked(findTagRow).mockResolvedValue(undefined);
 
-    const tag = await getTag(1);
+      const tag = await getTag(999);
 
-    expect(tag).toBeNull();
+      expect(tag).toBeNull();
+    });
   });
 });

@@ -4,6 +4,8 @@ import { Button } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './scrollend-trigger-demo.module.css';
 
 const FLASH_DURATION_MS = 300;
@@ -45,6 +47,7 @@ const useScrollendCounter = () => {
 };
 
 export function ScrollendTriggerDemo() {
+  const Heading = useDemoHeading();
   const { count, lastTrigger, showFlash, trigger, reset } =
     useScrollendCounter();
   const scrollToRef = useRef<HTMLElement>(null);
@@ -69,7 +72,7 @@ export function ScrollendTriggerDemo() {
       <div className={styles.grid}>
         <div className={styles.column}>
           <div className={styles.columnHeader}>
-            <h4 className={styles.heading}>scrollTo() API</h4>
+            <Heading className={styles.heading}>scrollTo() API</Heading>
             <div className={styles.actions}>
               <Button
                 color="primary"
@@ -114,7 +117,7 @@ export function ScrollendTriggerDemo() {
         </div>
 
         <div className={styles.column}>
-          <h4 className={styles.heading}>scroll-snap</h4>
+          <Heading className={styles.heading}>scroll-snap</Heading>
           <section
             aria-label="scroll-snapで横スクロールする領域"
             className={styles.snapScroller}

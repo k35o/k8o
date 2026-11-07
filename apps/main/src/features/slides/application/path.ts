@@ -1,5 +1,6 @@
 import { join } from 'node:path';
-import { cwd } from 'node:process';
+
+import { CONTENT_DIR } from '@/shared/site/content-dir';
 
 export const slidePath = (slug: string) =>
-  join(cwd(), `src/content/slides/${slug}/content.mdx`);
+  join(CONTENT_DIR, `slides/${slug}/content.mdx`);

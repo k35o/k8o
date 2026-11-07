@@ -1,8 +1,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import betterCssModules from '@better-css-modules/vite';
-import { defineMain } from '@storybook/nextjs-vite/node';
+import { defineMain } from '@storybook/react-vite/node';
 
 function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
@@ -24,15 +23,10 @@ export default defineMain({
     getAbsolutePath('storybook-addon-mock-date'),
     getAbsolutePath('storybook-addon-determinism'),
   ],
-  framework: getAbsolutePath('@storybook/nextjs-vite'),
-  features: {
-    experimentalRSC: true,
+  framework: {
+    name: getAbsolutePath('@storybook/react-vite'),
+    // 指定しないとアプリの vite.config.ts を読み、framework() と vercel() まで載る
+    options: { builder: { viteConfigPath: '.storybook/vite.config.ts' } },
   },
-  // Storybook は Vite で組むので、Turbopack の loader の代わりに Vite プラグインで
-  // CSS Modules を layer で包む
-  viteFinal: (viteConfig) => ({
-    ...viteConfig,
-    plugins: [...(viteConfig.plugins ?? []), betterCssModules()],
-  }),
   staticDirs: ['./public', '../public'],
 });

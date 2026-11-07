@@ -32,7 +32,8 @@ export function SiblingProgressDemo() {
         )}
       />
 
-      <ul className={styles.list}>
+      {/* 並びは幅と濃さで progress() を見せる絵で、「項目」は字を置くための仮の字。数は欄の名前で伝わる */}
+      <ul aria-hidden="true" className={styles.list}>
         {Array.from({ length: count }, (_, index) => (
           <li className={cn('pf-sibling-item', styles.item)} key={index}>
             項目

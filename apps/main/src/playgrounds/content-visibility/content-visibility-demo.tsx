@@ -4,9 +4,12 @@ import { Button, Code } from '@k8ordo/ui';
 import { useState } from 'react';
 import type { FC } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './content-visibility-demo.module.css';
 
 export const ContentVisibilityDemo: FC = () => {
+  const Heading = useDemoHeading();
   const [showHidden, setShowHidden] = useState(true);
   const [showAuto, setShowAuto] = useState(true);
 
@@ -33,7 +36,7 @@ export const ContentVisibilityDemo: FC = () => {
                 contentVisibility: showHidden ? 'hidden' : 'visible',
               }}
             >
-              <h3 className={styles.heading}>サンプルコンテンツ</h3>
+              <Heading className={styles.heading}>サンプルコンテンツ</Heading>
               <p className={styles.text}>
                 このコンテンツは<Code>content-visibility: hidden</Code>
                 によって制御されています。非表示の場合、レンダリング処理が行われず、スクリーンリーダーやブラウザ検索からもアクセスできません。
@@ -64,7 +67,7 @@ export const ContentVisibilityDemo: FC = () => {
                 contentVisibility: showAuto ? 'auto' : 'visible',
               }}
             >
-              <h3 className={styles.heading}>サンプルコンテンツ</h3>
+              <Heading className={styles.heading}>サンプルコンテンツ</Heading>
               <p className={styles.text}>
                 このコンテンツは<Code>content-visibility: auto</Code>
                 によって制御されています。ビューポート外の要素のレンダリング処理を必要なタイミングまでスキップできます。

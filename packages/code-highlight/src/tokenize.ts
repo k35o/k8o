@@ -3,7 +3,7 @@ import type { BundledLanguage, ThemedToken } from 'shiki';
 
 // 拡張子なしで import する（このファイルは tokenize/theme を deep-import するアプリ側からも
 // 型検査される。allowImportingTsExtensions を持たない consumer でも解決できるようにするため）。
-import { CODE_SURFACE } from './theme';
+import { CODE_SURFACE, COLOR_REPLACEMENTS } from './theme';
 
 export type HighlightedCode = {
   tokens: ThemedToken[][];
@@ -25,7 +25,14 @@ export const highlightCode = async (
   const result = await codeToTokens(code, {
     lang: lang as BundledLanguage,
     theme,
-  }).catch(() => codeToTokens(code, { lang: 'text', theme }));
+    colorReplacements: COLOR_REPLACEMENTS,
+  }).catch(() =>
+    codeToTokens(code, {
+      lang: 'text',
+      theme,
+      colorReplacements: COLOR_REPLACEMENTS,
+    }),
+  );
 
   return {
     tokens: result.tokens,

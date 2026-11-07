@@ -1,6 +1,13 @@
 /* rehype-math が HTML を作る katex と同じ版の CSS を読む */
 @import 'katex/dist/katex.min.css';
 
+/* KaTeX の箱は数 px 縦にはみ出すので、overflow-x だけにすると縦のスクロールバーも出る。
+   縦書きでは、後ろの @container の overflow: auto がこれを上書きする */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 /* 縦書きの記事でも数式は横書きで組む。縦書きかどうかは @k8ordo/ui の .writing-v が立てる
    --writing で見る（.writing-h の島では horizontal に戻る） */
 @container style(--writing: vertical) {

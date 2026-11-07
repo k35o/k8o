@@ -237,25 +237,51 @@
     margin-inline: 1rem;
   }
 
-  /* ライトの「沈んだトラックに明るいピルが浮く」明暗の向きをダークでも保つため、割り当てを入れ替える */
-  .dark .code-annotate-group {
-    --code-track: var(--color-bg-subtle);
-    --code-segment: var(--color-bg-mute);
+  @media not print {
+    /* ライトの「沈んだトラックに明るいピルが浮く」明暗の向きをダークでも保つため、割り当てを入れ替える */
+    .dark .code-annotate-group {
+      --code-track: var(--color-bg-subtle);
+      --code-segment: var(--color-bg-mute);
+    }
+
+    /* shiki のデュアルテーマ切り替え: インラインstyleはライト色なので、
+       ダーク時はトークンごとの --shiki-dark 変数を !important で通す。
+       transformer が注入する行・コールアウトの span は変数を持たないため除外する。
+       背景色を span にも敷くと、面の色と違う箱が文字の背後に浮くので pre だけに当てる */
+    .dark .shiki {
+      color: var(--shiki-dark) !important;
+      background-color: var(--shiki-dark-bg) !important;
+    }
+
+    .dark .shiki span:not(.line, .code-annotate-callout-text) {
+      color: var(--shiki-dark) !important;
+      font-style: var(--shiki-dark-font-style) !important;
+      font-weight: var(--shiki-dark-font-weight) !important;
+      text-decoration: var(--shiki-dark-text-decoration) !important;
+    }
   }
 
-  /* shiki のデュアルテーマ切り替え: インラインstyleはライト色なので、
-     ダーク時はトークンごとの --shiki-dark 変数を !important で通す。
-     transformer が注入する行・コールアウトの span は変数を持たないため除外する。
-     背景色を span にも敷くと、面の色と違う箱が文字の背後に浮くので pre だけに当てる */
-  .dark .shiki {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
-  }
+  /* 印刷では @k8ordo/ui のトークンが .print-as-shown を含む .dark でだけダークのままなので、
+     上のダークの割り当ても同じ .dark にだけ当てる。:has() の詳細度を :where() で消し、
+     ほかの規則との勝ち負けを画面の .dark の規則とそろえる */
+  @media print {
+    .dark:where(:has(.print-as-shown)) .code-annotate-group {
+      --code-track: var(--color-bg-subtle);
+      --code-segment: var(--color-bg-mute);
+    }
 
-  .dark .shiki span:not(.line, .code-annotate-callout-text) {
-    color: var(--shiki-dark) !important;
-    font-style: var(--shiki-dark-font-style) !important;
-    font-weight: var(--shiki-dark-font-weight) !important;
-    text-decoration: var(--shiki-dark-text-decoration) !important;
+    .dark:where(:has(.print-as-shown)) .shiki {
+      color: var(--shiki-dark) !important;
+      background-color: var(--shiki-dark-bg) !important;
+    }
+
+    .dark:where(:has(.print-as-shown))
+      .shiki
+      span:not(.line, .code-annotate-callout-text) {
+      color: var(--shiki-dark) !important;
+      font-style: var(--shiki-dark-font-style) !important;
+      font-weight: var(--shiki-dark-font-weight) !important;
+      text-decoration: var(--shiki-dark-text-decoration) !important;
+    }
   }
 }

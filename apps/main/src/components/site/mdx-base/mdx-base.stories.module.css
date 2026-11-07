@@ -1,0 +1,4 @@
+.narrow {
+  inline-size: 20rem;
+  padding: calc(var(--spacing) * 4);
+}

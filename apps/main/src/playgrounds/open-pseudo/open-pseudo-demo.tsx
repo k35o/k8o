@@ -4,9 +4,12 @@ import { Button, Code } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './open-pseudo-demo.module.css';
 
 export function OpenPseudoDemo() {
+  const Heading = useDemoHeading();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
@@ -36,7 +39,7 @@ export function OpenPseudoDemo() {
       </p>
 
       <section className={cn('open-demo-section', styles.section)}>
-        <h4 className={styles.heading}>details</h4>
+        <Heading className={styles.heading}>details</Heading>
         <details className={cn('open-demo-target', styles.details)}>
           <summary className={styles.summary}>クリックして開く</summary>
           <p className={styles.detailsBody}>
@@ -46,7 +49,7 @@ export function OpenPseudoDemo() {
       </section>
 
       <section className={cn('open-demo-section', styles.section)}>
-        <h4 className={styles.heading}>dialog</h4>
+        <Heading className={styles.heading}>dialog</Heading>
         <div className={styles.dialogRow}>
           <Button
             onClick={() => {
@@ -85,7 +88,7 @@ export function OpenPseudoDemo() {
       </section>
 
       <section className={cn('open-demo-section', styles.section)}>
-        <h4 className={styles.heading}>select</h4>
+        <Heading className={styles.heading}>select</Heading>
         <select
           aria-label="select :open デモ用の選択肢"
           className={cn('open-demo-target', styles.select)}
@@ -101,7 +104,7 @@ export function OpenPseudoDemo() {
       </section>
 
       <section className={cn('open-demo-section', styles.section)}>
-        <h4 className={styles.heading}>input (color)</h4>
+        <Heading className={styles.heading}>input (color)</Heading>
         <input
           aria-label="input :open デモ用のカラーピッカー"
           className={cn('open-demo-target', styles.colorInput)}

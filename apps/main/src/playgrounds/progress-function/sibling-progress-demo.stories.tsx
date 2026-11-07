@@ -1,3 +1,5 @@
+import { expect } from 'storybook/test';
+
 import preview from '../../../.storybook/preview';
 import { Playground } from '../playground';
 import { SiblingProgressDemo } from './sibling-progress-demo';
@@ -16,4 +18,9 @@ const meta = preview.meta({
   ],
 });
 
-export const Default = meta.story();
+// 並びは支援技術に見せない
+export const Default = meta.story({
+  play: async ({ canvas }) => {
+    await expect(canvas.queryByRole('list')).not.toBeInTheDocument();
+  },
+});

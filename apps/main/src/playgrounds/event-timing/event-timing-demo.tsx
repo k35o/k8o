@@ -9,6 +9,8 @@ import {
   useSyncExternalStore,
 } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './event-timing-demo.module.css';
 
 const isPerformanceEventTiming = (
@@ -34,6 +36,7 @@ type EventTimingEntry = {
 };
 
 export function EventTimingDemo() {
+  const Heading = useDemoHeading();
   const [entries, setEntries] = useState<EventTimingEntry[]>([]);
   const isSupported = useSyncExternalStore(
     subscribeNoop,
@@ -157,7 +160,7 @@ export function EventTimingDemo() {
         <div>
           <div className={styles.latestHeader}>
             <div className={styles.latestTitle}>
-              <h4 className={styles.latestHeading}>最新の計測結果</h4>
+              <Heading className={styles.latestHeading}>最新の計測結果</Heading>
               <Code>{latestEntry.name}</Code>
             </div>
             <span className={styles.timestamp}>{latestEntry.timestamp}</span>
@@ -195,7 +198,7 @@ export function EventTimingDemo() {
 
       {entries.length > 1 && (
         <div className={styles.history}>
-          <h4 className={styles.historyHeading}>履歴</h4>
+          <Heading className={styles.historyHeading}>履歴</Heading>
           <div className={styles.historyList}>
             {entries.slice(1).map((entry) => (
               <div className={styles.historyRow} key={entry.id}>

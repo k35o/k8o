@@ -1,50 +1,51 @@
-import { db } from '@repo/database';
 import { describe, expect, it, vi } from 'vitest';
 
+import { findTalkRows } from '../infrastructure/talk-repository';
 import { getTalks } from './talks';
 
-vi.mock('@repo/database', () => ({
-  db: {
-    query: {
-      talks: {
-        findMany: vi.fn(),
-      },
-    },
-  },
+vi.mock('../infrastructure/talk-repository', () => ({
+  findTalkRows: vi.fn(),
 }));
 
-describe('talks', () => {
-  describe('getTalks', () => {
-    it('Talksの一覧を取得できる', async () => {
-      const mockMany = vi.fn().mockResolvedValue([
+describe('getTalks', () => {
+  describe('正常系', () => {
+    it('Talks の一覧を、記事の slug とタグつきで返す', async () => {
+      vi.mocked(findTalkRows).mockResolvedValue([
         {
           id: 1,
           title: 'Talk 1',
           eventUrl: 'https://example.com/event1',
           eventName: 'Event 1',
-          eventDate: new Date('2023-01-01'),
+          eventDate: '2023-01-01',
           eventLocation: 'Location 1',
           slideUrl: 'https://example.com/slide1',
           blogId: 1,
           blog: {
             id: 1,
             slug: 'blog1',
+            published: true,
+            createdAt: '2023-01-01T00:00:00.000Z',
           },
-          talkTag: [
-            {
-              tag: {
-                id: 1,
-                name: 'Tag 1',
-              },
-            },
-          ],
+          talkTag: [{ talkId: 1, tagId: 1, tag: { id: 1, name: 'Tag 1' } }],
         },
       ]);
-      vi.mocked(db.query.talks.findMany).mockImplementation(mockMany);
 
-      const tags = await getTalks();
+      const talks = await getTalks();
 
-      expect(tags).toHaveLength(1);
+      expect(talks).toStrictEqual([
+        {
+          id: 1,
+          title: 'Talk 1',
+          eventUrl: 'https://example.com/event1',
+          eventName: 'Event 1',
+          eventDate: '2023-01-01',
+          eventLocation: 'Location 1',
+          slideUrl: 'https://example.com/slide1',
+          blogId: 1,
+          blog: { id: 1, slug: 'blog1' },
+          tags: [{ id: 1, name: 'Tag 1' }],
+        },
+      ]);
     });
   });
 });

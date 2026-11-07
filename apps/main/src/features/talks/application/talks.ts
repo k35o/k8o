@@ -1,16 +1,7 @@
-import { db } from '@repo/database';
+import { findTalkRows } from '../infrastructure/talk-repository';
 
 export async function getTalks() {
-  const talks = await db.query.talks.findMany({
-    with: {
-      blog: true,
-      talkTag: {
-        with: {
-          tag: true,
-        },
-      },
-    },
-  });
+  const talks = await findTalkRows();
 
   return talks.map((talk) => ({
     id: talk.id,

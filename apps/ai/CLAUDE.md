@@ -4,7 +4,13 @@ AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.m
 
 ## レイヤー構成（src/）
 
-apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
+`app / features / shared` 構成。Server Actions（`'use server'`）は `features/*/interface` に置く。
+
+- `app/` - App Router のルーティングと UI。`page.tsx`・`layout.tsx`・`route.ts` などの entry を置き、UI コンポーネントは `app/**/_components`（route 専用なら route の下、複数の route で使うなら `app/_components`）。entry からは `features/*/interface` を読む
+- `features/<feature>/` - 機能ごとの UI 以外の処理。`interface` は `app` が読む関数、`application` はユースケースと整形（小さい読み取りはここでよい）、`infrastructure` は DB・外部 API などの外部接続。UI コンポーネントは置かない
+- `shared/` - アプリの中で横断して使う UI 以外の処理。UI コンポーネントや `cn` は置かない
+
+features は次のとおり。
 
 - `generation/` - エージェントの tool（`generate_ui`・`generate_slides`）の中で Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）を呼び、json-render の spec とスライドのデッキを作る部品（system prompt・ストリームの読み取り・受け取りの確かめ）と、spec から TSX への変換
 - `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事と k8o.me の運営のデータを読む tool、GitHub から k35o のリポジトリを読む tool、Claude API の中で web を検索して読む tool、UI とスライドを作って直す tool
@@ -54,6 +60,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 - 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、生成物のページと公開ページ
 - 文書全体に効く印刷の規則（`@page` と、body の直下の印刷用のスライド以外を印刷から外す規則）は、CSS Modules に置かない。ポータルの中の `<style>` に置き、印刷用のスライドを表示しているあいだだけ有効にする。Activity で隠れた画面に残ったポータルは、ほかの画面の印刷に効かない
 - 印刷用のスライドを描く画面の中で、デッキを `<Activity>` で隠さない。隠すと印刷の規則も切れ、印刷にスライドが出ない。タブなどで隠すときは CSS で隠す
+- 印刷用の全スライドは、画面のテーマの配色のまま刷る。@k8ordo/ui は印刷で `.dark` の色を light に戻すので、root に `print-as-shown` を付けて、それを含む `.dark`（`<html>`）の色を dark のまま残す。`print-as-shown` は文書全体の印刷の色を変えるので、印刷の規則と同じく、デッキが Activity で隠れているあいだは外す。背景は `print-color-adjust: exact` で刷る
 
 ## エージェント（/chat）
 

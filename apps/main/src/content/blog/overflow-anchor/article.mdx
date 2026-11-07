@@ -28,7 +28,7 @@ featureIds:
 
 補正が行われない条件もあります。スクロール位置が0のときは補正されないので、一番上を見ているときに上へ要素が追加されれば、追加された要素がそのまま見えます。また、アンカーノードからスクロールコンテナまでの経路にある要素で`top`や`margin`や`transform`や`position`の計算値が変わった場合も補正されません。その変更は意図的なレイアウト変更だとみなされ、補正が抑制されます。
 
-<PlaygroundEmbed demo="表示領域より上に要素を足したときの補正を見る" sectionId="overflow-anchor" />
+<PlaygroundEmbed demo="表示領域より上に要素を足したときの補正を見る" headingLevel="h4" sectionId="overflow-anchor" />
 
 ## 補正を外す場面
 
@@ -61,7 +61,7 @@ featureIds:
 
 要素が消えるだけなら、この指定は要りません。アンカーノードがDOMから外れるとブラウザが選び直すので、下の内容はその場に留まります。効くのは、要素が残ったまま高さだけ変わる場面です。
 
-<PlaygroundEmbed demo="高さが変わる要素を候補から外す" sectionId="overflow-anchor" />
+<PlaygroundEmbed demo="高さが変わる要素を候補から外す" headingLevel="h4" sectionId="overflow-anchor" />
 
 `overflow-anchor: none`の子孫でスクロールアンカリングを再度有効にする方法はありません。ただし子孫にあるスクロールコンテナは、自身のスクロールボックスについては再び候補を選び始めます。
 

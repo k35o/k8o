@@ -64,8 +64,8 @@ writeFileSync(
     2,
   )}\n`,
 );
-// Next.js は browserslist を Lightning CSS と SWC のターゲットに使う。画面に出すフロアと
-// 同じ版から作り、リポジトリ直下に置いて apps/* すべてに効かせる
+// ai の Next.js は browserslist を Lightning CSS と SWC のターゲットに使う。画面に出すフロアと
+// 同じ版から作り、リポジトリ直下に置く
 writeFileSync(
   join(import.meta.dirname, '../../../.browserslistrc'),
   renderBrowserslistrc(dataset.minVersions),

@@ -17,12 +17,12 @@
         "ALLOWED_EMAILS",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
+        "DEPLOY_TARGET",
         "GITHUB_CLIENT_ID",
         "GITHUB_CLIENT_SECRET",
         "GOOGLE_ANALYTICS_ID",
         "K8O_TURSO_AUTH_TOKEN",
         "K8O_TURSO_DATABASE_URL",
-        "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
         "VAPID_PUBLIC_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],

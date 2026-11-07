@@ -1,49 +1,18 @@
-import { cacheLife } from 'next/cache';
+import { notFound } from '@k8ordo/framework';
 
-import {
-  findSlideMetadata,
-  getSlide,
-  getSlideMetadata,
-} from '@/features/slides/application/slide';
 import { getSlides } from '@/features/slides/application/slides';
+import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
-export async function getSlideContents() {
-  'use cache';
-  cacheLife('max');
+export const getSlideContents = memoizeInBuild(getSlides);
 
-  const slides = await getSlides();
-  const contents = await Promise.all(
-    slides.map(async (slide) => {
-      const metadata = await findSlideMetadata(slide.slug);
-      if (metadata === null) return null;
-      return {
-        id: slide.id,
-        slug: slide.slug,
-        tags: slide.tags,
-        title: metadata.title,
-        description: metadata.description,
-        createdAt: metadata.createdAt,
-        updatedAt: metadata.updatedAt,
-      };
-    }),
-  );
-  return contents.filter((content) => content !== null);
-}
+// slug で行を引かず、一覧・フィード・paths と同じ 1 つの一覧から引く。公開していないデッキと MDX の無いデッキは見つからない
+export const findSlideContent = async (slug: string) =>
+  (await getSlideContents()).find((content) => content.slug === slug);
 
-export async function getSlideContent(slug: string) {
-  'use cache';
-  cacheLife('max');
-
-  const slide = await getSlide(slug);
-  const metadata = await getSlideMetadata(slug);
-
-  return {
-    id: slide.id,
-    slug: slide.slug,
-    tags: slide.tags,
-    title: metadata.title,
-    description: metadata.description,
-    createdAt: metadata.createdAt,
-    updatedAt: metadata.updatedAt,
-  };
-}
+export const getSlideContent = async (slug: string) => {
+  const slide = await findSlideContent(slug);
+  if (slide === undefined) {
+    notFound();
+  }
+  return slide;
+};

@@ -6,11 +6,12 @@ import { vrt } from 'storybook-addon-vrt/vitest-plugin';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  // tsconfig の jsx: preserve に従うと JSX が変換されず node 環境のテストが動かない
-  oxc: { jsx: { runtime: 'automatic' } },
   test: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@playgrounds': fileURLToPath(
+        new URL('./src/playgrounds', import.meta.url),
+      ),
     },
     coverage: {
       provider: 'v8',
@@ -18,42 +19,35 @@ export default defineConfig({
     },
     projects: [
       {
-        resolve: {
-          alias: {
-            'next/cache': fileURLToPath(
-              new URL('./src/mocks/next-cache.ts', import.meta.url),
-            ),
-          },
-        },
         test: {
-          env: {
-            TZ: 'UTC',
-          },
-          name: { label: 'features test', color: 'cyan' },
-          include: ['src/features/**/*.test.{ts,tsx}'],
+          name: { label: 'site test', color: 'cyan' },
+          include: ['src/site/**/*.test.ts'],
         },
       },
       {
         test: {
-          env: {
-            TZ: 'UTC',
-          },
+          env: { TZ: 'UTC' },
+          name: { label: 'features test', color: 'magenta' },
+          include: ['src/features/**/*.test.ts'],
+        },
+      },
+      {
+        test: {
           name: { label: 'shared test', color: 'green' },
           include: ['src/shared/**/*.test.{ts,tsx}'],
         },
       },
       {
         test: {
-          env: {
-            TZ: 'UTC',
-          },
-          name: { label: 'app test', color: 'yellow' },
-          include: ['src/app/**/*.test.{ts,tsx}', 'next.config.test.ts'],
+          name: { label: 'components test', color: 'white' },
+          // load-section の試験がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
+          server: { deps: { inline: ['@k8ordo/ui'] } },
+          include: ['src/components/**/*.test.{ts,tsx}'],
         },
       },
       {
         test: {
-          name: { label: 'playgrounds test', color: 'white' },
+          name: { label: 'playgrounds test', color: 'yellow' },
           include: ['src/playgrounds/**/*.test.ts'],
           // sections.ts がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
           server: { deps: { inline: ['@k8ordo/ui'] } },
@@ -61,11 +55,12 @@ export default defineConfig({
       },
       {
         test: {
-          name: { label: 'scripts test', color: 'blue' },
+          name: { label: 'scripts test', color: 'red' },
           include: ['scripts/**/*.test.ts'],
         },
       },
       {
+        extends: './.storybook/vite.config.ts',
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',
@@ -77,14 +72,10 @@ export default defineConfig({
           new URL('./.storybook/public', import.meta.url),
         ),
         test: {
-          name: { label: 'storybook', color: 'magenta' },
+          name: { label: 'storybook', color: 'blue' },
           browser: {
             enabled: true,
-            instances: [
-              {
-                browser: 'chromium',
-              },
-            ],
+            instances: [{ browser: 'chromium' }],
             provider: playwright({
               contextOptions: {
                 timezoneId: 'JST',

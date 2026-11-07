@@ -4,15 +4,14 @@ import {
   selectFeatureStatus,
   selectFeedFeatures,
 } from '@repo/helpers/baseline/select';
-import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import type { InferResponseType } from 'hono/client';
-import { cacheLife } from 'next/cache';
 
-import { getBrowserMinVersions as _getBrowserMinVersions } from '@/features/browser-support/application/min-versions';
 import { findRecentFeatureChanges } from '@/features/browser-support/infrastructure/browser-support-change-repository';
 import { findActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
-import type { ActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
 import type { publicApi } from '@/shared/api/public-api';
+import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
+
+export { getBrowserMinVersions } from '@/features/browser-support/application/min-versions';
 
 type BrowserSupportApi = (typeof publicApi)['public']['browser-support'];
 
@@ -31,55 +30,42 @@ export type BrowserSupportFeatureChange =
 export type BrowserAvailability = BrowserSupportFeature['support'][number];
 export type SupportStatus = BrowserSupportFeature['status'];
 
-// active データセットの共有ローダー。フィードと MDX の feature 解決が個別に DB を
-// 読まないよう、キャッシュ境界をここに一本化する
-async function getActiveDataset(): Promise<ActiveBaselineDataset | null> {
-  'use cache';
-  cacheLife('max');
+// 記事ごとに埋め込んだ機能を解決するたびに DB を読まないよう、データセットを1度だけ読む
+const getActiveDataset = memoizeInBuild(findActiveBaselineDataset);
 
-  return findActiveBaselineDataset();
-}
+// 「直近1週間」と limited の直近1年の基準の時刻も覚え、HTML とペイロードの2回の描画で
+// 同じ値にする
+export const getBrowserSupportSnapshot = memoizeInBuild(
+  async (): Promise<BrowserSupportSnapshot> => {
+    const nowMs = Date.now();
+    const [active, recentChanges] = await Promise.all([
+      getActiveDataset(),
+      findRecentFeatureChanges(
+        new Date(nowMs - RECENT_CHANGES_WINDOW_MS).toISOString(),
+        RECENT_CHANGES_LIMIT,
+      ),
+    ]);
+    if (active === null) {
+      return { meta: null, features: [], recentChanges, nowMs };
+    }
+    return {
+      meta: {
+        upstreamVersion: active.upstreamVersion,
+        ingestedAt: active.ingestedAt,
+      },
+      features: selectFeedFeatures(active.dataset, nowMs),
+      recentChanges,
+      nowMs,
+    };
+  },
+);
 
-export async function getBrowserSupportSnapshot(): Promise<BrowserSupportSnapshot> {
-  'use cache';
-  cacheLife('max');
-
-  // 「直近1週間」フィルタと limited の直近1年カットオフの基準時刻。component render では
-  // Date.now() を呼べないため、キャッシュ境界内で解決して一緒に返す
-  const nowMs = Date.now();
-  const [active, recentChanges] = await Promise.all([
-    getActiveDataset(),
-    findRecentFeatureChanges(
-      new Date(nowMs - RECENT_CHANGES_WINDOW_MS).toISOString(),
-      RECENT_CHANGES_LIMIT,
-    ),
-  ]);
-  if (active === null) {
-    return { meta: null, features: [], recentChanges, nowMs };
-  }
-  return {
-    meta: {
-      upstreamVersion: active.upstreamVersion,
-      ingestedAt: active.ingestedAt,
-    },
-    features: selectFeedFeatures(active.dataset, nowMs),
-    recentChanges,
-    nowMs,
-  };
-}
-
-export async function getFeatureStatus(
+export const getFeatureStatus = async (
   featureId: string,
-): Promise<BrowserSupportFeature | null> {
+): Promise<BrowserSupportFeature | null> => {
   const active = await getActiveDataset();
   if (active === null) {
     return null;
   }
   return selectFeatureStatus(active.dataset, featureId);
-}
-
-// フロアはコミット済み生成物(実行時 I/O ゼロ)。RootLayout が全ページの静的シェルで
-// 読むため、DB やキャッシュに依存させない。
-export function getBrowserMinVersions(): BrowserMinVersions {
-  return _getBrowserMinVersions();
-}
+};
