@@ -1,8 +1,6 @@
-import { createProxy } from '@/shared/auth/proxy';
+export { proxy } from '@/shared/auth/proxy';
 
-// 公開共有ページは非ログインでも見られる（認証を通さない）。
-export const proxy = createProxy(['/s/']);
-
+// config は Next が静的に読むので、re-export せずにこのファイルに書く
 export const config = {
   matcher: [
     {

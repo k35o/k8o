@@ -46,31 +46,25 @@ function withSecurityHeaders(response: NextResponse): NextResponse {
   return response;
 }
 
-// publicPathPrefixes は認証を通さず公開するパスの前方一致。/sign-in はリダイレクト
-// 先そのものなので常に公開する
-export const createProxy = (
-  publicPathPrefixes: readonly string[] = [],
-): ((request: NextRequest) => NextResponse) => {
-  const isPublicPath = (pathname: string): boolean =>
-    pathname === '/sign-in' ||
-    publicPathPrefixes.some((prefix) => pathname.startsWith(prefix));
+// /sign-in はリダイレクト先そのもの、/s/ は非ログインでも見られる公開ページ
+const isPublicPath = (pathname: string): boolean =>
+  pathname === '/sign-in' || pathname.startsWith('/s/');
 
-  return (request: NextRequest): NextResponse => {
-    if (!isAuthEnabled) {
-      return withSecurityHeaders(NextResponse.next());
-    }
-
-    if (isPublicPath(request.nextUrl.pathname)) {
-      return withSecurityHeaders(NextResponse.next());
-    }
-
-    const sessionCookie = getSessionCookie(request);
-    if (sessionCookie === null) {
-      return withSecurityHeaders(
-        NextResponse.redirect(new URL('/sign-in', request.url)),
-      );
-    }
-
+export const proxy = (request: NextRequest): NextResponse => {
+  if (!isAuthEnabled) {
     return withSecurityHeaders(NextResponse.next());
-  };
+  }
+
+  if (isPublicPath(request.nextUrl.pathname)) {
+    return withSecurityHeaders(NextResponse.next());
+  }
+
+  const sessionCookie = getSessionCookie(request);
+  if (sessionCookie === null) {
+    return withSecurityHeaders(
+      NextResponse.redirect(new URL('/sign-in', request.url)),
+    );
+  }
+
+  return withSecurityHeaders(NextResponse.next());
 };
