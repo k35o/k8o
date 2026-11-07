@@ -1,9 +1,9 @@
-import { verifySession } from '@repo/auth-shell/verify-session';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { loadThreadForRoute } from '@/features/agent/interface/queries';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { ChatScreen } from '../_components/chat-screen';
 import { ChatLoading } from '../_components/chat-skeleton';

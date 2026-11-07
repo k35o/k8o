@@ -1,4 +1,3 @@
-import { verifySession } from '@repo/auth-shell/verify-session';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -7,6 +6,7 @@ import {
   loadArtifactForRoute,
   versionFromParam,
 } from '@/features/artifacts/interface/queries';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { ArtifactScreen } from '../_components/artifact-screen';
 import { ArtifactSkeleton } from '../_components/artifact-skeleton';

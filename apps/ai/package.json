@@ -26,7 +26,6 @@
     "@k8ordo/i18n": "catalog:",
     "@k8ordo/ui": "catalog:",
     "@repo/ai-database": "workspace:*",
-    "@repo/auth-shell": "workspace:*",
     "@repo/code-highlight": "workspace:*",
     "@repo/helpers": "workspace:*",
     "ai": "catalog:",

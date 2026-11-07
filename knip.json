@@ -22,9 +22,6 @@
     },
     "packages/oxlint-plugin": {
       "ignore": ["tests/fixtures/**"]
-    },
-    "packages/auth-shell": {
-      "entry": ["better-css-modules.config.ts"]
     }
   }
 }

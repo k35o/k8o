@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { describe, expect, it, vi } from 'vitest';
 
-import { createProxy } from './proxy';
+import { proxy } from './proxy';
 
 const request = (pathname: string): NextRequest =>
   new NextRequest(`https://ai.k8o.me${pathname}`);
@@ -13,10 +13,10 @@ const signedInRequest = (pathname: string): NextRequest => {
   return signedIn;
 };
 
-describe('createProxy', () => {
+describe('proxy', () => {
   describe('正常系', () => {
     it('セッションcookieが無いと/sign-inへリダイレクトする', () => {
-      const response = createProxy()(request('/blogs'));
+      const response = proxy(request('/blogs'));
 
       expect(response.status).toBe(307);
       expect(response.headers.get('location')).toBe(
@@ -25,25 +25,21 @@ describe('createProxy', () => {
     });
 
     it('/sign-in自体は認証を通さない', () => {
-      expect(
-        createProxy()(request('/sign-in')).headers.get('location'),
-      ).toBeNull();
+      expect(proxy(request('/sign-in')).headers.get('location')).toBeNull();
     });
 
-    it('publicPathPrefixesに前方一致するパスは認証を通さない', () => {
-      const proxy = createProxy(['/s/']);
-
+    it('公開ページ（/s/）は認証を通さない', () => {
       expect(proxy(request('/s/abc')).headers.get('location')).toBeNull();
     });
 
     it('セッションcookieがあれば保護パスを通す', () => {
       expect(
-        createProxy()(signedInRequest('/blogs')).headers.get('location'),
+        proxy(signedInRequest('/blogs')).headers.get('location'),
       ).toBeNull();
     });
 
     it('セキュリティヘッダを常に付ける', () => {
-      const { headers } = createProxy()(request('/blogs'));
+      const { headers } = proxy(request('/blogs'));
 
       expect(headers.get('Content-Security-Policy')).toContain(
         "frame-ancestors 'none'",
@@ -53,9 +49,9 @@ describe('createProxy', () => {
     });
 
     it.each([
-      ['公開パス', createProxy(['/s/'])(request('/s/abc'))],
-      ['ログイン済み', createProxy()(signedInRequest('/blogs'))],
-      ['未ログインのリダイレクト', createProxy()(request('/blogs'))],
+      ['公開パス', proxy(request('/s/abc'))],
+      ['ログイン済み', proxy(signedInRequest('/blogs'))],
+      ['未ログインのリダイレクト', proxy(request('/blogs'))],
     ])(
       '%sの応答でも、画像は自分のオリジンと data:・blob: からだけ読む',
       (_, { headers }) => {
@@ -75,8 +71,8 @@ describe('createProxy', () => {
       vi.resetModules();
       vi.doMock('./auth-enabled', () => ({ isAuthEnabled: false }));
       try {
-        const { createProxy: createProxyWithoutAuth } = await import('./proxy');
-        const response = createProxyWithoutAuth()(request('/blogs'));
+        const { proxy: proxyWithoutAuth } = await import('./proxy');
+        const response = proxyWithoutAuth(request('/blogs'));
 
         expect(response.headers.get('location')).toBeNull();
         expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
@@ -88,15 +84,7 @@ describe('createProxy', () => {
   });
 
   describe('エッジケース', () => {
-    it('publicPathPrefixesを渡さないアプリでは他アプリの公開パスも保護する', () => {
-      expect(createProxy()(request('/s/abc')).headers.get('location')).toBe(
-        'https://ai.k8o.me/sign-in',
-      );
-    });
-
-    it('前方一致であって部分一致ではない', () => {
-      const proxy = createProxy(['/s/']);
-
+    it('公開ページは前方一致であって部分一致ではない', () => {
       expect(proxy(request('/blogs/s/abc')).headers.get('location')).toBe(
         'https://ai.k8o.me/sign-in',
       );

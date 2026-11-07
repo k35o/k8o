@@ -1,9 +1,10 @@
 import 'server-only';
 import { auth, isAllowedEmail } from '@repo/ai-database/auth';
-import { isAuthEnabled } from '@repo/auth-shell/auth-enabled';
+
+import { isAuthEnabled } from './auth-enabled';
 
 // 課金が発生する API route / server action の先頭で呼ぶゲート。
-// @repo/auth-shell の verifySession と異なり redirect せず、許可されない場合は null を返す
+// verifySession と異なり redirect せず、許可されない場合は null を返す
 // （呼び出し側で 401 を返すこと）。middleware は /api を守らないため、
 // LLM（Claude API）を叩く境界では必ずこのゲートを通す。
 export const requireAllowedSession = async (

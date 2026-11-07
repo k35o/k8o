@@ -1,8 +1,8 @@
-import { verifySession } from '@repo/auth-shell/verify-session';
 import { Suspense } from 'react';
 import type { ReactNode } from 'react';
 
 import { listArtifactsForRoute } from '@/features/artifacts/interface/queries';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { ArtifactListSlot } from '../../_components/artifact-list';
 import {

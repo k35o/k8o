@@ -1,6 +1,6 @@
 # @repo/ai-database CLAUDE.md
 
-ai（`apps/ai`）の DB。Better Auth の認証テーブル（user / session / account / verification）と `ai_*` を持つ。k8o の DB（`@repo/database`）とは Turso の DB も資格情報も別で、使うのは ai と `@repo/auth-shell` だけ。
+ai（`apps/ai`）の DB。Better Auth の認証テーブル（user / session / account / verification）と `ai_*` を持つ。k8o の DB（`@repo/database`）とは Turso の DB も資格情報も別で、使うのは ai だけ。
 
 ## 構成
 

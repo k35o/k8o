@@ -29,7 +29,6 @@ pnpm -F main exec svrt approve   # 変更を新しいベースラインとして
 apps/main/          → k8o.me（k8ordo の static）         → apps/main/CLAUDE.md
 apps/api/           → Hono の API（api.k8o.me）          → apps/api/CLAUDE.md
 apps/ai/            → AIツール群（ai.k8o.me）            → apps/ai/CLAUDE.md
-packages/auth-shell/→ aiの認証ゲートとアプリシェル      → packages/auth-shell/CLAUDE.md
 packages/database/  → k8o の DB（Drizzle ORM + Turso）  → packages/database/CLAUDE.md
 packages/ai-database/ → ai の DB（認証と ai_*）        → packages/ai-database/CLAUDE.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/CLAUDE.md
@@ -40,7 +39,7 @@ packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール�
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。
 
-DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。route と部品（ai の `app/`、main の `routes/`・`components/`）や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（`@repo/auth-shell` に乗らないアプリ固有の認可ゲート用。現状は ai の `require-allowed-session` が該当）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
+DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。route と部品（ai の `app/`、main の `routes/`・`components/`）や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（認証の実装の置き場で、セッションを確かめるゲートと Better Auth の route handler が Better Auth のインスタンスを読む）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
 
 ## コーディング規約
 
@@ -62,7 +61,7 @@ DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/a
 
 ## UI共通（apps/main・apps/ai）
 
-- スタイルは CSS Modules。コンポーネントの隣に `<name>.module.css`（Story の飾りは `<name>.stories.module.css`）を置き、`styles.root` のドット記法で参照する。型は `__generated__/` に生成される（`next typegen` / `better-css-modules generate`。auth-shell だけはスタイルシートの隣に出してコミットする）
+- スタイルは CSS Modules。コンポーネントの隣に `<name>.module.css`（Story の飾りは `<name>.stories.module.css`）を置き、`styles.root` のドット記法で参照する。型は `__generated__/` に生成される（`next typegen` / `better-css-modules generate`）
 - 値は @k8ordo/ui のトークンだけを使う（`color: var(--color-fg-base)` ○ / `color: #333` ×、`padding: calc(var(--spacing) * 4)` ○ / `padding: 16px` ×）。`better-css-modules check`（`pnpm run check:css`）が生の値・未使用クラス・`:global` などを機械的に弾く。無効化コメントは `/* better-css-modules-disable-next-line <rule> -- 理由 */` の形で理由を必須にする
 - 状態は `data-*` / `aria-*` 属性にして `&[data-active='true']` で書く。ダークは色トークン（必要なら `light-dark()`）で表し、変形など色以外だけ `:root[class~='dark'] &`（`.dark &` は CSS Modules がローカル化するので効かない）。縦書きは `@container style(--writing: vertical)`。ブレークポイントは `@media (width >= 40rem)`（sm）/ `48rem` / `64rem` / `80rem`
 - @k8ordo/ui のドキュメントは各appの `node_modules/@k8ordo/ui/docs/` を参照

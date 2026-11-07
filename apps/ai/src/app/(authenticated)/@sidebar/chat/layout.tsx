@@ -1,8 +1,8 @@
-import { verifySession } from '@repo/auth-shell/verify-session';
 import { Suspense } from 'react';
 import type { ReactNode } from 'react';
 
 import { listThreadsForRoute } from '@/features/agent/interface/queries';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import {
   SidebarListSkeleton,

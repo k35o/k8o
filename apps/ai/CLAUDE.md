@@ -24,7 +24,7 @@ features は次のとおり。
 
 ## 文言のロケール
 
-@k8ordo/ui の組み込み文言（閉じる・必須・コピーしましたなど）は `@k8ordo/i18n` のロケール集合で決まり、集合が無い環境では英語になる。集合は `src/i18n.ts` の1か所で定義し、サーバーの描画（`app/layout.tsx`・`global-error.tsx`）とブラウザ（`_providers/app.tsx`）の両方から副作用 import する。`@repo/auth-shell` の部品もこの集合に乗る。
+@k8ordo/ui の組み込み文言（閉じる・必須・コピーしましたなど）は `@k8ordo/i18n` のロケール集合で決まり、集合が無い環境では英語になる。集合は `src/i18n.ts` の1か所で定義し、サーバーの描画（`app/layout.tsx`・`global-error.tsx`）とブラウザ（`_providers/app.tsx`）の両方から副作用 import する。
 
 ## 生成 UI（json-render）
 
@@ -33,7 +33,7 @@ features は次のとおり。
 
 - system prompt は `catalog.prompt({ mode: 'inline', ... })`（`build-spec-system-prompt.ts`）。
   inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム
-- 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承し、auth-shell の CSP も効く
+- 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承し、proxy の CSP も効く
   - CSP の img-src は自分のオリジンと data:・blob: だけなので、Avatar の src が外の URL なら読み込めない。ブラウザで描き始めたとき（ペインを開く・画面を移る）は頭文字になる。サーバーで描いた最初の画面（`/chat/<threadId>`・`/artifacts/<artifactId>`・`/s/<slug>` を直接開くか再読み込みしたとき）は、ハイドレーションより前に読み込みが失敗して onError が届かず、壊れた画像の印が残った丸になる
   - 生成 UI のリンクとフォームでは、公開ページを含むどの面でも移動しない。`SpecPreview` が、リンクの左クリック（修飾キーつきと Enter を含む）と中クリック、フォームの送信の既定の動きを止める。止める処理は React のハンドラで、ハイドレーションより前には動かないので、サーバーで描いた画面（`/s/<slug>` を開いたときなど）では、ハイドレーションが終わるまで根を inert にして、押すこともフォーカスすることもできなくする。リンクの URL に載せた中身は押した人から外へ送られ、公開ページでは中身に利害の無い閲覧者が押すため。持ち主の面でも、画面ごと移動すると会話の受信が切れ、生成物のページでも見ていた版から離れる。右クリックや長押しのメニューとドラッグでは開ける
 - 同じ文書の画面より狭い枠に描くので、ビューポートのメディアクエリでは並べ方が変わらない。そのため system prompt の規則で、描く枠の幅（280〜960px ほど）を伝え、横に並べるときは Grid の `cols: 'auto-fit'` と `minItemSize` を使うよう求める。依頼に列の数があっても固定の cols にしない
@@ -179,11 +179,14 @@ GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code
 
 ## 認証 & コスト保護
 
-Better Auth + GitHub OAuth（`@repo/ai-database/auth`）。**本人のみ**利用可（`ALLOWED_EMAILS`）。
+Better Auth + GitHub OAuth（`@repo/ai-database/auth`）。**本人のみ**利用可（`ALLOWED_EMAILS`）。認証の実装は `shared/auth/`、サインインの画面は `app/(public)/sign-in/` にある。
 
-LLM（Claude API）は課金が発生するため、**課金が発生する全 API route / server action の先頭で `shared/auth/require-allowed-session.ts` を呼び、未許可は弾く（API route は 401 を返し、server action は null・空配列・false などを返す）**こと（`src/proxy.ts` は matcher で `/api` を外しているため必須の防御層）。
+防御層は次のとおり。
 
-認証の実装は `@repo/auth-shell`（`packages/auth-shell/CLAUDE.md`）にある。認証まわりを直すときはそちらを直し、ai 側にコピーを作らない。認証の有効/無効は `@repo/auth-shell/auth-enabled` に集約。Vercel preview は認証OFF（= preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する）。
+- `shared/auth/proxy.ts`（`src/proxy.ts` が re-export する）… CSP などのセキュリティヘッダを常に付ける。`/sign-in` と `/s/` の前方一致は公開し、それ以外はセッションの cookie が無ければ `/sign-in` へ redirect する。見るのは cookie の有無だけ。**middleware は `/api` を守らない**（`src/proxy.ts` の matcher で外している）
+- `shared/auth/verify-session.ts` … Server Component 用。未ログイン・許可外は `/sign-in` へ redirect する。許可リストはサインアップのときにしか評価されず、`ALLOWED_EMAILS` から外しても既存のセッションは失効しないため、毎回 `isAllowedEmail` を評価し直して失効のずれを塞ぐ
+- `shared/auth/require-allowed-session.ts` … API route と server action 用。redirect せず、許可されなければ null を返す。LLM（Claude API）は課金が発生するため、**課金が発生する全 API route / server action の先頭で呼び、未許可は弾く（API route は 401 を返し、server action は null・空配列・false などを返す）**こと（middleware が `/api` を守らないため必須の防御層）
+- `shared/auth/auth-enabled.ts` … 認証の有効/無効の一元管理。Vercel preview と `LOCAL_AUTH_BYPASS`（NODE_ENV=development のときのみ）で OFF になる。preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する
 
 ローカル開発URLは `https://ai.k8o.localhost/`。`LOCAL_AUTH_BYPASS=true`（`.env.local`, NODE_ENV=development のときのみ）でログインを省略できる。
 
