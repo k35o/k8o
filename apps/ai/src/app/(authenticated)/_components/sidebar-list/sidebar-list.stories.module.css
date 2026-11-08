@@ -1,0 +1,9 @@
+.frame {
+  width: calc(var(--spacing) * 60);
+  background-color: var(--color-bg-subtle);
+}
+
+.scroller {
+  height: calc(var(--spacing) * 60);
+  overflow-y: auto;
+}
