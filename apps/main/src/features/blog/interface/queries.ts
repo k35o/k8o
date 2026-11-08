@@ -6,11 +6,10 @@ import {
   selectRelatedBlogs,
 } from '@/features/blog/application/blogs';
 import { buildFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
+import { getMarkdown } from '@/features/blog/application/markdown';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
 import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
-
-import { getMarkdown } from './markdown';
 
 // 一覧・詳細・関連記事・paths はどれもこの 1 つの一覧から引く。公開していない記事と MDX の無い記事は見つからない
 const getBlogs = memoizeInBuild(_getBlogs);

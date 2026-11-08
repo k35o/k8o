@@ -4,8 +4,8 @@ import type { PublishedBlog } from '@repo/api/build-data';
 import { describe, expect, it, vi } from 'vitest';
 
 import { findBlogMetadata } from '@/features/blog/application/blog';
+import { getMarkdown } from '@/features/blog/application/markdown';
 
-import { getMarkdown } from './markdown';
 import {
   findBlogContent,
   findBlogMarkdown,
@@ -23,7 +23,9 @@ vi.mock('@/features/blog/application/blog', () => ({
 vi.mock('@/features/blog/application/og-code', () => ({
   getBlogOgCode: vi.fn(),
 }));
-vi.mock('./markdown', () => ({ getMarkdown: vi.fn() }));
+vi.mock('@/features/blog/application/markdown', () => ({
+  getMarkdown: vi.fn(),
+}));
 
 const CSS = { id: 3, name: 'CSS' };
 const BASELINE = { id: 5, name: 'Baseline' };
