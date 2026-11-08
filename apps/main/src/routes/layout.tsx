@@ -21,6 +21,9 @@ import styles from '../components/site/root-layout.module.css';
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   const gaId = process.env['GOOGLE_ANALYTICS_ID'];
+  // どのページも描く ASCII の Latin の face だけを preload する。日本語の字は unicode-range で 100 本余りの
+  // face に分かれ、ページごとに要る face が違う。preload が無いと、初めての訪問では CSS を読んでから
+  // フォントを取りに行き、差し替えで layout-shift が出る。
   // <link rel="preload"> を描くと、React がその要素とは別に同じ preload を head に書き、
   // 2 本になる。@font-face のフォントは CORS で読むので、crossOrigin が無いと別の要求になる
   preload(mPlus2LatinUrl, {
