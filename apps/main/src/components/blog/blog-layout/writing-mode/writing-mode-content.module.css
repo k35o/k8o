@@ -7,4 +7,16 @@
   overscroll-behavior-x: contain;
   border-radius: var(--radius-xl);
   background-color: color-mix(in oklab, var(--color-bg-base) 90%, transparent);
+
+  /* 縦書きで、インラインコード（横倒しのラン）の直後の文字だけが約5px右にずれて描画される（Chromium の
+     縦書きにおける後続ランの基線ずれ）。コードをアトミックなインラインにするとランが分離され、後続
+     テキストが行本来の基線に戻る */
+  /* better-css-modules-disable-next-line pure/subject -- Code の要素は自分が書かない */
+  & :not(pre) > code {
+    display: inline-block;
+    /* inline-block 自身の行ボックスで列（行）が太らないよう詰める */
+    line-height: var(--line-height-none);
+    /* 段落の字下げ(indent-em)を継承してピル先頭に空白が入るのを防ぐ */
+    text-indent: 0;
+  }
 }
