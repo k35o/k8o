@@ -35,7 +35,7 @@ describe('judgeDatabaseImport', () => {
     test('ai の shared/auth からは @repo/ai-database/auth を import できる', () => {
       expect(
         judgeDatabaseImport(
-          file('apps/ai/src/shared/auth/require-allowed-session.ts'),
+          file('apps/ai/src/shared/auth/allowed-session.ts'),
           '@repo/ai-database/auth',
         ),
       ).toBe('allowed');
@@ -114,7 +114,7 @@ describe('judgeDatabaseImport', () => {
     test('shared/auth でも auth 以外のサブパスは禁止', () => {
       expect(
         judgeDatabaseImport(
-          file('apps/ai/src/shared/auth/require-allowed-session.ts'),
+          file('apps/ai/src/shared/auth/allowed-session.ts'),
           '@repo/ai-database',
         ),
       ).toBe('authSubpathOnly');
@@ -126,7 +126,7 @@ describe('judgeDatabaseImport', () => {
       ).toBe('authSubpathOnly');
       expect(
         judgeDatabaseImport(
-          file('apps/ai/src/shared/auth/require-allowed-session.ts'),
+          file('apps/ai/src/shared/auth/allowed-session.ts'),
           '@repo/database',
         ),
       ).toBe('authSubpathOnly');
