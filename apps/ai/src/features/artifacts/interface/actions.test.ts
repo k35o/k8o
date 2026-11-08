@@ -63,9 +63,9 @@ describe('publishArtifactVersionAction', () => {
     it('未許可の利用者なら、公開せず描き直さずに null を返す', async () => {
       vi.mocked(getAllowedSession).mockResolvedValue(null);
 
-      await expect(publishArtifactVersionAction(ARTIFACT_ID, 2)).resolves.toBe(
-        null,
-      );
+      await expect(
+        publishArtifactVersionAction(ARTIFACT_ID, 2),
+      ).resolves.toBeNull();
       expect(publishVersion).not.toHaveBeenCalled();
       expect(refresh).not.toHaveBeenCalled();
     });

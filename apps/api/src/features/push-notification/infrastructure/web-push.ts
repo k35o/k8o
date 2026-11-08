@@ -126,7 +126,7 @@ export async function sendWebPush(
     localKeyPair.publicKey,
   );
   if (!(localPublicKeyExport instanceof ArrayBuffer)) {
-    throw new Error('Expected ArrayBuffer');
+    throw new TypeError('Expected ArrayBuffer');
   }
   const localPublicKey = new Uint8Array(localPublicKeyExport);
 
