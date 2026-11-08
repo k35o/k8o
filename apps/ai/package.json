@@ -20,7 +20,7 @@
     "@ai-sdk/anthropic": "catalog:",
     "@ai-sdk/react": "4.0.163",
     "@json-render/core": "0.21.4",
-    "@json-render/react": "0.21.1",
+    "@json-render/react": "0.21.4",
     "@k8ordo/i18n": "catalog:",
     "@k8ordo/ui": "catalog:",
     "@repo/ai-database": "workspace:*",
