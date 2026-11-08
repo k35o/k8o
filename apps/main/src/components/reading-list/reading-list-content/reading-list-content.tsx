@@ -21,6 +21,7 @@ import {
   readingListState,
   readSourceIds,
 } from '../search-params/search-params';
+import { filterReadings } from './filter-readings';
 
 import styles from './reading-list-content.module.css';
 
@@ -112,24 +113,10 @@ export const ReadingListContent: FC<{
     [update],
   );
 
-  const filteredArticles = useMemo(() => {
-    const lowerQuery = query.toLowerCase();
-    const filtered = articles.filter((article) => {
-      if (lowerQuery && !article.title.toLowerCase().includes(lowerQuery)) {
-        return false;
-      }
-      if (sourceIds.length > 0 && !sourceIds.includes(article.source.id)) {
-        return false;
-      }
-      return true;
-    });
-
-    return [...filtered].toSorted((a, b) => {
-      const diff =
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-      return sortOrder === 'oldest' ? -diff : diff;
-    });
-  }, [articles, query, sourceIds, sortOrder]);
+  const filteredArticles = useMemo(
+    () => filterReadings(articles, { query, sourceIds, sortOrder }),
+    [articles, query, sourceIds, sortOrder],
+  );
 
   const shownCount = useShownCount(filteredArticles.length);
   const shownArticles = filteredArticles.slice(0, shownCount);
