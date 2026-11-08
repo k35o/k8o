@@ -34,11 +34,6 @@ jobs:
       - name: Run ls-lint
         run: pnpm run ls-lint
 
-      # oxlint の type-aware ルールは、route の型（ai の Next・main の k8ordo）と CSS Modules の型を読む。
-      # 無いと Route を string、styles のクラスを string | undefined とみなして誤検出するので、check の前に書く
-      - name: Generate route and CSS Modules types
-        run: pnpm run typegen
-
       - name: Run check
         run: pnpm run check
 

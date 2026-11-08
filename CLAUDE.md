@@ -8,9 +8,9 @@ k8oは個人ポートフォリオサイト。k8ordo の static（main）、Next.
 pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動）
 pnpm run dev --filter=main    # main と、main が読む api・ローカルDBだけ起動（--filter=@repo/api なら api とローカルDB）
 pnpm run build
-pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
+pnpm run check                # 型の生成 + Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
 pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）
-pnpm run typegen              # route と CSS Modules の型を書く（check の前に要る。type-check は turbo が先に流す）
+pnpm run typegen              # route と CSS Modules の型を書く（lint の type-aware ルールが読む。check と type-check は先に流す）
 pnpm run type-check
 pnpm run ls-lint              # ファイル名規約チェック
 pnpm run test                                             # 全テスト

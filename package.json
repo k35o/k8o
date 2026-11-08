@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "portless proxy start --https && turbo run dev",
     "build": "turbo run build",
-    "check": "vp check && turbo run check:css",
-    "check:write": "vp check --fix",
+    "check": "turbo run typegen && vp check && turbo run check:css",
+    "check:write": "turbo run typegen && vp check --fix",
     "ls-lint": "ls-lint",
     "typegen": "turbo run typegen",
     "type-check": "turbo run type-check",
