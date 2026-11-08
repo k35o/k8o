@@ -134,6 +134,6 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 ## 型
 
-`.k8ordo/` の route の表と型は `vite build`・`vite dev`・`k8ordo generate` が書く（git に入れない）。`k8ordo generate` は DB も `paths` も読まずに書くだけなので、type-check の script は先にこれを流し、CI は check の前にも流す（static の断りは見ないので、それはビルドで分かる）。
+`.k8ordo/` の route の表と型は `vite build`・`vite dev`・`k8ordo generate` が書く（git に入れない）。`k8ordo generate` は DB も `paths` も読まずに書くだけなので、`typegen` の script で流す（static の断りは見ないので、それはビルドで分かる）。type-check は turbo が先に `typegen` を流し、CI は check の前にも流す。
 
-llms.txt が Playground のセクションを読むので、type-check はデモの TSX も通る。CSS Modules の型（記事とデモのものを含む）は、type-check の `better-css-modules generate` が `__generated__` に書き、`tsconfig.json` の `rootDirs` で読む。型が無いと styles のクラスが `string | undefined` になり、type-aware の lint が誤って落とすので、CI は check の前にも書く。React と DOM の型の補いは `src/react.d.ts`・`src/dom.d.ts` に置く。
+llms.txt が Playground のセクションを読むので、type-check はデモの TSX も通る。CSS Modules の型（記事とデモのものを含む）は、`typegen` の `better-css-modules generate` が `__generated__` に書き、`tsconfig.json` の `rootDirs` で読む。型が無いと styles のクラスが `string | undefined` になり、type-aware の lint が誤って落とすので、check の前にも `typegen` を流す。React と DOM の型の補いは `src/react.d.ts`・`src/dom.d.ts` に置く。

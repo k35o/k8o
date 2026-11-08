@@ -31,9 +31,12 @@
     "transit": {
       "dependsOn": ["^transit"]
     },
+    "typegen": {
+      "cache": false
+    },
     "type-check": {
-      "dependsOn": ["transit"],
-      "outputs": ["tsconfig.tsbuildinfo", "__generated__/**"]
+      "dependsOn": ["transit", "typegen"],
+      "outputs": ["tsconfig.tsbuildinfo"]
     },
     "test": {
       "dependsOn": ["transit"],

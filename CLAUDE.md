@@ -9,6 +9,7 @@ pnpm run dev                  # 開発（ローカルDB含む全パッケージ�
 pnpm run build
 pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
 pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）
+pnpm run typegen              # route と CSS Modules の型を書く（check の前に要る。type-check は turbo が先に流す）
 pnpm run type-check
 pnpm run ls-lint              # ファイル名規約チェック
 pnpm run test                                             # 全テスト
