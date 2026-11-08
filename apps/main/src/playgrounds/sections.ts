@@ -100,8 +100,3 @@ export const playgroundSections: PlaygroundSection[] = [
   toggleEventSourceSection,
   viewTransitionsSection,
 ];
-
-export const getPlaygroundSection = (
-  id: string,
-): PlaygroundSection | undefined =>
-  playgroundSections.find((section) => section.id === id);

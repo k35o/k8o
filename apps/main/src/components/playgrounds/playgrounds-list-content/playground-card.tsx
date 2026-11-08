@@ -8,8 +8,7 @@ import styles from './playground-card.module.css';
 
 export const PlaygroundCard: FC<{
   playground: PlaygroundSummary;
-  headingType?: 'h3' | 'h4';
-}> = ({ playground, headingType = 'h3' }) => (
+}> = ({ playground }) => (
   <Card variant="shadow" interactive>
     {/* oxlint-disable-next-line jsx-a11y/control-has-associated-label -- リンクの名前は中の Playground の題などの文字が持つ。規則は子を浅くしかたどらず、そこまで届かない */}
     <a
@@ -17,7 +16,7 @@ export const PlaygroundCard: FC<{
       href={href('/playgrounds/:id', { id: playground.id })}
     >
       <div className={styles.body}>
-        <Heading lineClamp={2} level={headingType}>
+        <Heading lineClamp={2} level="h3">
           {playground.title}
         </Heading>
         <p className={styles.description}>{playground.description}</p>

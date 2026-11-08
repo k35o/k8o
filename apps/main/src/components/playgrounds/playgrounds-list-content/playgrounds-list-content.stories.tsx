@@ -1,6 +1,5 @@
+import { UIProvider } from '@k8ordo/ui';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
-
-import { AppProvider } from '@/components/site/app-provider';
 
 import preview from '../../../../.storybook/preview';
 import {
@@ -153,9 +152,9 @@ export const ReplayTypedBeforeHydration = meta.story({
   play: async ({ canvasElement }) => {
     const { host, dispose } = hydrateAfterTyping(
       canvasElement,
-      <AppProvider>
+      <UIProvider>
         <PlaygroundsListContent playgrounds={playgrounds} />
-      </AppProvider>,
+      </UIProvider>,
       'css',
     );
     try {

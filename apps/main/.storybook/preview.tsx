@@ -1,6 +1,7 @@
 import { ColorSchemeProvider, colorSchemeState } from '@k8ordo/color-scheme';
 import type { ColorScheme } from '@k8ordo/color-scheme';
 import { resetStateRegistry } from '@k8ordo/state';
+import { UIProvider } from '@k8ordo/ui';
 import addonA11y from '@storybook/addon-a11y';
 // root entry ('@storybook/addon-docs') は 'mdx/types' への module augmentation で
 // @types/mdx の JSX 参照を React の JSX.Element に差し替える。augmentation を持たない
@@ -12,7 +13,6 @@ import { setupWorker } from 'msw/browser';
 import addonDeterminism from 'storybook-addon-determinism';
 import addonMockDate from 'storybook-addon-mock-date';
 
-import { AppProvider } from '../src/components/site/app-provider';
 import { Background } from '../src/components/site/global-layout/background/background';
 import { handlers } from '../src/mocks/handlers';
 import { resetLiveSnapshots } from '../src/shared/api/live-snapshot';
@@ -84,7 +84,7 @@ export default definePreview({
   },
 
   decorators: [
-    function WithAppProvider(Story, { globals, parameters }) {
+    function WithUIProvider(Story, { globals, parameters }) {
       const theme = (parameters['theme'] ??
         globals['theme'] ??
         'light') as ColorScheme;
@@ -92,12 +92,12 @@ export default definePreview({
       return (
         // 何も保存していないときは defaultPreference のテーマで描く
         <ColorSchemeProvider defaultPreference={theme}>
-          <AppProvider>
+          <UIProvider>
             <div className="story-canvas">
               <Background />
               <Story />
             </div>
-          </AppProvider>
+          </UIProvider>
         </ColorSchemeProvider>
       );
     },
