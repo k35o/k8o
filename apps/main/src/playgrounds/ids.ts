@@ -17,6 +17,7 @@ export const playgroundIds = [
   'crisp-edges',
   'details-content',
   'event-timing',
+  'ext-texture-norm16',
   'field-sizing',
   'font-family-math',
   'highlight',
