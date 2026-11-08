@@ -71,7 +71,6 @@
     "msw-storybook-addon": "3.0.3",
     "oxc-transform-react": "catalog:",
     "playwright": "1.64.1",
-    "react-scan": "0.5.7",
     "sharp": "0.35.5",
     "storybook": "catalog:",
     "storybook-addon-determinism": "catalog:",

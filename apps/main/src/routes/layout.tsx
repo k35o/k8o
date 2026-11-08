@@ -10,7 +10,6 @@ import { preload } from 'react-dom';
 import { WritingModeProvider } from '@/components/blog/blog-layout/writing-mode/writing-mode-context';
 import { GlobalLayout } from '@/components/site/global-layout/global-layout';
 import { OfflineNotice } from '@/components/site/offline-notice/offline-notice';
-import { ReactScan } from '@/components/site/react-scan/react-scan';
 import { RootErrorBoundary } from '@/components/site/root-error-boundary/root-error-boundary';
 import { ServiceWorkerRegister } from '@/components/site/service-worker-register/service-worker-register';
 import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
@@ -79,7 +78,6 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             </UIProvider>
           </ColorSchemeProvider>
           <ServiceWorkerRegister />
-          {import.meta.env.DEV && <ReactScan />}
         </RootErrorBoundary>
         {/* /_vercel/speed-insights/script.js は Vercel だけが配るので、vite dev では読まない */}
         {import.meta.env.PROD && (

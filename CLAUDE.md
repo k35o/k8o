@@ -6,6 +6,7 @@ k8oは個人ポートフォリオサイト。k8ordo の static（main）、Next.
 
 ```bash
 pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動）
+pnpm run dev --filter=main    # main と、main が読む api・ローカルDBだけ起動（--filter=@repo/api なら api とローカルDB）
 pnpm run build
 pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
 pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）

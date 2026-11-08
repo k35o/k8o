@@ -86,10 +86,6 @@ jobs:
           echo "$AFFECTED" | grep -q '"name": "main"' && apps+=(main)
           echo "$AFFECTED" | grep -q '"name": "@repo/api"' && apps+=(api)
           echo "$AFFECTED" | grep -q '"name": "@repo/ai"' && apps+=(ai)
-          # vercel.json は turbo のパッケージ入力に含まれないため個別に拾う
-          echo "$CHANGED" | grep -q '^apps/main/vercel\.json$' && apps+=(main)
-          echo "$CHANGED" | grep -q '^apps/api/vercel\.json$' && apps+=(api)
-          echo "$CHANGED" | grep -q '^apps/ai/vercel\.json$' && apps+=(ai)
 
           if [ "${#apps[@]}" -eq 0 ]; then
             echo 'apps=[]' >> "$GITHUB_OUTPUT"

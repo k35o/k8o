@@ -66,4 +66,4 @@ pnpm -F @repo/api type-check
 pnpm -F @repo/api build        # vp pack で dist/index.mjs に束ねる
 ```
 
-ローカルでは `pnpm run dev` で main・ai と一緒に起動する（portless の `api.k8o`。worktree ではブランチ名が前に付く）。`src/dev.ts` を tsx と `@hono/node-server` で動かし、環境変数は `apps/api/.env.local` から読む（`.env.example` を写す。DB はローカルの turso）。`src/dev.ts` は Vercel が入口として探す名前（app・index・server）にしない。デプロイは `.github/workflows/vercel-prebuilt.yml`（matrix の `api`）が行う。Vercel に設定する環境変数は `.env.example` にある。
+ローカルでは `pnpm run dev` で main・ai と一緒に起動する（portless の `api.k8o`。worktree ではブランチ名が前に付く）。`--filter=main` か `--filter=@repo/api` で絞っても、api とローカルの DB は一緒に立つ（各 app の `turbo.json` の `with`）。`src/dev.ts` を tsx と `@hono/node-server` で動かし、環境変数は `apps/api/.env.local` から読む（`.env.example` を写す。DB はローカルの turso）。`src/dev.ts` は Vercel が入口として探す名前（app・index・server）にしない。デプロイは `.github/workflows/vercel-prebuilt.yml`（matrix の `api`）が行う。Vercel に設定する環境変数は `.env.example` にある。
