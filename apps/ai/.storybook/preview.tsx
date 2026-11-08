@@ -6,15 +6,12 @@ import Script from 'next/script';
 import { memo, useEffect } from 'react';
 import type { FC } from 'react';
 import addonDeterminism from 'storybook-addon-determinism';
-import { sb } from 'storybook/test';
 
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
 import '../src/app/_styles/globals.css';
 import './preview.css';
-
-sb.mock(import('@repo/ai-database'));
 
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   function ApplyThemeByStorybook({ theme }) {
