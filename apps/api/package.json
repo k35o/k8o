@@ -24,19 +24,19 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "catalog:",
-    "@modelcontextprotocol/server": "2.3.1",
+    "@modelcontextprotocol/server": "2.4.0",
     "@mozilla/readability": "0.6.0",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "ai": "catalog:",
     "hono": "catalog:",
-    "linkedom": "0.18.14",
+    "linkedom": "0.18.15",
     "rss-parser": "3.13.0",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@hono/node-server": "2.1.5",
-    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/client": "2.4.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "26.6.6",
     "@vitest/coverage-v8": "catalog:",
