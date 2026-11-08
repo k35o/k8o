@@ -2,5 +2,6 @@
 # 通らない。ルートの workspace に入れず、trustPolicy を課さない専用の workspace の lockfile で固定する
 allowBuilds:
   esbuild: false
+  koffi: false
 
 minimumReleaseAge: 10080
