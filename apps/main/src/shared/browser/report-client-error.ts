@@ -7,7 +7,9 @@ const MAX_STACK_LENGTH = 4096;
 
 type ClientError = Error & { digest?: string };
 
-export const reportClientError = (clientError: ClientError): void => {
+export const reportClientError = (error: unknown): void => {
+  const clientError: ClientError =
+    error instanceof Error ? error : new Error(String(error));
   const report = {
     type: 'client-error',
     age: 0,

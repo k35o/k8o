@@ -9,7 +9,7 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC, ReactNode } from 'react';
 
-import { SilentErrorBoundary } from '@/components/site/error-boundary/silent-error-boundary';
+import { ErrorBoundary } from '@/components/site/error-boundary/error-boundary';
 import type {
   getBlogContent,
   getBlogsByTags,
@@ -106,25 +106,25 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
           </article>
         </WritingModeContent>
         <div className={styles.footer} id={END_OF_CONTENT_ID}>
-          <SilentErrorBoundary>
+          <ErrorBoundary>
             <section className={styles.feedback}>
               <Feedback slug={slug} />
             </section>
-          </SilentErrorBoundary>
-          <SilentErrorBoundary>
+          </ErrorBoundary>
+          <ErrorBoundary>
             <Recommend blogs={recommendedBlogs} />
-          </SilentErrorBoundary>
+          </ErrorBoundary>
         </div>
       </div>
-      <SilentErrorBoundary>
+      <ErrorBoundary>
         <TableOfContentsSideRail
           className={styles.sideRail}
           headingTree={headingTree}
         />
-      </SilentErrorBoundary>
-      <SilentErrorBoundary>
+      </ErrorBoundary>
+      <ErrorBoundary>
         <TableOfContents headingTree={headingTree} />
-      </SilentErrorBoundary>
+      </ErrorBoundary>
     </div>
   </ArticleFrame>
 );

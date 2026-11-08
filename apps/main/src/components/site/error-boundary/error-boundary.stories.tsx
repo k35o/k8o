@@ -4,7 +4,7 @@ import type { ComponentProps, FC, ReactNode } from 'react';
 import { expect } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
-import { SilentErrorBoundary } from './silent-error-boundary';
+import { ErrorBoundary } from './error-boundary';
 
 let failing = true;
 
@@ -35,18 +35,18 @@ const Navigation: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const meta = preview.meta({
-  title: 'app/globals/silent-error-boundary',
-  component: SilentErrorBoundary,
+  title: 'app/globals/error-boundary',
+  component: ErrorBoundary,
   // children は render で描くので、args の型を満たすためだけに置く
   args: { children: null } satisfies Partial<
-    ComponentProps<typeof SilentErrorBoundary>
+    ComponentProps<typeof ErrorBoundary>
   >,
   render: () => (
     <Navigation>
       <p>記事の本文</p>
-      <SilentErrorBoundary>
+      <ErrorBoundary>
         <Recommend />
-      </SilentErrorBoundary>
+      </ErrorBoundary>
     </Navigation>
   ),
   beforeEach: () => {

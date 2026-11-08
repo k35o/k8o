@@ -4,7 +4,12 @@ import { NavigationGeneration } from '@k8ordo/router';
 import { Component, use } from 'react';
 import type { FC, ReactNode } from 'react';
 
-type Props = { children: ReactNode };
+type Props = {
+  children: ReactNode;
+  // 失敗したときに出すもの。渡さなければ失敗した部品だけを消し、ページの残りは描き続ける
+  fallback?: (reset: () => void) => ReactNode;
+  onError?: (error: unknown) => void;
+};
 
 type CatchProps = Props & { generation: number };
 
@@ -29,12 +34,22 @@ class Catch extends Component<CatchProps, State> {
     return { failed: false, generation: props.generation };
   }
 
+  override componentDidCatch(error: unknown): void {
+    this.props.onError?.(error);
+  }
+
   override render(): ReactNode {
-    return this.state.failed ? null : this.props.children;
+    if (!this.state.failed) {
+      return this.props.children;
+    }
+    return (
+      this.props.fallback?.(() => {
+        this.setState({ failed: false });
+      }) ?? null
+    );
   }
 }
 
-// 失敗した部品だけを消し、ページの残りは描き続ける
-export const SilentErrorBoundary: FC<Props> = ({ children }) => (
-  <Catch generation={use(NavigationGeneration)}>{children}</Catch>
+export const ErrorBoundary: FC<Props> = (props) => (
+  <Catch generation={use(NavigationGeneration)} {...props} />
 );
