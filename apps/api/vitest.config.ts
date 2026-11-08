@@ -7,9 +7,5 @@ export default defineConfig({
     },
     name: { label: 'features test', color: 'cyan' },
     include: ['src/**/*.test.ts'],
-    coverage: {
-      provider: 'v8',
-      changed: true,
-    },
   },
 });

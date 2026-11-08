@@ -15,8 +15,6 @@
     "test": "vitest run",
     "test:vrt": "VRT=1 vitest run --project=storybook",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui --coverage",
-    "coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "check:css": "better-css-modules check"
@@ -64,8 +62,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/browser-playwright": "catalog:",
-    "@vitest/coverage-v8": "catalog:",
-    "@vitest/ui": "catalog:",
     "chromatic": "catalog:",
     "msw": "3.0.3",
     "msw-storybook-addon": "3.0.3",

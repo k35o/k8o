@@ -10,14 +10,11 @@
     "check": "vp check && turbo run check:css",
     "check:write": "vp check --fix",
     "ls-lint": "ls-lint",
-    "inspect": "vp-inspect",
     "typegen": "turbo run typegen",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "storybook": "turbo run storybook",
-    "turbo:devtools": "turbo devtools",
-    "install-playwright": "playwright install --with-deps chromium",
     "knip": "knip",
     "check:css": "turbo run check:css"
   },
@@ -32,7 +29,6 @@
     "turbo": "2.11.10",
     "typescript": "7.0.2",
     "vite-plus": "1.4.0",
-    "vite-plus-inspector": "1.0.0",
     "wrangler": "catalog:"
   },
   "engines": {

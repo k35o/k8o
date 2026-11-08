@@ -125,8 +125,6 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui --coverage",
-    "coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -134,8 +132,6 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@vitest/coverage-v8": "catalog:",
-    "@vitest/ui": "catalog:",
     "vitest": "catalog:"
   }
 }

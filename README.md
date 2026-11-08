@@ -35,7 +35,7 @@ fnox exec -P main -- pnpm run -F @repo/database migrate
 - DB を起動した `pnpm dev` を止めると DB も止まる。別 worktree の dev が使っていて落ちた時などは、気づいた人が `pnpm dev` か下記で立ち上げ直す
 
 ```bash
-pnpm -F @repo/database db:serve    # 単発で turso を起動（停止は Ctrl-C）
+pnpm -F @repo/database dev        # 単発で turso を起動（停止は Ctrl-C）
 pnpm -F @repo/database db:status   # 稼働状況の確認
 ```
 
