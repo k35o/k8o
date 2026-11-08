@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Button, Card, Drawer, SubscribeIcon } from '@k8ordo/ui';
+import { Button, Card, Drawer, EmptyState, SubscribeIcon } from '@k8ordo/ui';
 import {
   startTransition,
   useCallback,
@@ -184,15 +184,11 @@ export const ReadingListContent: FC<{
           </div>
         </div>
         {filteredArticles.length === 0 ? (
-          <div className={styles.empty}>
-            <div className={styles.emptyIcon}>
-              <SubscribeIcon size="lg" />
-            </div>
-            <p className={styles.emptyTitle}>条件に一致する記事がありません</p>
-            <p className={styles.emptyText}>
-              検索条件やソースの選択を変更してみてください
-            </p>
-          </div>
+          <EmptyState
+            description="検索条件やソースの選択を変更してみてください"
+            icon={<SubscribeIcon size="lg" />}
+            title="条件に一致する記事がありません"
+          />
         ) : (
           <div className={styles.list}>
             {shownArticles.map((article) => (

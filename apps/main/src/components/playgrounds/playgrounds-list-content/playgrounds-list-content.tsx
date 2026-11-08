@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { FlaskIcon, Heading, TextField } from '@k8ordo/ui';
+import { EmptyState, FlaskIcon, Heading, TextField } from '@k8ordo/ui';
 import {
   playgroundCategories,
   playgroundCategoryLabels,
@@ -68,15 +68,11 @@ export const PlaygroundsListContent: FC<Props> = ({ playgrounds }) => {
         </p>
       </div>
       {filteredCount === 0 ? (
-        <div className={styles.empty}>
-          <div className={styles.emptyIcon}>
-            <FlaskIcon size="lg" />
-          </div>
-          <p className={styles.emptyTitle}>
-            条件に一致するPlaygroundがありません
-          </p>
-          <p className={styles.emptyText}>検索条件を変更してみてください</p>
-        </div>
+        <EmptyState
+          description="検索条件を変更してみてください"
+          icon={<FlaskIcon size="lg" />}
+          title="条件に一致するPlaygroundがありません"
+        />
       ) : (
         <div className={styles.groups}>
           {categoryGroups.map((group) => (
