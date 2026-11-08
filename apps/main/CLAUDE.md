@@ -37,7 +37,6 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
 - ヘッダーのお問い合わせ（`components/site/contact-to-me`）は、`HeaderActions` が Suspense で包まずに描くので、HTML のヘッダーにボタンと閉じた dialog が出る。JS なしでもボタンは出て、押しても dialog は開かない（テーマのボタンと同じ）
-- dev だけで動かす部品（`components/site/react-scan`）は、部品の中で `import.meta.env.DEV` を見て、依存を動的に import する。描く側で `import.meta.env.DEV &&` としても、部品のモジュールは client のバンドルに入り、それが静的に読む依存の読み込みの処理も本番で走る
 
 ## 記事の MDX
 
