@@ -2,8 +2,8 @@ name: Knip Report
 
 on:
   schedule:
-    # 毎週月曜 9:00 JST (UTC 0:00)
-    - cron: '0 0 * * 1'
+    # 毎週月曜 9:41 JST。毎時 0 分は GitHub に遅らされるので外す
+    - cron: '41 0 * * 1'
   workflow_dispatch:
 
 permissions:

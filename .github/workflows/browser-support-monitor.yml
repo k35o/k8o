@@ -6,8 +6,8 @@ name: Browser Support Monitor
 # 上流バージョンは health の自己申告ではなく、ここで独立に取得して突き合わせる。
 on:
   schedule:
-    # api の同期 cron (06:00 UTC) の後に検査する
-    - cron: '0 9 * * *'
+    # api の同期 cron (06:00 UTC) の後に検査する。毎時 0 分は GitHub に遅らされるので外す
+    - cron: '37 9 * * *'
   workflow_dispatch:
     inputs:
       force:
