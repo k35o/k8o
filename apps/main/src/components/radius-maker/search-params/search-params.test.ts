@@ -147,19 +147,23 @@ describe('radiusMakerState の URL の読み', () => {
       expect(readHeight(input)).toBe(expected);
     });
 
+    it.each(['100.7', '100.2', '12abc'])(
+      '整数にならない w=%j は既定の 192 になる',
+      (input) => {
+        expect(readWidth(input)).toBe(192);
+      },
+    );
+
     it.each([
-      ['100.7', 100],
-      ['100.2', 100],
-      ['12abc', 80],
-      ['1e2', 80],
+      ['1e2', 100],
       ['0x100', 256],
       [' 100', 100],
-    ])('w=%j は parseInt で読める分の %d と読む', (input, expected) => {
+    ])('w=%j は整数として %d と読む', (input, expected) => {
       expect(readWidth(input)).toBe(expected);
     });
 
-    it('h も小数は切り捨てて読む', () => {
-      expect(readHeight('100.7')).toBe(100);
+    it('h も整数にならなければ既定の 192 になる', () => {
+      expect(readHeight('100.7')).toBe(192);
     });
 
     it.each([
