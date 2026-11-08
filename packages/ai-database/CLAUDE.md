@@ -15,7 +15,7 @@ ai（`apps/ai`）の DB。Better Auth の認証テーブル（user / session / a
 pnpm run -F @repo/ai-database generate  # スキーマの変更からマイグレーションを作る（コミットする）
 ```
 
-本番（Turso の `ai`）には `.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。preview（`ai-preview`）には、ai の deploy ジョブがビルドの前に流す。ローカル用の DB は用意していない。
+本番（Turso の `ai`）には `.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。preview（`ai-preview`）には、ai の deploy ジョブがビルドの前に流す。migrate とビルドの接続情報は、GitHub の Environment（本番は production、preview は preview）の secrets から渡す。Vercel の ai には、実行時に読む分を置く。ローカル用の DB は用意していない。
 
 ほかのブランチとマイグレーションの番号が衝突したら、番号を手で付け替えず、generate で作り直す。付け替えると `_journal.json` の `when` が古いまま残り、migrate がエラーを出さずにそのマイグレーションを飛ばす（CI が落とす）。
 

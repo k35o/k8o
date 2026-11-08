@@ -13,9 +13,9 @@ Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供す�
 
 ## 接続
 
-`K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。Vercel では、preview の URL とトークンを Shared Environment Variables に置いて main と api に紐づけ、本番の URL とトークンは api にだけ置く。main は実行時に DB を読まず、本番のビルドの接続情報は GitHub Actions が渡すため。DB は Turso の default グループにあり、`turso db tokens invalidate` は使えない。失効は `turso group tokens invalidate default` で、ai の DB のトークンもまとめて失効する（starter はグループが1つ）。
+`K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。Vercel には、実行時に DB を読む api の分（本番と preview の URL とトークン）だけを置く。main は実行時に DB を読まない。DB は Turso の default グループにあり、`turso db tokens invalidate` は使えない。失効は `turso group tokens invalidate default` で、ai の DB のトークンもまとめて失効する（starter はグループが1つ）。
 
-本番のビルドには、`.github/workflows/vercel-prebuilt.yml` が production Environment の secrets から、アプリがビルドで読む DB の分だけ接続情報を渡す。main には読み取り専用の `K8O_TURSO_READONLY_AUTH_TOKEN` を `K8O_TURSO_AUTH_TOKEN` として渡す。api はビルドで DB を読まないので、何も渡さない。
+ビルドと migrate には、`.github/workflows/vercel-prebuilt.yml` が GitHub の Environment（本番は production、preview は preview）の secrets から接続情報を渡す。ビルドにはアプリがビルドで読む DB の分だけを渡し、本番の main には読み取り専用の `K8O_TURSO_READONLY_AUTH_TOKEN` を `K8O_TURSO_AUTH_TOKEN` として渡す。api はビルドで DB を読まないので、何も渡さない。
 
 ## マイグレーション
 
