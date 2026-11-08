@@ -20,14 +20,12 @@
   },
   "scripts": {
     "dev": "node scripts/local-db.ts serve",
-    "db:serve": "node scripts/local-db.ts serve",
     "db:status": "node scripts/local-db.ts status",
     "type-check": "tsc --noEmit",
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio",
-    "export:schema": "drizzle-kit export > ./schema.sql",
     "build:erd": "node scripts/erd.ts"
   },
   "dependencies": {

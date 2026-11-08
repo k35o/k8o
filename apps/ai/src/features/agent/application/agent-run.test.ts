@@ -56,6 +56,7 @@ describe('endOfFinish', () => {
       ['content-filter', 'refused'],
       ['length', 'length'],
       ['error', 'failed'],
+      ['interrupted', 'failed'],
       ['other', 'failed'],
     ])('finishReason が %s なら %s', (finishReason, end) => {
       expect(endOfFinish(finishReason, false)).toBe(end);

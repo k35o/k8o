@@ -2,8 +2,8 @@ name: Knip Report
 
 on:
   schedule:
-    # 毎週月曜 9:00 JST (UTC 0:00)
-    - cron: '0 0 * * 1'
+    # 毎週月曜 9:41 JST。毎時 0 分は GitHub に遅らされるので外す
+    - cron: '41 0 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -16,13 +16,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: $/.github/actions/setup
       - name: Run knip report
-        uses: k35o/patrol-board@8d514149157cc5f38eb53b66cb19061f7422ffd6 # v0.0.3
+        uses: k35o/patrol-board@v0.0.3
         with:
           script: './.github/scripts/knip-report.sh'
           issue-title: 'Knip 定期レポート'

@@ -16,14 +16,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: $/.github/actions/setup
 
       - name: Cache turbo
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache@v6.1.0
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
@@ -33,11 +33,6 @@ jobs:
 
       - name: Run ls-lint
         run: pnpm run ls-lint
-
-      # oxlint の type-aware ルールは、route の型（ai の Next・main の k8ordo）と CSS Modules の型を読む。
-      # 無いと Route を string、styles のクラスを string | undefined とみなして誤検出するので、check の前に書く
-      - name: Generate route and CSS Modules types
-        run: pnpm run typegen
 
       - name: Run check
         run: pnpm run check
@@ -85,14 +80,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: $/.github/actions/setup
 
       - name: Cache turbo
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache@v6.1.0
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
@@ -113,14 +108,14 @@ jobs:
       options: --user 1001 --ipc=host
     steps:
       - name: Checkout branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: $/.github/actions/setup
 
       - name: Cache turbo
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache@v6.1.0
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}

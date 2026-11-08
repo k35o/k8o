@@ -276,7 +276,7 @@ export const KeyboardNav = meta.story({
     // キーで操作すると、ブラウザ既定の枠ではなくデザインシステムのリングを内側に出す。
     const deck = document.activeElement;
     if (!(deck instanceof HTMLElement)) {
-      throw new Error('デッキにフォーカスがありません');
+      throw new TypeError('デッキにフォーカスがありません');
     }
     await expect(getComputedStyle(deck).outlineStyle).toBe('none');
     await expect(getComputedStyle(deck).boxShadow).toContain('inset');

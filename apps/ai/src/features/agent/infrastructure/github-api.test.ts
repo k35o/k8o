@@ -26,7 +26,7 @@ const fetchMock = vi.fn<typeof fetch>();
 const requestedUrl = (call = 0): string => {
   const input = fetchMock.mock.calls[call]?.[0];
   if (!(input instanceof URL)) {
-    throw new Error('fetch が URL で呼ばれていません');
+    throw new TypeError('fetch が URL で呼ばれていません');
   }
   return input.href;
 };

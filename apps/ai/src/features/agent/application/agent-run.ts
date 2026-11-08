@@ -41,6 +41,7 @@ export const endOfFinish = (
     case 'length':
       return 'length';
     case 'error':
+    case 'interrupted':
     case 'other':
       return 'failed';
   }

@@ -13,10 +13,6 @@ export default defineConfig({
         new URL('./src/playgrounds', import.meta.url),
       ),
     },
-    coverage: {
-      provider: 'v8',
-      changed: true,
-    },
     projects: [
       {
         test: {

@@ -46,7 +46,6 @@ pnpm run -F @repo/database generate
 pnpm run -F @repo/database generate:custom
 pnpm run -F @repo/database migrate
 pnpm run -F @repo/database studio
-pnpm run -F @repo/database export:schema
 pnpm run -F @repo/database build:erd
 ```
 
