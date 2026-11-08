@@ -4,10 +4,10 @@ import type { FC, ReactNode } from 'react';
 
 import styles from './tool-nav.module.css';
 
-export type StudioTool = 'chat' | 'artifacts';
+export type Tool = 'chat' | 'artifacts';
 
 const TOOLS: Array<{
-  tool: StudioTool;
+  tool: Tool;
   href: '/chat' | '/artifacts';
   label: string;
   icon: ReactNode;
@@ -27,7 +27,7 @@ const TOOLS: Array<{
 ];
 
 type ToolNavProps = {
-  current: StudioTool | null;
+  current: Tool | null;
   onNavigate?: (() => void) | undefined;
 };
 

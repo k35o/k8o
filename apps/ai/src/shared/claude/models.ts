@@ -1,4 +1,4 @@
-// 生成モデル ID の単一ソース。zod enum・store の型・provider の引数型がここから派生する
+// 生成モデル ID の単一ソース。zod の enum・型・画面の選択肢がここから派生する
 export const GENERATION_MODELS = [
   'claude-sonnet-5-5',
   'claude-opus-5-5',

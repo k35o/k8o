@@ -5,7 +5,6 @@
   white-space: normal;
 }
 
-/* 以前の text-base はテーマに無く効いていなかったので、見出しは太字だけで本文の大きさを継ぐ */
 .heading {
   font-weight: var(--font-weight-bold);
 }

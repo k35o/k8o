@@ -4,8 +4,7 @@ import styles from './md-parts.module.css';
 
 type Props = { children?: ReactNode };
 
-// apps/main の slides の mdx-parts を移植したもの。cqi 単位でスライドの
-// コンテナサイズに追従する（通常のテキストスケールは使わない）。
+// cqi 単位でスライドのコンテナサイズに追従する（通常のテキストスケールは使わない）。
 export const H1: FC<Props> = ({ children }) => (
   <h1 className={styles.h1}>{children}</h1>
 );

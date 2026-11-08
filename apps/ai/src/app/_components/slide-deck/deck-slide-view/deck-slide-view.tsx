@@ -87,7 +87,6 @@ const extractCodeBlock = (
   return { code: code.replace(/\n$/u, ''), lang };
 };
 
-// ハイライト済みのコードブロック。ブログ/main のスライドと同じ暗色サーフェスで描画する。
 const HighlightedPre: FC<{ highlighted: HighlightedCode }> = ({
   highlighted,
 }) => (
