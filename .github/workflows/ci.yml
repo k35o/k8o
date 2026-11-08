@@ -84,12 +84,6 @@ jobs:
   test-node:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # main の smoke-pages の試験も Chromium を開く。
-    # --with-deps の apt は mirror が遅いと数分かかるので、OS の
-    # ライブラリまで入ったイメージで走らせる。
-    container:
-      image: mcr.microsoft.com/playwright:v1.64.1-resolute
-      options: --user 1001 --ipc=host
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

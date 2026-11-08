@@ -17,7 +17,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
   - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
 - **playgrounds/** - Playground のデモ（`playgrounds/<id>/`）と、セクションの一覧 `sections.ts`、id だけの一覧 `ids.ts`（セクションを足したら `ids.ts` にも足す。食い違いは `ids.test.ts` が落とす）、枠の `playground.tsx`
   - `next`・`next/**`・`next-themes`・`@/` を import しない（ルートの `vite.config.ts` の lint が止める）。リンクは素の `a`、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `public/playgrounds/` に置き、URL で読む。サイトの `public` に既にある画像（`/icon.png`）は写さずにその URL を読む
-- **scripts/**（パッケージの直下）- `pnpm run -F main <名前>` で流す道具。`generate:browser-min-versions`・`generate:link-card-metadata`・`optimize:image` と、2 つのサイトの全 URL を比べる `compare:sites`、ページを開いて落ちないかを見る `smoke:pages`
+- **scripts/**（パッケージの直下）- `pnpm run -F main <名前>` で流す道具。`generate:browser-min-versions`・`generate:link-card-metadata`・`optimize:image`
 
 記事のページは記事の MDX を alias の `@content`（`src/content`）から import し、markdown・frontmatter・目次のように MDX を文字列で読むところは `shared/site/content-dir.ts` の根から読む。デモは alias の `@playgrounds`（`src/playgrounds`）から読む。
 
@@ -114,7 +114,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 ## テストと Storybook
 
-- Vitest の project は site・features・shared・components（部品の単体テスト）・playgrounds・scripts と storybook
+- Vitest の project は site・features・shared・components（部品の単体テスト）・playgrounds と storybook
 - Storybook は `@storybook/react-vite`（`pnpm -F main storybook`、port 6006）。Storybook MCP は `main-storybook-mcp`（props の確かめ方はルートの CLAUDE.md の「UI共通」）。Storybook と vitest の storybook の project は `.storybook/vite.config.ts` を読み、アプリの `vite.config.ts`（framework()・vercel()）は読まない
 - features を読むサーバーの部品（`BlogLayout`・`BrowserSupportStatus`）は、描く部分（`BlogLayoutContent`・`BrowserSupportStatusLive`）を別の部品にし、story は描く部分を描く。features は `node:fs` などを読むので、Storybook のブラウザでは読めない
 - テーマは toolbar か `parameters.theme` で決め、`ColorSchemeProvider` の `defaultPreference` に渡す。Story ごとに localStorage のテーマと `@k8ordo/state` の状態を消す
