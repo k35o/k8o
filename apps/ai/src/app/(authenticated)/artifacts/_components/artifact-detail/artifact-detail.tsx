@@ -6,6 +6,7 @@ import { useState } from 'react';
 import type { FC } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
+import { PrintButton } from '@/app/_components/print-button';
 import type { ArtifactForRoute } from '@/features/artifacts/interface/queries';
 
 import {
@@ -74,18 +75,7 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
             />
           </div>
           {view === 'preview' ? null : <CopyCodeButton code={code} />}
-          {selected.kind === 'slides' ? (
-            <Button
-              color="base"
-              onClick={() => {
-                window.print();
-              }}
-              size="sm"
-              variant="outline"
-            >
-              PDF出力
-            </Button>
-          ) : null}
+          {selected.kind === 'slides' ? <PrintButton /> : null}
           <Button
             color="base"
             renderItem={({ className, children }) => (

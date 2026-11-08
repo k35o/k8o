@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { PrintButton } from '@/app/_components/print-button';
 import { SpecPreview } from '@/app/_components/spec-preview';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
 import type { PublicShare } from '@/features/share/interface/queries';
 
-import { PrintButton } from './_components/print-button';
 import { SharedDeck } from './_components/shared-deck';
 
 import styles from './page.module.css';
