@@ -36,6 +36,7 @@ export const playgroundIds = [
   'root-font-units',
   'scope',
   'screen-wake-lock',
+  'scroll-driven-animations',
   'scrollbar-color',
   'scrollend',
   'shape-function',

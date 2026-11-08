@@ -34,6 +34,7 @@ import { revertRuleSection } from './revert-rule';
 import { rootFontUnitsSection } from './root-font-units';
 import { scopeSection } from './scope';
 import { screenWakeLockSection } from './screen-wake-lock';
+import { scrollDrivenAnimationsSection } from './scroll-driven-animations';
 import { scrollbarColorSection } from './scrollbar-color';
 import { scrollendSection } from './scrollend';
 import { shapeFunctionSection } from './shape-function';
@@ -82,6 +83,7 @@ export const playgroundSections: PlaygroundSection[] = [
   rootFontUnitsSection,
   scopeSection,
   screenWakeLockSection,
+  scrollDrivenAnimationsSection,
   scrollbarColorSection,
   scrollendSection,
   sharedWorkerSection,

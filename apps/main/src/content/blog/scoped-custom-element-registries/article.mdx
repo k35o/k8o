@@ -1,0 +1,128 @@
+---
+title: 'Scoped custom element registriesで同じ名前のカスタム要素を共存させる'
+description: 'Scoped custom element registriesは、グローバルなcustomElementsとは別にカスタム要素のレジストリを作り、シャドウルートに結びつける仕組みです。Safari 26とChrome 146に続いてFirefox 159が対応し、Baseline 2026に加わりました。レジストリの結びつけ方、要素のレジストリが決まるタイミング、宣言的Shadow DOMでの使い方を整理します。'
+createdAt: 2026-11-07
+updatedAt: 2026-11-07
+featureIds:
+  - scoped-custom-element-registries
+---
+
+# Scoped custom element registriesで同じ名前のカスタム要素を共存させる
+
+<BrowserSupportStatus featureId="scoped-custom-element-registries" />
+
+## はじめに
+
+別々のライブラリが同じタグ名のカスタム要素を使っていたり、同じデザインシステムの新旧の版が1つのページに同居したりすると、後から読み込んだほうの`define()`が失敗します。カスタム要素のレジストリはページ全体で`window.customElements`の1つしかなく、同じ名前を2回は定義できないからです。
+
+```js
+customElements.define('x-badge', BadgeV1);
+customElements.define('x-badge', BadgeV2); // NotSupportedError
+```
+
+Scoped custom element registriesは、グローバルなレジストリとは別の`CustomElementRegistry`を作り、シャドウルートに結びつける仕組みです。複数のライブラリが互いに調整しなくても共存できるように設計されています。Safari 26とChrome 146に続いてFirefox 159が対応し、Baseline 2026に加わりました。
+
+## レジストリを作ってシャドウルートに結びつける
+
+レジストリは`new CustomElementRegistry()`で作ります。`define()`・`get()`・`getName()`・`whenDefined()`・`upgrade()`は`customElements`と同じように使えます。作ったレジストリを`attachShadow()`の`customElementRegistry`オプションに渡すと、そのシャドウルートに結びつきます。
+
+次の例では、ページ全体の`x-badge`は`BadgeV1`のまま、`scoped-panel`の中の`x-badge`だけを`BadgeV2`にしています。
+
+```js
+// [!og]
+// ページ全体の x-badge は BadgeV1
+customElements.define('x-badge', BadgeV1);
+
+// scoped-panel の中の x-badge は BadgeV2
+const registry = new CustomElementRegistry();
+registry.define('x-badge', BadgeV2);
+
+class ScopedPanel extends HTMLElement {
+  constructor() {
+    super();
+    const root = this.attachShadow({
+      mode: 'open',
+      // このシャドウルートの中の要素は、定義を registry からだけ探す
+      customElementRegistry: registry,
+    });
+    root.innerHTML = '<x-badge></x-badge>';
+  }
+}
+
+customElements.define('scoped-panel', ScopedPanel);
+```
+
+ページに2つの要素を書くと、それぞれ別の定義になります。
+
+```html
+<x-badge></x-badge> <!-- BadgeV1 -->
+<scoped-panel></scoped-panel> <!-- 中の x-badge は BadgeV2 -->
+```
+
+`scoped-panel`のシャドウルートの中の要素は、定義を`registry`からだけ探し、`customElements`は見ません。そのため、中の`x-badge`は`BadgeV2`になり、ページの`BadgeV1`とは衝突しません。逆に`registry`に無い名前は、`customElements`に定義があっても未定義のまま残ります。シャドウルートの中を`innerHTML`や`setHTMLUnsafe()`で書いたときも、パーサーはこのレジストリで要素を作ります。
+
+オプションを省くと、シャドウルートはこれまでどおりグローバルなレジストリ（`customElements`）に結びつきます。結びついたレジストリは、`shadowRoot.customElementRegistry`や`element.customElementRegistry`で確かめられます。
+
+## 要素のレジストリは作るときに決まる
+
+`document.createElement('x-badge')`で作った要素を、レジストリを結びつけたシャドウルートに追加しても、そのレジストリの定義ではupgradeされません。要素がどのレジストリに属するかは要素を作るときに決まり、`createElement()`はオプションが無ければグローバルなレジストリの要素を作るからです。`customElements`に同じ名前の定義があれば、そちらの定義でupgradeされます。シャドウルートのレジストリに属する要素を作るには、`customElementRegistry`オプションにレジストリを渡します。
+
+```js
+const plain = document.createElement('x-badge');
+root.append(plain); // グローバルなレジストリの要素のままで、BadgeV1 になる
+
+const scoped = document.createElement('x-badge', {
+  customElementRegistry: registry,
+});
+root.append(scoped); // BadgeV2 になる
+```
+
+`<template>`から複製するときも同じです。HTMLに書いた`<template>`の中身の要素は、レジストリを持ちません。`template.content.cloneNode(true)`で複製してシャドウルートに追加すると、追加した時点でグローバルなレジストリが割り当てられます。`document.importNode()`の`customElementRegistry`オプションを使えば、レジストリを持たない要素に指定したレジストリを付けて複製できます。
+
+```js
+// 追加した時点で customElements が割り当てられる
+root.append(template.content.cloneNode(true));
+
+// レジストリを持たない要素に registry が付く
+root.append(
+  document.importNode(template.content, { customElementRegistry: registry }),
+);
+```
+
+## 宣言的Shadow DOMで使う
+
+宣言的Shadow DOMでHTMLに書いたシャドウルートは、グローバルなレジストリに結びつきます。自分で作ったレジストリを使うには、`<template>`に`shadowrootcustomelementregistry`属性を足します。属性があると、シャドウルートのレジストリは`null`のままになり、中の要素もupgradeされません。
+
+```html
+<div id="panel">
+  <template shadowrootmode="open" shadowrootcustomelementregistry>
+    <x-badge></x-badge>
+  </template>
+</div>
+```
+
+レジストリを作って定義を登録するところは、`attachShadow()`のときと同じくスクリプトで書きます。HTMLではレジストリを指定できないので、作ったレジストリの`initialize()`にシャドウルートを渡して結びつけます。シャドウルートと、レジストリが`null`の子孫にそのレジストリが設定され、定義のある要素がupgradeされます。
+
+```js
+const registry = new CustomElementRegistry();
+registry.define('x-badge', BadgeV2);
+
+const panel = document.querySelector('#panel');
+// シャドウルートと中の x-badge に registry が設定され、x-badge は BadgeV2 になる
+registry.initialize(panel.shadowRoot);
+```
+
+ほかのAPIはレジストリを受け取る側にオプションがあるのに、ここだけレジストリの側のメソッドです。宣言的Shadow DOMのシャドウルートはパーサーが作るので、作る時点ではスクリプトのレジストリを渡せません。そこで、`shadowrootcustomelementregistry`属性でシャドウルートのレジストリを`null`のまま作っておき、あとからレジストリの`initialize()`で`null`のところを埋めます。シャドウルートの`customElementRegistry`に代入する形も[仕様の議論](https://github.com/whatwg/html/issues/10854#issuecomment-2542583401)で挙がりましたが、1回しか代入できないプロパティは珍しい振る舞いだとして採られませんでした。
+
+`initialize()`が埋めるのは、レジストリが`null`のノードだけです。そのため、同じシャドウルートに2つのレジストリで`initialize()`を呼ぶと、先に呼んだほうが残ります。
+
+```js
+registryA.initialize(panel.shadowRoot); // registryA が設定される
+registryB.initialize(panel.shadowRoot); // 何もしない。registryA のまま
+```
+
+後から呼んだほうは何もせず、例外も出ません。属性を付け忘れてグローバルなレジストリに結びついたシャドウルートを渡したときも同じです。思ったレジストリになっているかは、`shadowRoot.customElementRegistry`を読んで確かめます。
+
+## おわりに
+
+Scoped custom element registriesを使うと、シャドウルートごとにレジストリを分け、同じ名前のカスタム要素を1つのページで共存させられます。要素のレジストリは作るときに決まるので、スクリプトで要素を足すときは`createElement()`や`importNode()`にレジストリを渡します。宣言的Shadow DOMでは、`shadowrootcustomelementregistry`属性でレジストリを空けておき、あとから`initialize()`で結びつけます。

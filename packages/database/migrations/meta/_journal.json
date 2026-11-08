@@ -617,6 +617,20 @@
       "when": 1793843732597,
       "tag": "0087_talks_usereducer_slide_url",
       "breakpoints": true
+    },
+    {
+      "idx": 88,
+      "version": "6",
+      "when": 1793942183510,
+      "tag": "0088_open_kate_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 89,
+      "version": "6",
+      "when": 1794038074426,
+      "tag": "0089_dazzling_ender_wiggin",
+      "breakpoints": true
     }
   ]
 }
