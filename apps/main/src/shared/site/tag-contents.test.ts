@@ -1,7 +1,9 @@
+import type { Talk } from '@repo/api/build-data';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTag, getTags } from '@/features/tags/interface/queries';
+import { getTalks } from '@/features/talks/interface/queries';
 
 import { getTagContent, getTagSummaries } from './tag-contents';
 
@@ -11,6 +13,9 @@ vi.mock('@/features/blog/interface/queries', () => ({
 vi.mock('@/features/tags/interface/queries', () => ({
   getTag: vi.fn(),
   getTags: vi.fn(),
+}));
+vi.mock('@/features/talks/interface/queries', () => ({
+  getTalks: vi.fn(),
 }));
 
 type BlogContent = Awaited<ReturnType<typeof getBlogContents>>[number];
@@ -26,19 +31,36 @@ const blog = (id: number, title: string): BlogContent => ({
   readingTime: 3,
 });
 
-describe('getTagSummaries', () => {
-  beforeEach(() => {
-    vi.mocked(getBlogContents).mockResolvedValue([
-      blog(1, '記事1'),
-      blog(2, '記事2'),
-    ]);
-  });
+const talk = (id: number, title: string): Talk => ({
+  id,
+  title,
+  eventUrl: 'https://example.com/event',
+  eventName: 'イベント',
+  eventDate: '2026-01-01',
+  eventLocation: null,
+  slideUrl: 'https://example.com/slide.pdf',
+  blogId: 1,
+  blog: { id: 1, slug: 'blog-1' },
+  tags: [],
+});
 
+beforeEach(() => {
+  vi.mocked(getBlogContents).mockResolvedValue([
+    blog(1, '記事1'),
+    blog(2, '記事2'),
+  ]);
+  vi.mocked(getTalks).mockResolvedValue([
+    talk(3, 'トーク3'),
+    talk(4, 'トーク4'),
+  ]);
+});
+
+describe('getTagSummaries', () => {
   describe('正常系', () => {
     it('タグごとに、MDXのある公開済みの記事の数とトークの数を返すべき', async () => {
       vi.mocked(getTags).mockResolvedValue([
-        { id: 1, name: 'CSS', blogIds: [1, 2], talkCount: 1 },
-        { id: 2, name: 'React', blogIds: [2], talkCount: 0 },
+        { id: 1, name: 'CSS', blogIds: [1, 2], talkIds: [3] },
+        { id: 2, name: 'React', blogIds: [2], talkIds: [] },
       ]);
 
       await expect(getTagSummaries()).resolves.toStrictEqual([
@@ -51,8 +73,8 @@ describe('getTagSummaries', () => {
   describe('エッジケース', () => {
     it('MDXの無い公開済みの記事は数えないべき', async () => {
       vi.mocked(getTags).mockResolvedValue([
-        { id: 1, name: 'CSS', blogIds: [1, 7], talkCount: 0 },
-        { id: 9, name: 'Draft', blogIds: [7], talkCount: 0 },
+        { id: 1, name: 'CSS', blogIds: [1, 7], talkIds: [] },
+        { id: 9, name: 'Draft', blogIds: [7], talkIds: [] },
       ]);
 
       await expect(getTagSummaries()).resolves.toStrictEqual([
@@ -64,27 +86,26 @@ describe('getTagSummaries', () => {
 });
 
 describe('getTagContent', () => {
-  beforeEach(() => {
-    vi.mocked(getBlogContents).mockResolvedValue([
-      blog(1, '記事1'),
-      blog(2, '記事2'),
-    ]);
-  });
-
   describe('正常系', () => {
-    it('タグの記事にMDXの題を付け、トークと一緒に返すべき', async () => {
+    it('タグの記事とトークを、タグが持つ id の並びで、題を付けて返すべき', async () => {
       vi.mocked(getTag).mockResolvedValue({
         id: 1,
         name: 'CSS',
-        blogs: [{ id: 2, slug: 'blog-2' }],
-        talks: [{ id: 3, title: 'トーク3' }],
+        blogIds: [2, 1],
+        talkIds: [4, 3],
       });
 
       await expect(getTagContent(1)).resolves.toStrictEqual({
         id: 1,
         name: 'CSS',
-        blogs: [{ id: 2, slug: 'blog-2', title: '記事2' }],
-        talks: [{ id: 3, title: 'トーク3' }],
+        blogs: [
+          { id: 2, slug: 'blog-2', title: '記事2' },
+          { id: 1, slug: 'blog-1', title: '記事1' },
+        ],
+        talks: [
+          { id: 4, title: 'トーク4' },
+          { id: 3, title: 'トーク3' },
+        ],
       });
     });
   });
@@ -94,11 +115,8 @@ describe('getTagContent', () => {
       vi.mocked(getTag).mockResolvedValue({
         id: 9,
         name: 'Draft',
-        blogs: [
-          { id: 7, slug: 'no-mdx' },
-          { id: 1, slug: 'blog-1' },
-        ],
-        talks: [],
+        blogIds: [7, 1],
+        talkIds: [],
       });
 
       const tag = await getTagContent(9);

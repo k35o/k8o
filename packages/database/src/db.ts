@@ -1,8 +1,8 @@
 import { createClient } from '@libsql/client/http';
 import { drizzle } from 'drizzle-orm/libsql/http';
 
-import { relations, schema } from './schema';
-import { increment } from './utils';
+import { relations, schema } from './schema/index.ts';
+import { increment } from './utils.ts';
 
 const authToken = process.env['K8O_TURSO_AUTH_TOKEN'];
 

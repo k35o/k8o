@@ -35,7 +35,7 @@ features は次のとおり。
   inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム
 - 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承し、proxy の CSP も効く
   - CSP の img-src は自分のオリジンと data:・blob: だけなので、Avatar の src が外の URL なら読み込めない。ブラウザで描き始めたとき（ペインを開く・画面を移る）は頭文字になる。サーバーで描いた最初の画面（`/chat/<threadId>`・`/artifacts/<artifactId>`・`/s/<slug>` を直接開くか再読み込みしたとき）は、ハイドレーションより前に読み込みが失敗して onError が届かず、壊れた画像の印が残った丸になる
-  - 生成 UI のリンクとフォームでは、公開ページを含むどの面でも移動しない。`SpecPreview` が、リンクの左クリック（修飾キーつきと Enter を含む）と中クリック、フォームの送信の既定の動きを止める。止める処理は React のハンドラで、ハイドレーションより前には動かないので、サーバーで描いた画面（`/s/<slug>` を開いたときなど）では、ハイドレーションが終わるまで根を inert にして、押すこともフォーカスすることもできなくする。リンクの URL に載せた中身は押した人から外へ送られ、公開ページでは中身に利害の無い閲覧者が押すため。持ち主の面でも、画面ごと移動すると会話の受信が切れ、生成物のページでも見ていた版から離れる。右クリックや長押しのメニューとドラッグでは開ける
+  - 生成 UI のリンクとフォームでは、公開ページを含むどの面でも移動しない。`SpecPreview` がリンクのクリック（左・中・修飾キーつき・Enter）とフォームの送信の既定の動きを止め、サーバーで描いた画面ではハイドレーションが終わるまで根を inert にする（理由は `SpecPreview` の注釈）。右クリックや長押しのメニューとドラッグでは開ける
 - 同じ文書の画面より狭い枠に描くので、ビューポートのメディアクエリでは並べ方が変わらない。そのため system prompt の規則で、描く枠の幅（280〜960px ほど）を伝え、横に並べるときは Grid の `cols: 'auto-fit'` と `minItemSize` を使うよう求める。依頼に列の数があっても固定の cols にしない
 - tool の中で Claude を1回ずつ呼び、`streamUiSpec`（`stream-ui-spec.ts`）がサーバーで spec を組み立てる。`createMixedStreamParser` で会話文とパッチを分け、土台の複製にパッチを当てる。会話文の行は改行で繋ぎ、タイトル行を除いた説明を要約にする
 - system は毎回同じ `buildSpecSystemPrompt()` にして、末尾に cache のブレークポイントを置く。直すときの土台と修復の指示は user の文（`buildUserPrompt`）に置き、system には連結しない
@@ -58,9 +58,9 @@ features は次のとおり。
 ### 印刷（PDF出力）
 
 - 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、生成物のページと公開ページ
-- 文書全体に効く印刷の規則（`@page` と、body の直下の印刷用のスライド以外を印刷から外す規則）は、CSS Modules に置かない。ポータルの中の `<style>` に置き、印刷用のスライドを表示しているあいだだけ有効にする。Activity で隠れた画面に残ったポータルは、ほかの画面の印刷に効かない
+- 文書全体に効く印刷の規則（`@page` と、body の直下の印刷用のスライド以外を外す規則）は CSS Modules に置かず、印刷用のスライドを表示しているあいだだけ有効にする（`DeckPrint` の注釈）
 - 印刷用のスライドを描く画面の中で、デッキを `<Activity>` で隠さない。隠すと印刷の規則も切れ、印刷にスライドが出ない。タブなどで隠すときは CSS で隠す
-- 印刷用の全スライドは、画面のテーマの配色のまま刷る。@k8ordo/ui は印刷で `.dark` の色を light に戻すので、root に `print-as-shown` を付けて、それを含む `.dark`（`<html>`）の色を dark のまま残す。`print-as-shown` は文書全体の印刷の色を変えるので、印刷の規則と同じく、デッキが Activity で隠れているあいだは外す。背景は `print-color-adjust: exact` で刷る
+- 印刷用の全スライドは、画面のテーマの配色のまま刷る。@k8ordo/ui は印刷で `.dark` の色を light に戻すので、root の `print-as-shown` で dark のまま残す（付け外しは `DeckPrint` の注釈）。背景は `print-color-adjust: exact` で刷る
 
 ## エージェント（/chat）
 
@@ -183,9 +183,9 @@ Better Auth + GitHub OAuth（`@repo/ai-database/auth`）。**本人のみ**利�
 
 防御層は次のとおり。
 
-- `shared/auth/proxy.ts`（`src/proxy.ts` が re-export する）… CSP などのセキュリティヘッダを常に付ける。`/sign-in` と `/s/` の前方一致は公開し、それ以外はセッションの cookie が無ければ `/sign-in` へ redirect する。見るのは cookie の有無だけ。**middleware は `/api` を守らない**（`src/proxy.ts` の matcher で外している）
-- `shared/auth/verify-session.ts` … Server Component 用。未ログイン・許可外は `/sign-in` へ redirect する。許可リストはサインアップのときにしか評価されず、`ALLOWED_EMAILS` から外しても既存のセッションは失効しないため、毎回 `isAllowedEmail` を評価し直して失効のずれを塞ぐ
-- `shared/auth/require-allowed-session.ts` … API route と server action 用。redirect せず、許可されなければ null を返す。LLM（Claude API）は課金が発生するため、**課金が発生する全 API route / server action の先頭で呼び、未許可は弾く（API route は 401 を返し、server action は null・空配列・false などを返す）**こと（middleware が `/api` を守らないため必須の防御層）
+- `shared/auth/proxy.ts`（`src/proxy.ts` が re-export する）… CSP などのセキュリティヘッダを常に付ける。`/sign-in`（完全一致）と `/s/` で始まるパスは公開し、それ以外はセッションの cookie が無ければ `/sign-in` へ redirect する。見るのは cookie の有無だけ。**proxy は `/api` を守らない**（`src/proxy.ts` の matcher で外している）
+- `shared/auth/allowed-session.ts` … 認証のゲート（`getAllowedSession`）。要求の headers からセッションを読み、許可されなければ null を返す。許可リストはサインアップのときにしか評価されず、`ALLOWED_EMAILS` から外しても既存のセッションは失効しないため、毎回 `isAllowedEmail` を評価し直して失効のずれを塞ぐ。React の `cache` で包み、1回の描画の中ではページと features の読み取りが何度呼んでもセッションを1回だけ読む。route handler と server action は描画の外なので、呼ぶたびに読む。LLM（Claude API）は課金が発生するため、**課金が発生する全 API route / server action の先頭で呼び、未許可は弾く（API route は 401 を返し、server action は null・空配列・false などを返す）**こと（proxy が `/api` を守らないため必須の防御層）
+- `shared/auth/verify-session.ts` … Server Component 用。`getAllowedSession` が null なら `/sign-in` へ redirect する
 - `shared/auth/auth-enabled.ts` … 認証の有効/無効の一元管理。Vercel preview と `LOCAL_AUTH_BYPASS`（NODE_ENV=development のときのみ）で OFF になる。preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する
 
 ローカル開発URLは `https://ai.k8o.localhost/`。`LOCAL_AUTH_BYPASS=true`（`.env.local`, NODE_ENV=development のときのみ）でログインを省略できる。

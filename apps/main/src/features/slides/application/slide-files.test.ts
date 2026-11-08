@@ -2,10 +2,13 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 
-import remarkPreset from '@repo/mdx-preset/remark';
-import { remark } from 'remark';
-import remarkMdx from 'remark-mdx';
 import { describe, expect, it } from 'vitest';
+
+import {
+  esmImportSources,
+  mdxParser,
+  stringAttribute,
+} from '@/shared/mdx/mdx-tree';
 
 import { slidePath } from './path';
 
@@ -13,42 +16,17 @@ const slugs = readdirSync(join(cwd(), 'src/content/slides')).filter(
   (name) => !name.startsWith('.'),
 );
 
-const parser = remark().use(remarkMdx).use(remarkPreset);
-
-// コードブロックの中の import 文は数えず、MDX の ESM の import だけを見る
-const esmImportSources = (slug: string): string[] =>
-  parser
-    .parse(readFileSync(slidePath(slug), 'utf8'))
-    .children.flatMap((node) =>
-      node.type === 'mdxjsEsm' ? (node.data?.estree?.body ?? []) : [],
-    )
-    .flatMap((statement) =>
-      statement.type === 'ImportDeclaration'
-        ? [String(statement.source.value)]
-        : [],
-    );
+const parse = (slug: string) =>
+  mdxParser.parse(readFileSync(slidePath(slug), 'utf8'));
 
 const deckShellSlugs = (slug: string): string[] =>
-  parser
-    .parse(readFileSync(slidePath(slug), 'utf8'))
-    .children.flatMap((node) =>
-      node.type === 'mdxJsxFlowElement' && node.name === 'SlideDeckShell'
-        ? node.attributes
-        : [],
-    )
-    .flatMap((attribute) =>
-      attribute.type === 'mdxJsxAttribute' &&
-      attribute.name === 'slug' &&
-      typeof attribute.value === 'string'
-        ? [attribute.value]
-        : [],
-    );
-
-const isNextOrAppAlias = (source: string): boolean =>
-  source.startsWith('@/') ||
-  source === 'next' ||
-  source.startsWith('next/') ||
-  source === 'next-themes';
+  parse(slug).children.flatMap((node) => {
+    if (node.type !== 'mdxJsxFlowElement' || node.name !== 'SlideDeckShell') {
+      return [];
+    }
+    const value = stringAttribute(node, 'slug');
+    return value === undefined ? [] : [value];
+  });
 
 describe('src/content/slides のスライド', () => {
   describe('正常系', () => {
@@ -61,10 +39,12 @@ describe('src/content/slides のスライド', () => {
     });
 
     it.each(slugs)(
-      '%s の MDX は @/・next・next-themes を import しない（部品は components で受け取る）',
+      '%s の MDX は @/ を import しない（部品は components で受け取る）',
       (slug) => {
         expect(
-          esmImportSources(slug).filter((source) => isNextOrAppAlias(source)),
+          esmImportSources(parse(slug)).filter((source) =>
+            source.startsWith('@/'),
+          ),
         ).toStrictEqual([]);
       },
     );

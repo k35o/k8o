@@ -1,5 +1,7 @@
 import type { InferUITools, UIDataTypes, UIMessage } from 'ai';
 
+import { truncateChars } from '@/shared/truncate-chars';
+
 import type { agentTools } from './tools';
 
 export type RunEnd =
@@ -28,9 +30,5 @@ export const threadTitleFrom = (message: AgentUIMessage): string => {
     .join(' ')
     .replaceAll(/\s+/gu, ' ')
     .trim();
-  // サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-  const chars = Array.from(text);
-  return chars.length <= MAX_TITLE_CHARS
-    ? text
-    : `${chars.slice(0, MAX_TITLE_CHARS).join('')}…`;
+  return truncateChars(text, MAX_TITLE_CHARS);
 };

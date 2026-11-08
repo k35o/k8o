@@ -1,5 +1,5 @@
-import { convertHexToRgb } from './hex-rgb';
-import type { Rgb } from './hex-rgb';
+import { convertHexToRgb } from './hex-rgb.ts';
+import type { Rgb } from './hex-rgb.ts';
 
 const SA98G = {
   mainTrc: 2.4,

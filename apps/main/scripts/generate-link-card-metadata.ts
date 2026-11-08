@@ -12,7 +12,7 @@ import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import type { OgMetadata } from '@repo/helpers/og/og-metadata';
 
 import linkCardMetadata from '../src/content/link-card-metadata.json' with { type: 'json' };
-import { collectLinkCardHrefs } from '../src/features/blog/application/link-card-urls';
+import { collectLinkCardHrefs } from '../src/features/blog/application/link-card-urls.ts';
 
 const { values } = parseArgs({
   options: { refresh: { type: 'boolean', default: false } },

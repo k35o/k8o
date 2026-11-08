@@ -34,20 +34,10 @@ jobs:
       - name: Run ls-lint
         run: pnpm run ls-lint
 
-      # oxlint の type-aware ルール(typescript/no-unnecessary-type-assertion 等)は
-      # Next.js が生成する Route 型に依存する。check は type-check より先に走るため、
-      # 先に ai の型を生成しておかないと Route を string とみなし `as Route` を
-      # 不要と誤検出する。
-      - name: Generate Next.js route types
-        run: pnpm -F @repo/ai exec next typegen
-
-      # main の route の表と型（.k8ordo/）は vite build も書くが、build は DB を読むので、
-      # 描かずに書くだけの generate を使う。CSS Modules の型（__generated__/）は type-check の
-      # script が書くが、無いと styles のクラスが string | undefined になって lint が誤検出するので、先に書く
-      - name: Generate main route and CSS Modules types
-        run: |
-          pnpm -F main exec k8ordo generate
-          pnpm -F main exec better-css-modules generate
+      # oxlint の type-aware ルールは、route の型（ai の Next・main の k8ordo）と CSS Modules の型を読む。
+      # 無いと Route を string、styles のクラスを string | undefined とみなして誤検出するので、check の前に書く
+      - name: Generate route and CSS Modules types
+        run: pnpm run typegen
 
       - name: Run check
         run: pnpm run check
@@ -64,6 +54,15 @@ jobs:
           if [ -n "$changes" ]; then
             echo "::error::スキーマの変更に対応するマイグレーションがコミットされていない。各 DB パッケージで generate した結果をコミットする"
             echo "$changes"
+            exit 1
+          fi
+
+      - name: Check ER diagram is up to date
+        run: |
+          pnpm -F @repo/database build:erd
+          if ! git diff --quiet -- packages/database/README.md; then
+            echo "::error::README の ER 図がスキーマと一致していない。pnpm -F @repo/database build:erd の結果をコミットする"
+            git --no-pager diff -- packages/database/README.md
             exit 1
           fi
 
@@ -84,12 +83,6 @@ jobs:
   test-node:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # main の smoke-pages の試験も Chromium を開く。
-    # --with-deps の apt は mirror が遅いと数分かかるので、OS の
-    # ライブラリまで入ったイメージで走らせる。
-    container:
-      image: mcr.microsoft.com/playwright:v1.64.1-resolute
-      options: --user 1001 --ipc=host
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

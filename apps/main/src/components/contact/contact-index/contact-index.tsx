@@ -1,11 +1,11 @@
-import { Anchor, Heading } from '@k8ordo/ui';
+import { Anchor, Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import styles from './contact-index.module.css';
 
 export const ContactIndex: FC = () => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="xl">
       <Heading level="h2">Contact</Heading>
       <p className={styles.text}>
         k8oへの連絡には次の手段が使えます。記事の内容への質問や誤りの指摘、登壇や執筆の相談、公開しているツールへのフィードバックなど、内容は問いません。個人で運営しているため、返信までに時間がかかることや、営業目的の連絡には返信しないことがあります。
@@ -43,6 +43,6 @@ export const ContactIndex: FC = () => (
           のDMやリプライでも連絡できます。ブログ記事への感想や短い質問はXが目に留まりやすいです。気軽に声をかけてください。
         </p>
       </section>
-    </div>
+    </Stack>
   </div>
 );

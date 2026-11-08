@@ -3,13 +3,14 @@ import {
   Badge,
   PublishDateIcon,
   Separator,
+  Stack,
   TagIcon,
   UpdateDateIcon,
 } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC, ReactNode } from 'react';
 
-import { SilentErrorBoundary } from '@/components/site/error-boundary/silent-error-boundary';
+import { ErrorBoundary } from '@/components/site/error-boundary/error-boundary';
 import type {
   getBlogContent,
   getBlogsByTags,
@@ -74,7 +75,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                   <span>約{readingTime}分で読めます</span>
                 </div>
                 <div className={styles.actions}>
-                  {blog.slideUrl !== undefined && (
+                  {blog.slideUrl !== null && (
                     <SlideLinkButton href={blog.slideUrl} />
                   )}
                   <CopyMarkdownButton slug={slug} />
@@ -105,26 +106,26 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
             {children}
           </article>
         </WritingModeContent>
-        <div className={styles.footer} id={END_OF_CONTENT_ID}>
-          <SilentErrorBoundary>
+        <Stack gap="xl" id={END_OF_CONTENT_ID}>
+          <ErrorBoundary>
             <section className={styles.feedback}>
               <Feedback slug={slug} />
             </section>
-          </SilentErrorBoundary>
-          <SilentErrorBoundary>
+          </ErrorBoundary>
+          <ErrorBoundary>
             <Recommend blogs={recommendedBlogs} />
-          </SilentErrorBoundary>
-        </div>
+          </ErrorBoundary>
+        </Stack>
       </div>
-      <SilentErrorBoundary>
+      <ErrorBoundary>
         <TableOfContentsSideRail
           className={styles.sideRail}
           headingTree={headingTree}
         />
-      </SilentErrorBoundary>
-      <SilentErrorBoundary>
+      </ErrorBoundary>
+      <ErrorBoundary>
         <TableOfContents headingTree={headingTree} />
-      </SilentErrorBoundary>
+      </ErrorBoundary>
     </div>
   </ArticleFrame>
 );

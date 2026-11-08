@@ -2,11 +2,13 @@ import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
+import { validate } from '../../../shared/http/validate';
+import { BLOG_SLUG_PATTERN } from '../application/blog-slug';
 import { countBlogView } from '../application/count-view';
 import { submitBlogFeedback } from '../application/submit-feedback';
 
 const slugParamSchema = z.object({
-  slug: z.string().check(z.minLength(1), z.maxLength(200)),
+  slug: z.string().check(z.maxLength(200), z.regex(BLOG_SLUG_PATTERN)),
 });
 
 // 画面が送るのは「良い（1）」と「悪い（2）」だけ
@@ -15,12 +17,7 @@ const feedbackSchema = z.object({
   comment: z.string().check(z.maxLength(500)),
 });
 
-const validateSlug = validator('param', (value, c) => {
-  const parsed = slugParamSchema.safeParse(value);
-  return parsed.success
-    ? parsed.data
-    : c.json({ ok: false, error: 'invalid_request' } as const, 400);
-});
+const validateSlug = validate('param', slugParamSchema);
 
 export const blogPublicRoutes = new Hono()
   .post('/:slug/views', validateSlug, async (c) => {

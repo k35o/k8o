@@ -1,6 +1,6 @@
 import { expect } from 'storybook/test';
 
-import type { HeadingTree } from '@/shared/mdx/types';
+import type { HeadingTree } from '@/features/blog/interface/queries';
 
 import preview from '../../../../../.storybook/preview';
 import { TableOfContents } from './table-of-contents';

@@ -130,15 +130,20 @@ describe('paletteMakerState の URL の読み', () => {
       expect(readChroma(input)).toBe(expected);
     });
 
+    it.each(['12abc', '30,5'])(
+      '数にならない h=%j は既定の 250 になる',
+      (input) => {
+        expect(readHue(input)).toBe(250);
+      },
+    );
+
     it.each([
-      ['12abc', 12],
-      ['30,5', 30],
-      ['0x10', 0],
+      ['0x10', 16],
       ['1e2', 100],
       [' 30', 30],
       ['30 ', 30],
       ['-0', 0],
-    ])('h=%j は頭から読める分の %d と読む', (input, expected) => {
+    ])('h=%j は数として %d と読む', (input, expected) => {
       expect(readHue(input)).toBe(expected);
     });
 

@@ -16,6 +16,9 @@ vi.mock('@/features/tags/interface/queries', () => ({
   getTag: vi.fn(),
   getTags: vi.fn(),
 }));
+vi.mock('@/features/talks/interface/queries', () => ({
+  getTalks: vi.fn(),
+}));
 vi.mock('@playgrounds/sections', () => ({
   playgroundSections: [
     {
@@ -100,7 +103,7 @@ const tag = (overrides: Partial<Tag> = {}): Tag => ({
   id: 1,
   name: 'CSS',
   blogIds: [1],
-  talkCount: 0,
+  talkIds: [],
   ...overrides,
 });
 
@@ -115,7 +118,7 @@ describe('generateSitemap', () => {
   });
 
   describe('正常系', () => {
-    it('Nextのsitemap.tsと同じ並び・lastmod・changefreqで、resolveSitemapと同じ書き方のXMLを返すべき', async () => {
+    it('トップ・固定のページ・記事・デッキ・タグの順に、lastmod と changefreq を付けた XML を返すべき', async () => {
       vi.mocked(getBlogContents).mockResolvedValue([
         blog({ id: 2, slug: 'older-update', updatedAt: '2026-10-10' }),
         blog({ id: 1, slug: 'newer-update', updatedAt: '2026-10-20' }),
@@ -252,9 +255,9 @@ describe('generateSitemap', () => {
         blog({ id: 2, slug: 'b' }),
       ]);
       vi.mocked(getTags).mockResolvedValue([
-        tag({ id: 147, blogIds: [], talkCount: 0 }),
-        tag({ id: 5, blogIds: [], talkCount: 1 }),
-        tag({ id: 8, blogIds: [1, 2], talkCount: 0 }),
+        tag({ id: 147, blogIds: [], talkIds: [] }),
+        tag({ id: 5, blogIds: [], talkIds: [3] }),
+        tag({ id: 8, blogIds: [1, 2], talkIds: [] }),
       ]);
 
       const xml = await generateSitemap();
@@ -267,8 +270,8 @@ describe('generateSitemap', () => {
     it('MDXの無い公開済みの記事だけを持つタグは載せないべき', async () => {
       vi.mocked(getBlogContents).mockResolvedValue([blog({ id: 1 })]);
       vi.mocked(getTags).mockResolvedValue([
-        tag({ id: 9, blogIds: [7], talkCount: 0 }),
-        tag({ id: 8, blogIds: [1], talkCount: 0 }),
+        tag({ id: 9, blogIds: [7], talkIds: [] }),
+        tag({ id: 8, blogIds: [1], talkIds: [] }),
       ]);
 
       const xml = await generateSitemap();

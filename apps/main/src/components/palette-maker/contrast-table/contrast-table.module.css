@@ -57,12 +57,6 @@
   line-height: var(--line-height-xs);
 }
 
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-}
-
 .frame {
   border-width: 1px;
   border-style: solid;

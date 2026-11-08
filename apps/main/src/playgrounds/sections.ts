@@ -1,107 +1,11 @@
-import { absSignSection } from './abs-sign';
-import { activeViewTransitionSection } from './active-view-transition';
-import { alphaFunctionSection } from './alpha-function';
-import { animationAccessorsSection } from './animation-accessors';
-import { ariaNotifySection } from './arianotify';
-import { asyncClipboardSection } from './async-clipboard';
-import { autocorrectSection } from './autocorrect';
-import { baselineShiftSection } from './baseline-shift';
-import { caretPositionFromPointSection } from './caret-position-from-point';
-import { composedRangesSection } from './composed-ranges';
-import { containerNameQueriesSection } from './container-name-queries';
-import { containerStyleQueriesSection } from './container-style-queries';
-import { contentVisibilitySection } from './content-visibility';
-import { contrastColorSection } from './contrast-color';
-import { crispEdgesSection } from './crisp-edges';
-import { detailsContentSection } from './details-content';
-import { eventTimingSection } from './event-timing';
-import { extTextureNorm16Section } from './ext-texture-norm16';
-import { fieldSizingSection } from './field-sizing';
-import { fontFamilyMathSection } from './font-family-math';
-import { highlightSection } from './highlight';
-import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
-import { intlLocaleInfoSection } from './intl-locale-info';
-import { invokerCommandsSection } from './invoker-commands';
-import { lcpSection } from './largest-contentful-paint';
-import { lightDarkImageSection } from './light-dark-image';
-import { mediaPseudosSection } from './media-pseudos';
-import { openPseudoSection } from './open-pseudo';
-import { overflowAnchorSection } from './overflow-anchor';
-import { popoverSection } from './popover';
-import { printColorAdjustSection } from './print-color-adjust';
-import { progressFunctionSection } from './progress-function';
-import { requestCloseSection } from './requestclose';
-import { revertRuleSection } from './revert-rule';
-import { rootFontUnitsSection } from './root-font-units';
-import { scopeSection } from './scope';
-import { screenWakeLockSection } from './screen-wake-lock';
-import { scrollDrivenAnimationsSection } from './scroll-driven-animations';
-import { scrollbarColorSection } from './scrollbar-color';
-import { scrollendSection } from './scrollend';
-import { shapeFunctionSection } from './shape-function';
-import { sharedWorkerSection } from './shared-worker';
-import { siblingCountIndexSection } from './sibling-count-index';
-import { spellingGrammarErrorSection } from './spelling-grammar-error';
-import { suspenseListSection } from './suspense-list';
-import { textDecorationSkipInkAllSection } from './text-decoration-skip-ink-all';
-import { textIndentKeywordsSection } from './text-indent-keywords';
-import { toggleEventSourceSection } from './toggleevent-source';
+import { isPlaygroundSection } from './types';
 import type { PlaygroundSection } from './types';
-import { viewTransitionsSection } from './view-transitions';
 
-export const playgroundSections: PlaygroundSection[] = [
-  activeViewTransitionSection,
-  alphaFunctionSection,
-  animationAccessorsSection,
-  ariaNotifySection,
-  asyncClipboardSection,
-  autocorrectSection,
-  baselineShiftSection,
-  caretPositionFromPointSection,
-  composedRangesSection,
-  containerNameQueriesSection,
-  containerStyleQueriesSection,
-  contentVisibilitySection,
-  contrastColorSection,
-  crispEdgesSection,
-  detailsContentSection,
-  eventTimingSection,
-  extTextureNorm16Section,
-  fieldSizingSection,
-  fontFamilyMathSection,
-  inputFileWebkitdirectorySection,
-  intlLocaleInfoSection,
-  invokerCommandsSection,
-  lcpSection,
-  lightDarkImageSection,
-  mediaPseudosSection,
-  overflowAnchorSection,
-  openPseudoSection,
-  popoverSection,
-  requestCloseSection,
-  revertRuleSection,
-  printColorAdjustSection,
-  progressFunctionSection,
-  rootFontUnitsSection,
-  scopeSection,
-  screenWakeLockSection,
-  scrollDrivenAnimationsSection,
-  scrollbarColorSection,
-  scrollendSection,
-  sharedWorkerSection,
-  siblingCountIndexSection,
-  suspenseListSection,
-  absSignSection,
-  highlightSection,
-  shapeFunctionSection,
-  spellingGrammarErrorSection,
-  textDecorationSkipInkAllSection,
-  textIndentKeywordsSection,
-  toggleEventSourceSection,
-  viewTransitionsSection,
-];
+const modules = import.meta.glob<Record<string, unknown>>('./*/index.ts', {
+  eager: true,
+});
 
-export const getPlaygroundSection = (
-  id: string,
-): PlaygroundSection | undefined =>
-  playgroundSections.find((section) => section.id === id);
+// ディレクトリの名前の順
+export const playgroundSections: PlaygroundSection[] = Object.values(
+  modules,
+).flatMap((module) => Object.values(module).filter(isPlaygroundSection));

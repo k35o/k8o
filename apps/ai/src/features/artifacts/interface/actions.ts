@@ -1,10 +1,9 @@
 'use server';
 
 import { refresh, revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import {
   changeSharedVersion,
@@ -21,7 +20,7 @@ export const publishArtifactVersionAction = async (
   artifactId: string,
   version: number,
 ): Promise<{ slug: string } | null> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return null;
   }
@@ -38,7 +37,7 @@ export const changeSharedVersionAction = async (
   artifactId: string,
   version: number,
 ): Promise<SharedVersionChange> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return 'failed';
   }
@@ -54,7 +53,7 @@ export const changeSharedVersionAction = async (
 export const unpublishArtifactAction = async (
   artifactId: string,
 ): Promise<boolean> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return false;
   }
@@ -67,7 +66,7 @@ export const forkArtifactVersionAction = async (
   artifactId: string,
   version: number,
 ): Promise<void> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return;
   }

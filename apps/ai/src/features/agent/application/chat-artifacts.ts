@@ -1,6 +1,8 @@
 import type { Spec } from '@json-render/core';
 import type { ChatStatus } from 'ai';
 
+import { truncateChars } from '@/shared/truncate-chars';
+
 import type { AgentUIMessage } from './agent-message';
 
 type ArtifactToolPart = Extract<
@@ -57,14 +59,6 @@ const WRITING_PHASES = {
 
 const MAX_ERROR_CHARS = 300;
 
-// サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-const truncate = (text: string): string => {
-  const chars = Array.from(text);
-  return chars.length <= MAX_ERROR_CHARS
-    ? text
-    : `${chars.slice(0, MAX_ERROR_CHARS).join('')}…`;
-};
-
 // 保存する errorText は Claude に送った文と同じでなければならないので、言い換えと切り詰めは表示の上だけで行う
 export const artifactErrorText = (errorText: string): string => {
   if (errorText.startsWith('TimeoutError:')) {
@@ -73,7 +67,7 @@ export const artifactErrorText = (errorText: string): string => {
   if (errorText.startsWith('AbortError:')) {
     return '止まりました';
   }
-  return truncate(errorText.replace(/^Error: /u, ''));
+  return truncateChars(errorText.replace(/^Error: /u, ''), MAX_ERROR_CHARS);
 };
 
 export const artifactLiveOf = (input: {

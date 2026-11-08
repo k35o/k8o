@@ -12,7 +12,7 @@ const rewrite = (search: string): string =>
     readingListState.parseUrl(new URLSearchParams(search)),
   );
 
-describe('readingListState の URL の読み（nuqs と同じ）', () => {
+describe('readingListState の URL の読み', () => {
   describe('正常系', () => {
     it.each([
       ['', { q: '', source: [], sort: 'newest' }],
@@ -54,10 +54,10 @@ describe('readingListState の URL の読み（nuqs と同じ）', () => {
       ['?q=a&q=b', { q: 'a', source: [], sort: 'newest' }],
       ['?source=1,1', { q: '', source: [1, 1], sort: 'newest' }],
       ['?source=', { q: '', source: [], sort: 'newest' }],
-      ['?source=1.9', { q: '', source: [1], sort: 'newest' }],
+      ['?source=1.9', { q: '', source: [], sort: 'newest' }],
       ['?source=-1', { q: '', source: [-1], sort: 'newest' }],
       ['?source=0x10', { q: '', source: [16], sort: 'newest' }],
-      ['?source=1e2', { q: '', source: [1], sort: 'newest' }],
+      ['?source=1e2', { q: '', source: [100], sort: 'newest' }],
       ['?source=%201', { q: '', source: [1], sort: 'newest' }],
       ['?source=999', { q: '', source: [999], sort: 'newest' }],
       ['?source=1&source=2', { q: '', source: [1], sort: 'newest' }],

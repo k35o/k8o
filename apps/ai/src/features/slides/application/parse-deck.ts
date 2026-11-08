@@ -67,7 +67,7 @@ export const extractCodeBlocks = (source: string): DeckCodeBlock[] => {
   for (const line of source.split('\n')) {
     const next = fenceAfter(fence, line);
     if (fence === null && next !== null) {
-      lang = line.trim().slice(next).trim();
+      lang = line.trim().slice(next).trim().split(/\s/u)[0] ?? '';
       lines = [];
     } else if (fence !== null && next === null) {
       blocks.push({

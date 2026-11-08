@@ -2,7 +2,7 @@
 
 import type { FC } from 'react';
 
-import type { HeadingTree } from '@/shared/mdx/types';
+import type { HeadingTree } from '@/features/blog/interface/queries';
 
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';

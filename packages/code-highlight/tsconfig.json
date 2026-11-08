@@ -1,8 +1,7 @@
 {
-  "extends": "@repo/typescript-config/next.json",
+  "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "types": ["node", "vitest/importMeta"],
-    "allowImportingTsExtensions": true
+    "types": ["node", "vitest/importMeta"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

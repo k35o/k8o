@@ -7,8 +7,6 @@
   "exports": {
     ".": {
       "types": "./src/db.ts",
-      "storybook": "./src/__mocks__/db.ts",
-      "node": "./src/db.ts",
       "default": "./src/db.ts"
     },
     "./orm": {
@@ -30,14 +28,13 @@
     "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio",
     "export:schema": "drizzle-kit export > ./schema.sql",
-    "build:erd": "node --import ./scripts/register-ts-resolver.ts scripts/erd.ts"
+    "build:erd": "node scripts/erd.ts"
   },
   "dependencies": {
     "@libsql/client": "catalog:",
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {
-    "@next/env": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "drizzle-kit": "catalog:"
   }

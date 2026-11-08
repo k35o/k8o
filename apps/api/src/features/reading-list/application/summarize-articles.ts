@@ -8,7 +8,8 @@ import {
   saveArticleSummary,
 } from '../infrastructure/reading-list-repository';
 import type { SummaryTarget } from '../infrastructure/reading-list-repository';
-import { MAX_SUMMARY_ATTEMPTS, summaryWindowStart } from './summary-policy';
+import { readingWindowStart } from './reading-window';
+import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
 
 const SUMMARY_LIMIT = 60;
 const SUMMARY_CONCURRENCY = 4;
@@ -33,7 +34,7 @@ export async function summarizeArticles(
   deadline: number,
 ): Promise<SummarizeResult> {
   const targets = await findSummaryTargets(
-    summaryWindowStart(),
+    readingWindowStart(Date.now()).toISOString(),
     MAX_SUMMARY_ATTEMPTS,
     SUMMARY_LIMIT,
   );

@@ -21,7 +21,7 @@ const rewrite = (search: string): string =>
     browserSupportListState.parseUrl(new URLSearchParams(search)),
   );
 
-describe('browserSupportListState の URL の読み（nuqs と同じ）', () => {
+describe('browserSupportListState の URL の読み', () => {
   describe('正常系', () => {
     it.each([
       [
@@ -320,7 +320,7 @@ describe('browserSupportListState の URL の読み（nuqs と同じ）', () => 
         '?widely=TRUE',
         {
           q: '',
-          widely: true,
+          widely: false,
           newly: true,
           limited: true,
           recent: false,
@@ -356,7 +356,7 @@ describe('browserSupportListState の URL の読み（nuqs と同じ）', () => 
           widely: true,
           newly: true,
           limited: true,
-          recent: true,
+          recent: false,
           year: '2026',
         },
       ],

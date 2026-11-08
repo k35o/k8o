@@ -1,6 +1,6 @@
 'use client';
 
-import { NumberField } from '@k8ordo/ui';
+import { NumberField, Stack } from '@k8ordo/ui';
 import { useId } from 'react';
 import type { FC } from 'react';
 
@@ -42,7 +42,7 @@ export const CornerInputs: FC<Props> = ({ corners, onChangeValue }) => {
             />
             {CORNER_LABELS[corner]}
           </legend>
-          <div className={styles.axes}>
+          <Stack gap="sm">
             {AXES.map((axis) => (
               <div className={styles.axis} key={axis}>
                 <label
@@ -62,7 +62,7 @@ export const CornerInputs: FC<Props> = ({ corners, onChangeValue }) => {
                 />
               </div>
             ))}
-          </div>
+          </Stack>
         </fieldset>
       ))}
     </div>

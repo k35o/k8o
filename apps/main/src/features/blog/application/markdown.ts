@@ -1,37 +1,15 @@
-import { stripAnnotationComments } from '@repo/code-highlight/parser';
-import remarkPreset from '@repo/mdx-preset/remark';
-import type { Root, RootContent } from 'mdast';
-import { remark } from 'remark';
-import remarkMdx from 'remark-mdx';
+import { readFile } from 'node:fs/promises';
 
-type MdxJsxElement = Extract<
-  RootContent,
-  { type: 'mdxJsxFlowElement' | 'mdxJsxTextElement' }
->;
+import { stripAnnotationComments } from '@repo/code-highlight/parser';
+import type { Root, RootContent } from 'mdast';
+
+import { mdxParser, stringAttribute } from '@/shared/mdx/mdx-tree';
+import type { MdxJsxElement } from '@/shared/mdx/mdx-tree';
+import { SITE_URL } from '@/shared/site/site-url';
+
+import { blogPath } from './path';
 
 type Edit = { start: number; end: number; text: string };
-
-const SITE_URL = 'https://k8o.me';
-
-// 本番のMDX（vite.config.ts の @mdx-js/rollup）と同じ remark の preset で読む。remark-math がないと
-// $\mathbb{N}$ のような数式内の {} がMDX式として解釈されてパースに失敗する
-const parser = remark().use(remarkMdx).use(remarkPreset);
-
-const getStringAttribute = (
-  node: MdxJsxElement,
-  name: string,
-): string | undefined => {
-  for (const attr of node.attributes) {
-    if (
-      attr.type === 'mdxJsxAttribute' &&
-      attr.name === name &&
-      typeof attr.value === 'string'
-    ) {
-      return attr.value;
-    }
-  }
-  return undefined;
-};
 
 const nodeRange = (node: RootContent): [number, number] | undefined => {
   const start = node.position?.start.offset;
@@ -43,7 +21,7 @@ const nodeRange = (node: RootContent): [number, number] | undefined => {
 // 全体を再シリアライズせず、MDX固有ノードのスパンだけを元テキストから置換することで、
 // 本文のフォーマットを原文のまま保つ。
 export const mdxToMarkdown = (source: string, slug: string): string => {
-  const tree: Root = parser.parse(source);
+  const tree: Root = mdxParser.parse(source);
   const articleUrl = `${SITE_URL}/blog/${slug}`;
   const edits: Edit[] = [];
 
@@ -54,7 +32,7 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
   const handleJsx = (node: MdxJsxElement, range: [number, number]): void => {
     const { name } = node;
     if (name === 'Playground') {
-      const title = getStringAttribute(node, 'title');
+      const title = stringAttribute(node, 'title');
       const label =
         title === undefined
           ? 'インタラクティブデモ'
@@ -63,8 +41,8 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
       return;
     }
     if (name === 'PlaygroundEmbed') {
-      const sectionId = getStringAttribute(node, 'sectionId');
-      const demo = getStringAttribute(node, 'demo');
+      const sectionId = stringAttribute(node, 'sectionId');
+      const demo = stringAttribute(node, 'demo');
       const url =
         sectionId === undefined
           ? articleUrl
@@ -77,7 +55,7 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
       return;
     }
     if (name === 'LinkCard') {
-      const href = getStringAttribute(node, 'href');
+      const href = stringAttribute(node, 'href');
       if (href === undefined) {
         replace(range, '');
         return;
@@ -87,7 +65,7 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
       return;
     }
     if (name === 'Image') {
-      const alt = getStringAttribute(node, 'alt');
+      const alt = stringAttribute(node, 'alt');
       replace(range, alt === undefined ? '' : `（画像: ${alt}）`);
       return;
     }
@@ -96,7 +74,7 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
       return;
     }
     if (name === 'Alert') {
-      const message = getStringAttribute(node, 'message');
+      const message = stringAttribute(node, 'message');
       replace(range, message === undefined ? '' : `> ${message}`);
       return;
     }
@@ -159,3 +137,6 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
     .replace(/\n+$/u, '');
   return `${cleaned}\n`;
 };
+
+export const getMarkdown = async (slug: string): Promise<string> =>
+  mdxToMarkdown(await readFile(blogPath(slug), 'utf-8'), slug);

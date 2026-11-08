@@ -24,7 +24,7 @@ import {
   reserveUsage,
   USAGE_REFUSAL_MESSAGES,
 } from '@/features/usage/application/usage';
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 import { getGenerationModel } from '@/shared/claude/claude-provider';
 import {
   DEFAULT_GENERATION_MODEL,
@@ -274,7 +274,7 @@ const modelFor = (
 };
 
 export async function handleChat(req: Request): Promise<Response> {
-  const session = await requireAllowedSession(req.headers);
+  const session = await getAllowedSession();
   if (session === null) {
     return new Response(UNAUTHORIZED_MESSAGE, { status: 401 });
   }

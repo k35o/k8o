@@ -31,6 +31,10 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 - `/public/reports` は、main の Reporting-Endpoints を通してブラウザの Reporting API が送る CSP 違反と、main のクライアントのエラーを受ける。Reporting API は `application/reports+json` の配列を送り、Chromium と Firefox は別オリジンなのでプリフライトを経る（Chromium は毎回）。410 は Firefox に送り先を消させるので、どの場合も返さない（Chromium は 2xx 以外をすべて送り直す）。Safari は CSP 違反を `application/csp-report` の単一オブジェクトで、プリフライトなしで送る。JSON 系の Content-Type でないので `validator('json')` が本文を読まず 400 になり、受けていない
 - `/public/reports` は1件ごとに `type` 64字、`url` 2048字、`user_agent` 512字、`body` を JSON にして 8192字までを受け、超えたレポートは捨てる。1回のリクエストで保存するのは、残りのうち先頭の 50件まで。捨てたときも 204 を返す。配列でない・必須のキーが無いといった形の誤りは 400
 
+## main のビルドが読む関数
+
+`src/build-data.ts`（`@repo/api/build-data`）は、main のビルドが同じプロセスで呼ぶ読み取りの関数を export する。公開済みの記事・スライド・タグ・トークと、ビルド時に描く browser-support と通知の履歴の値を返す。公開ルートと同じく、ここから MCP・cron・AI SDK を import しない。main のビルドは同じコミットの関数を呼ぶので、形を変えるときは main も同じ PR で直す。
+
 ## オーナー API
 
 `/owner/*` は、オーナーのアプリ（今は ai）がサーバーから呼ぶ読み取りの API（`src/owner.ts`）。ai は k8o の DB の資格情報を持たず、k8o のデータはここから読む。呼ぶ側は `@repo/api/owner` から `OwnerApi` の型だけを読み、hc で呼ぶ。

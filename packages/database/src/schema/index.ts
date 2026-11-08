@@ -1,23 +1,23 @@
-import { articleSources, articleSourcesRelations } from './article-sources';
-import { articles, articlesRelations } from './articles';
-import { blogComment, blogCommentRelations } from './blog-comment';
-import { blogTag, blogTagRelations } from './blog-tag';
-import { blogViewDailies } from './blog-view-dailies';
-import { blogViews } from './blog-views';
-import { blogs, blogsRelations } from './blogs';
-import { browserSupportDatasets } from './browser-support-datasets';
-import { browserSupportFeatureChanges } from './browser-support-feature-changes';
-import { browserSupportSyncRuns } from './browser-support-sync-runs';
-import { comments, commentsRelations } from './comments';
-import { feedbacks, feedbacksRelations } from './feedback';
-import { pushLogs } from './push-logs';
-import { pushSubscriptions } from './push-subscriptions';
-import { reportingReports } from './reporting-reports';
-import { slideTag, slideTagRelations } from './slide-tag';
-import { slides, slidesRelations } from './slides';
-import { tags, tagsRelations } from './tags';
-import { talkTag, talkTagRelations } from './talk-tag';
-import { talks, talksRelations } from './talks';
+import { articleSources, articleSourcesRelations } from './article-sources.ts';
+import { articles, articlesRelations } from './articles.ts';
+import { blogComment, blogCommentRelations } from './blog-comment.ts';
+import { blogTag, blogTagRelations } from './blog-tag.ts';
+import { blogViewDailies } from './blog-view-dailies.ts';
+import { blogViews } from './blog-views.ts';
+import { blogs, blogsRelations } from './blogs.ts';
+import { browserSupportDatasets } from './browser-support-datasets.ts';
+import { browserSupportFeatureChanges } from './browser-support-feature-changes.ts';
+import { browserSupportSyncRuns } from './browser-support-sync-runs.ts';
+import { comments, commentsRelations } from './comments.ts';
+import { feedbacks, feedbacksRelations } from './feedback.ts';
+import { pushLogs } from './push-logs.ts';
+import { pushSubscriptions } from './push-subscriptions.ts';
+import { reportingReports } from './reporting-reports.ts';
+import { slideTag, slideTagRelations } from './slide-tag.ts';
+import { slides, slidesRelations } from './slides.ts';
+import { tags, tagsRelations } from './tags.ts';
+import { talkTag, talkTagRelations } from './talk-tag.ts';
+import { talks, talksRelations } from './talks.ts';
 
 export const schema = {
   feedbacks,

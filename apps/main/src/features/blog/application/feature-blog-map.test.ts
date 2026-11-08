@@ -1,135 +1,54 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { findBlogMetadata } from './blog';
-import { getBlogs } from './blogs';
-import { getFeatureBlogMap } from './feature-blog-map';
+import type { Blog } from './blogs';
+import { buildFeatureBlogMap } from './feature-blog-map';
 
-vi.mock('./blog', () => ({ findBlogMetadata: vi.fn() }));
-vi.mock('./blogs', () => ({ getBlogs: vi.fn() }));
-
-// getBlogs は MDX の無い記事を外し、frontmatter の題などを持つ
-const blogRow = (id: number, slug: string) => ({
-  id,
+const blog = (slug: string, featureIds: string[]): Blog => ({
+  id: 1,
   slug,
   tags: [],
-  title: slug,
+  slideUrl: null,
+  title: `題 ${slug}`,
   description: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
+  featureIds,
 });
 
-const metadata = (title: string, featureIds?: string[]) => ({
-  title,
-  description: null,
-  createdAt: '2026-01-01T00:00:00.000Z',
-  updatedAt: '2026-01-01T00:00:00.000Z',
-  ...(featureIds ? { featureIds } : {}),
-});
-
-describe('getFeatureBlogMap', () => {
+describe('buildFeatureBlogMap', () => {
   describe('正常系', () => {
-    it('featureIdsを持つ記事からマップを構築する', async () => {
-      vi.mocked(getBlogs).mockResolvedValue([
-        blogRow(1, 'blog-a'),
-        blogRow(2, 'blog-b'),
-      ]);
-      vi.mocked(findBlogMetadata)
-        .mockResolvedValueOnce(metadata('記事A', ['feature-1', 'feature-2']))
-        .mockResolvedValueOnce(metadata('記事B', ['feature-3']));
-
-      const result = await getFeatureBlogMap();
-
-      expect(result).toStrictEqual({
-        'feature-1': { slug: 'blog-a', title: '記事A' },
-        'feature-2': { slug: 'blog-a', title: '記事A' },
-        'feature-3': { slug: 'blog-b', title: '記事B' },
-      });
-    });
-
-    it('featureIdsが無い記事はマップに含めない', async () => {
-      vi.mocked(getBlogs).mockResolvedValue([blogRow(1, 'blog-a')]);
-      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('記事A'));
-
-      const result = await getFeatureBlogMap();
-
-      expect(result).toStrictEqual({});
-    });
-  });
-
-  describe('異常系', () => {
-    it('MDXファイルが無い記事はマップから除外する', async () => {
-      vi.mocked(getBlogs).mockResolvedValue([
-        blogRow(1, 'blog-a'),
-        blogRow(2, 'missing-blog'),
-      ]);
-      vi.mocked(findBlogMetadata)
-        .mockResolvedValueOnce(metadata('記事A', ['feature-1']))
-        .mockResolvedValueOnce(null);
-
-      const result = await getFeatureBlogMap();
-
-      expect(result).toStrictEqual({
-        'feature-1': { slug: 'blog-a', title: '記事A' },
+    it('記事の featureIds から、機能ごとに記事の slug と題を引ける表を作る', () => {
+      expect(
+        buildFeatureBlogMap([
+          blog('blog-a', ['feature-1', 'feature-2']),
+          blog('blog-b', ['feature-3']),
+        ]),
+      ).toStrictEqual({
+        'feature-1': { slug: 'blog-a', title: '題 blog-a' },
+        'feature-2': { slug: 'blog-a', title: '題 blog-a' },
+        'feature-3': { slug: 'blog-b', title: '題 blog-b' },
       });
     });
   });
 
-  describe('featureIdの重複', () => {
-    it('getBlogsの並びで先頭（createdAt降順で最新）の記事を勝者にする', async () => {
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      vi.mocked(getBlogs).mockResolvedValue([
-        blogRow(2, 'newest-blog'),
-        blogRow(1, 'oldest-blog'),
-      ]);
-      vi.mocked(findBlogMetadata)
-        .mockResolvedValueOnce(metadata('最新の記事', ['feature-1']))
-        .mockResolvedValueOnce(metadata('古い記事', ['feature-1']));
-
-      const result = await getFeatureBlogMap();
-
-      expect(result).toStrictEqual({
-        'feature-1': { slug: 'newest-blog', title: '最新の記事' },
-      });
-      warn.mockRestore();
+  describe('エッジケース', () => {
+    it('featureIds の無い記事は表に入れない', () => {
+      expect(buildFeatureBlogMap([blog('blog-a', [])])).toStrictEqual({});
     });
 
-    it('メタデータの解決順に関係なく勝者が変わらない', async () => {
+    it('同じ featureId を複数の記事が持つときは、一覧で先の記事を使い、警告を出す', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      vi.mocked(getBlogs).mockResolvedValue([
-        blogRow(2, 'newest-blog'),
-        blogRow(1, 'oldest-blog'),
-      ]);
-      vi.mocked(findBlogMetadata)
-        .mockImplementationOnce(async () => {
-          await new Promise((resolve) => {
-            setTimeout(resolve, 10);
-          });
-          return metadata('最新の記事', ['feature-1']);
-        })
-        .mockResolvedValueOnce(metadata('古い記事', ['feature-1']));
 
-      const result = await getFeatureBlogMap();
+      const result = buildFeatureBlogMap([
+        blog('newer', ['feature-1']),
+        blog('older', ['feature-1']),
+      ]);
 
       expect(result).toStrictEqual({
-        'feature-1': { slug: 'newest-blog', title: '最新の記事' },
+        'feature-1': { slug: 'newer', title: '題 newer' },
       });
-      warn.mockRestore();
-    });
-
-    it('重複を検出したら警告を出す', async () => {
-      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      vi.mocked(getBlogs).mockResolvedValue([
-        blogRow(2, 'newest-blog'),
-        blogRow(1, 'oldest-blog'),
-      ]);
-      vi.mocked(findBlogMetadata)
-        .mockResolvedValueOnce(metadata('最新の記事', ['feature-1']))
-        .mockResolvedValueOnce(metadata('古い記事', ['feature-1']));
-
-      await getFeatureBlogMap();
-
       expect(warn).toHaveBeenCalledWith(
-        'featureId "feature-1" が複数の記事で指定されています: newest-blog, oldest-blog（newest-blog を使用）',
+        'featureId "feature-1" が複数の記事で指定されています: newer, older（newer を使用）',
       );
       warn.mockRestore();
     });

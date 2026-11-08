@@ -1,12 +1,12 @@
 import { href } from '@k8ordo/framework';
-import { Anchor, Heading } from '@k8ordo/ui';
+import { Anchor, Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import styles from './about-index.module.css';
 
 export const AboutIndex: FC = () => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="xl">
       <Heading level="h2">About</Heading>
       <section className={styles.section}>
         <Heading level="h3">k8oについて</Heading>
@@ -53,6 +53,6 @@ export const AboutIndex: FC = () => (
           を参照してください。
         </p>
       </section>
-    </div>
+    </Stack>
   </div>
 );

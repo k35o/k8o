@@ -73,17 +73,9 @@
       "types": "./src/color/format.ts",
       "default": "./src/color/format.ts"
     },
-    "./color/named-colors": {
-      "types": "./src/color/named-colors.ts",
-      "default": "./src/color/named-colors.ts"
-    },
     "./date/compare": {
       "types": "./src/date/compare.ts",
       "default": "./src/date/compare.ts"
-    },
-    "./date/duration": {
-      "types": "./src/date/duration.ts",
-      "default": "./src/date/duration.ts"
     },
     "./date/format": {
       "types": "./src/date/format.ts",
@@ -93,18 +85,9 @@
       "types": "./src/feed/build-rss.ts",
       "default": "./src/feed/build-rss.ts"
     },
-    "./is-authorized-bearer-request": {
-      "types": "./src/is-authorized-bearer-request.ts",
-      "default": "./src/is-authorized-bearer-request.ts"
-    },
     "./is-internal-route": {
       "types": "./src/is-internal-route.ts",
       "default": "./src/is-internal-route.ts"
-    },
-    "./mdx/frontmatter": {
-      "types": "./src/mdx/frontmatter.ts",
-      "node": "./src/mdx/frontmatter.ts",
-      "default": "./src/mdx/frontmatter.ts"
     },
     "./number/between": {
       "types": "./src/number/between.ts",
@@ -118,14 +101,6 @@
       "types": "./src/og/og-metadata.ts",
       "default": "./src/og/og-metadata.ts"
     },
-    "./push-endpoint": {
-      "types": "./src/push-endpoint/is-allowed-push-endpoint.ts",
-      "default": "./src/push-endpoint/is-allowed-push-endpoint.ts"
-    },
-    "./push-log/history": {
-      "types": "./src/push-log/history.ts",
-      "default": "./src/push-log/history.ts"
-    },
     "./sleep": {
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"
@@ -137,6 +112,10 @@
     "./url/is-public-https-url": {
       "types": "./src/url/is-public-https-url.ts",
       "default": "./src/url/is-public-https-url.ts"
+    },
+    "./url/parse-strict-https-url": {
+      "types": "./src/url/parse-strict-https-url.ts",
+      "default": "./src/url/parse-strict-https-url.ts"
     },
     "./url/safe-fetch": {
       "types": "./src/url/safe-fetch.ts",
@@ -151,9 +130,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "clsx": "2.1.1",
-    "to-vfile": "8.0.0",
-    "vfile-matter": "5.0.1"
+    "clsx": "2.1.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

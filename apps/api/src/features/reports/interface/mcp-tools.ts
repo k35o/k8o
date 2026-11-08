@@ -2,7 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { listReports } from '../application/list-reports';
+import { listReports, REPORT_PAGE_SIZE_MAX } from '../application/list-reports';
 
 export const registerReportTools = (server: McpServer): void => {
   server.registerTool(
@@ -14,7 +14,7 @@ export const registerReportTools = (server: McpServer): void => {
       inputSchema: z.object({
         type: z.string().min(1).optional(),
         page: z.number().int().min(1).default(1),
-        pageSize: z.number().int().min(1).max(20).default(10),
+        pageSize: z.number().int().min(1).max(REPORT_PAGE_SIZE_MAX).default(10),
       }),
       outputSchema: z.object({
         typeCounts: z.array(z.object({ type: z.string(), count: z.number() })),

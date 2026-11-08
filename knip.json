@@ -17,7 +17,6 @@
       ]
     },
     "apps/ai": {
-      "ignoreDependencies": ["chromatic"],
       "entry": ["better-css-modules.config.ts"]
     },
     "packages/oxlint-plugin": {

@@ -2,10 +2,10 @@
 // して interface 間 import を許容する（browser-support/interface/sync.ts と同じ扱い）。
 import { sendPushNotification } from '../../push-notification/interface/commands';
 import { enrichArticleMetadata } from '../application/enrich-articles';
+import { READING_LIST_URL } from '../application/reading-list-url';
 import { summarizeArticles } from '../application/summarize-articles';
 import { syncArticles } from '../application/sync-articles';
 
-const READING_LIST_URL = 'https://k8o.me/reading-list';
 // 関数の上限（Vercel Hobby で300秒）から、締め切りの直前に始めた1件（本文の取得と生成で
 // 最大約70秒）と、通知の分を残す
 const SUMMARY_DEADLINE_MS = 180_000;

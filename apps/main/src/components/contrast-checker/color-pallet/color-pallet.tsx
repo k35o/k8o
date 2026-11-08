@@ -1,4 +1,4 @@
-import { FormControl } from '@k8ordo/ui';
+import { FormControl, Stack } from '@k8ordo/ui';
 import type { ChangeEventHandler, FC } from 'react';
 
 import styles from './color-pallet.module.css';
@@ -18,7 +18,7 @@ export const ColorPallet: FC<Props> = ({ label, color, setColor }) => {
     <FormControl
       label={label}
       renderInput={({ id }) => (
-        <div className={styles.root}>
+        <Stack gap="sm">
           <input
             aria-label={label}
             className={styles.input}
@@ -28,7 +28,7 @@ export const ColorPallet: FC<Props> = ({ label, color, setColor }) => {
             value={color}
           />
           <p className={styles.value}>{color}</p>
-        </div>
+        </Stack>
       )}
     />
   );

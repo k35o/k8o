@@ -1,4 +1,4 @@
-import { AlertIcon } from '@k8ordo/ui';
+import { AlertIcon, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { PaletteSwatch } from '../palette-types/palette-types';
@@ -49,7 +49,7 @@ const ContrastValue: FC<ContrastValueProps> = ({ hex, text, ratio, apca }) => {
 };
 
 export const ContrastTable: FC<Props> = ({ swatches }) => (
-  <div className={styles.root}>
+  <Stack gap="sm">
     <div className={styles.frame}>
       <div className={styles.cards}>
         {swatches.map((swatch) => (
@@ -143,5 +143,5 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
     <p className={styles.note}>
       WCAG比は4.5以上（通常テキストのAA基準）を合格とし、色とアイコンで示しています
     </p>
-  </div>
+  </Stack>
 );

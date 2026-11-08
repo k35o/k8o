@@ -1,3 +1,4 @@
+import { Stack } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import type { FC } from 'react';
 
@@ -26,11 +27,11 @@ export const ReadingListSkeleton: FC = () => (
         <div className={styles.count} />
         <div className={styles.button} />
       </div>
-      <div className={styles.list}>
+      <Stack gap="md">
         {range(0, 8).map((n) => (
           <ReadingCardSkeleton key={`reading-card-skeleton-${n}`} />
         ))}
-      </div>
+      </Stack>
     </div>
   </div>
 );

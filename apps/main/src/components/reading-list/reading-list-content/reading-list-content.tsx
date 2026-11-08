@@ -1,7 +1,14 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Button, Card, Drawer, SubscribeIcon } from '@k8ordo/ui';
+import {
+  Button,
+  Card,
+  Drawer,
+  EmptyState,
+  Stack,
+  SubscribeIcon,
+} from '@k8ordo/ui';
 import {
   startTransition,
   useCallback,
@@ -21,6 +28,7 @@ import {
   readingListState,
   readSourceIds,
 } from '../search-params/search-params';
+import { filterReadings } from './filter-readings';
 
 import styles from './reading-list-content.module.css';
 
@@ -112,24 +120,10 @@ export const ReadingListContent: FC<{
     [update],
   );
 
-  const filteredArticles = useMemo(() => {
-    const lowerQuery = query.toLowerCase();
-    const filtered = articles.filter((article) => {
-      if (lowerQuery && !article.title.toLowerCase().includes(lowerQuery)) {
-        return false;
-      }
-      if (sourceIds.length > 0 && !sourceIds.includes(article.source.id)) {
-        return false;
-      }
-      return true;
-    });
-
-    return [...filtered].toSorted((a, b) => {
-      const diff =
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-      return sortOrder === 'oldest' ? -diff : diff;
-    });
-  }, [articles, query, sourceIds, sortOrder]);
+  const filteredArticles = useMemo(
+    () => filterReadings(articles, { query, sourceIds, sortOrder }),
+    [articles, query, sourceIds, sortOrder],
+  );
 
   const shownCount = useShownCount(filteredArticles.length);
   const shownArticles = filteredArticles.slice(0, shownCount);
@@ -184,17 +178,13 @@ export const ReadingListContent: FC<{
           </div>
         </div>
         {filteredArticles.length === 0 ? (
-          <div className={styles.empty}>
-            <div className={styles.emptyIcon}>
-              <SubscribeIcon size="lg" />
-            </div>
-            <p className={styles.emptyTitle}>条件に一致する記事がありません</p>
-            <p className={styles.emptyText}>
-              検索条件やソースの選択を変更してみてください
-            </p>
-          </div>
+          <EmptyState
+            description="検索条件やソースの選択を変更してみてください"
+            icon={<SubscribeIcon size="lg" />}
+            title="条件に一致する記事がありません"
+          />
         ) : (
-          <div className={styles.list}>
+          <Stack gap="md">
             {shownArticles.map((article) => (
               <ReadingCard
                 description={article.description}
@@ -207,7 +197,7 @@ export const ReadingListContent: FC<{
                 url={article.url}
               />
             ))}
-          </div>
+          </Stack>
         )}
       </div>
       <Drawer

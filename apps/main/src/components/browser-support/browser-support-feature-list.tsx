@@ -2,7 +2,14 @@
 
 import { href } from '@k8ordo/framework';
 import { useAppState } from '@k8ordo/state';
-import { Badge, Checkbox, FormControl, Tabs, TextField } from '@k8ordo/ui';
+import {
+  Badge,
+  Checkbox,
+  FormControl,
+  Stack,
+  Tabs,
+  TextField,
+} from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import { memo, useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
@@ -189,7 +196,7 @@ export const BrowserSupportFeatureList: FC<{
 
   return (
     <section className={styles.root}>
-      <div className={styles.filters}>
+      <Stack gap="md">
         <div className={styles.search}>
           <FormControl
             label="検索"
@@ -237,7 +244,7 @@ export const BrowserSupportFeatureList: FC<{
             checked={recentOnly}
           />
         </div>
-      </div>
+      </Stack>
 
       {selectedYear !== undefined && (
         <Tabs.Root

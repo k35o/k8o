@@ -3,8 +3,8 @@
 import { relations } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { blogComment } from './blog-comment';
-import { feedbacks } from './feedback';
+import { blogComment } from './blog-comment.ts';
+import { feedbacks } from './feedback.ts';
 
 export const comments = sqliteTable(
   'comments',

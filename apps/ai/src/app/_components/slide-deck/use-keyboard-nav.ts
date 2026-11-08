@@ -3,22 +3,15 @@
 import { useEffect, useEffectEvent } from 'react';
 import type { RefObject } from 'react';
 
-const NEXT_KEYS = new Set([
-  'ArrowRight',
-  'ArrowDown',
-  'PageDown',
-  ' ',
-  'Spacebar',
-]);
+const NEXT_KEYS = new Set(['ArrowRight', 'ArrowDown', 'PageDown', ' ']);
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 
-// apps/main の slides の useKeyboardNav を移植したもの（フルスクリーンキーは省略）。
-// デッキ専用ページと違い、同じ画面に会話や多数の操作要素が並ぶため、デッキの中（scopeRef）に
-// フォーカスがあるときだけ扱い、その中のフォーカス可能な要素（ボタン・スクロール可能な
-// ノート欄など）では、Space によるボタン起動や矢印キーでのスクロールといった既定動作に譲る。
+// 同じ画面に会話や多数の操作要素が並ぶため、デッキの中（scopeRef）にフォーカスがあるときだけ
+// 扱い、その中のフォーカス可能な要素（ボタン・スクロール可能なノート欄など）では、Space による
+// ボタン起動や矢印キーでのスクロールといった既定動作に譲る。
 // デッキの要素の onKeyDown で受けないのは、静的な要素にキーのハンドラを付けると a11y の lint に
-// 当たるため。ref オブジェクトで確かめるのは、ハイライトの Suspense が fallback と本体を
-// 出し分けるあいだに、デッキの要素が入れ替わるため
+// 当たるため。ref オブジェクトで確かめるのは、スライドが1枚も無いあいだはデッキの要素が無く、
+// 届いてから現れるため
 export const useKeyboardNav = ({
   scopeRef,
   onNext,

@@ -1,4 +1,4 @@
-import { Heading } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
 import type { ComponentProps, FC } from 'react';
 
 import { JsonLd } from '@/components/site/json-ld/json-ld';
@@ -12,14 +12,14 @@ type Talk = ComponentProps<typeof TalkCard> & { id: number };
 
 export const TalksIndex: FC<{ talks: readonly Talk[] }> = ({ talks }) => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="lg">
       <Heading level="h2">Talks</Heading>
-      <div className={styles.list}>
+      <Stack gap="md">
         <JsonLd data={talkEventsJsonLd(talks)} />
         {talks.map((talk) => (
           <TalkCard key={talk.id} {...talk} />
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   </div>
 );

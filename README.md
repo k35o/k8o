@@ -10,7 +10,6 @@ pnpm i --frozen-lockfile
 # 環境変数設定（URLは https://<name>.k8o.localhost を使う。ポート番号は不要）
 # main はルートの fnox.toml の main の profile から読むので、fnox が要る
 cp apps/api/.env.example apps/api/.env.local
-cp packages/database/.env.example packages/database/.env.local
 
 # ローカルHTTPS用のCA証明書をシステムに登録（初回のみ）
 pnpm portless trust
@@ -23,8 +22,8 @@ export NODE_EXTRA_CA_CERTS=$HOME/.portless/ca.pem
 # 開発サーバー起動（proxy + main/ai/api + DB。DB は未起動なら起動・起動済みなら再利用）
 pnpm run dev
 
-# マイグレーション（pnpm dev 実行中に別ターミナルで実行）
-pnpm run -F @repo/database migrate
+# マイグレーション（pnpm dev 実行中に別ターミナルで実行。ローカルの DB の値は fnox の main の profile から読む）
+fnox exec -P main -- pnpm run -F @repo/database migrate
 ```
 
 ### ローカルDB(turso)

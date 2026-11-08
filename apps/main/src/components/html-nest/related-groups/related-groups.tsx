@@ -1,4 +1,5 @@
 import type { RelatedElement } from '@k8o/html-nest';
+import { Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { NestChip } from '../nest-chip/nest-chip';
@@ -34,12 +35,12 @@ export const RelatedGroups: FC<RelatedGroupsProps> = ({ items, onSelect }) => {
   return (
     <div className={styles.root}>
       {groupByRole(items).map((group) => (
-        <div className={styles.group} key={group.role}>
+        <Stack gap="sm" key={group.role}>
           <p className={styles.groupLabel}>
             {group.role}（{group.items.length}）
           </p>
           <ChipList items={group.items} onSelect={onSelect} />
-        </div>
+        </Stack>
       ))}
     </div>
   );

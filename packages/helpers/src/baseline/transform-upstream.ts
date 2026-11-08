@@ -1,13 +1,13 @@
-import type { BrowserImplementationMap } from '../browser/browser-support';
-import { computeMinVersions } from '../browser/browser-support';
-import { CORE_BROWSERS } from '../browser/detect-browser';
+import type { BrowserImplementationMap } from '../browser/browser-support.ts';
+import { computeMinVersions } from '../browser/browser-support.ts';
+import { CORE_BROWSERS } from '../browser/detect-browser.ts';
 import type {
   BaselineBrowserSupport,
   BaselineDataset,
   BaselineFeature,
   BaselineSupportStatus,
-} from './model';
-import { BASELINE_DATASET_SCHEMA_VERSION } from './model';
+} from './model.ts';
+import { BASELINE_DATASET_SCHEMA_VERSION } from './model.ts';
 
 // 上流(web-features data.json)のフォーマットに触れるのはこのファイルだけ。
 // 上流の破壊的変更はここの変換失敗(throw / skip)として現れ、コンパイルエラーにはならない。

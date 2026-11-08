@@ -417,6 +417,18 @@ describe('公開 API', () => {
         });
       });
 
+      it.each(['Uppercase', 'dot.slug', '%E3%81%82'])(
+        'slug に記事の slug で使わない字（%s）があれば、DB を読まずに 400 を返す',
+        async (slug) => {
+          const res = await post(`/public/blogs/${slug}/views`, {
+            Origin: ORIGIN,
+          });
+
+          expect(res.status).toBe(400);
+          expect(findPublishedBlogId).not.toHaveBeenCalled();
+        },
+      );
+
       it('DB が失敗したら、中身を出さずに 500 を返す', async () => {
         vi.mocked(incrementBlogView).mockRejectedValue(new Error('db secret'));
 

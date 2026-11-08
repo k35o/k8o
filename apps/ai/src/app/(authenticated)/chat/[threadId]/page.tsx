@@ -9,7 +9,7 @@ import { ChatScreen } from '../_components/chat-screen';
 import { ChatLoading } from '../_components/chat-skeleton';
 
 export const metadata: Metadata = {
-  title: 'チャット | k8o AI Studio',
+  title: 'チャット',
 };
 
 const ExistingChat = async ({

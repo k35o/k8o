@@ -6,6 +6,7 @@ import {
   ExternalLinkIcon,
   GitHubIcon,
   Heading,
+  Stack,
 } from '@k8ordo/ui';
 import type { FC } from 'react';
 
@@ -22,10 +23,10 @@ export const ArtifactCard: FC<Artifact> = ({
   tags,
 }) => (
   <article className={styles.root}>
-    <div className={styles.header}>
+    <Stack gap="sm">
       <Heading level="h3">{name}</Heading>
       <p className={styles.description}>{description}</p>
-    </div>
+    </Stack>
 
     <div className={styles.footer}>
       {tags.length > 0 && (

@@ -23,7 +23,6 @@ export const useBroadcastViewerHeartbeat = ({
   sessionId: string;
 }): void => {
   useEffect(() => {
-    if (typeof BroadcastChannel === 'undefined') return undefined;
     if (sessionId === '') return undefined;
     const channel = new BroadcastChannel(lifecycleChannelName(slug, sessionId));
     const send = (): void => {
@@ -46,7 +45,6 @@ export const useClosePresenterOnViewerStop = ({
   sessionId: string;
 }): void => {
   useEffect(() => {
-    if (typeof BroadcastChannel === 'undefined') return undefined;
     if (sessionId === '') return undefined;
     const channel = new BroadcastChannel(lifecycleChannelName(slug, sessionId));
     let timeoutId: number | null = null;

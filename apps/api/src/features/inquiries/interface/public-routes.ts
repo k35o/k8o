@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
-import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
+import { validate } from '../../../shared/http/validate';
 import { insertInquiry } from '../infrastructure/inquiry-repository';
 
 const inquirySchema = z.object({
@@ -10,12 +10,7 @@ const inquirySchema = z.object({
 
 export const inquiryPublicRoutes = new Hono().post(
   '/',
-  validator('json', (value, c) => {
-    const parsed = inquirySchema.safeParse(value);
-    return parsed.success
-      ? parsed.data
-      : c.json({ ok: false, error: 'invalid_request' } as const, 400);
-  }),
+  validate('json', inquirySchema),
   async (c) => {
     await insertInquiry(c.req.valid('json').message);
     return c.body(null, 204);

@@ -1,4 +1,4 @@
-import { Heading } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { PushLogs } from '@/features/push-notification/interface/queries';
@@ -13,15 +13,15 @@ export const NotificationsIndex: FC<{
   pushLogs: PushLogs;
 }> = ({ vapidPublicKey, pushLogs }) => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="xl">
       <Heading level="h2">通知</Heading>
-      <div className={styles.section}>
+      <Stack gap="xl">
         <PushSubscribe vapidPublicKey={vapidPublicKey} />
         <section className={styles.history}>
           <Heading level="h3">通知履歴</Heading>
           <NotificationHistory pushLogs={pushLogs} />
         </section>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   </div>
 );

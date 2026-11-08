@@ -2,8 +2,8 @@ import { db } from '@repo/database';
 import { eq, inArray } from '@repo/database/orm';
 import type { PushLogKind } from '@repo/database/schema';
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
-import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
 
+import { isAllowedPushEndpoint } from './is-allowed-push-endpoint';
 import {
   InvalidSubscriptionKeysError,
   sendWebPush,

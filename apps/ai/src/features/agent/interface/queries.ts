@@ -1,7 +1,5 @@
 import 'server-only';
-import { headers } from 'next/headers';
-
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import { listThreads, loadThread } from '../application/threads';
 import type { LoadedThread, ThreadListItem } from '../application/threads';
@@ -10,7 +8,7 @@ export type { LoadedThread, ThreadListItem } from '../application/threads';
 
 // 一覧が読めなくても、チャットそのものは使えるようにする
 export const listThreadsForRoute = async (): Promise<ThreadListItem[]> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return [];
   }
@@ -25,7 +23,7 @@ export const listThreadsForRoute = async (): Promise<ThreadListItem[]> => {
 export const loadThreadForRoute = async (
   threadId: string,
 ): Promise<LoadedThread | null> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return null;
   }

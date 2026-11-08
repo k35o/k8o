@@ -54,12 +54,6 @@ export default defineConfig({
         },
       },
       {
-        test: {
-          name: { label: 'scripts test', color: 'red' },
-          include: ['scripts/**/*.test.ts'],
-        },
-      },
-      {
         extends: './.storybook/vite.config.ts',
         plugins: [
           storybookTest({

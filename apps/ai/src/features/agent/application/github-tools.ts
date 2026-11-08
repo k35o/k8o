@@ -1,6 +1,8 @@
 import { tool } from 'ai';
 import * as z from 'zod/mini';
 
+import { truncateChars } from '@/shared/truncate-chars';
+
 import {
   COMMENTS_PER_PAGE,
   fetchGithubContent,
@@ -39,9 +41,6 @@ const toChars = (text: string): string[] => Array.from(text);
 
 const firstChars = (text: string, max: number): string =>
   toChars(text).slice(0, max).join('');
-
-const shorten = (text: string, max: number): string =>
-  toChars(text).length <= max ? text : `${firstChars(text, max)}…`;
 
 const formatCount = (count: number): string => count.toLocaleString('en-US');
 
@@ -94,7 +93,7 @@ const repoLine = (repo: GithubRepo): string => {
     ...(repo.isArchived ? ['archived'] : []),
   ];
   const description = repo.description
-    ? `: ${shorten(repo.description, MAX_REPO_DESCRIPTION_CHARS)}`
+    ? `: ${truncateChars(repo.description, MAX_REPO_DESCRIPTION_CHARS)}`
     : '';
   return `- ${repo.name}（${traits.join('・')}）${description}`;
 };
@@ -230,7 +229,7 @@ const kindOf = (item: { isPullRequest: boolean }): string =>
   item.isPullRequest ? 'PR' : 'issue';
 
 const issueLine = (item: GithubIssueSummary): string =>
-  `- ${item.repo}#${item.number.toString()} [${kindOf(item)}・${item.state}] ${shorten(item.title, MAX_ISSUE_TITLE_CHARS)}（@${item.author}・${item.authorAssociation}・コメント ${item.comments.toString()}・更新 ${item.updatedAt}）`;
+  `- ${item.repo}#${item.number.toString()} [${kindOf(item)}・${item.state}] ${truncateChars(item.title, MAX_ISSUE_TITLE_CHARS)}（@${item.author}・${item.authorAssociation}・コメント ${item.comments.toString()}・更新 ${item.updatedAt}）`;
 
 const formatIssueResults = (
   input: SearchInput & { query: string | undefined },

@@ -34,3 +34,9 @@ type PlaygroundSectionBase = {
 
 export type PlaygroundSection = PlaygroundSectionBase &
   ({ type: 'blog'; slug: string } | { type: 'standalone' });
+
+// <id>/index.ts は 1 つのセクションを export する。export の名前がセクションごとに違うので、値から見分ける
+export const isPlaygroundSection = (
+  value: unknown,
+): value is PlaygroundSection =>
+  typeof value === 'object' && value !== null && 'demos' in value;

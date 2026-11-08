@@ -1,10 +1,11 @@
-import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { describe, expect, it, vi } from 'vitest';
+
+import { findFrontmatter } from '@/shared/mdx/frontmatter';
 
 import { slidePath } from './path';
 import { findSlideMetadata } from './slide';
 
-vi.mock('@repo/helpers/mdx/frontmatter');
+vi.mock('@/shared/mdx/frontmatter');
 vi.mock('./path');
 
 describe('slide service', () => {

@@ -61,12 +61,10 @@ export const radiusMakerState = definePageState('radius-maker', {
   }),
 });
 
-// 外に貼られたリンクの読みを nuqs の parseAsInteger と between にそろえる（?w=10 は 80、?w=100.7 は 100、
-// ?w= は既定）
+// 整数にならない値は既定にし、範囲の外は端に寄せる（?w=10 は 80）
 const readSize = (value: string): number => {
-  // oxlint-disable-next-line radix -- parseAsInteger と同じく radix を渡さず、0x100 を 256 と読む
-  const parsed = Number.parseInt(value);
-  return Number.isNaN(parsed)
+  const parsed = Number(value);
+  return value === '' || !Number.isInteger(parsed)
     ? PREVIEW_SIZE.default
     : between(parsed, PREVIEW_SIZE.min, PREVIEW_SIZE.max);
 };

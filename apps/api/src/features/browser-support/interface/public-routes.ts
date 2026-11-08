@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
-import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
+import { validate } from '../../../shared/http/validate';
 import { getBrowserSupportHealth } from '../application/browser-support-health';
 import {
   findFeatureStatus,
@@ -23,12 +23,7 @@ export const browserSupportPublicRoutes = new Hono()
   )
   .get(
     '/features/:featureId',
-    validator('param', (value, c) => {
-      const parsed = featureParamSchema.safeParse(value);
-      return parsed.success
-        ? parsed.data
-        : c.json({ ok: false, error: 'invalid_request' } as const, 400);
-    }),
+    validate('param', featureParamSchema),
     async (c) => {
       const feature = await findFeatureStatus(c.req.valid('param').featureId);
       // 無いことはデータで決まる答えなので、200 と同じだけ CDN に持たせ、DB に届かせない

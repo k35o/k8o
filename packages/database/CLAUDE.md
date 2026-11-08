@@ -2,15 +2,6 @@
 
 Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供する。
 
-## Conditional Export Maps による環境切り替え
-
-`package.json` の `exports` で実行環境ごとにクライアントを切り替えている:
-
-- `storybook` → `__mocks__/db.ts`（モックDB）
-- `node` / `default` → 実DBクライアント
-
-新規モジュールを追加するときは、Storybook 実行時にDBへ接続しないよう、必要に応じて `__mocks__/` 側にも対応する mock を用意すること。
-
 ## 接続
 
 `K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。Vercel には、実行時に DB を読む api の分（本番と preview の URL とトークン）だけを置く。main は実行時に DB を読まない。DB は Turso の default グループにあり、`turso db tokens invalidate` は使えない。失効は `turso group tokens invalidate default` で、ai の DB のトークンもまとめて失効する（starter はグループが1つ）。
@@ -21,7 +12,7 @@ Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供す�
 
 ```bash
 pnpm run -F @repo/database generate  # スキーマの変更からマイグレーションを作る（コミットする）
-pnpm run -F @repo/database migrate   # ローカルの DB に流す
+fnox exec -P main -- pnpm run -F @repo/database migrate   # ローカルの DB に流す（値は fnox の main の profile）
 ```
 
 本番 DB には、`.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。preview DB には、main の deploy ジョブがビルドの前に流す（preview の Environment は承認が要るので、別ジョブにすると承認が2回になる）。Vercel のビルドでは generate も migrate もしない。コミットされていないマイグレーションは CI（`ci.yml`）が落とす。
@@ -50,6 +41,6 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (
 
 ## import 境界
 
-`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とする。`app/` や `features/*/interface` から直接読まない。
+`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とする。route や `features/*/interface` から直接読まない。k8o の DB を読むのは api だけで、main のビルドは `@repo/api/build-data` の関数を呼ぶ。
 
 この境界は oxc カスタムルール `k8o/database-import-boundary`（`packages/oxlint-plugin`）で機械的に強制される。許可される場所の全体像はルートの CLAUDE.md を参照。

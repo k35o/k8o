@@ -1,8 +1,4 @@
-import { loadEnvConfig } from '@next/env';
 import { defineConfig } from 'drizzle-kit';
-
-const projectDir = process.cwd();
-loadEnvConfig(projectDir);
 
 const authToken = process.env['AI_TURSO_AUTH_TOKEN'];
 

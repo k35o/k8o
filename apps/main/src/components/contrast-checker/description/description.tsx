@@ -1,11 +1,11 @@
-import { Anchor } from '@k8ordo/ui';
+import { Anchor, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import styles from './description.module.css';
 
 export const Description: FC = () => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="lg">
       <div className={styles.section}>
         <p className={styles.title}>
           <Anchor href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</Anchor>
@@ -47,6 +47,6 @@ export const Description: FC = () => (
           </p>
         </div>
       </div>
-    </div>
+    </Stack>
   </div>
 );

@@ -1,7 +1,6 @@
-import { relations } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { user } from './auth-schema';
+import { user } from './auth-schema.ts';
 
 // 利用の行を書いた経路。DB には、この型に無い 'ui-studio'・'slides' の行もある。SQLite の text の enum は型だけで、
 // 行を検査しないため
@@ -37,10 +36,3 @@ export const aiUsages = sqliteTable(
     index('ai_usages_created_at_idx').on(table.createdAt),
   ],
 );
-
-export const aiUsagesRelations = relations(aiUsages, ({ one }) => ({
-  user: one(user, {
-    fields: [aiUsages.userId],
-    references: [user.id],
-  }),
-}));

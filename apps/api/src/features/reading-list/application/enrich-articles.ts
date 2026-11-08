@@ -1,11 +1,11 @@
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
-import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
+import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 
-import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import {
   findEnrichTargets,
   updateArticleOgById,
 } from '../infrastructure/reading-list-repository';
+import { readingWindowStart } from './reading-window';
 
 const OG_CONCURRENCY = 5;
 const BACKFILL_LIMIT = 50;
@@ -15,7 +15,7 @@ type EnrichResult = {
 };
 
 export async function enrichArticleMetadata(): Promise<EnrichResult> {
-  const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS).toISOString();
+  const ninetyDaysAgo = readingWindowStart(Date.now()).toISOString();
 
   const targets = await findEnrichTargets(ninetyDaysAgo, BACKFILL_LIMIT);
 

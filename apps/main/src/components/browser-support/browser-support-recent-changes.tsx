@@ -1,4 +1,4 @@
-import { Badge, Heading } from '@k8ordo/ui';
+import { Badge, Heading, Stack } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -60,7 +60,7 @@ export const BrowserSupportRecentChanges: FC<{
   return (
     <section className={styles.root}>
       <Heading level="h3">最近の更新</Heading>
-      <div className={styles.groups}>
+      <Stack gap="md">
         {groupBySyncBatch(changes).map((group) => (
           <div
             className={styles.group}
@@ -93,7 +93,7 @@ export const BrowserSupportRecentChanges: FC<{
             </ul>
           </div>
         ))}
-      </div>
+      </Stack>
     </section>
   );
 };

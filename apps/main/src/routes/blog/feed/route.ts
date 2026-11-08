@@ -1,8 +1,9 @@
 import { buildRssFeed } from '@repo/helpers/feed/build-rss';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
+import { SITE_URL } from '@/shared/site/site-url';
 
-const BLOG_URL = 'https://k8o.me/blog';
+const BLOG_URL = `${SITE_URL}/blog`;
 
 export async function GET(): Promise<Response> {
   const blogs = await getBlogContents();

@@ -186,11 +186,9 @@ export const myFeatureSection: PlaygroundSection = {
 };
 ```
 
-#### sections.ts・ids.ts への追加
+#### 一覧への登録
 
-- `apps/main/src/playgrounds/sections.ts` に `import { myFeatureSection } from './{feature-name}';` を追加し、`playgroundSections` 配列に追加（`/playgrounds` の一覧・llms.txt・sitemap が使う）
-- `apps/main/src/playgrounds/ids.ts` の `playgroundIds` に、セクションの `id` を足す（`/playgrounds/{id}` のページを挙げる。`sections.ts` と食い違うと `ids.test.ts` が落ちる）
-`/playgrounds/{id}` のページと記事の `<PlaygroundEmbed>` は、`apps/main/src/components/playgrounds/load-section.ts` が `src/playgrounds/{id}/index.ts` を glob で id ごとに読むので、ディレクトリ名とセクションの `id` をそろえる。無い `sectionId` を記事が渡すと、ビルドの描画で落ちる。
+一覧に書き足すものは無い。`/playgrounds` の一覧・llms.txt・sitemap（`apps/main/src/playgrounds/sections.ts`）と、`/playgrounds/{id}` のページ・記事の `<PlaygroundEmbed>`（`apps/main/src/components/playgrounds/load-section.ts`）は、どれも `src/playgrounds/{id}/index.ts` を glob で集める。ビルドの paths もディレクトリの名前から作るので、ディレクトリ名とセクションの `id` をそろえる（食い違うと `load-section.test.ts` が落ちる）。無い `sectionId` を記事が渡すと、ビルドの描画で落ちる。
 
 ## データベースマイグレーション
 
@@ -264,7 +262,6 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] `<LinkCard>` を使う場合: `pnpm run -F main generate:link-card-metadata` を流し（「OGP が取れなかった」が出たら時間をおいて流し直す）、`link-card-metadata.json` をコミット
 - [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
-- [ ] `playgrounds/sections.ts`・`playgrounds/ids.ts` 更新（必要な場合）
 
 ### データベース
 

@@ -14,8 +14,7 @@ export const browserSupportListState = definePageState('browser-support', {
   }),
 });
 
-export const readFlag = (value: string): boolean =>
-  value.toLowerCase() === 'true';
+export const readFlag = (value: string): boolean => value === 'true';
 
 export const readYear = (
   year: string,

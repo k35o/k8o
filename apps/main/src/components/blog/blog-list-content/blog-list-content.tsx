@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { BlogIcon, TextField } from '@k8ordo/ui';
+import { BlogIcon, EmptyState, Stack, TextField } from '@k8ordo/ui';
 import { useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
@@ -34,7 +34,7 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
   );
 
   return (
-    <div className={styles.root}>
+    <Stack gap="lg">
       <div className={styles.toolbar}>
         <div className={styles.search}>
           <TextField
@@ -54,15 +54,13 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
         </p>
       </div>
       {filteredCount === 0 ? (
-        <div className={styles.empty}>
-          <div className={styles.emptyIcon}>
-            <BlogIcon size="lg" />
-          </div>
-          <p className={styles.emptyTitle}>条件に一致する記事がありません</p>
-          <p className={styles.emptyText}>検索条件を変更してみてください</p>
-        </div>
+        <EmptyState
+          description="検索条件を変更してみてください"
+          icon={<BlogIcon size="lg" />}
+          title="条件に一致する記事がありません"
+        />
       ) : (
-        <div className={styles.years}>
+        <Stack gap="xl">
           {yearGroups.map((group) => (
             <YearSection
               blogs={group.blogs}
@@ -70,8 +68,8 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
               year={group.year}
             />
           ))}
-        </div>
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 };

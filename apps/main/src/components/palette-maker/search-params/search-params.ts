@@ -33,14 +33,13 @@ export const paletteMakerState = definePageState('palette-maker', {
   }),
 });
 
-// 外に貼られたリンクの読みを nuqs の parseAsFloat と between にそろえる（?h=400 は 360、?h=12abc は 12、
-// ?h= は既定）
+// 数にならない値は既定にし、範囲の外は端に寄せる（?h=400 は 360）
 const readFloat = (
   value: string,
   range: { min: number; max: number; default: number },
 ): number => {
-  const parsed = Number.parseFloat(value);
-  return Number.isNaN(parsed)
+  const parsed = Number(value);
+  return value === '' || Number.isNaN(parsed)
     ? range.default
     : between(parsed, range.min, range.max);
 };

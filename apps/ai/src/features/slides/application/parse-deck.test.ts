@@ -135,6 +135,14 @@ describe('extractCodeBlocks', () => {
       );
       expect(blocks).toStrictEqual([{ code: '```ts\nx\n```', lang: 'md' }]);
     });
+
+    // 描く側（react-markdown）は info 文字列の最初の語だけを language-* の class にし、それでハイライトを引く
+    it('info 文字列に言語のあとの語があっても、最初の語を言語にする', () => {
+      const blocks = extractCodeBlocks(
+        ['```ts title="a.ts"', 'const a = 1;', '```'].join('\n'),
+      );
+      expect(blocks).toStrictEqual([{ code: 'const a = 1;', lang: 'ts' }]);
+    });
   });
 });
 

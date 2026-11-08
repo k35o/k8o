@@ -9,8 +9,6 @@ const ignorePatterns = [
   '**/*.md',
   '**/*.mdx',
   '.claude/worktrees/**',
-  // CI用スクリプト。tsconfig外の .mjs のため型情報前提のルールが誤検知する
-  '.github/scripts/**',
   // カスタムルールのテスト用fixture。意図的な違反コードを含む
   'packages/oxlint-plugin/tests/fixtures/**',
 ];
@@ -73,9 +71,9 @@ export default defineConfig({
               patterns: [
                 drizzleImportPattern,
                 {
-                  group: ['next', 'next/**', 'next-themes', '@/**'],
+                  group: ['@/**'],
                   message:
-                    '記事とデモは Next とアプリの中に依らずに描けるように保つ。Next と @/ を import しない。',
+                    '記事とデモはアプリの中に依らずに描けるように保つ。@/ を import しない。',
                 },
               ],
             },
@@ -88,6 +86,13 @@ export default defineConfig({
         rules: {
           '@next/next/no-head-element': 'off',
           '@next/next/no-img-element': 'off',
+        },
+      },
+      {
+        // 共有パッケージと main の scripts は Node が TS のまま読むので、相対 import に拡張子を書く
+        files: ['packages/**', 'apps/main/scripts/**'],
+        rules: {
+          'import/extensions': ['error', 'always', { ignorePackages: true }],
         },
       },
       { files: [...TEST_GLOBS], ...test },

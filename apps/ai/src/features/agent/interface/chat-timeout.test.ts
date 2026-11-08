@@ -7,7 +7,7 @@ import {
   selectCostSinceMicroUsd,
   updateUsageCost,
 } from '@/features/usage/infrastructure/usage-repository';
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 import { getGenerationModel } from '@/shared/claude/claude-provider';
 
 import type { AgentUIMessage } from '../application/agent-message';
@@ -29,8 +29,8 @@ vi.mock('../application/agent-run', async (importOriginal) => ({
 }));
 vi.mock('server-only', () => ({}));
 vi.mock('next/server', () => ({ after: vi.fn() }));
-vi.mock('@/shared/auth/require-allowed-session', () => ({
-  requireAllowedSession: vi.fn(),
+vi.mock('@/shared/auth/allowed-session', () => ({
+  getAllowedSession: vi.fn(),
 }));
 vi.mock('@/shared/claude/claude-provider', () => ({
   getGenerationModel: vi.fn(),
@@ -98,7 +98,7 @@ beforeEach(() => {
       afterTasks.push(task);
     }
   });
-  vi.mocked(requireAllowedSession).mockResolvedValue({ userId: 'u1' });
+  vi.mocked(getAllowedSession).mockResolvedValue({ userId: 'u1' });
   vi.mocked(insertUsageWithinLimits).mockResolvedValue(7);
   vi.mocked(selectCostSinceMicroUsd).mockResolvedValue(0);
   vi.mocked(updateUsageCost).mockResolvedValue();

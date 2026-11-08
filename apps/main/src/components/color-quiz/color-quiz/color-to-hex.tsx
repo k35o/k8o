@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button } from '@k8ordo/ui';
+import { Badge, Button, Stack } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
@@ -27,7 +27,7 @@ export const ColorToHex: FC = () => {
   });
 
   return (
-    <div className={styles.root}>
+    <Stack gap="lg">
       {/* 正誤と正解の hex をスクリーンリーダーに通知する永続ライブリージョン */}
       <output className={styles.srOnly}>
         {phase === 'result'
@@ -159,6 +159,6 @@ export const ColorToHex: FC = () => {
           次の問題へ
         </Button>
       )}
-    </div>
+    </Stack>
   );
 };

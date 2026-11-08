@@ -1,4 +1,5 @@
 import type { PublicApi } from '@repo/api/public';
+import { sleep } from '@repo/helpers/sleep';
 import { hc, parseResponse } from 'hono/client';
 import type { ClientResponse } from 'hono/client';
 
@@ -31,11 +32,6 @@ const waitForOnline = (): Promise<void> =>
       },
       { once: true },
     );
-  });
-
-const sleep = (ms: number): Promise<void> =>
-  new Promise((resolve) => {
-    setTimeout(resolve, ms);
   });
 
 const resendAfterReconnect = async (

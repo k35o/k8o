@@ -21,12 +21,6 @@
   }
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-}
-
 .description {
   color: var(--color-fg-mute);
   font-size: var(--font-size-sm);

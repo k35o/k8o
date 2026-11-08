@@ -5,6 +5,10 @@
   "description": "k8o API (cron jobs, owner MCP, owner API, and public routes)",
   "type": "module",
   "exports": {
+    "./build-data": {
+      "types": "./src/build-data.ts",
+      "default": "./src/build-data.ts"
+    },
     "./public": {
       "types": "./src/public.ts"
     },

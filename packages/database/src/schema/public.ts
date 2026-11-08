@@ -4,11 +4,11 @@
 export {
   ARTICLE_SOURCE_TYPES,
   type ArticleSourceType,
-} from './article-sources';
-export type { PushLogKind } from './push-logs';
-export type { BrowserSupportDatasetState } from './browser-support-datasets';
-export type { BrowserSupportChangeStatus } from './browser-support-feature-changes';
+} from './article-sources.ts';
+export type { PushLogKind } from './push-logs.ts';
+export type { BrowserSupportDatasetState } from './browser-support-datasets.ts';
+export type { BrowserSupportChangeStatus } from './browser-support-feature-changes.ts';
 export type {
   BrowserSupportSyncResult,
   BrowserSupportSyncTrigger,
-} from './browser-support-sync-runs';
+} from './browser-support-sync-runs.ts';

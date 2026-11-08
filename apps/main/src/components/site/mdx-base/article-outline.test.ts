@@ -2,23 +2,18 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 
-import remarkPreset from '@repo/mdx-preset/remark';
-import type { Nodes, RootContent } from 'mdast';
-import { remark } from 'remark';
-import remarkMdx from 'remark-mdx';
+import type { Nodes } from 'mdast';
 import { describe, expect, it } from 'vitest';
+
+import { mdxParser, stringAttribute } from '@/shared/mdx/mdx-tree';
 
 type OutlineItem =
   | { kind: 'section'; level: number; text: string }
   | { kind: 'playground'; level: number | undefined; text: string };
 
-type MdxJsxFlowElement = Extract<RootContent, { type: 'mdxJsxFlowElement' }>;
-
 const blogDir = join(cwd(), 'src/content/blog');
 
 const slugs = readdirSync(blogDir).filter((name) => !name.startsWith('.'));
-
-const parser = remark().use(remarkMdx).use(remarkPreset);
 
 const plainText = (node: Nodes): string =>
   'value' in node
@@ -26,22 +21,6 @@ const plainText = (node: Nodes): string =>
     : 'children' in node
       ? node.children.map((child) => plainText(child)).join('')
       : '';
-
-const stringAttribute = (
-  node: MdxJsxFlowElement,
-  name: string,
-): string | undefined => {
-  for (const attribute of node.attributes) {
-    if (
-      attribute.type === 'mdxJsxAttribute' &&
-      attribute.name === name &&
-      typeof attribute.value === 'string'
-    ) {
-      return attribute.value;
-    }
-  }
-  return undefined;
-};
 
 const headingLevelNumber = (value: string | undefined): number | undefined => {
   const digit = value?.match(/^h([1-6])$/u)?.[1];
@@ -81,7 +60,7 @@ const outlineItems = (node: Nodes): OutlineItem[] => {
 const articleOutline = (slug: string): OutlineItem[] => [
   { kind: 'section', level: 2, text: '記事の題' },
   ...outlineItems(
-    parser.parse(readFileSync(join(blogDir, slug, 'article.mdx'), 'utf8')),
+    mdxParser.parse(readFileSync(join(blogDir, slug, 'article.mdx'), 'utf8')),
   ),
 ];
 

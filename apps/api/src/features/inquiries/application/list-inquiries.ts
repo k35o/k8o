@@ -1,6 +1,9 @@
 import { toUntrustedText } from '../../../shared/text/untrusted-text';
 import { findInquiries } from '../infrastructure/inquiry-repository';
 
+// MCP とオーナー API が受ける 1 ページの件数の上限
+export const INQUIRY_PAGE_SIZE_MAX = 50;
+
 // 投稿時の上限（お問い合わせ255字・フィードバック500字）より大きく取り、切り詰めは保険にとどめる
 const MESSAGE_MAX_LENGTH = 1000;
 

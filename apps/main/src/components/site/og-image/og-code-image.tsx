@@ -1,10 +1,12 @@
 import { highlightCode } from '@repo/code-highlight/tokenize';
 import { loadDefaultJapaneseParser } from 'budoux';
 
-import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
 import { getJellyfishLegsDataUrl } from '@/shared/og/get-jellyfish-legs-data-url';
-import { getJetBrainsMonoFont } from '@/shared/og/get-jetbrains-mono-font';
-import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
+import {
+  getIconDataUrl,
+  getJetBrainsMonoFont,
+  getMPlus2Font,
+} from '@/shared/og/og-assets';
 import { renderOgPng } from '@/shared/og/render-og-png';
 
 type OgCodeImageProps = {

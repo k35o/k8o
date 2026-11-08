@@ -1,6 +1,9 @@
 {
-  "extends": "@repo/typescript-config/next.json",
+  "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "allowJs": true,
+    "jsx": "preserve",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -16,5 +19,5 @@
     ".storybook/*.tsx",
     "__generated__"
   ],
-  "exclude": ["node_modules", "sandbox-template"]
+  "exclude": ["node_modules"]
 }

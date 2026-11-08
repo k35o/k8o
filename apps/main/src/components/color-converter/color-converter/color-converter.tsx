@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@k8ordo/ui';
+import { Card, Stack } from '@k8ordo/ui';
 import { parseColor } from '@repo/helpers/color/parse';
 import type { Color } from '@repo/helpers/color/spaces';
 import { useState } from 'react';
@@ -23,7 +23,7 @@ export const ColorConverter = () => {
   const [color, setColor] = useState<Color>(INITIAL_COLOR);
 
   return (
-    <div className={styles.root}>
+    <Stack gap="lg">
       <ColorTip color={color} />
       <Card>
         <div className={styles.cardBody}>
@@ -36,6 +36,6 @@ export const ColorConverter = () => {
         </div>
       </Card>
       <OutputTable color={color} />
-    </div>
+    </Stack>
   );
 };

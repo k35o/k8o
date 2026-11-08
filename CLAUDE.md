@@ -9,6 +9,7 @@ pnpm run dev                  # 開発（ローカルDB含む全パッケージ�
 pnpm run build
 pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
 pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）
+pnpm run typegen              # route と CSS Modules の型を書く（check の前に要る。type-check は turbo が先に流す）
 pnpm run type-check
 pnpm run ls-lint              # ファイル名規約チェック
 pnpm run test                                             # 全テスト
@@ -39,7 +40,7 @@ packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール�
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。
 
-DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。route と部品（ai の `app/`、main の `routes/`・`components/`）や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（認証の実装の置き場で、セッションを確かめるゲートと Better Auth の route handler が Better Auth のインスタンスを読む）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
+main は k8o の DB を直に読まず、ビルドで api の `@repo/api/build-data` の関数を呼ぶ。DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。route と部品（ai の `app/`、main の `routes/`・`components/`）や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（認証の実装の置き場で、セッションを確かめるゲートと Better Auth の route handler が Better Auth のインスタンスを読む）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
 
 ## コーディング規約
 

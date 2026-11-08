@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Heading } from '@k8ordo/ui';
+import { Alert, Heading, Stack } from '@k8ordo/ui';
 import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { useEffect, useState } from 'react';
@@ -46,7 +46,7 @@ export const CheckContrast: FC = () => {
   }, [contrast, apcaLc]);
 
   return (
-    <div className={styles.root}>
+    <Stack gap="xl">
       <output className={styles.srOnly}>{announcement}</output>
       <div className={styles.palettes}>
         <ColorPallet color={baseColor} label="背景色" setColor={setBaseColor} />
@@ -93,6 +93,6 @@ export const CheckContrast: FC = () => {
         <Heading level="h3">APCAによる判定</Heading>
         <ApcaResultTable lc={apcaLc} />
       </section>
-    </div>
+    </Stack>
   );
 };

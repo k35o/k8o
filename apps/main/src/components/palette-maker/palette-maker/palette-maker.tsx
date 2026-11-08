@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Heading } from '@k8ordo/ui';
+import { Card, Heading, Stack } from '@k8ordo/ui';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 
@@ -29,7 +29,7 @@ const Content: FC = () => {
   const swatches = useMemo(() => generatePalette(hue, chroma), [hue, chroma]);
 
   return (
-    <div className={styles.root} {...commitProps}>
+    <Stack gap="lg" {...commitProps}>
       <Card>
         <div className={styles.panel}>
           <PalettePreview swatches={swatches} />
@@ -49,12 +49,12 @@ const Content: FC = () => {
         <Heading level="h3">コントラスト詳細</Heading>
         <ContrastTable swatches={swatches} />
       </section>
-    </div>
+    </Stack>
   );
 };
 
 // static mode の HTML は URL の state を既定値で描くので、HTML に描くと URL の値で開いたときに既定の色が
-// 一度出る。Next と同じく本文はブラウザでだけ描く
+// 一度出る。本文はブラウザでだけ描く
 export const PaletteMaker: FC = () => (
   <BrowserOnly>
     <Content />

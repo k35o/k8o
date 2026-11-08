@@ -3,8 +3,8 @@ import * as z from 'zod/mini';
 
 import { SORT_VALUES } from '../constants/constants';
 
-// source は文字列のまま持ち、読むときに解く。z.array は ?source=1&source=2 の繰り返しで読み書きし、
-// 外に貼られた nuqs の書き方の ?source=1,2 を読めない
+// source は書くときと同じカンマ区切りの文字列で持ち、読むときに解く。z.array は ?source=1&source=2 の
+// 繰り返しで読み書きし、カンマ区切りの URL を読めない
 export const readingListState = definePageState('reading-list', {
   url: z.object({
     q: z._default(z.string(), ''),
@@ -17,7 +17,6 @@ export const readSourceIds = (source: string): number[] =>
   source === ''
     ? []
     : source.split(',').flatMap((item) => {
-        // oxlint-disable-next-line radix -- parseAsInteger と同じく radix を渡さず、0x10 を 16 と読む
-        const id = Number.parseInt(item);
-        return Number.isNaN(id) ? [] : [id];
+        const id = Number(item);
+        return item === '' || !Number.isInteger(id) ? [] : [id];
       });

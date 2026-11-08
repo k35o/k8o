@@ -1,26 +1,17 @@
+import { getPublishedSlides } from '@repo/api/build-data';
+import type { PublishedSlide } from '@repo/api/build-data';
 import { describe, expect, it, vi } from 'vitest';
 
-import { findPublishedSlideRows } from '../infrastructure/slide-repository';
 import { findSlideMetadata } from './slide';
 import { getSlides } from './slides';
 
-vi.mock('../infrastructure/slide-repository', () => ({
-  findPublishedSlideRows: vi.fn(),
-}));
+vi.mock('@repo/api/build-data', () => ({ getPublishedSlides: vi.fn() }));
 vi.mock('./slide');
 
-type SlideRow = Awaited<ReturnType<typeof findPublishedSlideRows>>[number];
-
-const row = (id: number, slug: string, tagNames: string[]): SlideRow => ({
+const row = (id: number, slug: string, tags: string[]): PublishedSlide => ({
   id,
   slug,
-  published: true,
-  createdAt: '2026-01-01T00:00:00.000Z',
-  slideTag: tagNames.map((name, index) => ({
-    slideId: id,
-    tagId: index + 1,
-    tag: { id: index + 1, name },
-  })),
+  tags,
 });
 
 const metadata = (title: string) => ({
@@ -33,7 +24,7 @@ const metadata = (title: string) => ({
 describe('getSlides', () => {
   describe('正常系', () => {
     it('公開スライドを、タグの名前と MDX のメタデータつきで一覧の並びのまま返す', async () => {
-      vi.mocked(findPublishedSlideRows).mockResolvedValue([
+      vi.mocked(getPublishedSlides).mockResolvedValue([
         row(2, 'slide-b', ['TypeScript', 'CSS']),
         row(1, 'slide-a', []),
       ]);
@@ -68,7 +59,7 @@ describe('getSlides', () => {
 
   describe('異常系', () => {
     it('DB では公開済みでも MDX が無いスライドは挙げない', async () => {
-      vi.mocked(findPublishedSlideRows).mockResolvedValue([
+      vi.mocked(getPublishedSlides).mockResolvedValue([
         row(1, 'slide-a', []),
         row(2, 'missing-slide', []),
       ]);
@@ -85,7 +76,7 @@ describe('getSlides', () => {
 
   describe('エッジケース', () => {
     it('公開スライドが無ければ空の配列を返す', async () => {
-      vi.mocked(findPublishedSlideRows).mockResolvedValue([]);
+      vi.mocked(getPublishedSlides).mockResolvedValue([]);
 
       const result = await getSlides();
 

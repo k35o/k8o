@@ -1,6 +1,6 @@
-import { convertHexToRgb } from './hex-rgb';
-import type { Rgb } from './hex-rgb';
-import { toLinear } from './spaces';
+import { convertHexToRgb } from './hex-rgb.ts';
+import type { Rgb } from './hex-rgb.ts';
+import { toLinear } from './spaces.ts';
 
 const calcLuminance = (rgbColor: Rgb) => {
   const [r8, g8, b8] = rgbColor;

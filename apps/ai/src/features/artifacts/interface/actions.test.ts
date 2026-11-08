@@ -2,7 +2,7 @@ import { refresh, revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import {
   changeSharedVersion,
@@ -24,11 +24,8 @@ vi.mock('next/cache', () => ({
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
-vi.mock('next/headers', () => ({
-  headers: vi.fn(() => Promise.resolve(new Headers())),
-}));
-vi.mock('@/shared/auth/require-allowed-session', () => ({
-  requireAllowedSession: vi.fn(),
+vi.mock('@/shared/auth/allowed-session', () => ({
+  getAllowedSession: vi.fn(),
 }));
 vi.mock('../application/artifact-shares', () => ({
   changeSharedVersion: vi.fn(),
@@ -42,7 +39,7 @@ vi.mock('../application/artifacts', () => ({
 const ARTIFACT_ID = 'a1b2c3d4e5f6';
 
 beforeEach(() => {
-  vi.mocked(requireAllowedSession).mockResolvedValue({ userId: 'u1' });
+  vi.mocked(getAllowedSession).mockResolvedValue({ userId: 'u1' });
 });
 
 describe('publishArtifactVersionAction', () => {
@@ -64,7 +61,7 @@ describe('publishArtifactVersionAction', () => {
 
   describe('異常系', () => {
     it('未許可の利用者なら、公開せず描き直さずに null を返す', async () => {
-      vi.mocked(requireAllowedSession).mockResolvedValue(null);
+      vi.mocked(getAllowedSession).mockResolvedValue(null);
 
       await expect(publishArtifactVersionAction(ARTIFACT_ID, 2)).resolves.toBe(
         null,
@@ -103,7 +100,7 @@ describe('changeSharedVersionAction', () => {
     });
 
     it('未許可の利用者なら、変えず描き直さずに failed を返す', async () => {
-      vi.mocked(requireAllowedSession).mockResolvedValue(null);
+      vi.mocked(getAllowedSession).mockResolvedValue(null);
 
       await expect(changeSharedVersionAction(ARTIFACT_ID, 2)).resolves.toBe(
         'failed',
@@ -137,7 +134,7 @@ describe('unpublishArtifactAction', () => {
     });
 
     it('未許可の利用者なら、取り消さず描き直さずに false を返す', async () => {
-      vi.mocked(requireAllowedSession).mockResolvedValue(null);
+      vi.mocked(getAllowedSession).mockResolvedValue(null);
 
       await expect(unpublishArtifactAction(ARTIFACT_ID)).resolves.toBe(false);
       expect(unpublish).not.toHaveBeenCalled();
@@ -185,7 +182,7 @@ describe('forkArtifactVersionAction', () => {
     });
 
     it('未許可の利用者なら、フォークせず移らずに戻る', async () => {
-      vi.mocked(requireAllowedSession).mockResolvedValue(null);
+      vi.mocked(getAllowedSession).mockResolvedValue(null);
 
       await expect(
         forkArtifactVersionAction(ARTIFACT_ID, 2),

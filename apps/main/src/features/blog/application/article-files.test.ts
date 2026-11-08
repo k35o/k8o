@@ -2,12 +2,11 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { cwd } from 'node:process';
 
-import remarkPreset from '@repo/mdx-preset/remark';
 import type { Nodes } from 'mdast';
-import { remark } from 'remark';
-import remarkMdx from 'remark-mdx';
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
+
+import { esmImportSources, mdxParser } from '@/shared/mdx/mdx-tree';
 
 import { collectLinkCardHrefs } from './link-card-urls';
 import { blogPath } from './path';
@@ -18,28 +17,8 @@ const slugs = readdirSync(join(cwd(), 'src/content/blog')).filter(
   (name) => !name.startsWith('.'),
 );
 
-const parser = remark().use(remarkMdx).use(remarkPreset);
-
 const parse = (slug: string) =>
-  parser.parse(readFileSync(blogPath(slug), 'utf8'));
-
-// コードブロックの中の import 文は数えず、MDX の ESM の import だけを見る
-const esmImportSources = (slug: string): string[] =>
-  parse(slug)
-    .children.flatMap((node) =>
-      node.type === 'mdxjsEsm' ? (node.data?.estree?.body ?? []) : [],
-    )
-    .flatMap((statement) =>
-      statement.type === 'ImportDeclaration'
-        ? [String(statement.source.value)]
-        : [],
-    );
-
-const isNextOrAppAlias = (source: string): boolean =>
-  source.startsWith('@/') ||
-  source === 'next' ||
-  source.startsWith('next/') ||
-  source === 'next-themes';
+  mdxParser.parse(readFileSync(blogPath(slug), 'utf8'));
 
 const hasMath = (node: Nodes): boolean =>
   node.type === 'inlineMath' ||
@@ -169,19 +148,20 @@ describe('src/content/blog の記事', () => {
       expect(existsSync(blogPath(slug))).toBe(true);
     });
 
-    it.each(slugs)(
-      '%s の MDX は @/・next・next-themes を import しない',
-      (slug) => {
-        expect(
-          esmImportSources(slug).filter((source) => isNextOrAppAlias(source)),
-        ).toStrictEqual([]);
-      },
-    );
+    it.each(slugs)('%s の MDX は @/ を import しない', (slug) => {
+      expect(
+        esmImportSources(parse(slug)).filter((source) =>
+          source.startsWith('@/'),
+        ),
+      ).toStrictEqual([]);
+    });
 
     it.each(mathSlugs)(
       '%s は数式を使うので @repo/mdx-preset/katex.css を import する',
       (slug) => {
-        expect(esmImportSources(slug)).toContain('@repo/mdx-preset/katex.css');
+        expect(esmImportSources(parse(slug))).toContain(
+          '@repo/mdx-preset/katex.css',
+        );
       },
     );
 

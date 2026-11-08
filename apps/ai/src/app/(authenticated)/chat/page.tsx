@@ -7,7 +7,7 @@ import { ChatScreen } from './_components/chat-screen';
 import { NewChatPlaceholder } from './_components/new-chat-placeholder';
 
 export const metadata: Metadata = {
-  title: 'チャット | k8o AI Studio',
+  title: 'チャット',
 };
 
 const NewChat = async ({

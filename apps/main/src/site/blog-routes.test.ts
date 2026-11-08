@@ -4,7 +4,6 @@ import { renderBlogOgImage } from '@/components/blog/blog-og-image/blog-og-image
 import {
   findBlogContent,
   findBlogMarkdown,
-  isPublishedBlog,
 } from '@/features/blog/interface/queries';
 
 import { GET as getArticleMarkdown } from '../routes/blog/[slug]/article.md/route';
@@ -13,7 +12,6 @@ import { GET as getOgImage } from '../routes/blog/[slug]/og.png/route';
 vi.mock('@/features/blog/interface/queries', () => ({
   findBlogContent: vi.fn(),
   findBlogMarkdown: vi.fn(),
-  isPublishedBlog: vi.fn(),
 }));
 vi.mock('@/components/blog/blog-og-image/blog-og-image', () => ({
   renderBlogOgImage: vi.fn(),
@@ -34,7 +32,6 @@ const requestOgImage = async (slug: string): Promise<Response> =>
 describe('GET /blog/:slug/article.md', () => {
   describe('正常系', () => {
     it('公開済みの記事は本文を、型を書いた markdown で返す', async () => {
-      vi.mocked(isPublishedBlog).mockResolvedValue(true);
       vi.mocked(findBlogMarkdown).mockResolvedValue('# タイトル\n\n本文');
 
       const res = await requestMarkdown('blog-a');
@@ -48,27 +45,16 @@ describe('GET /blog/:slug/article.md', () => {
   });
 
   describe('異常系', () => {
-    it('MDX がある下書きの記事は 404 を返し、本文を出さない', async () => {
-      vi.mocked(isPublishedBlog).mockResolvedValue(false);
-      vi.mocked(findBlogMarkdown).mockResolvedValue('# 下書き\n\n未公開の本文');
+    it('下書きや MDX の無い記事（本文が無い）は 404 を返す', async () => {
+      vi.mocked(findBlogMarkdown).mockResolvedValue(null);
 
       const res = await requestMarkdown('draft-blog');
 
       expect(res.status).toBe(404);
-      await expect(res.text()).resolves.not.toContain('未公開の本文');
     });
 
-    it('公開済みでも MDX が無い記事は 404 を返す', async () => {
-      vi.mocked(isPublishedBlog).mockResolvedValue(true);
-      vi.mocked(findBlogMarkdown).mockResolvedValue(null);
-
-      const res = await requestMarkdown('missing-blog');
-
-      expect(res.status).toBe(404);
-    });
-
-    it('公開状態を読めないときは 404 にせず失敗させる（ビルドを止める）', async () => {
-      vi.mocked(isPublishedBlog).mockRejectedValue(
+    it('記事の一覧を読めないときは 404 にせず失敗させる（ビルドを止める）', async () => {
+      vi.mocked(findBlogMarkdown).mockRejectedValue(
         new Error('DB に繋がらない'),
       );
 
@@ -86,7 +72,7 @@ describe('GET /blog/:slug/og.png', () => {
         id: 1,
         slug: 'blog-a',
         tags: [],
-        slideUrl: undefined,
+        slideUrl: null,
         title: 'タイトル',
         description: null,
         createdAt: '2026-01-01T00:00:00.000Z',

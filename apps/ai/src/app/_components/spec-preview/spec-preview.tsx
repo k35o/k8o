@@ -33,9 +33,8 @@ const preventMiddleClickNavigation = (event: MouseEvent): void => {
 
 const subscribeNothing = (): (() => void) => () => {};
 
-// 生成された spec を @k8ordo/ui の registry でその場に描画する。
-// Sandbox 時代の iframe と違い同一ドキュメントなので、テーマ・フォントは
-// アプリのものをそのまま継承する。空状態の分岐は呼び出し側が持つ。
+// 生成された spec を @k8ordo/ui の registry でアプリと同じ文書に描画するので、
+// テーマ・フォントはアプリのものをそのまま継承する。空状態の分岐は呼び出し側が持つ。
 export const SpecPreview: FC<SpecPreviewProps> = ({
   spec,
   loading = false,

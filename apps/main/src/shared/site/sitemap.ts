@@ -3,9 +3,8 @@ import { playgroundSections } from '@playgrounds/sections';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getSlideContents } from '@/features/slides/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
+import { SITE_URL } from '@/shared/site/site-url';
 import { getTagSummaries } from '@/shared/site/tag-contents';
-
-const SITE_URL = 'https://k8o.me';
 
 type SitemapUrl = {
   loc: string;
@@ -22,7 +21,7 @@ const latestOf = (dates: readonly string[]): string | undefined =>
         Math.max(...dates.map((date) => new Date(date).getTime())),
       ).toISOString();
 
-// Next の resolveSitemap と同じバイトにするため、loc をエスケープしない（slug は [a-z0-9-]+、タグの id は数字）
+// loc をエスケープしない。slug は [a-z0-9-]+、タグの id は数字で、エスケープの要る字が入らない
 const toXml = (urls: readonly SitemapUrl[]): string =>
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
     .map(

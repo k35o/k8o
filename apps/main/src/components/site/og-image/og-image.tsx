@@ -1,7 +1,6 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 
-import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
-import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
+import { getIconDataUrl, getMPlus2Font } from '@/shared/og/og-assets';
 import { renderOgPng } from '@/shared/og/render-og-png';
 
 import { OgCodeImage } from './og-code-image';

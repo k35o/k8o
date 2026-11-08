@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 
 import { SITE_OG_IMAGE_VERSION } from '@/components/site/og-image/site-og-image';
+import { SITE_URL } from '@/shared/site/site-url';
 
-const SITE_URL = 'https://k8o.me';
 const SITE_NAME = 'k8o';
 const SITE_DESCRIPTION = 'k8oの活動や制作物をまとめた個人サイト';
 

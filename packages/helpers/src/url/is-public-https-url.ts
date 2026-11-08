@@ -1,4 +1,4 @@
-import { parseStrictHttpsHost } from './parse-strict-https-url';
+import { parseStrictHttpsHost } from './parse-strict-https-url.ts';
 
 // SSRF 対策: 外部由来の URL を fetch する前に「公開 https URL か」を検証する純粋関数。
 // reading-list の記事 / フィード / OGP 取得など、ユーザー由来の URL を取得する箇所で使う。

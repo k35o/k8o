@@ -12,9 +12,7 @@ import styles from './error-fallback.module.css';
 
 export const ErrorFallback: FC<ErrorProps> = ({ error, reset }) => {
   useEffect(() => {
-    reportClientError(
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    reportClientError(error);
   }, [error]);
 
   return (

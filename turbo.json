@@ -1,7 +1,7 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "agentGuidance": false,
-  "globalEnv": ["NODE_ENV", "PORTLESS_URL", "VERCEL_ENV"],
+  "globalEnv": ["NODE_ENV", "VERCEL_ENV"],
   "globalPassThroughEnv": ["CRON_SECRET"],
   "tasks": {
     "dev": {
@@ -31,9 +31,12 @@
     "transit": {
       "dependsOn": ["^transit"]
     },
+    "typegen": {
+      "cache": false
+    },
     "type-check": {
-      "dependsOn": ["transit"],
-      "outputs": ["tsconfig.tsbuildinfo", "__generated__/**"]
+      "dependsOn": ["transit", "typegen"],
+      "outputs": ["tsconfig.tsbuildinfo"]
     },
     "test": {
       "dependsOn": ["transit"],

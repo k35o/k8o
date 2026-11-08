@@ -1,5 +1,6 @@
 'use client';
 
+import { Stack } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { CSSProperties, FC, ReactNode } from 'react';
 
@@ -22,7 +23,7 @@ export const UiPreview: FC<Props> = ({ corners, icon, shape }) => {
   };
 
   return (
-    <div className={styles.root}>
+    <Stack gap="md">
       <p className={styles.title}>実際のUIで確認する</p>
       <div className={styles.samples}>
         <figure className={styles.sample}>
@@ -55,6 +56,6 @@ export const UiPreview: FC<Props> = ({ corners, icon, shape }) => {
       <p className={styles.note}>
         %指定の角丸は要素の縦横比によって見え方が変わります。
       </p>
-    </div>
+    </Stack>
   );
 };

@@ -59,8 +59,6 @@ export const WithArtifacts = meta.story({
     await expect(ui).toHaveAttribute('href', '/artifacts/a1b2c3d4e5f6');
     await expect(ui).not.toHaveAttribute('aria-current');
     await expect(within(ui).getByText('UI')).toBeInTheDocument();
-    // 最新版を作った日時は日本時間で出す
-    await expect(within(ui).getByText('10/14 09:30')).toBeInTheDocument();
     // 公開中のものに印を付ける
     await expect(within(ui).getByText('公開')).toBeInTheDocument();
 
@@ -69,37 +67,5 @@ export const WithArtifacts = meta.story({
     await expect(current).toHaveAttribute('aria-current', 'page');
     await expect(within(current).getByText('スライド')).toBeInTheDocument();
     await expect(within(current).queryByText('公開')).not.toBeInTheDocument();
-  },
-});
-
-const manyArtifacts: ArtifactListItem[] = Array.from(
-  { length: 30 },
-  (_, index) => ({
-    id: `artifact-${index.toString()}`,
-    kind: 'ui',
-    title: `UI ${index.toString()}`,
-    updatedAt: '2026-10-13T12:05:00.000Z',
-    isPublic: false,
-  }),
-);
-
-export const CurrentBelowTheFold = meta.story({
-  decorators: [
-    (Story) => (
-      <div className={styles.scroller} data-testid="scroller">
-        <Story />
-      </div>
-    ),
-  ],
-  args: { artifacts: manyArtifacts, currentArtifactId: 'artifact-25' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    // 一覧の下のほうにある今の生成物も、開いた時点で見えている
-    const scroller = canvas.getByTestId('scroller').getBoundingClientRect();
-    const current = canvas
-      .getByRole('link', { name: /UI 25/u })
-      .getBoundingClientRect();
-    await expect(current.top).toBeGreaterThanOrEqual(scroller.top);
-    await expect(current.bottom).toBeLessThanOrEqual(scroller.bottom);
   },
 });

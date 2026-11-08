@@ -5,6 +5,8 @@ import type { Spec } from '@json-render/core';
 import { validateGeneratedSpec } from '@k8ordo/ui/json-render';
 import type { GeneratedSpecIssue } from '@k8ordo/ui/json-render';
 
+import { truncateChars } from '@/shared/truncate-chars';
+
 import { parseSpecProse, toSpec } from './spec-message';
 
 export type UiSpecDraft = {
@@ -42,22 +44,15 @@ export const uiUserPrompt = (input: {
     ? input.instruction
     : buildUserPrompt({ prompt: input.instruction, currentSpec: input.base });
 
-// サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-const truncateIssue = (issue: string): string => {
-  const chars = Array.from(issue);
-  return chars.length <= MAX_ISSUE_CHARS
-    ? issue
-    : `${chars.slice(0, MAX_ISSUE_CHARS).join('')}…`;
-};
-
 const describeIssues = (issues: GeneratedSpecIssue[]): string =>
   issues
     .slice(0, MAX_REASON_ISSUES)
     .map((issue) =>
-      truncateIssue(
+      truncateChars(
         issue.elementKey === undefined
           ? issue.message
           : `[${issue.elementKey}] ${issue.message}`,
+        MAX_ISSUE_CHARS,
       ),
     )
     .join(' / ');

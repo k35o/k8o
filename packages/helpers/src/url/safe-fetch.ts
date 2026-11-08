@@ -1,4 +1,4 @@
-import { isPublicHttpsUrl } from './is-public-https-url';
+import { isPublicHttpsUrl } from './is-public-https-url.ts';
 
 const MAX_REDIRECTS = 5;
 

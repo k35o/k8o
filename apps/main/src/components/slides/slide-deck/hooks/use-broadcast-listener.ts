@@ -26,7 +26,6 @@ export const useBroadcastListener = ({
   const handleReceive = useEffectEvent(onReceive);
 
   useEffect(() => {
-    if (typeof BroadcastChannel === 'undefined') return undefined;
     const channel = new BroadcastChannel(channelName);
     channelRef.current = channel;
     const handler = (event: MessageEvent<unknown>) => {

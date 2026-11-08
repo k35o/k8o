@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor } from '@k8ordo/ui';
+import { Anchor, Stack } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 import { BrowserOnly } from '@/components/site/browser-only/browser-only';
@@ -19,7 +19,7 @@ const Content: FC<Props> = ({ pickerIcon }) => {
   const { element, setSelected } = useNestState();
 
   return (
-    <div className={styles.root}>
+    <Stack gap="md">
       <ContainmentView
         element={element}
         onSelect={setSelected}
@@ -32,12 +32,12 @@ const Content: FC<Props> = ({ pickerIcon }) => {
           WHATWG HTML Standard（要素インデックス）
         </Anchor>
       </p>
-    </div>
+    </Stack>
   );
 };
 
 // static mode の HTML は URL の state を既定値で描くので、HTML に描くと URL の値で開いたときに既定の要素が
-// 一度出る。Next と同じく本文はブラウザでだけ描く
+// 一度出る。本文はブラウザでだけ描く
 export const HtmlNest: FC<Props> = (props) => (
   <BrowserOnly>
     <Content {...props} />

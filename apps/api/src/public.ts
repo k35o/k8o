@@ -53,7 +53,7 @@ export const publicRoutes = new Hono()
   .use(async (c, next) => {
     const isRead = isReadMethod(c.req.method);
     // CDN は query を含めた URL でキャッシュするので、query を変えるだけでキャッシュを外して
-    // DB や GitHub に届かせられる。読み取りの口は query を受けない
+    // DB に届かせられる。読み取りの口は query を受けない
     if (isRead && c.req.url.includes('?')) {
       throw new HTTPException(400, {
         res: c.json({ ok: false, error: 'invalid_request' } as const, 400, {

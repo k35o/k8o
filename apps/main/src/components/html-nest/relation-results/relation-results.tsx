@@ -1,5 +1,5 @@
 import type { RelatedElement } from '@k8o/html-nest';
-import { AlertIcon, CheckIcon } from '@k8ordo/ui';
+import { AlertIcon, CheckIcon, Stack } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
@@ -29,7 +29,7 @@ export const RelationResults: FC<RelationResultsProps> = ({
   }
 
   return (
-    <div className={styles.root}>
+    <Stack gap="md">
       {okItems.length > 0 && (
         <div>
           <p className={cn(styles.heading, styles.ok)}>
@@ -48,6 +48,6 @@ export const RelationResults: FC<RelationResultsProps> = ({
           <RelatedGroups items={condItems} onSelect={onSelect} />
         </div>
       )}
-    </div>
+    </Stack>
   );
 };

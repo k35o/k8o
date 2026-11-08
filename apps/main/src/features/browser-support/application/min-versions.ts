@@ -1,19 +1,9 @@
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
-import { CORE_BROWSERS } from '@repo/helpers/browser/detect-browser';
 
 import floorData from '../infrastructure/browser-min-versions.json';
 
-// フロアは RootLayout(全ページの静的シェル)が読むため、実行時 I/O(DB・ネットワーク)に
-// 依存させない。コミット済み生成物を読むだけにし、どの外部依存が落ちても全ページは無傷。
-// active データセットとずれると外形監視(browser-support-monitor)が再生成 PR を出す。
+// DB の active データセットではなく、ビルドのターゲット（site/browser-targets.ts）と同じコミット済みの
+// 生成物から読み、画面に出すフロアと変換のターゲットをそろえる
 export function getBrowserMinVersions(): BrowserMinVersions {
-  const source: Record<string, string | undefined> = floorData.minVersions;
-  const minVersions: BrowserMinVersions = {};
-  for (const browser of CORE_BROWSERS) {
-    const version = source[browser];
-    if (version !== undefined) {
-      minVersions[browser] = version;
-    }
-  }
-  return minVersions;
+  return floorData.minVersions;
 }

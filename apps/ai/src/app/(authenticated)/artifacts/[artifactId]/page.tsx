@@ -12,7 +12,7 @@ import { ArtifactScreen } from '../_components/artifact-screen';
 import { ArtifactSkeleton } from '../_components/artifact-skeleton';
 
 export const metadata: Metadata = {
-  title: '作ったもの | k8o AI Studio',
+  title: '作ったもの',
 };
 
 const Artifact = async ({

@@ -12,7 +12,7 @@ import '@repo/code-highlight/styles.css';
 import styles from './mdx-base.module.css';
 
 // インラインコード等を含む見出しからidに使う全文を取り出す。
-// shared/mdx/toc-tree.ts の phrasingText と同じ結果になる必要がある
+// features/blog/application/toc-tree.ts の phrasingText と同じ結果になる必要がある
 const isReactNodeArray = (value: ReactNode): value is readonly ReactNode[] =>
   Array.isArray(value);
 

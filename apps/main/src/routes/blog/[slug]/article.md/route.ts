@@ -1,9 +1,6 @@
 import type { RouteContext } from '@k8ordo/framework';
 
-import {
-  findBlogMarkdown,
-  isPublishedBlog,
-} from '@/features/blog/interface/queries';
+import { findBlogMarkdown } from '@/features/blog/interface/queries';
 
 export async function GET({
   params,
@@ -12,9 +9,7 @@ export async function GET({
 
   // ビルドは公開済みの記事でしか呼ばず、200 でなければ止まる。vite dev は paths を読まずに
   // どの slug でも呼ぶので、下書きをここで 404 にする
-  const markdown = (await isPublishedBlog(slug))
-    ? await findBlogMarkdown(slug)
-    : null;
+  const markdown = await findBlogMarkdown(slug);
   if (markdown === null) {
     return new Response('Not Found', { status: 404 });
   }

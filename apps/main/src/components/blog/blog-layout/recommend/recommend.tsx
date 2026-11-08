@@ -1,5 +1,13 @@
 import { href } from '@k8ordo/framework';
-import { Badge, Heading, Card, PublishDateIcon, TagIcon } from '@k8ordo/ui';
+import {
+  Badge,
+  Card,
+  Grid,
+  Heading,
+  PublishDateIcon,
+  Stack,
+  TagIcon,
+} from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -17,9 +25,9 @@ export const Recommend: FC<RecommendProps> = ({ blogs }) => {
   }
 
   return (
-    <div className={styles.root}>
+    <Stack gap="xl">
       <Heading level="h3">関連記事</Heading>
-      <div className={styles.grid}>
+      <Grid cols="auto-fit" gap="md" minItemSize={80}>
         {blogs.map((blog) => (
           <Card interactive key={blog.id}>
             {/* oxlint-disable-next-line jsx-a11y/control-has-associated-label -- リンクの名前は中の記事の題などの文字が持つ。規則は子を浅くしかたどらず、そこまで届かない */}
@@ -45,7 +53,7 @@ export const Recommend: FC<RecommendProps> = ({ blogs }) => {
             </a>
           </Card>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Stack>
   );
 };

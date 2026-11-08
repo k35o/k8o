@@ -1,6 +1,6 @@
 'use client';
 
-import { BadIcon, Button, GoodIcon, Textarea } from '@k8ordo/ui';
+import { BadIcon, Button, GoodIcon, Stack, Textarea } from '@k8ordo/ui';
 import { useId, useState, useTransition } from 'react';
 import type { FC } from 'react';
 
@@ -48,7 +48,7 @@ export const FeedbackCard: FC<{
   }
 
   return (
-    <div className={styles.root}>
+    <Stack gap="md">
       <div className={styles.header}>
         <p className={styles.title}>{title}</p>
         <fieldset aria-label="フィードバック" className={styles.choices}>
@@ -112,6 +112,6 @@ export const FeedbackCard: FC<{
           </Button>
         </div>
       </div>
-    </div>
+    </Stack>
   );
 };

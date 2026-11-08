@@ -1,7 +1,7 @@
 import { createClient } from '@libsql/client/http';
 import { drizzle } from 'drizzle-orm/libsql/http';
 
-import { relations, schema } from './schema';
+import { schema } from './schema/index.ts';
 
 const authToken = process.env['AI_TURSO_AUTH_TOKEN'];
 
@@ -10,12 +10,7 @@ const client = createClient({
   ...(authToken !== undefined && authToken !== '' ? { authToken } : {}),
 });
 
-const drizzleDb = drizzle(client, {
-  schema: {
-    ...schema,
-    ...relations,
-  },
-});
+const drizzleDb = drizzle(client, { schema });
 
 export const db = Object.assign(drizzleDb, {
   _schema: schema,

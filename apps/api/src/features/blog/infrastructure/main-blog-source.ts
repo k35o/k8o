@@ -1,9 +1,10 @@
 import Parser from 'rss-parser';
 
+import { BLOG_SLUG_PATTERN } from '../application/blog-slug';
+
 // 記事の本文とタイトルは main の MDX にあり DB には無いので、main の公開ページから読む
 const MAIN_BLOG_URL = 'https://k8o.me/blog';
 const FETCH_TIMEOUT_MS = 10_000;
-export const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
 
 const parser = new Parser();
 

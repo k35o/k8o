@@ -1,5 +1,5 @@
 import { href } from '@k8ordo/framework';
-import { Heading, TagIcon } from '@k8ordo/ui';
+import { Heading, Stack, TagIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { TagCard } from '../tag-card/tag-card';
@@ -18,20 +18,20 @@ export const TagContent: FC<{
     title: string;
   }>;
 }> = ({ name, blogs, talks }) => (
-  <div className={styles.root}>
+  <Stack gap="xl">
     <div className={styles.summary}>
       <div className={styles.icon}>
         <TagIcon />
       </div>
-      <div className={styles.summaryText}>
+      <Stack gap="sm">
         <Heading level="h3">{name}</Heading>
         <p className={styles.count}>
           {blogs.length + talks.length}
           件のコンテンツがあります
         </p>
-      </div>
+      </Stack>
     </div>
-    <div className={styles.sections}>
+    <Stack gap="xl">
       {blogs.length > 0 && (
         <div className={styles.section}>
           <a href={href('/blog')}>
@@ -68,6 +68,6 @@ export const TagContent: FC<{
           </div>
         </div>
       )}
-    </div>
-  </div>
+    </Stack>
+  </Stack>
 );

@@ -3,10 +3,10 @@ import type { HighlighterCore } from '@shikijs/core';
 import { createJavaScriptRegexEngine } from '@shikijs/engine-javascript';
 
 // 拡張子なしで import する（tokenize.ts と同じく consumer 側の型検査の都合）。
-import { CODE_SURFACE, COLOR_REPLACEMENTS } from './theme';
-import type { HighlightedCode, HighlightTheme } from './tokenize';
+import { CODE_SURFACE, COLOR_REPLACEMENTS } from './theme.ts';
+import type { HighlightedCode, HighlightTheme } from './tokenize.ts';
 
-export type { HighlightedCode, HighlightTheme } from './tokenize';
+export type { HighlightedCode, HighlightTheme } from './tokenize.ts';
 
 // ./tokenize (oniguruma) は wasm のコンパイルを伴い、script-src に wasm-unsafe-eval が
 // 無い CSP のブラウザでは CompileError になる。クライアントでは wasm 不要の

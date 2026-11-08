@@ -9,7 +9,7 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-import { articleSources } from './article-sources';
+import { articleSources } from './article-sources.ts';
 
 export const articles = sqliteTable(
   'articles',
