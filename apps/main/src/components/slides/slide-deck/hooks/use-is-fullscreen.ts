@@ -16,7 +16,6 @@ export const useIsFullscreen = (): boolean =>
   useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
 export const toggleFullscreen = (): void => {
-  if (typeof document === 'undefined') return;
   if (document.fullscreenElement === null) {
     void document.documentElement.requestFullscreen();
   } else {

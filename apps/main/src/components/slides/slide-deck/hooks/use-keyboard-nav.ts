@@ -2,13 +2,7 @@
 
 import { useEffect, useEffectEvent } from 'react';
 
-const NEXT_KEYS = new Set([
-  'ArrowRight',
-  'ArrowDown',
-  'PageDown',
-  ' ',
-  'Spacebar',
-]);
+const NEXT_KEYS = new Set(['ArrowRight', 'ArrowDown', 'PageDown', ' ']);
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 const FULLSCREEN_KEYS = new Set(['f', 'F']);
 

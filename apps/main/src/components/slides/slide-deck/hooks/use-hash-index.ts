@@ -54,7 +54,6 @@ export const useFragmentTarget = (): RefCallback<HTMLElement> =>
   }, []);
 
 export const writeHashIndex = (index: number): void => {
-  if (typeof window === 'undefined') return;
   const nextHash = `#${(index + 1).toString()}`;
   if (window.location.hash === nextHash) return;
   window.history.replaceState(null, '', nextHash);

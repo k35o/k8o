@@ -3,13 +3,7 @@
 import { useEffect, useEffectEvent } from 'react';
 import type { RefObject } from 'react';
 
-const NEXT_KEYS = new Set([
-  'ArrowRight',
-  'ArrowDown',
-  'PageDown',
-  ' ',
-  'Spacebar',
-]);
+const NEXT_KEYS = new Set(['ArrowRight', 'ArrowDown', 'PageDown', ' ']);
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 
 // apps/main の slides の useKeyboardNav を移植したもの（フルスクリーンキーは省略）。
