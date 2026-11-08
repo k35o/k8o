@@ -7,8 +7,6 @@
   "exports": {
     ".": {
       "types": "./src/db.ts",
-      "storybook": "./src/__mocks__/db.ts",
-      "node": "./src/db.ts",
       "default": "./src/db.ts"
     },
     "./orm": {

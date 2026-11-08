@@ -122,10 +122,6 @@
       "types": "./src/push-endpoint/is-allowed-push-endpoint.ts",
       "default": "./src/push-endpoint/is-allowed-push-endpoint.ts"
     },
-    "./push-log/history": {
-      "types": "./src/push-log/history.ts",
-      "default": "./src/push-log/history.ts"
-    },
     "./sleep": {
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"

@@ -7,7 +7,6 @@ k8o の DB（api が持ち主）のコードをまとめたパッケージです
 - Drizzle ORM のスキーマ定義
 - Turso / libSQL への接続
 - マイグレーション
-- Storybook 向けのモック DB エクスポート
 
 ## ディレクトリ構成
 
@@ -19,8 +18,7 @@ packages/database/
 │   ├── db.ts           # アプリケーション用の DB エクスポート
 │   ├── orm.ts          # drizzle-orm の再エクスポート
 │   ├── utils.ts        # DB 操作の補助ユーティリティ
-│   ├── schema/         # Drizzle のスキーマ定義
-│   └── __mocks__/      # Storybook / テスト向けのモック実装
+│   └── schema/         # Drizzle のスキーマ定義
 ├── migrations/         # drizzle-kit が生成するマイグレーション
 ├── scripts/            # ローカル DB の起動と ER 図の生成
 ├── drizzle.config.ts   # drizzle-kit 設定
@@ -30,8 +28,7 @@ packages/database/
 ## エクスポート
 
 - `@repo/database`
-  - 通常実行時は `src/db.ts`
-  - `storybook` 条件では `src/__mocks__/db.ts`
+  - `src/db.ts`
 - `@repo/database/orm`
   - `src/orm.ts`（drizzle-orm の再エクスポート）
 - `@repo/database/schema`
