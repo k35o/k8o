@@ -183,7 +183,7 @@ Better Auth + GitHub OAuth（`@repo/ai-database/auth`）。**本人のみ**利�
 
 防御層は次のとおり。
 
-- `shared/auth/proxy.ts`（`src/proxy.ts` が re-export する）… CSP などのセキュリティヘッダを常に付ける。`/sign-in` と `/s/` の前方一致は公開し、それ以外はセッションの cookie が無ければ `/sign-in` へ redirect する。見るのは cookie の有無だけ。**middleware は `/api` を守らない**（`src/proxy.ts` の matcher で外している）
+- `shared/auth/proxy.ts`（`src/proxy.ts` が re-export する）… CSP などのセキュリティヘッダを常に付ける。`/sign-in`（完全一致）と `/s/` で始まるパスは公開し、それ以外はセッションの cookie が無ければ `/sign-in` へ redirect する。見るのは cookie の有無だけ。**proxy は `/api` を守らない**（`src/proxy.ts` の matcher で外している）
 - `shared/auth/allowed-session.ts` … 認証のゲート（`getAllowedSession`）。要求の headers からセッションを読み、許可されなければ null を返す。許可リストはサインアップのときにしか評価されず、`ALLOWED_EMAILS` から外しても既存のセッションは失効しないため、毎回 `isAllowedEmail` を評価し直して失効のずれを塞ぐ。React の `cache` で包み、1回の描画の中ではページと features の読み取りが何度呼んでもセッションを1回だけ読む。route handler と server action は描画の外なので、呼ぶたびに読む。LLM（Claude API）は課金が発生するため、**課金が発生する全 API route / server action の先頭で呼び、未許可は弾く（API route は 401 を返し、server action は null・空配列・false などを返す）**こと（proxy が `/api` を守らないため必須の防御層）
 - `shared/auth/verify-session.ts` … Server Component 用。`getAllowedSession` が null なら `/sign-in` へ redirect する
 - `shared/auth/auth-enabled.ts` … 認証の有効/無効の一元管理。Vercel preview と `LOCAL_AUTH_BYPASS`（NODE_ENV=development のときのみ）で OFF になる。preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する
