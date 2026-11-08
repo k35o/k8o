@@ -22,7 +22,6 @@ catalog:
   '@k8ordo/state': 2.3.1
   '@k8ordo/ui': 2.3.1
   '@libsql/client': 0.18.0
-  '@next/env': 16.4.5
   '@storybook/addon-a11y': 10.6.5
   '@storybook/addon-docs': 10.6.5
   '@storybook/addon-mcp': '10.6.5'

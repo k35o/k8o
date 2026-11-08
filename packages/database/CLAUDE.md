@@ -21,7 +21,7 @@ Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供す�
 
 ```bash
 pnpm run -F @repo/database generate  # スキーマの変更からマイグレーションを作る（コミットする）
-pnpm run -F @repo/database migrate   # ローカルの DB に流す
+fnox exec -P main -- pnpm run -F @repo/database migrate   # ローカルの DB に流す（値は fnox の main の profile）
 ```
 
 本番 DB には、`.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。preview DB には、main の deploy ジョブがビルドの前に流す（preview の Environment は承認が要るので、別ジョブにすると承認が2回になる）。Vercel のビルドでは generate も migrate もしない。コミットされていないマイグレーションは CI（`ci.yml`）が落とす。

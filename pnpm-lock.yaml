@@ -206,9 +206,6 @@ catalogs:
     '@libsql/client':
       specifier: 0.18.0
       version: 0.18.0
-    '@next/env':
-      specifier: 16.4.5
-      version: 16.4.5
     '@storybook/addon-a11y':
       specifier: 10.6.5
       version: 10.6.5
@@ -708,9 +705,6 @@ importers:
         specifier: 'catalog:'
         version: 0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17)
     devDependencies:
-      '@next/env':
-        specifier: 'catalog:'
-        version: 16.4.5
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -767,9 +761,6 @@ importers:
         specifier: 'catalog:'
         version: 0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17)
     devDependencies:
-      '@next/env':
-        specifier: 'catalog:'
-        version: 16.4.5
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

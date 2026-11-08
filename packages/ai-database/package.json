@@ -39,7 +39,6 @@
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {
-    "@next/env": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "drizzle-kit": "catalog:",
     "vitest": "catalog:"
