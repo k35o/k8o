@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { aiArtifactVersions } from './ai-artifact-versions';
-import { aiArtifacts } from './ai-artifacts';
+import { aiArtifactVersions } from './ai-artifact-versions.ts';
+import { aiArtifacts } from './ai-artifacts.ts';
 
 export const aiArtifactShares = sqliteTable('ai_artifact_shares', {
   artifactId: text('artifact_id')

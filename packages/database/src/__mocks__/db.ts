@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/libsql';
 
-import { relations, schema } from '../schema';
-import { increment } from '../utils';
+import { relations, schema } from '../schema/index.ts';
+import { increment } from '../utils.ts';
 
 const drizzleDb = drizzle.mock({
   schema: {

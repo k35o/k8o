@@ -1,7 +1,7 @@
 import { createClient } from '@libsql/client/http';
 import { drizzle } from 'drizzle-orm/libsql/http';
 
-import { relations, schema } from './schema';
+import { relations, schema } from './schema/index.ts';
 
 const authToken = process.env['AI_TURSO_AUTH_TOKEN'];
 

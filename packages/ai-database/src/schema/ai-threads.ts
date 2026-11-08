@@ -3,8 +3,8 @@
 import { relations } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { aiThreadMessages } from './ai-thread-messages';
-import { user } from './auth-schema';
+import { aiThreadMessages } from './ai-thread-messages.ts';
+import { user } from './auth-schema.ts';
 
 export const aiThreads = sqliteTable(
   'ai_threads',

@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "fnox exec -P main -- portless run vite dev",
     "build": "vite build",
-    "generate:browser-min-versions": "node --import ./scripts/register-ts-resolver.ts scripts/generate-browser-min-versions.ts",
-    "generate:link-card-metadata": "node --import ./scripts/register-ts-resolver.ts scripts/generate-link-card-metadata.ts",
-    "optimize:image": "node --import ./scripts/register-ts-resolver.ts scripts/optimize-image.ts",
+    "generate:browser-min-versions": "node scripts/generate-browser-min-versions.ts",
+    "generate:link-card-metadata": "node scripts/generate-link-card-metadata.ts",
+    "optimize:image": "node scripts/optimize-image.ts",
     "type-check": "k8ordo generate && better-css-modules generate && tsc --noEmit",
     "test": "vitest run",
     "test:vrt": "VRT=1 vitest run --project=storybook",

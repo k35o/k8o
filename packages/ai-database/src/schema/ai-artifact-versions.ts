@@ -5,8 +5,8 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-import { aiArtifacts } from './ai-artifacts';
-import { aiThreads } from './ai-threads';
+import { aiArtifacts } from './ai-artifacts.ts';
+import { aiThreads } from './ai-threads.ts';
 
 export const aiArtifactVersions = sqliteTable(
   'ai_artifact_versions',

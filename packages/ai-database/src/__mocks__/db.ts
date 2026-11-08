@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/libsql';
 
-import { relations, schema } from '../schema';
+import { relations, schema } from '../schema/index.ts';
 
 const drizzleDb = drizzle.mock({
   schema: {

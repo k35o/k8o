@@ -7,8 +7,8 @@ import {
   colorToOklab,
   colorToOklch,
   colorToRgb255,
-} from './spaces';
-import type { Color } from './spaces';
+} from './spaces.ts';
+import type { Color } from './spaces.ts';
 
 const round = (value: number, digits: number): number => {
   const rounded = Number(value.toFixed(digits));

@@ -8,10 +8,10 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-import { blogComment } from './blog-comment';
-import { blogTag } from './blog-tag';
-import { blogViews } from './blog-views';
-import { talks } from './talks';
+import { blogComment } from './blog-comment.ts';
+import { blogTag } from './blog-tag.ts';
+import { blogViews } from './blog-views.ts';
+import { talks } from './talks.ts';
 
 export const blogs = sqliteTable(
   'blogs',

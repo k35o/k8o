@@ -1,8 +1,8 @@
 import type {
   BrowserMinVersions,
   CoreBrowser,
-} from '../browser/detect-browser';
-import { CORE_BROWSERS } from '../browser/detect-browser';
+} from '../browser/detect-browser.ts';
+import { CORE_BROWSERS } from '../browser/detect-browser.ts';
 
 export type BaselineSupportStatus = 'widely' | 'newly' | 'limited';
 

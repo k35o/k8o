@@ -88,6 +88,13 @@ export default defineConfig({
           '@next/next/no-img-element': 'off',
         },
       },
+      {
+        // 共有パッケージと main の scripts は Node が TS のまま読むので、相対 import に拡張子を書く
+        files: ['packages/**', 'apps/main/scripts/**'],
+        rules: {
+          'import/extensions': ['error', 'always', { ignorePackages: true }],
+        },
+      },
       { files: [...TEST_GLOBS], ...test },
     ],
   },

@@ -1,6 +1,6 @@
-import { compareVersions } from '../browser/browser-support';
-import { CORE_BROWSERS } from '../browser/detect-browser';
-import type { BaselineDataset } from './model';
+import { compareVersions } from '../browser/browser-support.ts';
+import { CORE_BROWSERS } from '../browser/detect-browser.ts';
+import type { BaselineDataset } from './model.ts';
 
 // 形式検証(スキーマ)を通っても「意味的に壊れたデータ」で全量置換してしまう事故を防ぐ
 // 最後の関門。violations は取り込み中断(前回データ維持)、warnings は取り込みつつ警報。

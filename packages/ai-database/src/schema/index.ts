@@ -1,12 +1,12 @@
-import { aiArtifactShares } from './ai-artifact-shares';
-import { aiArtifactVersions } from './ai-artifact-versions';
-import { aiArtifacts } from './ai-artifacts';
+import { aiArtifactShares } from './ai-artifact-shares.ts';
+import { aiArtifactVersions } from './ai-artifact-versions.ts';
+import { aiArtifacts } from './ai-artifacts.ts';
 import {
   aiThreadMessages,
   aiThreadMessagesRelations,
-} from './ai-thread-messages';
-import { aiThreads, aiThreadsRelations } from './ai-threads';
-import { aiUsages, aiUsagesRelations } from './ai-usages';
+} from './ai-thread-messages.ts';
+import { aiThreads, aiThreadsRelations } from './ai-threads.ts';
+import { aiUsages, aiUsagesRelations } from './ai-usages.ts';
 import {
   account,
   accountRelations,
@@ -15,7 +15,7 @@ import {
   user,
   userRelations,
   verification,
-} from './auth-schema';
+} from './auth-schema.ts';
 
 // Better Auth の drizzleAdapter は schema を渡さず db のスキーマから user などを探すので、
 // 認証のテーブルもここに載せる

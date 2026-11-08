@@ -1,20 +1,16 @@
 // RootLayout が読むブラウザ最低版フロアと、同じ版から作る .browserslistrc の生成。
-// フロアは全ページの静的シェルを握るため実行時 I/O(DB・ネットワーク)に依存させず、
-// 生成物をリポジトリにコミットする。
+// フロアはビルドのターゲットと同じ生成物から読むので、リポジトリにコミットする。
 // active データセットとずれると外形監視(browser-support-monitor)が版を指定して
 // 再生成し、PR を自動で出す。
 //
 // 実行: pnpm run -F main generate:browser-min-versions [version]
 // version 省略時は上流の最新版を使う。
 
-// Node の TS 実行は node_modules 配下の型ストリップを拒否するため、@repo/helpers は
-// パッケージ名ではなく実パスの相対 import で読む。
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { transformUpstreamData } from '../../../packages/helpers/src/baseline/transform-upstream';
-// 拡張子なしの相対 import は register-ts-resolver が実行時に .ts へ補完する
-import { renderBrowserslistrc } from '../../../packages/helpers/src/browser/browserslist';
+import { transformUpstreamData } from '@repo/helpers/baseline/transform-upstream';
+import { renderBrowserslistrc } from '@repo/helpers/browser/browserslist';
 
 const RELEASE_LATEST_URL =
   'https://github.com/web-platform-dx/web-features/releases/latest/download/data.json';

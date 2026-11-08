@@ -1,4 +1,4 @@
-import type { BaselineDataset, BaselineFeature } from './model';
+import type { BaselineDataset, BaselineFeature } from './model.ts';
 
 // baseline 未達(limited)は「直近1年でブラウザが動いた」ものだけをフィードに載せ、
 // 何年も単一ブラウザのままの古い機能を除外する。

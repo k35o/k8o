@@ -8,8 +8,8 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-import { slides } from './slides';
-import { tags } from './tags';
+import { slides } from './slides.ts';
+import { tags } from './tags.ts';
 
 export const slideTag = sqliteTable(
   'slide_tag',

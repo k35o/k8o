@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { getTableConfig } from 'drizzle-orm/sqlite-core';
 import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
-import { schema } from '../src/schema/index';
+import { schema } from '../src/schema/index.ts';
 
 const README_FILE = join(import.meta.dirname, '..', 'README.md');
 const MARKER_START = '<!-- ERD:START -->';

@@ -2,8 +2,8 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 
-import { logAuthEvent } from './auth-logger';
-import { db } from './db';
+import { logAuthEvent } from './auth-logger.ts';
+import { db } from './db.ts';
 
 const allowedEmails = new Set(
   (process.env['ALLOWED_EMAILS'] ?? '').split(',').filter(Boolean),

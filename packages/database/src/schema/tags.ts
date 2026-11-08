@@ -8,9 +8,9 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-import { blogTag } from './blog-tag';
-import { slideTag } from './slide-tag';
-import { talkTag } from './talk-tag';
+import { blogTag } from './blog-tag.ts';
+import { slideTag } from './slide-tag.ts';
+import { talkTag } from './talk-tag.ts';
 
 export const tags = sqliteTable(
   'tags',

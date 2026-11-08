@@ -1,4 +1,4 @@
-import { parseStrictHttpsHost } from '../url/parse-strict-https-url';
+import { parseStrictHttpsHost } from '../url/parse-strict-https-url.ts';
 
 // SSRF 防止のため https + Push サービスホスト allowlist に限定する。
 const ALLOWED_HOSTS: ReadonlySet<string> = new Set([

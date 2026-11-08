@@ -1,5 +1,5 @@
-import { toSrgbGamut } from './gamut';
-import { NAMED_COLORS } from './named-colors';
+import { toSrgbGamut } from './gamut.ts';
+import { NAMED_COLORS } from './named-colors.ts';
 import {
   clamp,
   hslToColor,
@@ -9,8 +9,8 @@ import {
   oklabToColor,
   oklchToColor,
   rgb255ToColor,
-} from './spaces';
-import type { Color } from './spaces';
+} from './spaces.ts';
+import type { Color } from './spaces.ts';
 
 type Num = { value: number; percent: boolean };
 

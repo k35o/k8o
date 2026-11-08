@@ -6,7 +6,7 @@ import {
   text,
 } from 'drizzle-orm/sqlite-core';
 
-import { blogs } from './blogs';
+import { blogs } from './blogs.ts';
 
 // ブログの日次ビュー数を集計する時系列テーブル。
 // (blog_id, date) を複合主キーとし、1日1行に集約する。

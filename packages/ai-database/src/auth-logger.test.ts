@@ -3,7 +3,7 @@ import { format } from 'node:util';
 import { DrizzleQueryError } from 'drizzle-orm';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { logAuthEvent } from './auth-logger';
+import { logAuthEvent } from './auth-logger.ts';
 
 const query = 'select "id" from "session" where "session"."token" = ?';
 const token = 'session-token-value';
