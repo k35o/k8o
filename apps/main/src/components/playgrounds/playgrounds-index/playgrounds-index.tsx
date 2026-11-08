@@ -1,6 +1,7 @@
 import { Heading } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import { blogSlugOf, getPublishedBlogSlugs } from '../blog-slug';
 import { PlaygroundsListContent } from '../playgrounds-list-content/playgrounds-list-content';
 import type { PlaygroundSummary } from '../playgrounds-list-content/types';
 
@@ -8,7 +9,10 @@ import styles from './playgrounds-index.module.css';
 
 export const PlaygroundsIndex: FC = async () => {
   // 静的に import すると、サーバーで描くデモの CSS を、デモを描かない一覧も読むので遅れて読む
-  const { playgroundSections } = await import('@playgrounds/sections');
+  const [{ playgroundSections }, publishedSlugs] = await Promise.all([
+    import('@playgrounds/sections'),
+    getPublishedBlogSlugs(),
+  ]);
   const playgroundSummaries: PlaygroundSummary[] = playgroundSections
     .map((section) => ({
       id: section.id,
@@ -20,7 +24,7 @@ export const PlaygroundsIndex: FC = async () => {
         demo.title,
         demo.description,
       ]),
-      hasBlog: section.type === 'blog',
+      hasBlog: blogSlugOf(section, publishedSlugs) !== undefined,
     }))
     .toSorted((a, b) => a.title.localeCompare(b.title, 'ja'));
 

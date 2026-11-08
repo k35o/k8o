@@ -4,9 +4,8 @@ import { playgroundCategoryLabels } from '@playgrounds/types';
 import type { PlaygroundSection } from '@playgrounds/types';
 import type { FC } from 'react';
 
-import { getBlogContents } from '@/features/blog/interface/queries';
-
 import { BlogLinkButton } from '../blog-link-button/blog-link-button';
+import { blogSlugOf, getPublishedBlogSlugs } from '../blog-slug';
 import { SectionDemos } from '../section-demos';
 
 import styles from './playground-section-view.module.css';
@@ -14,11 +13,7 @@ import styles from './playground-section-view.module.css';
 export const PlaygroundSectionView: FC<{
   section: PlaygroundSection;
 }> = async ({ section }) => {
-  const blogs = await getBlogContents();
-  const blogSlug =
-    section.type === 'blog' && blogs.some((blog) => blog.slug === section.slug)
-      ? section.slug
-      : undefined;
+  const blogSlug = blogSlugOf(section, await getPublishedBlogSlugs());
 
   return (
     <div className={styles.root}>
