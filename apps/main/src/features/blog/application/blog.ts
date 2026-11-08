@@ -5,26 +5,7 @@ import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
 
 import { getTocTree } from '@/shared/mdx/toc-tree';
 
-import { findPublishedBlogRow } from '../infrastructure/blog-repository';
 import { blogPath } from './path';
-
-export const findBlog = async (slug: string) => {
-  const blog = await findPublishedBlogRow(slug);
-
-  if (!blog) {
-    return null;
-  }
-
-  return {
-    id: blog.id,
-    slug: blog.slug,
-    tags: blog.blogTag.map((blogTag) => ({
-      id: blogTag.tag.id,
-      name: blogTag.tag.name,
-    })),
-    slideUrl: blog.talks[0]?.slideUrl,
-  };
-};
 
 // DBのslugに対応するMDXが無いことがある（共有ローカルDBに他worktreeの
 // 執筆中記事のslugが混ざる、公開のマイグレーションが記事を含むデプロイより先に本番のDBに入る等）。

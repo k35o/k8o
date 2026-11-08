@@ -547,12 +547,12 @@ importers:
       '@k8ordo/ui':
         specifier: 'catalog:'
         version: 2.3.1(@json-render/core@0.21.1(zod@4.6.7))(@json-render/react@0.21.1(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@2.3.1(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.148(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@repo/api':
+        specifier: workspace:*
+        version: link:../api
       '@repo/code-highlight':
         specifier: workspace:*
         version: link:../../packages/code-highlight
-      '@repo/database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
@@ -611,9 +611,6 @@ importers:
       '@mdx-js/rollup':
         specifier: 3.1.1
         version: 3.1.1(rollup@4.64.10)(supports-color@10.2.2)
-      '@repo/api':
-        specifier: workspace:*
-        version: link:../api
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config

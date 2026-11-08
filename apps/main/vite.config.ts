@@ -7,6 +7,7 @@ import { colorSchemeScriptHash } from '@k8ordo/color-scheme';
 import { vercel } from '@k8ordo/framework/vercel';
 import { framework } from '@k8ordo/framework/vite';
 import mdx from '@mdx-js/rollup';
+import type * as buildData from '@repo/api/build-data';
 import rehypePreset from '@repo/mdx-preset/rehype';
 import remarkPreset from '@repo/mdx-preset/remark';
 import { defineConfig, runnerImport } from 'vite';
@@ -15,7 +16,6 @@ import type { Plugin } from 'vite';
 import type * as blogs from './src/features/blog/application/blogs.ts';
 import floor from './src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import type * as slides from './src/features/slides/application/slides.ts';
-import type * as tags from './src/features/tags/application/tags.ts';
 import { playgroundIds } from './src/playgrounds/ids.ts';
 import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-script.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
@@ -62,45 +62,45 @@ const devSecurityHeaders: Plugin = {
   },
 };
 
-const readArticles = async (): Promise<BlogArticle[]> => {
-  // 設定のバンドルは @repo/database を外に出し、Node がそのまま読むと拡張子の無い import で
-  // 落ちるので、DB を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず
-  // alias を引き継がないので渡す
-  const { module } = await runnerImport<typeof blogs>(
-    fileURLToPath(
-      new URL('src/features/blog/application/blogs.ts', import.meta.url),
+// 設定のバンドルは workspace の @repo/* を外に出し、Node がそのまま読むと拡張子の無い import で落ちるので、
+// 記事の一覧と api を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず alias を
+// 引き継がないので渡す
+const importWithRunner = async <Module>(url: string): Promise<Module> =>
+  (await runnerImport<Module>(fileURLToPath(url), { resolve: { alias } }))
+    .module;
+
+let articles: Promise<BlogArticle[]> | undefined;
+
+// paths と katexCssGuard が読むので、1 回のビルドで 1 度だけ読む
+const readArticles = (): Promise<BlogArticle[]> => {
+  articles ??= importWithRunner<typeof blogs>(
+    new URL('src/features/blog/application/blogs.ts', import.meta.url).href,
+  ).then(async ({ getBlogs }) =>
+    Promise.all(
+      (await getBlogs()).map(async ({ slug }) => ({
+        slug,
+        mdx: await readFile(
+          join(contentDir, 'blog', slug, 'article.mdx'),
+          'utf8',
+        ),
+      })),
     ),
-    { resolve: { alias } },
   );
-  return Promise.all(
-    (await module.getBlogs()).map(async ({ slug }) => ({
-      slug,
-      mdx: await readFile(
-        join(contentDir, 'blog', slug, 'article.mdx'),
-        'utf8',
-      ),
-    })),
-  );
+  return articles;
 };
 
 const readTagIds = async (): Promise<number[]> => {
-  const { module } = await runnerImport<typeof tags>(
-    fileURLToPath(
-      new URL('src/features/tags/application/tags.ts', import.meta.url),
-    ),
-    { resolve: { alias } },
+  const { getTags } = await importWithRunner<typeof buildData>(
+    import.meta.resolve('@repo/api/build-data'),
   );
-  return (await module.getTags()).map(({ id }) => id);
+  return (await getTags()).map(({ id }) => id);
 };
 
 const readSlideSlugs = async (): Promise<string[]> => {
-  const { module } = await runnerImport<typeof slides>(
-    fileURLToPath(
-      new URL('src/features/slides/application/slides.ts', import.meta.url),
-    ),
-    { resolve: { alias } },
+  const { getSlides } = await importWithRunner<typeof slides>(
+    new URL('src/features/slides/application/slides.ts', import.meta.url).href,
   );
-  return (await module.getSlides()).map(({ slug }) => slug);
+  return (await getSlides()).map(({ slug }) => slug);
 };
 
 export default defineConfig({

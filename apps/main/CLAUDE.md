@@ -6,7 +6,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 - **routes/** - route ファイル（`page.tsx`・`layout.tsx`・`not-found.tsx`・`error.tsx`・`route.ts` など）だけを置く。ほかのファイルはビルドが拒むので、テストも置けない（route.ts の試験は `site/` に置く）。route ファイルは薄くし、`components/<area>` の部品と `features/*/interface` を読む。route.ts はどれも `Content-Type` を Response に書く（Vercel ではこの型で配られる）
 - **components/<area>/** - 部品と、その CSS Modules。layout やページの CSS もここに置く。`<area>` は URL の区画の名前で、サイト全体で使うものは `site`。OG の絵（`site/og-image`）もここに置く。画像は素の img に width と height を書いて描く。リポジトリに置く画像は `pnpm run -F main optimize:image <元の画像> <出力.avif> [--max-width <px>] [--widths <px>,<px>...]` で AVIF にしてコミットし、静的 import の値の `src` を渡す。optimize:image は、出力より狭い幅（既定は 640・960・1280px、`--widths` で変える）ごとに、srcset の版 `<名前>.<幅>w.avif` も隣に書く（元より 1 割以上小さくならない版は書かない）。版もコミットする。記事の外で版を使う画像（`components/site/home`・`components/site/not-found`）は、版を import して srcset と sizes を書く。入力と出力に同じ AVIF を渡すと、元を書き直さずに版だけを作る
-- **features/<feature>/** - 機能ごとの UI 以外の処理。`interface` は route と部品が読む関数、`application` は整形、`infrastructure` は DB の読み取り。ビルドはページを HTML とペイロードで2回描くので、interface の読み取りは `shared/cache/memoize-in-build.ts` で覚える（`vite dev` では覚えない）
+- **features/<feature>/** - 機能ごとの UI 以外の処理。`interface` は route と部品が読む関数、`application` は整形。DB の値は自分で読まず、api の `@repo/api/build-data` の関数を同じプロセスで呼んで読む（k8o の DB を読むコードは api にだけ置く）。ビルドはページを HTML とペイロードで2回描くので、interface の読み取りは `shared/cache/memoize-in-build.ts` で覚える（`vite dev` では覚えない）
 - **site/** - `vercel()` の規則（`vercel-routes.ts`）・slug の正規表現・`paths` の組み立て・ビルドの後の検査・セキュリティヘッダー・ブラウザのターゲット。`vite.config.ts` が読むので、ここの import は拡張子まで書く
 - **shared/** - アプリの中で横断して使う UI 以外の処理（api のクライアント、OG の PNG、llms.txt の中身など）。ブラウザからの書き込み（閲覧数・お問い合わせ・フィードバック・Push 購読・エラーのレポート）は、部品が `shared/api/public-api.ts` の hc で api の公開ルート（`apps/api/CLAUDE.md`）を呼ぶ
 - **styles/** - `globals.css`
@@ -70,7 +70,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 ## 日々の表示（`/reading-list`・`/browser-support`・`/notifications`）
 
-- `/browser-support` と `/notifications` は、ページがビルドで DB を読み（`features/*/interface` の関数を `memoizeInBuild` で覚える）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。`getBrowserSupportSnapshot` は「直近1週間」の基準の時刻（`nowMs`）も一緒に覚え、HTML とペイロードの 2 回の描画で同じ値にする
+- `/browser-support` と `/notifications` は、ページがビルドで api の関数から読み（`features/*/interface` の関数を `memoizeInBuild` で覚える）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。`getBrowserSupportSnapshot` は「直近1週間」の基準の時刻（`nowMs`）も一緒に覚え、HTML とペイロードの 2 回の描画で同じ値にする
 - `/reading-list` は直近 90 日の記事をすべて描くので、ビルドの値を HTML とペイロードに埋めず（埋めると数百件を HTML と api で 2 回送る）、ブラウザで `GET /public/reading-list` を読む（`components/reading-list/reading-list-source`）。届くまでは `BrowserOnly` の骨組みのまま待ち、読めなければ読み直しを案内する（`ReadingListLoader`）。一度読んだ一覧は文書の中で同じ promise に覚え、戻る・進むでは待たずに描く。読めなかった結果は案内を出したら捨て、そのあとは `cache: 'reload'` で読む。WebKit は文書の中で、preload の応答を失敗したものも同じ URL の fetch に使い回すため
 - HTML を読むうちに api を取り始める `preload`（`as: 'fetch'`）は、client の部品の `ReadingListPreload` が描くときに書く。Server Component で書くとペイロードの hint にも入り、Readings へのリンクを先読みしただけで api を読む
 - 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は「ツールの URL の状態」と同じく文字列のまま持ち、読むときに解く。`z.array` は `?source=1,2` を読めず、`z.stringbool` は `?widely=1` を真に読み、外に貼られたリンク（nuqs の書き方）の読みが変わる
@@ -97,10 +97,10 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 - ビルドが DB を読んで書き出すので、talks / tags / blogs / slides と記事の公開・非公開（マイグレーションでだけ変わる）が画面に出るのは、main のデプロイのとき。本番の workflow は、マイグレーションを流してから main をビルドして出す
 - 記事のページと記事の下の URL（`/blog/:slug`・`/blog/:slug/article.md`・`/blog/:slug/og.png`）は、`vite.config.ts` の `paths` が、フィードと llms.txt と同じ公開済みの記事の一覧1つ（`features/blog/application/blogs.ts` の `getBlogs`）から作る。下書きと MDX の無い記事は挙がらず、404 になる。列挙した記事の route.ts が 200 を返さなければビルドが止まる
 - Playground のページと OG（`/playgrounds/:id`・`/playgrounds/:id/og.png`）は、`paths` が `playgrounds/ids.ts` から作る。記事の `PlaygroundEmbed` が無いセクションやデモを名指すと、描画が投げてビルドが止まる
-- タグのページ（`/tags/:id`）は、`paths` が DB の全タグの id（`features/tags/application/tags.ts` の `getTags`）から作る。中身が 0 件のタグ（下書きか MDX の無い記事だけのタグ）のページも書き、noindex にして sitemap と `/tags` の一覧から外す。この 3 つは、タグの中身を `shared/site/tag-contents.ts` で、MDX のある公開済みの記事（`getBlogContents`）とトークから数える。id は route の `paramsSchema` で正の整数に読むので、ページも `href('/tags/:id', { id })` も数値を受ける。挙げていない id と数字でない値は 404 になる。`vite dev` は `paths` を見ずにスキーマで読むので、ビルドでは 404 の `/tags/01` も dev では描く
+- タグのページ（`/tags/:id`）は、`paths` が DB の全タグの id（`@repo/api/build-data` の `getTags`）から作る。中身が 0 件のタグ（下書きか MDX の無い記事だけのタグ）のページも書き、noindex にして sitemap と `/tags` の一覧から外す。この 3 つは、タグの中身を `shared/site/tag-contents.ts` で、MDX のある公開済みの記事（`getBlogContents`）とトークから数える。id は route の `paramsSchema` で正の整数に読むので、ページも `href('/tags/:id', { id })` も数値を受ける。挙げていない id と数字でない値は 404 になる。`vite dev` は `paths` を見ずにスキーマで読むので、ビルドでは 404 の `/tags/01` も dev では描く
 - デッキのページと OG（`/slides/:slug`・`/slides/:slug/og.png`）は、`paths` が一覧とフィードと同じ公開済みで MDX のあるスライドの一覧1つ（`features/slides/application/slides.ts` の `getSlides`）から作る。デッキを足すのは `content/slides/<slug>/content.mdx` とマイグレーションだけで（手順は `components/slides/README.md`）、公開していないデッキは 404 になる
 - `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事とデッキの更新日から決め、ビルドの時刻は使わない。Playground は `@playgrounds/sections` の並びで、`paths` が読む `ids.ts` の並びとは違う。`framework()` には `site` を渡さない。渡すと framework も描いたページを pathname の辞書順に並べた `sitemap.xml` を書くので、route.ts の出力と重なり、ビルドが描く前に止まる
-- `paths` は `vite.config.ts` の側で走る。設定のバンドルは `@repo/database` を外に出し、Node がそのまま読むと落ちるので、DB を読むモジュールは Vite の `runnerImport` で読む
+- `paths` は `vite.config.ts` の側で走る。設定のバンドルは workspace の `@repo/*` を外に出し、Node がそのまま読むと落ちるので、記事の一覧と api を読むモジュールは Vite の `runnerImport` で読む
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 
 ## セキュリティヘッダー
