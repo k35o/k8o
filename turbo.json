@@ -1,7 +1,7 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "agentGuidance": false,
-  "globalEnv": ["NODE_ENV", "PORTLESS_URL", "VERCEL_ENV"],
+  "globalEnv": ["NODE_ENV", "VERCEL_ENV"],
   "globalPassThroughEnv": ["CRON_SECRET"],
   "tasks": {
     "dev": {

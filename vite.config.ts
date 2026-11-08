@@ -9,8 +9,6 @@ const ignorePatterns = [
   '**/*.md',
   '**/*.mdx',
   '.claude/worktrees/**',
-  // CI用スクリプト。tsconfig外の .mjs のため型情報前提のルールが誤検知する
-  '.github/scripts/**',
   // カスタムルールのテスト用fixture。意図的な違反コードを含む
   'packages/oxlint-plugin/tests/fixtures/**',
 ];

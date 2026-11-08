@@ -57,7 +57,6 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
-    "chromatic": "catalog:",
     "storybook": "catalog:",
     "storybook-addon-determinism": "catalog:",
     "storybook-addon-vrt": "catalog:",

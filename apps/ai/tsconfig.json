@@ -16,5 +16,5 @@
     ".storybook/*.tsx",
     "__generated__"
   ],
-  "exclude": ["node_modules", "sandbox-template"]
+  "exclude": ["node_modules"]
 }
