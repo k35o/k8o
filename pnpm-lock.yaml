@@ -252,8 +252,8 @@ catalogs:
       specifier: 4.13.13
       version: 4.13.13
     katex:
-      specifier: 0.19.0
-      version: 0.19.0
+      specifier: 0.19.1
+      version: 0.19.1
     next:
       specifier: 16.4.5
       version: 16.4.5
@@ -296,7 +296,7 @@ catalogs:
 
 overrides:
   drizzle-kit>@esbuild-kit/esm-loader: '-'
-  micromark-extension-math>katex: 0.19.0
+  micromark-extension-math>katex: 0.19.1
 
 importers:
 
@@ -764,7 +764,7 @@ importers:
         version: 2.0.0
       katex:
         specifier: 'catalog:'
-        version: 0.19.0
+        version: 0.19.1
       remark-frontmatter:
         specifier: 5.0.0
         version: 5.0.0(supports-color@10.2.2)
@@ -5096,8 +5096,8 @@ packages:
   jsonc-parser@3.3.1:
     resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
-  katex@0.19.0:
-    resolution: {integrity: sha512-v6Tznz3zJ7u3niRCoDTsumM2+HA2XXcCu+WAacCeHD2z3p9A9Ks987o5FzfTGBN0e8A0vjEgIDvLbICrXpdw/Q==}
+  katex@0.19.1:
+    resolution: {integrity: sha512-jG8uKntjSEcm2EpQOh0XturpPuuC9r3Sq5HLHdsFdWZT27E672SF19QEi+of0/YeOy15lDgRhKvr5614uRrEfA==}
     hasBin: true
 
   kleur@4.1.5:
@@ -9848,7 +9848,7 @@ snapshots:
 
   jsonc-parser@3.3.1: {}
 
-  katex@0.19.0:
+  katex@0.19.1:
     dependencies:
       commander: 15.0.0
 
@@ -10313,7 +10313,7 @@ snapshots:
     dependencies:
       '@types/katex': 0.16.8
       devlop: 1.1.0
-      katex: 0.19.0
+      katex: 0.19.1
       micromark-factory-space: 2.0.1
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
