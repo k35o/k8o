@@ -63,6 +63,6 @@ const getClientSnapshot = (): DetectedBrowser | null => {
 
 const getServerSnapshot = (): DetectedBrowser | null => null;
 
-// SSR では null を返し、ハイドレーション後にクライアントで一度だけ検出する。
+// サーバーで描く HTML では null を返し、ハイドレーションの後にブラウザで一度だけ検出する。
 export const useDetectedBrowser = (): DetectedBrowser | null =>
   useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);

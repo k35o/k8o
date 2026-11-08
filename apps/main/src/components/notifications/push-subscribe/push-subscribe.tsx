@@ -58,19 +58,8 @@ const registerSubscription = async (
 // プッシュ通知対応は変化しないため、購読(変更通知)は不要。
 const subscribeNoop = (): (() => void) => () => undefined;
 
-const urlBase64ToUint8Array = (
-  base64String: string,
-): Uint8Array<ArrayBuffer> => {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replaceAll('-', '+')
-    .replaceAll('_', '/');
-  const rawData = atob(base64);
-  return Uint8Array.from(rawData, (c) => c.codePointAt(0) ?? 0);
-};
-
 export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
-  // 機能対応は navigator/window 依存で SSR では判定できないため、
+  // 機能対応は navigator と window で決まり、サーバーで描く HTML では判定できないため、
   // useSyncExternalStore でクライアント確定値を読む(サーバーは鍵有無で代替)。
   const isSupported = useSyncExternalStore(
     subscribeNoop,
@@ -117,7 +106,9 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
         const registration = await navigator.serviceWorker.ready;
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey).buffer,
+          applicationServerKey: Uint8Array.fromBase64(vapidPublicKey, {
+            alphabet: 'base64url',
+          }).buffer,
         });
 
         // api に無い購読をブラウザに残すと、通知が届かないのに購読中と表示される
