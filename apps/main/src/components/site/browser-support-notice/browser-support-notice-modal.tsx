@@ -1,4 +1,4 @@
-import { Dialog, Modal } from '@k8ordo/ui';
+import { Dialog, Modal, Stack } from '@k8ordo/ui';
 import { BROWSER_LABELS } from '@repo/helpers/browser/detect-browser';
 import type {
   CoreBrowser,
@@ -33,7 +33,7 @@ export const BrowserSupportNoticeModal: FC<{
               {BROWSER_LABELS[detected.browser]} {detected.version}
             </span>
           </div>
-          <div className={styles.recommended}>
+          <Stack gap="sm">
             <p className={styles.recommendedTitle}>推奨バージョン</p>
             <dl className={styles.versions}>
               {BROWSER_ORDER.filter(
@@ -47,7 +47,7 @@ export const BrowserSupportNoticeModal: FC<{
                 </div>
               ))}
             </dl>
-          </div>
+          </Stack>
         </div>
       </Dialog.Content>
     </Dialog.Root>

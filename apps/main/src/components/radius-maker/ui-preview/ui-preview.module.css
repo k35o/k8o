@@ -1,9 +1,3 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-}
-
 .title {
   color: var(--color-fg-base);
   font-size: var(--font-size-sm);

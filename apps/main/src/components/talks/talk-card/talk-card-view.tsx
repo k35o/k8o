@@ -10,6 +10,7 @@ import {
   IconButton,
   PublishDateIcon,
   SlideIcon,
+  Stack,
 } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC, ReactNode } from 'react';
@@ -45,7 +46,7 @@ export const TalkCardView: FC<{
 }) => (
   <Card>
     <div className={styles.root}>
-      <div className={styles.header}>
+      <Stack gap="sm">
         <h2 className={styles.title}>
           {title}
           <IconButton
@@ -72,7 +73,7 @@ export const TalkCardView: FC<{
           </IconButton>
         </h2>
         <p className={styles.event}>{eventName}</p>
-      </div>
+      </Stack>
       <div className={styles.details}>
         <div className={styles.detail}>
           <PublishDateIcon size="sm" />

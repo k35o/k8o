@@ -10,12 +10,6 @@
   gap: calc(var(--spacing) * 3);
 }
 
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-}
-
 .groupLabel {
   color: var(--color-fg-mute);
   font-size: var(--font-size-xs);

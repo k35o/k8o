@@ -32,10 +32,7 @@ const renderRootErrorScreen = (reset: () => void): ReactNode => (
 export const RootErrorBoundary: FC<{ children: ReactNode }> = ({
   children,
 }) => (
-  <ErrorBoundary
-    fallback={renderRootErrorScreen}
-    onError={reportClientError}
-  >
+  <ErrorBoundary fallback={renderRootErrorScreen} onError={reportClientError}>
     {children}
   </ErrorBoundary>
 );

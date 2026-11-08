@@ -14,6 +14,7 @@ import {
   ShieldCheckIcon,
   SlideIcon,
   SquircleIcon,
+  Stack,
 } from '@k8ordo/ui';
 import type { ReactNode } from 'react';
 
@@ -46,7 +47,7 @@ export const SiteEntrySection = ({ kind }: { kind: SiteEntryKind }) => {
   const entries = siteEntries.filter((entry) => entry.kind === kind);
 
   return (
-    <div className={styles.root}>
+    <Stack gap="lg">
       <div>
         <Heading level="h2">{section.title}</Heading>
         <p className={styles.description}>{section.description}</p>
@@ -62,6 +63,6 @@ export const SiteEntrySection = ({ kind }: { kind: SiteEntryKind }) => {
           />
         ))}
       </div>
-    </div>
+    </Stack>
   );
 };

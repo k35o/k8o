@@ -1,12 +1,12 @@
 import { href } from '@k8ordo/framework';
-import { Anchor, Heading } from '@k8ordo/ui';
+import { Anchor, Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import styles from './privacy-index.module.css';
 
 export const PrivacyIndex: FC = () => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="xl">
       <Heading level="h2">プライバシーポリシー</Heading>
       <p className={styles.paragraph}>
         本ページでは、k8oが運営する個人サイトk8o.me（以下、当サイト）における利用者情報の取り扱いを説明します。
@@ -56,6 +56,6 @@ export const PrivacyIndex: FC = () => (
         </p>
         <p className={styles.enacted}>制定日: 2026年8月24日</p>
       </section>
-    </div>
+    </Stack>
   </div>
 );

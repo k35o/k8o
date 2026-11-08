@@ -1,9 +1,3 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 8);
-}
-
 .summary {
   display: flex;
   align-items: center;
@@ -25,22 +19,10 @@
   color: var(--color-primary-fg);
 }
 
-.summaryText {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-}
-
 .count {
   color: var(--color-fg-mute);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
-}
-
-.sections {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 8);
 }
 
 .section {

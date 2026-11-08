@@ -1,5 +1,5 @@
 import { href } from '@k8ordo/framework';
-import { Anchor, Badge, Heading } from '@k8ordo/ui';
+import { Anchor, Badge, Heading, Stack } from '@k8ordo/ui';
 import { playgroundCategoryLabels } from '@playgrounds/types';
 import type { PlaygroundSection } from '@playgrounds/types';
 import type { FC } from 'react';
@@ -18,7 +18,7 @@ export const PlaygroundSectionView: FC<{
   return (
     <div className={styles.root}>
       <Anchor href={href('/playgrounds')}>← Playgrounds一覧に戻る</Anchor>
-      <div className={styles.header}>
+      <Stack gap="md">
         <div className={styles.meta}>
           <Badge label={playgroundCategoryLabels[section.category]} size="sm" />
           <span className={styles.count}>デモ{section.demos.length}件</span>
@@ -30,7 +30,7 @@ export const PlaygroundSectionView: FC<{
             <BlogLinkButton slug={blogSlug} />
           </div>
         )}
-      </div>
+      </Stack>
       <div>
         <SectionDemos demos={section.demos} />
       </div>

@@ -1,9 +1,3 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 8);
-}
-
 .srOnly {
   position: absolute;
   width: 1px;

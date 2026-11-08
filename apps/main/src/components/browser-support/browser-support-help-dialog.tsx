@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertIcon, Badge, Dialog, IconButton, Modal } from '@k8ordo/ui';
+import { AlertIcon, Badge, Dialog, IconButton, Modal, Stack } from '@k8ordo/ui';
 import { useCallback, useState } from 'react';
 import type { FC } from 'react';
 
@@ -27,7 +27,7 @@ export const BrowserSupportHelpDialog: FC = () => {
         <Dialog.Root>
           <Dialog.Header onClose={onClose} title="ステータスについて" />
           <Dialog.Content>
-            <div className={styles.root}>
+            <Stack gap="lg">
               <p className={styles.lead}>
                 このページでは、Webプラットフォーム機能が主要ブラウザでどれだけ使えるようになっているかを一覧します。すべての対象ブラウザで安定して使える機能に加えて、まだ一部のブラウザだけが対応している新しい機能（先取り）も表示します。
               </p>
@@ -69,7 +69,7 @@ export const BrowserSupportHelpDialog: FC = () => {
                   <li>Mozilla Firefox（デスクトップ / Android）</li>
                 </ul>
               </div>
-            </div>
+            </Stack>
           </Dialog.Content>
         </Dialog.Root>
       </Modal>

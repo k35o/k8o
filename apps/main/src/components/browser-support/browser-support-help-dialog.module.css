@@ -1,9 +1,3 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 6);
-}
-
 .lead {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-relaxed);

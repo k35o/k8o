@@ -1,3 +1,4 @@
+import { Stack } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
@@ -7,15 +8,15 @@ const ROW_KEYS = ['a', 'b', 'c', 'd', 'e'] as const;
 
 export const BrowserSupportFeatureListSkeleton: FC = () => (
   <section className={styles.root}>
-    <div className={styles.filters}>
+    <Stack gap="md">
       <div className={cn(styles.bone, styles.search)} />
       <div className={styles.toggles}>
         <div className={cn(styles.bone, styles.toggle)} />
         <div className={cn(styles.bone, styles.toggle)} />
         <div className={cn(styles.bone, styles.toggleWide)} />
       </div>
-    </div>
-    <div className={styles.list}>
+    </Stack>
+    <Stack gap="md">
       <div className={cn(styles.bone, styles.tabs)} />
       <ul className={styles.rows}>
         {ROW_KEYS.map((key) => (
@@ -29,6 +30,6 @@ export const BrowserSupportFeatureListSkeleton: FC = () => (
           </li>
         ))}
       </ul>
-    </div>
+    </Stack>
   </section>
 );

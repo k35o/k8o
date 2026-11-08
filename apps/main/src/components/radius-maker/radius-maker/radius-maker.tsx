@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, FormControl, NumberField, Select } from '@k8ordo/ui';
+import { Card, FormControl, NumberField, Select, Stack } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 import { BrowserOnly } from '@/components/site/browser-only/browser-only';
@@ -53,7 +53,7 @@ const Content: FC<Props> = ({
   } = useRadiusState();
 
   return (
-    <div className={styles.root} {...commitProps}>
+    <Stack gap="lg" {...commitProps}>
       <Card>
         <div className={styles.editor}>
           <RadiusCanvas
@@ -130,7 +130,7 @@ const Content: FC<Props> = ({
           </div>
         </Card>
       </div>
-    </div>
+    </Stack>
   );
 };
 

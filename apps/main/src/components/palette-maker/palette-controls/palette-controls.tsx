@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, NumberField, Slider, TextField } from '@k8ordo/ui';
+import { FormControl, NumberField, Slider, Stack, TextField } from '@k8ordo/ui';
 import type { Color } from '@repo/helpers/color/spaces';
 import { useId, useState } from 'react';
 import type { ChangeEventHandler, FC } from 'react';
@@ -112,8 +112,8 @@ export const PaletteControls: FC<Props> = ({
   };
 
   return (
-    <div className={styles.root}>
-      <div className={styles.channels}>
+    <Stack gap="lg">
+      <Stack gap="md">
         <ChannelRow
           label="色相 (H)"
           max={HUE.max}
@@ -132,7 +132,7 @@ export const PaletteControls: FC<Props> = ({
           step={0.001}
           value={chroma}
         />
-      </div>
+      </Stack>
       <div className={styles.fields}>
         <FormControl
           errorText={
@@ -156,6 +156,6 @@ export const PaletteControls: FC<Props> = ({
         />
         <BaseColorInput onColorChange={onBaseColorChange} />
       </div>
-    </div>
+    </Stack>
   );
 };

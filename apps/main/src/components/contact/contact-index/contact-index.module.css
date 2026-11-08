@@ -4,12 +4,6 @@
   margin-inline: auto;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 8);
-}
-
 .text {
   line-height: var(--line-height-relaxed);
 }

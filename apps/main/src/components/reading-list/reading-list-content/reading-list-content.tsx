@@ -1,7 +1,14 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Button, Card, Drawer, EmptyState, SubscribeIcon } from '@k8ordo/ui';
+import {
+  Button,
+  Card,
+  Drawer,
+  EmptyState,
+  Stack,
+  SubscribeIcon,
+} from '@k8ordo/ui';
 import {
   startTransition,
   useCallback,
@@ -177,7 +184,7 @@ export const ReadingListContent: FC<{
             title="条件に一致する記事がありません"
           />
         ) : (
-          <div className={styles.list}>
+          <Stack gap="md">
             {shownArticles.map((article) => (
               <ReadingCard
                 description={article.description}
@@ -190,7 +197,7 @@ export const ReadingListContent: FC<{
                 url={article.url}
               />
             ))}
-          </div>
+          </Stack>
         )}
       </div>
       <Drawer

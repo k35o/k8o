@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Heading } from '@k8ordo/ui';
+import { Card, Heading, Stack } from '@k8ordo/ui';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 
@@ -29,7 +29,7 @@ const Content: FC = () => {
   const swatches = useMemo(() => generatePalette(hue, chroma), [hue, chroma]);
 
   return (
-    <div className={styles.root} {...commitProps}>
+    <Stack gap="lg" {...commitProps}>
       <Card>
         <div className={styles.panel}>
           <PalettePreview swatches={swatches} />
@@ -49,7 +49,7 @@ const Content: FC = () => {
         <Heading level="h3">コントラスト詳細</Heading>
         <ContrastTable swatches={swatches} />
       </section>
-    </div>
+    </Stack>
   );
 };
 

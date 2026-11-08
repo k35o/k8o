@@ -1,5 +1,5 @@
 import { href } from '@k8ordo/framework';
-import { Heading } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 import styles from './slides-frame.module.css';
@@ -8,11 +8,11 @@ import styles from './slides-frame.module.css';
 // /slides と /slides/:slug のページが描く
 export const SlidesFrame: FC<{ children: ReactNode }> = ({ children }) => (
   <div className={styles.root}>
-    <div className={styles.stack}>
+    <Stack gap="lg">
       <a className={styles.link} href={href('/slides')}>
         <Heading level="h2">Slides</Heading>
       </a>
       {children}
-    </div>
+    </Stack>
   </div>
 );

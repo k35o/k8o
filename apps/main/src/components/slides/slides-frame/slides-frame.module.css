@@ -4,12 +4,6 @@
   max-width: 64rem;
 }
 
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 6);
-}
-
 .link {
   @media (hover: hover) {
     &:hover {

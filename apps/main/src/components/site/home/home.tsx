@@ -1,4 +1,4 @@
-import { Heading, Separator } from '@k8ordo/ui';
+import { Heading, Separator, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { getBlogContents } from '@/features/blog/interface/queries';
@@ -48,13 +48,13 @@ export const Home: FC<HomeProps> = ({ blogs }) => (
 
       <Separator color="subtle" />
 
-      <div className={styles.activity}>
+      <Stack gap="lg">
         <div>
           <Heading level="h2">Activity</Heading>
           <p className={styles.activityLead}>最近の発信の記録。</p>
         </div>
         <RecentBlogs blogs={blogs.slice(0, 3)} />
-      </div>
+      </Stack>
 
       <SiteEntrySection kind="reading" />
       <SiteEntrySection kind="tool" />

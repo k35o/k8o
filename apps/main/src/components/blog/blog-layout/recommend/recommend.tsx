@@ -1,5 +1,12 @@
 import { href } from '@k8ordo/framework';
-import { Badge, Heading, Card, PublishDateIcon, TagIcon } from '@k8ordo/ui';
+import {
+  Badge,
+  Card,
+  Heading,
+  PublishDateIcon,
+  Stack,
+  TagIcon,
+} from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -17,7 +24,7 @@ export const Recommend: FC<RecommendProps> = ({ blogs }) => {
   }
 
   return (
-    <div className={styles.root}>
+    <Stack gap="xl">
       <Heading level="h3">関連記事</Heading>
       <div className={styles.grid}>
         {blogs.map((blog) => (
@@ -46,6 +53,6 @@ export const Recommend: FC<RecommendProps> = ({ blogs }) => {
           </Card>
         ))}
       </div>
-    </div>
+    </Stack>
   );
 };

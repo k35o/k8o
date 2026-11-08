@@ -3,6 +3,7 @@ import {
   Badge,
   PublishDateIcon,
   Separator,
+  Stack,
   TagIcon,
   UpdateDateIcon,
 } from '@k8ordo/ui';
@@ -105,7 +106,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
             {children}
           </article>
         </WritingModeContent>
-        <div className={styles.footer} id={END_OF_CONTENT_ID}>
+        <Stack gap="xl" id={END_OF_CONTENT_ID}>
           <ErrorBoundary>
             <section className={styles.feedback}>
               <Feedback slug={slug} />
@@ -114,7 +115,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
           <ErrorBoundary>
             <Recommend blogs={recommendedBlogs} />
           </ErrorBoundary>
-        </div>
+        </Stack>
       </div>
       <ErrorBoundary>
         <TableOfContentsSideRail

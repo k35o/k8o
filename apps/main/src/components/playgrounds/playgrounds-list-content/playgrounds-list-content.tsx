@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { EmptyState, FlaskIcon, Heading, TextField } from '@k8ordo/ui';
+import { EmptyState, FlaskIcon, Heading, Stack, TextField } from '@k8ordo/ui';
 import {
   playgroundCategories,
   playgroundCategoryLabels,
@@ -48,7 +48,7 @@ export const PlaygroundsListContent: FC<Props> = ({ playgrounds }) => {
   );
 
   return (
-    <div className={styles.root}>
+    <Stack gap="lg">
       <div className={styles.toolbar}>
         <div className={styles.search}>
           <TextField
@@ -94,6 +94,6 @@ export const PlaygroundsListContent: FC<Props> = ({ playgrounds }) => {
           ))}
         </div>
       )}
-    </div>
+    </Stack>
   );
 };

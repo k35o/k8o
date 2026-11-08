@@ -1,4 +1,4 @@
-import { Heading } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { BlogLink } from '@/features/blog/interface/queries';
@@ -14,12 +14,12 @@ export const BrowserSupportIndex: FC<{
   blogMap: Record<string, BlogLink>;
 }> = ({ snapshot, blogMap }) => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="lg">
       <div className={styles.titleRow}>
         <Heading level="h2">Browser Support</Heading>
         <BrowserSupportHelpDialog />
       </div>
       <BrowserSupportLive blogMap={blogMap} snapshot={snapshot} />
-    </div>
+    </Stack>
   </div>
 );

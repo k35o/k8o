@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor } from '@k8ordo/ui';
+import { Anchor, Stack } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -40,7 +40,7 @@ export const BrowserSupportLive: FC<{
   const latestYear = features[0]?.resolvedDate.slice(0, 4) ?? '';
 
   return (
-    <div className={styles.root}>
+    <Stack gap="lg">
       <BrowserSupportRecentChanges changes={recentChanges} />
       {/* HTML は URL の値を知らずに描くので、一覧は骨組みを置いてブラウザでだけ描く。
           既定の値で描くと、URL の値で開いたときに全件が一度出る */}
@@ -64,6 +64,6 @@ export const BrowserSupportLive: FC<{
         </Anchor>{' '}
         v{meta.upstreamVersion}（{formatDate(new Date(meta.ingestedAt))} 取得）
       </p>
-    </div>
+    </Stack>
   );
 };

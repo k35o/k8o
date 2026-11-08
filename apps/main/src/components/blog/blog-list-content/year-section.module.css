@@ -3,9 +3,3 @@
   flex-direction: column;
   gap: calc(var(--spacing) * 4);
 }
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-}

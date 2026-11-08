@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor } from '@k8ordo/ui';
+import { Anchor, Stack } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 import { BrowserOnly } from '@/components/site/browser-only/browser-only';
@@ -19,7 +19,7 @@ const Content: FC<Props> = ({ pickerIcon }) => {
   const { element, setSelected } = useNestState();
 
   return (
-    <div className={styles.root}>
+    <Stack gap="md">
       <ContainmentView
         element={element}
         onSelect={setSelected}
@@ -32,7 +32,7 @@ const Content: FC<Props> = ({ pickerIcon }) => {
           WHATWG HTML Standard（要素インデックス）
         </Anchor>
       </p>
-    </div>
+    </Stack>
   );
 };
 

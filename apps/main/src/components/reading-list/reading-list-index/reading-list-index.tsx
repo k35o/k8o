@@ -1,4 +1,4 @@
-import { Heading, ListIcon } from '@k8ordo/ui';
+import { Heading, ListIcon, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { BrowserOnly } from '@/components/site/browser-only/browser-only';
@@ -14,7 +14,7 @@ import styles from './reading-list-index.module.css';
 // ブラウザでだけ描く。ListIcon はどのページも読むファイルに載せないよう、サーバーで描いて渡す
 export const ReadingListIndex: FC = () => (
   <div className={styles.root}>
-    <div className={styles.content}>
+    <Stack gap="xl">
       <div className={styles.header}>
         <Heading level="h2">Readings</Heading>
         <RssLink />
@@ -23,6 +23,6 @@ export const ReadingListIndex: FC = () => (
       <BrowserOnly fallback={<ReadingListSkeleton />}>
         <ReadingListLoader filterIcon={<ListIcon />} />
       </BrowserOnly>
-    </div>
+    </Stack>
   </div>
 );

@@ -103,9 +103,3 @@
     display: none;
   }
 }
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-}

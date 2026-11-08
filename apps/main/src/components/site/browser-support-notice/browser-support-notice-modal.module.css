@@ -27,12 +27,6 @@
   font-weight: var(--font-weight-bold);
 }
 
-.recommended {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-}
-
 .recommendedTitle {
   font-weight: var(--font-weight-bold);
 }

@@ -1,6 +1,6 @@
 import { CONTENT_CATEGORY_LABEL, FORM_CATEGORY_LABEL } from '@k8o/html-nest';
 import type { ContentModelKind, HtmlElementInfo } from '@k8o/html-nest';
-import { Anchor, Badge, Code, Separator, Tabs } from '@k8ordo/ui';
+import { Anchor, Badge, Code, Separator, Stack, Tabs } from '@k8ordo/ui';
 import { useMemo } from 'react';
 import type { FC, ReactNode } from 'react';
 
@@ -47,7 +47,7 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
   );
 
   return (
-    <div className={styles.root}>
+    <Stack gap="md">
       <div className={styles.selected}>
         <div className={styles.selectedHeader}>
           <p className={styles.selectedLabel}>選択中の要素</p>
@@ -144,6 +144,6 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
       <p aria-live="polite" className={styles.srOnly}>
         {`${element.tag} を選択。子要素にできるもの ${children.length} 件、親要素にできるもの ${parents.length} 件。`}
       </p>
-    </div>
+    </Stack>
   );
 };

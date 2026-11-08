@@ -1,4 +1,4 @@
-import { Heading } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { BlogCard } from '../blog-card/blog-card';
@@ -14,10 +14,10 @@ type Props = {
 export const YearSection: FC<Props> = ({ year, blogs }) => (
   <section className={styles.root}>
     <Heading level="h3">{year}年</Heading>
-    <div className={styles.list}>
+    <Stack gap="md">
       {blogs.map((blog) => (
         <BlogCard key={blog.id} {...blog} />
       ))}
-    </div>
+    </Stack>
   </section>
 );

@@ -38,12 +38,6 @@
   }
 }
 
-.axes {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-}
-
 .axis {
   display: flex;
   align-items: center;
