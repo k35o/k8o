@@ -7,23 +7,15 @@ import type { FC } from 'react';
 import styles from './toggle-theme.module.css';
 
 export const ToggleTheme: FC = () => {
-  const { theme, setTheme, systemTheme } = useTheme();
-
-  const nextTheme =
-    theme === 'system'
-      ? systemTheme === 'dark'
-        ? 'light'
-        : 'dark'
-      : theme === 'dark'
-        ? 'light'
-        : 'dark';
-
-  const handleToggleTheme = () => {
-    setTheme(nextTheme);
-  };
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
-    <IconButton label="テーマを切り替える" onClick={handleToggleTheme}>
+    <IconButton
+      label="テーマを切り替える"
+      onClick={() => {
+        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+      }}
+    >
       <span className={styles.moon}>
         <DarkModeIcon size="lg" />
       </span>
