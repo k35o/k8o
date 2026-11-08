@@ -1,4 +1,4 @@
-const SITE_URL = 'https://k8o.me';
+import { SITE_URL } from '@/shared/site/site-url';
 
 const PERSON = {
   '@type': 'Person',

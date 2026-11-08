@@ -1,10 +1,11 @@
 import type { FC, ReactNode } from 'react';
 
 import { splitSlides } from '@/components/slides/split-slides/split-slides';
+import { SITE_URL } from '@/shared/site/site-url';
 
 import { SlideDeck } from '../../slide-deck/slide-deck/slide-deck';
 
-const SLIDES_BASE_URL = 'https://k8o.me/slides';
+const SLIDES_BASE_URL = `${SITE_URL}/slides`;
 
 export const SlideDeckShell: FC<{
   slug: string;

@@ -3,8 +3,7 @@ import { playgroundSections } from '@playgrounds/sections';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
-
-const SITE_URL = 'https://k8o.me';
+import { SITE_URL } from '@/shared/site/site-url';
 
 export async function generateLlmsContent(): Promise<string> {
   const [blogs, talks] = await Promise.all([getBlogContents(), getTalks()]);

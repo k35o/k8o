@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getJetBrainsMonoFont } from './get-jetbrains-mono-font';
-import { getMPlus2Font } from './get-m-plus-2-font';
+import { getJetBrainsMonoFont, getMPlus2Font } from './og-assets';
 
 const TRUETYPE_SFNT_VERSION = 0x00_01_00_00;
 

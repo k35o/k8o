@@ -1,11 +1,13 @@
+import { SITE_URL } from '@/shared/site/site-url';
+
 const content = `# 404 Not Found
 
 お探しのページは存在しません。次のリンクから目的のコンテンツを探せます。
 
-- [トップページ](https://k8o.me/)
-- [サイト全体の索引（llms.txt）](https://k8o.me/llms.txt)
-- [サイトマップ](https://k8o.me/sitemap.xml)
-- [ブログ一覧](https://k8o.me/blog)
+- [トップページ](${SITE_URL}/)
+- [サイト全体の索引（llms.txt）](${SITE_URL}/llms.txt)
+- [サイトマップ](${SITE_URL}/sitemap.xml)
+- [ブログ一覧](${SITE_URL}/blog)
 
 各ブログ記事は URL の末尾に \`.md\` を付けると Markdown 形式で取得できます。
 `;

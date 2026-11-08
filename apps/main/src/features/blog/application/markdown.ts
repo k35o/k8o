@@ -5,12 +5,11 @@ import type { Root, RootContent } from 'mdast';
 
 import { mdxParser, stringAttribute } from '@/shared/mdx/mdx-tree';
 import type { MdxJsxElement } from '@/shared/mdx/mdx-tree';
+import { SITE_URL } from '@/shared/site/site-url';
 
 import { blogPath } from './path';
 
 type Edit = { start: number; end: number; text: string };
-
-const SITE_URL = 'https://k8o.me';
 
 const nodeRange = (node: RootContent): [number, number] | undefined => {
   const start = node.position?.start.offset;

@@ -1,7 +1,7 @@
 import type { SatoriOptions } from 'satori';
 import { describe, expect, it } from 'vitest';
 
-import { getMPlus2Font } from './get-m-plus-2-font';
+import { getMPlus2Font } from './og-assets';
 import { renderOgPng } from './render-og-png';
 
 const PNG_SIGNATURE = new Uint8Array([

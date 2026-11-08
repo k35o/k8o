@@ -1,7 +1,9 @@
+import { SITE_URL } from '@/shared/site/site-url';
+
 const content = `User-Agent: *
 Allow: /
 
-Sitemap: https://k8o.me/sitemap.xml
+Sitemap: ${SITE_URL}/sitemap.xml
 `;
 
 export function GET(): Response {

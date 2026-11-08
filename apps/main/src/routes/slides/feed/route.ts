@@ -1,8 +1,9 @@
 import { buildRssFeed } from '@repo/helpers/feed/build-rss';
 
 import { getSlideContents } from '@/features/slides/interface/queries';
+import { SITE_URL } from '@/shared/site/site-url';
 
-const SLIDES_URL = 'https://k8o.me/slides';
+const SLIDES_URL = `${SITE_URL}/slides`;
 
 export async function GET(): Promise<Response> {
   const slides = await getSlideContents();

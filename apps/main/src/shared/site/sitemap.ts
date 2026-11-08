@@ -3,9 +3,8 @@ import { playgroundSections } from '@playgrounds/sections';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getSlideContents } from '@/features/slides/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
+import { SITE_URL } from '@/shared/site/site-url';
 import { getTagSummaries } from '@/shared/site/tag-contents';
-
-const SITE_URL = 'https://k8o.me';
 
 type SitemapUrl = {
   loc: string;
