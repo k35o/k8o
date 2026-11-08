@@ -29,10 +29,10 @@ export const generateMetadata = async ({
   const { slug } = await params;
   const share = await getPublicShareForRoute(slug);
   if (share === null) {
-    return { title: '見つかりません | k8o AI Studio' };
+    return { title: '見つかりません' };
   }
   return {
-    title: `${share.title} | k8o AI Studio`,
+    title: share.title,
     description: DESCRIPTIONS[share.kind](share.title),
   };
 };

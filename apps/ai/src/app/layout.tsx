@@ -12,7 +12,10 @@ import { mPlus2, notoSansJp } from './_styles/font';
 import styles from './layout.module.css';
 
 export const metadata = {
-  title: 'k8o AI',
+  title: {
+    template: '%s | k8o AI Studio',
+    default: 'k8o AI',
+  },
   description: 'k8o の AI ツール',
   robots: {
     index: false,
