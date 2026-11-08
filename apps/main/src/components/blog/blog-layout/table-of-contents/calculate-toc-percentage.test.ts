@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
+import type { HeadingTree } from '@/features/blog/interface/queries';
+
 import { calculateTocPercentage } from './calculate-toc-percentage';
-import type { HeadingTree } from './types';
 
 describe('calculateTocPercentage', () => {
   describe('activeIdが空文字の場合', () => {

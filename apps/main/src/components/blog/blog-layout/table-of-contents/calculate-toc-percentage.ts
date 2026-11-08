@@ -1,4 +1,4 @@
-import type { HeadingTree } from './types';
+import type { HeadingTree } from '@/features/blog/interface/queries';
 
 export const calculateTocPercentage = (
   activeId: string,

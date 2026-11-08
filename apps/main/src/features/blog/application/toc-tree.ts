@@ -2,7 +2,21 @@ import type { PhrasingContent, Root } from 'mdast';
 import { remark } from 'remark';
 import remarkFrontmatter from 'remark-frontmatter';
 
-import type { HeadingTree } from './types';
+export type HeadingTree = {
+  depth: 0;
+  children: Array<{
+    depth: 1;
+    text: string;
+    children: Array<{
+      depth: 2;
+      text: string;
+      children: Array<{
+        depth: 3;
+        text: string;
+      }>;
+    }>;
+  }>;
+};
 
 // インラインコードや強調を含む見出しでも全文を採用する。
 // components/site/mdx-base の LinkHeading が id に使うテキスト抽出と同じ結果になる必要がある

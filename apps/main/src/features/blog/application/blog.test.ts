@@ -3,14 +3,13 @@ import { readFile } from 'node:fs/promises';
 import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { describe, expect, it, vi } from 'vitest';
 
-import { getTocTree } from '@/shared/mdx/toc-tree';
-
 import { findBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
+import { getTocTree } from './toc-tree';
 
 vi.mock('node:fs/promises');
 vi.mock('@repo/helpers/mdx/frontmatter');
-vi.mock('@/shared/mdx/toc-tree');
+vi.mock('./toc-tree');
 vi.mock('./path');
 
 describe('findBlogMetadata', () => {

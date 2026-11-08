@@ -3,9 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
 
-import { getTocTree } from '@/shared/mdx/toc-tree';
-
 import { blogPath } from './path';
+import { getTocTree } from './toc-tree';
 
 // DBのslugに対応するMDXが無いことがある（共有ローカルDBに他worktreeの
 // 執筆中記事のslugが混ざる、公開のマイグレーションが記事を含むデプロイより先に本番のDBに入る等）。

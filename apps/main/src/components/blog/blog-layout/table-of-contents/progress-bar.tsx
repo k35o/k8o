@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import type { FC } from 'react';
 
-import { calculateTocPercentage } from '@/shared/mdx/calculate-toc-percentage';
-import type { HeadingTree } from '@/shared/mdx/types';
+import type { HeadingTree } from '@/features/blog/interface/queries';
 
 import { END_OF_CONTENT_ID } from '../constants';
+import { calculateTocPercentage } from './calculate-toc-percentage';
 
 import styles from './progress-bar.module.css';
 

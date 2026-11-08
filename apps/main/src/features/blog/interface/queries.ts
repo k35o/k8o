@@ -81,3 +81,4 @@ export const getFeatureBlogMap = async () =>
   buildFeatureBlogMap(await getBlogs());
 
 export type { BlogLink } from '@/features/blog/application/feature-blog-map';
+export type { HeadingTree } from '@/features/blog/application/toc-tree';
