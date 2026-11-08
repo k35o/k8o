@@ -1,3 +1,4 @@
+import { existsSync, readdirSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,7 +17,6 @@ import type { Plugin } from 'vite';
 import type * as blogs from './src/features/blog/application/blogs.ts';
 import floor from './src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import type * as slides from './src/features/slides/application/slides.ts';
-import { playgroundIds } from './src/playgrounds/ids.ts';
 import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-script.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
@@ -60,6 +60,15 @@ const devSecurityHeaders: Plugin = {
 // 設定のバンドルは workspace の @repo/* を外に出し、Node がそのまま読むと拡張子の無い import で落ちるので、
 // 記事の一覧と api を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず alias を
 // 引き継がないので渡す
+const playgroundsDir = fileURLToPath(
+  new URL('./src/playgrounds', import.meta.url),
+);
+
+// デモの id は、src/playgrounds の下の index.ts を持つディレクトリの名前
+const playgroundIds = readdirSync(playgroundsDir).filter((name) =>
+  existsSync(join(playgroundsDir, name, 'index.ts')),
+);
+
 const importWithRunner = async <Module>(url: string): Promise<Module> =>
   (await runnerImport<Module>(fileURLToPath(url), { resolve: { alias } }))
     .module;

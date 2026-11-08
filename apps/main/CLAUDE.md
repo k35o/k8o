@@ -15,7 +15,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
   - MDX は `@/` を import しない（記事は `features/blog/application/article-files.test.ts`、スライドは `features/slides/application/slide-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい。`content/` の TS・TSX も同じものを import しない（ルートの `vite.config.ts` の lint が止める）
   - 記事の画像は AVIF にして `_images/` に置き、`Image`・`FloatImage` に width と height を書く。width と height が画像の縦横比と合うことは `article-files.test.ts` が確かめる。`Image`・`FloatImage` は、`_images/` の版（`<名前>.<幅>w.avif`）を glob で拾い、width より狭い版と元の画像（width の幅として）を srcset に挙げるので、記事の MDX には版を書かない
   - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
-- **playgrounds/** - Playground のデモ（`playgrounds/<id>/`）と、セクションの一覧 `sections.ts`、id だけの一覧 `ids.ts`（セクションを足したら `ids.ts` にも足す。食い違いは `ids.test.ts` が落とす）、枠の `playground.tsx`
+- **playgrounds/** - Playground のデモ（`playgrounds/<id>/`）と、それを glob で集めたセクションの一覧 `sections.ts`、枠の `playground.tsx`。デモの id はディレクトリの名前で、`<id>/index.ts` が同じ id のセクションを export する
   - `@/` を import しない（ルートの `vite.config.ts` の lint が止める）。リンクは素の `a`、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `public/playgrounds/` に置き、URL で読む。サイトの `public` に既にある画像（`/icon.png`）は写さずにその URL を読む
 - **scripts/**（パッケージの直下）- `pnpm run -F main <名前>` で流す道具。`generate:browser-min-versions`・`generate:link-card-metadata`・`optimize:image`
 
@@ -49,7 +49,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 ## Playground
 
-- デモのセクションは、`components/playgrounds/load-section.ts` が `import.meta.glob('@playgrounds/*/index.ts')` で id ごとに遅れて読む。`/playgrounds/:id` の page と OG の route.ts、記事の `PlaygroundEmbed` は、どれもこれで読む。新しいデモで書き足すのは `playgrounds/ids.ts` と `sections.ts` だけ
+- デモのセクションは、`components/playgrounds/load-section.ts` が `import.meta.glob('@playgrounds/*/index.ts')` で id ごとに遅れて読む。`/playgrounds/:id` の page と OG の route.ts、記事の `PlaygroundEmbed` は、どれもこれで読む。新しいデモは `playgrounds/<id>/` を置くだけで、どの一覧にも書き足さない
 - デモは、サーバーの部品（`PlaygroundEmbed`・`SectionDemos`）が `@playgrounds/playground` の枠で包んで描く。`'use client'` のデモはクライアントの部品として、それ以外のデモと枠はサーバーの部品として、その CSS がそのページの HTML に載る
 - 記事の部品の表（`blogMdxComponents`）は記事のページが静的に読むので、表に置く `PlaygroundEmbed` と `Playground`（`LazyPlayground`）は、枠とデモを関数の中で読む。静的に読むと、デモの無い記事も枠の CSS を読む
 - `/blog/:slug`・`/playgrounds/:id`・`/playgrounds` の route と、それが静的に読む部品は、`@playgrounds/sections` を静的に読まない。記事と `/playgrounds/:id` で読むと、デモが id ごとのチャンクに分かれず、どのデモのページも全部のデモを読む。デモを描かない一覧（`PlaygroundsIndex`）で読むと、サーバーで描くデモの CSS を一覧も読むので、関数の中で読む。llms.txt と sitemap.xml の route.ts は HTML を書かないので、静的に読んでよい
@@ -96,10 +96,10 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 - ビルドが DB を読んで書き出すので、talks / tags / blogs / slides と記事の公開・非公開（マイグレーションでだけ変わる）が画面に出るのは、main のデプロイのとき。本番の workflow は、マイグレーションを流してから main をビルドして出す
 - 記事のページと記事の下の URL（`/blog/:slug`・`/blog/:slug/article.md`・`/blog/:slug/og.png`）は、`vite.config.ts` の `paths` が、フィードと llms.txt と同じ公開済みの記事の一覧1つ（`features/blog/application/blogs.ts` の `getBlogs`）から作る。下書きと MDX の無い記事は挙がらず、404 になる。列挙した記事の route.ts が 200 を返さなければビルドが止まる
-- Playground のページと OG（`/playgrounds/:id`・`/playgrounds/:id/og.png`）は、`paths` が `playgrounds/ids.ts` から作る。記事の `PlaygroundEmbed` が無いセクションやデモを名指すと、描画が投げてビルドが止まる
+- Playground のページと OG（`/playgrounds/:id`・`/playgrounds/:id/og.png`）は、`paths` が `src/playgrounds` の下のディレクトリの名前から作る。記事の `PlaygroundEmbed` が無いセクションやデモを名指すと、描画が投げてビルドが止まる
 - タグのページ（`/tags/:id`）は、`paths` が DB の全タグの id（`@repo/api/build-data` の `getTags`）から作る。中身が 0 件のタグ（下書きか MDX の無い記事だけのタグ）のページも書き、noindex にして sitemap と `/tags` の一覧から外す。この 3 つは、タグの中身を `shared/site/tag-contents.ts` で、MDX のある公開済みの記事（`getBlogContents`）とトークから数える。id は route の `paramsSchema` で正の整数に読むので、ページも `href('/tags/:id', { id })` も数値を受ける。挙げていない id と数字でない値は 404 になる。`vite dev` は `paths` を見ずにスキーマで読むので、ビルドでは 404 の `/tags/01` も dev では描く
 - デッキのページと OG（`/slides/:slug`・`/slides/:slug/og.png`）は、`paths` が一覧とフィードと同じ公開済みで MDX のあるスライドの一覧1つ（`features/slides/application/slides.ts` の `getSlides`）から作る。デッキを足すのは `content/slides/<slug>/content.mdx` とマイグレーションだけで（手順は `components/slides/README.md`）、公開していないデッキは 404 になる
-- `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事とデッキの更新日から決め、ビルドの時刻は使わない。Playground は `@playgrounds/sections` の並びで、`paths` が読む `ids.ts` の並びとは違う。`framework()` には `site` を渡さない。渡すと framework も描いたページを pathname の辞書順に並べた `sitemap.xml` を書くので、route.ts の出力と重なり、ビルドが描く前に止まる
+- `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事とデッキの更新日から決め、ビルドの時刻は使わない。Playground は `@playgrounds/sections` の並び（ディレクトリの名前の順）。`framework()` には `site` を渡さない。渡すと framework も描いたページを pathname の辞書順に並べた `sitemap.xml` を書くので、route.ts の出力と重なり、ビルドが描く前に止まる
 - `paths` は `vite.config.ts` の側で走る。設定のバンドルは workspace の `@repo/*` を外に出し、Node がそのまま読むと落ちるので、記事の一覧と api を読むモジュールは Vite の `runnerImport` で読む
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 

@@ -1,3 +1,4 @@
+import { isPlaygroundSection } from '@playgrounds/types';
 import type { PlaygroundSection } from '@playgrounds/types';
 
 // sections を静的に import すると、そのデモのクライアントの部品と CSS を、読んだページがすべて読むので、id ごとに遅れて読む
@@ -14,15 +15,11 @@ const loaders = new Map(
   }),
 );
 
-// <id>/index.ts の export は 1 つで、名前がセクションごとに違うので、glob の import で名指せない
-const isSection = (value: unknown): value is PlaygroundSection =>
-  typeof value === 'object' && value !== null && 'demos' in value;
-
 export const loadPlaygroundSection = async (
   id: string,
 ): Promise<PlaygroundSection | undefined> => {
   const load = loaders.get(id);
   return load === undefined
     ? undefined
-    : Object.values(await load()).find(isSection);
+    : Object.values(await load()).find(isPlaygroundSection);
 };
