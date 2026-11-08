@@ -16,7 +16,7 @@ const signedInRequest = (pathname: string): NextRequest => {
 describe('proxy', () => {
   describe('正常系', () => {
     it('セッションcookieが無いと/sign-inへリダイレクトする', () => {
-      const response = proxy(request('/blogs'));
+      const response = proxy(request('/chat'));
 
       expect(response.status).toBe(307);
       expect(response.headers.get('location')).toBe(
@@ -34,15 +34,18 @@ describe('proxy', () => {
 
     it('セッションcookieがあれば保護パスを通す', () => {
       expect(
-        proxy(signedInRequest('/blogs')).headers.get('location'),
+        proxy(signedInRequest('/chat')).headers.get('location'),
       ).toBeNull();
     });
 
     it('セキュリティヘッダを常に付ける', () => {
-      const { headers } = proxy(request('/blogs'));
+      const { headers } = proxy(request('/chat'));
 
       expect(headers.get('Content-Security-Policy')).toContain(
         "frame-ancestors 'none'",
+      );
+      expect(headers.get('Content-Security-Policy')).toContain(
+        "frame-src 'none'",
       );
       expect(headers.get('X-Content-Type-Options')).toBe('nosniff');
       expect(headers.get('Referrer-Policy')).toBe('same-origin');
@@ -50,8 +53,8 @@ describe('proxy', () => {
 
     it.each([
       ['公開パス', proxy(request('/s/abc'))],
-      ['ログイン済み', proxy(signedInRequest('/blogs'))],
-      ['未ログインのリダイレクト', proxy(request('/blogs'))],
+      ['ログイン済み', proxy(signedInRequest('/chat'))],
+      ['未ログインのリダイレクト', proxy(request('/chat'))],
     ])(
       '%sの応答でも、画像は自分のオリジンと data:・blob: からだけ読む',
       (_, { headers }) => {
@@ -72,7 +75,7 @@ describe('proxy', () => {
       vi.doMock('./auth-enabled', () => ({ isAuthEnabled: false }));
       try {
         const { proxy: proxyWithoutAuth } = await import('./proxy');
-        const response = proxyWithoutAuth(request('/blogs'));
+        const response = proxyWithoutAuth(request('/chat'));
 
         expect(response.headers.get('location')).toBeNull();
         expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
@@ -85,7 +88,7 @@ describe('proxy', () => {
 
   describe('エッジケース', () => {
     it('公開ページは前方一致であって部分一致ではない', () => {
-      expect(proxy(request('/blogs/s/abc')).headers.get('location')).toBe(
+      expect(proxy(request('/chat/s/abc')).headers.get('location')).toBe(
         'https://ai.k8o.me/sign-in',
       );
     });
