@@ -6,8 +6,8 @@ import { publicCacheControl } from '../../../shared/cache/public-cache-control';
 import {
   getReadingList,
   getReadingListFeed,
-  READING_LIST_FEED_URL,
 } from '../application/reading-list';
+import { READING_LIST_FEED_URL } from '../application/reading-list-url';
 
 const CACHE_CONTROL = publicCacheControl({ maxAge: 300, sMaxAge: 3600 });
 

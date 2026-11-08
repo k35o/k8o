@@ -1,4 +1,4 @@
-// stale-if-error は、DB や GitHub が落ちているあいだも CDN に古い値を返させるため
+// stale-if-error は、DB が落ちているあいだも CDN に古い値を返させるため
 export const publicCacheControl = ({
   maxAge,
   sMaxAge,

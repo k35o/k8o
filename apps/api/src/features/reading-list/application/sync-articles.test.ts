@@ -1,7 +1,7 @@
+import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchFeedItems } from '../infrastructure/feed-source';
-import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import {
   findArticleTitles,
   findFeedSources,
@@ -14,7 +14,7 @@ vi.mock('../infrastructure/feed-source', () => ({
   fetchFeedItems: vi.fn(),
 }));
 
-vi.mock('../infrastructure/og-metadata', () => ({
+vi.mock('@repo/helpers/og/fetch-og-metadata', () => ({
   fetchOgMetadata: vi.fn(),
 }));
 

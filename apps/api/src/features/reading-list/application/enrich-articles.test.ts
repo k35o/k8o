@@ -1,13 +1,13 @@
+import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { describe, expect, it, vi } from 'vitest';
 
-import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import {
   findEnrichTargets,
   updateArticleOgById,
 } from '../infrastructure/reading-list-repository';
 import { enrichArticleMetadata } from './enrich-articles';
 
-vi.mock('../infrastructure/og-metadata', () => ({
+vi.mock('@repo/helpers/og/fetch-og-metadata', () => ({
   fetchOgMetadata: vi.fn(),
 }));
 

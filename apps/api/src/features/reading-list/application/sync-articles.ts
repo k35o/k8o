@@ -1,16 +1,16 @@
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 import { compareDate } from '@repo/helpers/date/compare';
-import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
+import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 
 import { fetchFeedItems } from '../infrastructure/feed-source';
-import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import {
   findArticleTitles,
   findFeedSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
+import { readingWindowStart } from './reading-window';
 
 const OG_CONCURRENCY = 5;
 
@@ -30,7 +30,7 @@ type SyncResult = {
 export async function syncArticles(): Promise<SyncResult> {
   const sources = await findFeedSources();
 
-  const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS);
+  const ninetyDaysAgo = readingWindowStart(Date.now());
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {

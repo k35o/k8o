@@ -1,4 +1,3 @@
-import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 import { buildRssFeed } from '@repo/helpers/feed/build-rss';
 
 import {
@@ -9,14 +8,13 @@ import type {
   ReadingListArticle,
   ReadingListSource,
 } from '../infrastructure/reading-list-repository';
-
-const READING_LIST_URL = 'https://k8o.me/reading-list';
-export const READING_LIST_FEED_URL = `${READING_LIST_URL}/feed`;
+import { READING_LIST_FEED_URL, READING_LIST_URL } from './reading-list-url';
+import { readingWindowStart } from './reading-window';
 
 const findArticlesSince90Days = (
   nowMs: number,
 ): Promise<ReadingListArticle[]> =>
-  findRecentArticles(new Date(nowMs - NINETY_DAYS_MS).toISOString());
+  findRecentArticles(readingWindowStart(nowMs).toISOString());
 
 export const getReadingList = async (
   nowMs: number,

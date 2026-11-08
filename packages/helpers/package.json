@@ -77,10 +77,6 @@
       "types": "./src/date/compare.ts",
       "default": "./src/date/compare.ts"
     },
-    "./date/duration": {
-      "types": "./src/date/duration.ts",
-      "default": "./src/date/duration.ts"
-    },
     "./date/format": {
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
