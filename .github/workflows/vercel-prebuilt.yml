@@ -187,36 +187,33 @@ jobs:
       # deploy の中で流す（k8o の DB は main、ai の DB は ai）。preview では、ほかのアプリが先に出ることがある
       - name: Migrate preview k8o DB
         if: ${{ env.DEPLOY_TARGET == 'preview' && matrix.app == 'main' }}
-        run: |
-          set -a
-          # shellcheck disable=SC1090
-          . <(grep -E '^K8O_TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
-          set +a
-          # pull した値は secrets ではないので、ログに出ないよう自分で伏せる
-          echo "::add-mask::$K8O_TURSO_DATABASE_URL"
-          echo "::add-mask::$K8O_TURSO_AUTH_TOKEN"
-          pnpm -F @repo/database migrate
+        env:
+          K8O_TURSO_DATABASE_URL: ${{ secrets.K8O_TURSO_DATABASE_URL }}
+          K8O_TURSO_AUTH_TOKEN: ${{ secrets.K8O_TURSO_AUTH_TOKEN }}
+        run: pnpm -F @repo/database migrate
 
       - name: Migrate preview ai DB
         if: ${{ env.DEPLOY_TARGET == 'preview' && matrix.app == 'ai' }}
-        run: |
-          set -a
-          # shellcheck disable=SC1090
-          . <(grep -E '^AI_TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
-          set +a
-          echo "::add-mask::$AI_TURSO_DATABASE_URL"
-          echo "::add-mask::$AI_TURSO_AUTH_TOKEN"
-          pnpm -F @repo/ai-database migrate
+        env:
+          AI_TURSO_DATABASE_URL: ${{ secrets.AI_TURSO_DATABASE_URL }}
+          AI_TURSO_AUTH_TOKEN: ${{ secrets.AI_TURSO_AUTH_TOKEN }}
+        run: pnpm -F @repo/ai-database migrate
 
+      # DB の接続情報は Vercel から pull せず、Environment の secrets から渡す（ambient な環境変数は
+      # pull された .env より優先される）。本番のトークンは sensitive で pull できず、main は実行時に DB を
+      # 読まないので Vercel に置いていない。ビルドは依存のコードも動かすので、アプリがビルドで読む DB の
+      # 分だけを渡す。main は k8o の DB を読み（本番は読み取り専用のトークン）、ai は ai の DB を読み、
+      # api はビルドで DB を読まない
       - name: Build preview
         if: ${{ env.DEPLOY_TARGET == 'preview' }}
         working-directory: .github/vercel-cli
+        env:
+          K8O_TURSO_DATABASE_URL: ${{ matrix.app == 'main' && secrets.K8O_TURSO_DATABASE_URL || '' }}
+          K8O_TURSO_AUTH_TOKEN: ${{ matrix.app == 'main' && secrets.K8O_TURSO_AUTH_TOKEN || '' }}
+          AI_TURSO_DATABASE_URL: ${{ matrix.app == 'ai' && secrets.AI_TURSO_DATABASE_URL || '' }}
+          AI_TURSO_AUTH_TOKEN: ${{ matrix.app == 'ai' && secrets.AI_TURSO_AUTH_TOKEN || '' }}
         run: pnpm exec vercel build --cwd "$GITHUB_WORKSPACE"
 
-      # production の Turso のトークンも sensitive で pull できないため、接続情報は production Environment の
-      # secrets から注入する（ambient な環境変数は pull された .env より優先される）。ビルドは依存の
-      # コードも動かすので、アプリがビルドで読む DB の分だけを渡す。main は k8o の DB を読み取り専用の
-      # トークンで読み、ai は ai の DB を読み、api はビルドで DB を読まない
       - name: Build production
         if: ${{ env.DEPLOY_TARGET == 'production' }}
         working-directory: .github/vercel-cli
