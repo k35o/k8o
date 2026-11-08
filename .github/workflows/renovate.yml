@@ -1,8 +1,12 @@
 name: Renovate
 
 on:
+  # 毎時 0 分は GitHub に遅らされたり飛ばされたりするので外す
   schedule:
-    - cron: '0 0,15,18,21 * * *'
+    - cron: '23 */3 * * *'
+  # マージで main が進んだら、衝突した PR をすぐ作り直す（rebaseWhen: conflicted）
+  push:
+    branches: [main]
   issues:
     types: [edited]
   pull_request_target:
@@ -15,8 +19,13 @@ permissions:
 jobs:
   renovate:
     runs-on: ubuntu-latest
+    # 重ねて走らせない。workflow に付けると、if で飛ばす起動が待っている実行を押しのける
+    concurrency:
+      group: renovate
+      cancel-in-progress: false
     if: >-
       github.event_name == 'schedule' ||
+      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issues' && contains(github.event.issue.title, 'Dependency Dashboard') && github.event.sender.login == github.repository_owner) ||
       (github.event_name == 'pull_request_target' && github.event.sender.login == github.repository_owner && contains(github.event.pull_request.labels.*.name, 'renovate'))
