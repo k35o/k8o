@@ -1,7 +1,8 @@
 import { CODE_SURFACE } from '@repo/code-highlight/theme';
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import { Fragment } from 'react';
 import type { FC } from 'react';
+
+import { HighlightedTokens } from '@/app/_components/highlighted-code';
 
 import styles from './code-view.module.css';
 
@@ -43,21 +44,7 @@ export const CodeView: FC<CodeViewProps> = ({
       // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
     >
-      <code>
-        {highlighted.tokens.map((line, lineIndex) => (
-          <Fragment key={`line-${lineIndex.toString()}`}>
-            {line.map((token, tokenIndex) => (
-              <span
-                key={`${lineIndex.toString()}-${tokenIndex.toString()}`}
-                style={{ color: token.color ?? highlighted.fg }}
-              >
-                {token.content}
-              </span>
-            ))}
-            {lineIndex < highlighted.tokens.length - 1 ? '\n' : null}
-          </Fragment>
-        ))}
-      </code>
+      <HighlightedTokens highlighted={highlighted} />
     </pre>
   );
 };

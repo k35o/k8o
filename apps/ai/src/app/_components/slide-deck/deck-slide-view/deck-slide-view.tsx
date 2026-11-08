@@ -1,11 +1,12 @@
 'use client';
 
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import { createContext, Fragment, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { FC } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
+import { HighlightedTokens } from '@/app/_components/highlighted-code';
 import type { DeckSlide } from '@/features/slides/application/parse-deck';
 
 import { Cover, CoverSubtitle, CoverText, CoverTitle } from '../cover';
@@ -91,21 +92,7 @@ const HighlightedPre: FC<{ highlighted: HighlightedCode }> = ({
   highlighted,
 }) => (
   <Pre style={{ backgroundColor: highlighted.bg, color: highlighted.fg }}>
-    <code>
-      {highlighted.tokens.map((line, lineIndex) => (
-        <Fragment key={`line-${lineIndex.toString()}`}>
-          {line.map((token, tokenIndex) => (
-            <span
-              key={`${lineIndex.toString()}-${tokenIndex.toString()}`}
-              style={{ color: token.color ?? highlighted.fg }}
-            >
-              {token.content}
-            </span>
-          ))}
-          {lineIndex < highlighted.tokens.length - 1 ? '\n' : null}
-        </Fragment>
-      ))}
-    </code>
+    <HighlightedTokens highlighted={highlighted} />
   </Pre>
 );
 
