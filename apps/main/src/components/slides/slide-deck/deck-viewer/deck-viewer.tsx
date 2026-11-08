@@ -9,6 +9,7 @@ import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
 import { useFragmentTarget } from '../hooks/use-hash-index';
+import { useIsFullscreen } from '../hooks/use-is-fullscreen';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
 import { ProgressBar } from '../progress-bar/progress-bar';
@@ -24,10 +25,11 @@ export const DeckViewer: FC<{
   qrUrl: string;
 }> = ({ slug, title, slides, qrUrl }) => {
   const total = slides.length;
-  const { index, next, prev, isFullscreen } = useDeckController({
+  const { index, next, prev } = useDeckController({
     total,
     channelName: `slides:${slug}`,
   });
+  const isFullscreen = useIsFullscreen();
   const [isPresenting, setIsPresenting] = useState(false);
   const isMaximized = isFullscreen || isPresenting;
   // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要

@@ -1,13 +1,12 @@
 'use client';
 
+import { between } from '@repo/helpers/number/between';
 import { useCallback, useState } from 'react';
 
 import { useBroadcastListener } from './use-broadcast-listener';
 import { useHashIndex, writeHashIndex } from './use-hash-index';
-import { toggleFullscreen, useIsFullscreen } from './use-is-fullscreen';
+import { toggleFullscreen } from './use-is-fullscreen';
 import { useKeyboardNav } from './use-keyboard-nav';
-
-const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max));
 
 // router は移る先の URL を先に書き、着くまで前のページを残す。#<番号> は @k8ordo/state を通さずに読み書き
 // するので、そのあいだに書くと移る先の URL に付き、進んでいる遷移を中断して読み直させる。だから、デッキを
@@ -23,20 +22,20 @@ export const useDeckController = ({
   // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
   const [deckPathname] = useState(() => window.location.pathname);
   const hashIndex = useHashIndex(deckPathname);
-  const index = clamp(hashIndex, total - 1);
+  const index = between(hashIndex, 0, total - 1);
 
   const broadcast = useBroadcastListener({
     channelName,
     onReceive: (received) => {
       if (window.location.pathname !== deckPathname) return;
-      writeHashIndex(clamp(received, total - 1));
+      writeHashIndex(between(received, 0, total - 1));
     },
   });
 
   const goTo = useCallback(
     (target: number) => {
       if (window.location.pathname !== deckPathname) return;
-      const clamped = clamp(target, total - 1);
+      const clamped = between(target, 0, total - 1);
       writeHashIndex(clamped);
       broadcast(clamped);
     },
@@ -67,7 +66,5 @@ export const useDeckController = ({
     onToggleFullscreen: toggleFullscreen,
   });
 
-  const isFullscreen = useIsFullscreen();
-
-  return { index, goTo, next, prev, isFullscreen };
+  return { index, next, prev };
 };
