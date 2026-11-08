@@ -15,6 +15,7 @@ import { contrastColorSection } from './contrast-color';
 import { crispEdgesSection } from './crisp-edges';
 import { detailsContentSection } from './details-content';
 import { eventTimingSection } from './event-timing';
+import { extTextureNorm16Section } from './ext-texture-norm16';
 import { fieldSizingSection } from './field-sizing';
 import { fontFamilyMathSection } from './font-family-math';
 import { highlightSection } from './highlight';
@@ -65,6 +66,7 @@ export const playgroundSections: PlaygroundSection[] = [
   crispEdgesSection,
   detailsContentSection,
   eventTimingSection,
+  extTextureNorm16Section,
   fieldSizingSection,
   fontFamilyMathSection,
   inputFileWebkitdirectorySection,
