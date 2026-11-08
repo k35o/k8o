@@ -1,50 +1,14 @@
-const BLOG_ARTICLE = '/blog/:slug';
-const PLAYGROUND = '/playgrounds/:id';
-const TAG = '/tags/:id';
-const SLIDE = '/slides/:slug';
-
-// 記事のページと、その下の markdown・OG のパスを、公開済みの記事の一覧1つから作る。
-// 下書きはどこにも挙がらないので、どれも書かれずに 404 になる
-export const blogPathnames = (
+// base（`/blog/:slug` など）とその下のパターンの最後の :param を、値の一覧で置き換えたパスを作る。
+// base の下でないパターンには作らない（framework が、どの paths にも挙がらないパターンを名指しして止める）
+export const expandPathnames = (
   patterns: readonly string[],
-  slugs: readonly string[],
-): string[] =>
-  patterns
-    .filter(
-      (pattern) =>
-        pattern === BLOG_ARTICLE || pattern.startsWith(`${BLOG_ARTICLE}/`),
-    )
-    .flatMap((pattern) => slugs.map((slug) => pattern.replace(':slug', slug)));
-
-// Playground のページと、その下の OG のパスを、デモの id の一覧から作る
-export const playgroundPathnames = (
-  patterns: readonly string[],
-  ids: readonly string[],
-): string[] =>
-  patterns
-    .filter(
-      (pattern) =>
-        pattern === PLAYGROUND || pattern.startsWith(`${PLAYGROUND}/`),
-    )
-    .flatMap((pattern) => ids.map((id) => pattern.replace(':id', id)));
-
-// タグのページのパスを、DB の全タグの id から作る。中身が 0 件のタグも書く
-export const tagPathnames = (
-  patterns: readonly string[],
-  ids: readonly number[],
-): string[] =>
-  patterns
-    .filter((pattern) => pattern === TAG || pattern.startsWith(`${TAG}/`))
+  base: `/${string}/:${string}`,
+  values: ReadonlyArray<string | number>,
+): string[] => {
+  const param = base.slice(base.lastIndexOf('/') + 1);
+  return patterns
+    .filter((pattern) => pattern === base || pattern.startsWith(`${base}/`))
     .flatMap((pattern) =>
-      ids.map((id) => pattern.replace(':id', id.toString())),
+      values.map((value) => pattern.replace(param, value.toString())),
     );
-
-// スライドのデッキのページと、その下の OG のパスを、公開済みで MDX のあるスライドの一覧1つから作る。
-// 公開していないデッキはどこにも挙がらないので、書かれずに 404 になる
-export const slidePathnames = (
-  patterns: readonly string[],
-  slugs: readonly string[],
-): string[] =>
-  patterns
-    .filter((pattern) => pattern === SLIDE || pattern.startsWith(`${SLIDE}/`))
-    .flatMap((pattern) => slugs.map((slug) => pattern.replace(':slug', slug)));
+};

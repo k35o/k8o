@@ -21,12 +21,7 @@ import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-scri
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
 import type { BlogArticle } from './src/site/katex-css-guard.ts';
-import {
-  blogPathnames,
-  playgroundPathnames,
-  slidePathnames,
-  tagPathnames,
-} from './src/site/paths.ts';
+import { expandPathnames } from './src/site/paths.ts';
 import { pagePolicy, securityHeaders } from './src/site/security-headers.ts';
 import type { DeployTarget } from './src/site/security-headers.ts';
 import { BEFORE_NOT_FOUND, beforeFiles } from './src/site/vercel-routes.ts';
@@ -134,13 +129,14 @@ export default defineConfig({
         await colorSchemeScriptHash(COLOR_SCHEME_SCRIPT_OPTIONS),
       ),
       paths: async (patterns) => [
-        ...blogPathnames(
+        ...expandPathnames(
           patterns,
+          '/blog/:slug',
           (await readArticles()).map(({ slug }) => slug),
         ),
-        ...playgroundPathnames(patterns, playgroundIds),
-        ...tagPathnames(patterns, await readTagIds()),
-        ...slidePathnames(patterns, await readSlideSlugs()),
+        ...expandPathnames(patterns, '/playgrounds/:id', playgroundIds),
+        ...expandPathnames(patterns, '/tags/:id', await readTagIds()),
+        ...expandPathnames(patterns, '/slides/:slug', await readSlideSlugs()),
       ],
     }),
     vercel({
