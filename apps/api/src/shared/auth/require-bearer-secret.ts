@@ -1,6 +1,7 @@
-import { isAuthorizedBearerRequest } from '@repo/helpers/is-authorized-bearer-request';
 import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
+
+import { isAuthorizedBearerRequest } from './is-authorized-bearer-request';
 
 // hono/bearer-auth を使わないのは、Authorization の形が崩れていても 400 ではなく 401 を
 // 返すため。secret はテストで差し替えられるよう、リクエストごとに環境変数から読む

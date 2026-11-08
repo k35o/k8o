@@ -1,10 +1,10 @@
-import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
 import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
 import { getPublicPushLogs } from '../application/public-push-logs';
+import { isAllowedPushEndpoint } from '../infrastructure/is-allowed-push-endpoint';
 import {
   deleteSubscription,
   insertSubscription,

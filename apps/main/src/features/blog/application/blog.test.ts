@@ -1,14 +1,15 @@
 import { readFile } from 'node:fs/promises';
 
-import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { describe, expect, it, vi } from 'vitest';
+
+import { findFrontmatter } from '@/shared/mdx/frontmatter';
 
 import { findBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 import { getTocTree } from './toc-tree';
 
 vi.mock('node:fs/promises');
-vi.mock('@repo/helpers/mdx/frontmatter');
+vi.mock('@/shared/mdx/frontmatter');
 vi.mock('./toc-tree');
 vi.mock('./path');
 

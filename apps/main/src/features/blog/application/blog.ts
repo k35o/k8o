@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
-import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
-import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
+import { findFrontmatter } from '@/shared/mdx/frontmatter';
+import type { Frontmatter } from '@/shared/mdx/frontmatter';
 
 import { blogPath } from './path';
 import { getTocTree } from './toc-tree';

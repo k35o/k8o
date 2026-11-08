@@ -586,9 +586,15 @@ importers:
       satori:
         specifier: 0.33.5
         version: 0.33.5
+      to-vfile:
+        specifier: 8.0.0
+        version: 8.0.0
       uqr:
         specifier: 0.1.3
         version: 0.1.3
+      vfile-matter:
+        specifier: 5.0.1
+        version: 5.0.1
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -770,12 +776,6 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
-      to-vfile:
-        specifier: 8.0.0
-        version: 8.0.0
-      vfile-matter:
-        specifier: 5.0.1
-        version: 5.0.1
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
