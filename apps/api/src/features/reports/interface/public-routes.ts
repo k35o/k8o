@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
-import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
+import { validate } from '../../../shared/http/validate';
 import { insertReports } from '../infrastructure/report-repository';
 
 const MAX_REPORTS_PER_REQUEST = 50;
@@ -31,12 +31,7 @@ const isWithinLimits = (report: z.infer<typeof reportSchema>): boolean =>
 
 export const reportPublicRoutes = new Hono().post(
   '/',
-  validator('json', (value, c) => {
-    const parsed = reportsSchema.safeParse(value);
-    return parsed.success
-      ? parsed.data
-      : c.json({ ok: false, error: 'invalid_request' } as const, 400);
-  }),
+  validate('json', reportsSchema),
   async (c) => {
     await insertReports(
       c.req

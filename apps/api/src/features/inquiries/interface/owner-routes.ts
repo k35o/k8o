@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
-import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
+import { validate } from '../../../shared/http/validate';
 import { listInquiries } from '../application/list-inquiries';
 
 const listQuerySchema = z.object({
@@ -11,11 +11,6 @@ const listQuerySchema = z.object({
 
 export const inquiryOwnerRoutes = new Hono().get(
   '/',
-  validator('query', (value, c) => {
-    const parsed = listQuerySchema.safeParse(value);
-    return parsed.success
-      ? parsed.data
-      : c.json({ ok: false, error: 'invalid_request' } as const, 400);
-  }),
+  validate('query', listQuerySchema),
   async (c) => c.json(await listInquiries(c.req.valid('query')), 200),
 );

@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
+import { validate } from '../../../shared/http/validate';
 import { countBlogView } from '../application/count-view';
 import { submitBlogFeedback } from '../application/submit-feedback';
 
@@ -15,12 +16,7 @@ const feedbackSchema = z.object({
   comment: z.string().check(z.maxLength(500)),
 });
 
-const validateSlug = validator('param', (value, c) => {
-  const parsed = slugParamSchema.safeParse(value);
-  return parsed.success
-    ? parsed.data
-    : c.json({ ok: false, error: 'invalid_request' } as const, 400);
-});
+const validateSlug = validate('param', slugParamSchema);
 
 export const blogPublicRoutes = new Hono()
   .post('/:slug/views', validateSlug, async (c) => {
