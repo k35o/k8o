@@ -1,13 +1,7 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "jsx": "react-jsx",
-    "noEmit": true,
-    "incremental": true,
-    "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./src/*"],
       "@content/*": ["./src/content/*"],
