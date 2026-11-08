@@ -135,7 +135,7 @@ const Content: FC<Props> = ({
 };
 
 // static mode の HTML は URL の state を既定値で描くので、HTML に描くと URL の値で開いたときに既定の形が
-// 一度出る。Next と同じく本文はブラウザでだけ描く
+// 一度出る。本文はブラウザでだけ描く
 export const RadiusMaker: FC<Props> = (props) => (
   <BrowserOnly>
     <Content {...props} />

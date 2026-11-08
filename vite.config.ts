@@ -71,9 +71,9 @@ export default defineConfig({
               patterns: [
                 drizzleImportPattern,
                 {
-                  group: ['next', 'next/**', 'next-themes', '@/**'],
+                  group: ['@/**'],
                   message:
-                    '記事とデモは Next とアプリの中に依らずに描けるように保つ。Next と @/ を import しない。',
+                    '記事とデモはアプリの中に依らずに描けるように保つ。@/ を import しない。',
                 },
               ],
             },

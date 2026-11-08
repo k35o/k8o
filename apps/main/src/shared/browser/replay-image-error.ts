@@ -1,5 +1,5 @@
 // React はハイドレーションより前に起きた img の error を拾わない。マウントしたあとに同じ src を
-// 入れ直すと読み込みがやり直され、失敗していれば onError が呼ばれる（next/image と同じ回避）
+// 入れ直すと読み込みがやり直され、失敗していれば onError が呼ばれる
 export const replayImageError = (image: HTMLImageElement | null): void => {
   if (image === null) {
     return;

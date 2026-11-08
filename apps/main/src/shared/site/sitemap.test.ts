@@ -115,7 +115,7 @@ describe('generateSitemap', () => {
   });
 
   describe('正常系', () => {
-    it('Nextのsitemap.tsと同じ並び・lastmod・changefreqで、resolveSitemapと同じ書き方のXMLを返すべき', async () => {
+    it('トップ・固定のページ・記事・デッキ・タグの順に、lastmod と changefreq を付けた XML を返すべき', async () => {
       vi.mocked(getBlogContents).mockResolvedValue([
         blog({ id: 2, slug: 'older-update', updatedAt: '2026-10-10' }),
         blog({ id: 1, slug: 'newer-update', updatedAt: '2026-10-20' }),

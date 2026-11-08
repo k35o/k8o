@@ -54,7 +54,7 @@ const Content: FC = () => {
 };
 
 // static mode の HTML は URL の state を既定値で描くので、HTML に描くと URL の値で開いたときに既定の色が
-// 一度出る。Next と同じく本文はブラウザでだけ描く
+// 一度出る。本文はブラウザでだけ描く
 export const PaletteMaker: FC = () => (
   <BrowserOnly>
     <Content />

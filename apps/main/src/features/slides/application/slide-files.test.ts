@@ -44,12 +44,6 @@ const deckShellSlugs = (slug: string): string[] =>
         : [],
     );
 
-const isNextOrAppAlias = (source: string): boolean =>
-  source.startsWith('@/') ||
-  source === 'next' ||
-  source.startsWith('next/') ||
-  source === 'next-themes';
-
 describe('src/content/slides のスライド', () => {
   describe('正常系', () => {
     it('スライドがある', () => {
@@ -61,10 +55,10 @@ describe('src/content/slides のスライド', () => {
     });
 
     it.each(slugs)(
-      '%s の MDX は @/・next・next-themes を import しない（部品は components で受け取る）',
+      '%s の MDX は @/ を import しない（部品は components で受け取る）',
       (slug) => {
         expect(
-          esmImportSources(slug).filter((source) => isNextOrAppAlias(source)),
+          esmImportSources(slug).filter((source) => source.startsWith('@/')),
         ).toStrictEqual([]);
       },
     );
