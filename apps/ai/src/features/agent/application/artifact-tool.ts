@@ -12,6 +12,7 @@ import {
   USAGE_REFUSAL_MESSAGES,
 } from '@/features/usage/application/usage';
 import { GENERATION_MODELS } from '@/shared/claude/models';
+import { truncateChars } from '@/shared/truncate-chars';
 
 export const artifactToolContextSchema = z.object({
   userId: z.string(),
@@ -29,13 +30,8 @@ const MAX_SUMMARY_CHARS = 300;
 export const progressIntervalMs = (chars: number): number =>
   Math.max(MIN_PROGRESS_INTERVAL_MS, chars / PROGRESS_CHARS_PER_MS);
 
-// サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-export const truncateSummary = (text: string): string => {
-  const chars = Array.from(text);
-  return chars.length <= MAX_SUMMARY_CHARS
-    ? text
-    : `${chars.slice(0, MAX_SUMMARY_CHARS).join('')}…`;
-};
+export const truncateSummary = (text: string): string =>
+  truncateChars(text, MAX_SUMMARY_CHARS);
 
 export async function* withReservedUsage<T, R>(
   input: { kind: AiUsageKind; context: ArtifactToolContext },

@@ -2,6 +2,8 @@ import { tool } from 'ai';
 import type { InferToolOutput } from 'ai';
 import * as z from 'zod/mini';
 
+import { truncateChars } from '@/shared/truncate-chars';
+
 import {
   fetchOwnerBlogMarkdown,
   fetchOwnerBlogs,
@@ -31,16 +33,10 @@ const MAX_MARKDOWN_CHARS = 50_000;
 // サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
 const toChars = (text: string): string[] => Array.from(text);
 
-const shortenDescription = (blog: OwnerBlog): OwnerBlog => {
-  const chars = toChars(blog.description);
-  if (chars.length <= MAX_DESCRIPTION_CHARS) {
-    return blog;
-  }
-  return {
-    ...blog,
-    description: `${chars.slice(0, MAX_DESCRIPTION_CHARS).join('')}…`,
-  };
-};
+const shortenDescription = (blog: OwnerBlog): OwnerBlog => ({
+  ...blog,
+  description: truncateChars(blog.description, MAX_DESCRIPTION_CHARS),
+});
 
 const truncateMarkdown = (markdown: string): string => {
   const chars = toChars(markdown);
