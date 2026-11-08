@@ -9,7 +9,7 @@
       "persistent": true
     },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["transit"],
       "env": [
         "AI_GENERATE_LIMIT_PER_HOUR",
         "AI_TURSO_AUTH_TOKEN",
