@@ -44,11 +44,16 @@ export const getBrowserSupportSnapshot = async (
   };
 };
 
+// main のビルドは記事ごとに機能を引くので、データセットを 1 回だけ読んで引く関数を返す
+export const loadFeatureStatusLookup = async (): Promise<
+  (featureId: string) => BaselineFeature | null
+> => {
+  const active = await findActiveDataset();
+  return (featureId) =>
+    active === null ? null : selectFeatureStatus(active.dataset, featureId);
+};
+
 export const findFeatureStatus = async (
   featureId: string,
-): Promise<BaselineFeature | null> => {
-  const active = await findActiveDataset();
-  return active === null
-    ? null
-    : selectFeatureStatus(active.dataset, featureId);
-};
+): Promise<BaselineFeature | null> =>
+  (await loadFeatureStatusLookup())(featureId);

@@ -1,11 +1,10 @@
 import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
-import { PUSH_LOG_HISTORY_LIMIT } from '@repo/helpers/push-log/history';
 import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
-import { findPublicPushLogs } from '../infrastructure/push-log-repository';
+import { getPublicPushLogs } from '../application/public-push-logs';
 import {
   deleteSubscription,
   insertSubscription,
@@ -77,7 +76,7 @@ export const pushSubscriptionPublicRoutes = new Hono()
   );
 
 export const pushLogPublicRoutes = new Hono().get('/', async (c) =>
-  c.json({ logs: await findPublicPushLogs(PUSH_LOG_HISTORY_LIMIT) }, 200, {
+  c.json({ logs: await getPublicPushLogs() }, 200, {
     'Cache-Control': publicCacheControl({ maxAge: 60, sMaxAge: 600 }),
   }),
 );
