@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import {
   selectThread,
@@ -10,8 +10,8 @@ import type { ThreadRow } from '../infrastructure/thread-repository';
 import { handleThreadSnapshot } from './thread-snapshot';
 
 vi.mock('server-only', () => ({}));
-vi.mock('@/shared/auth/require-allowed-session', () => ({
-  requireAllowedSession: vi.fn(),
+vi.mock('@/shared/auth/allowed-session', () => ({
+  getAllowedSession: vi.fn(),
 }));
 vi.mock('../infrastructure/thread-repository', () => ({
   selectThread: vi.fn(),
@@ -42,15 +42,12 @@ const messages = [
   },
 ];
 
-const snapshotRequest = (): Request =>
-  new Request(`https://ai.k8o.me/api/chat/${THREAD_ID}`);
-
 beforeEach(() => {
   vi.useFakeTimers({
     toFake: ['Date'],
     now: Date.parse('2026-10-14T12:00:00.000Z'),
   });
-  vi.mocked(requireAllowedSession).mockResolvedValue({ userId: 'u1' });
+  vi.mocked(getAllowedSession).mockResolvedValue({ userId: 'u1' });
   vi.mocked(selectThread).mockResolvedValue(thread());
   vi.mocked(selectThreadMessages).mockResolvedValue(messages);
 });
@@ -62,7 +59,7 @@ afterEach(() => {
 describe('handleThreadSnapshot', () => {
   describe('正常系', () => {
     it('生成が終わっていれば、保存したメッセージを返す', async () => {
-      const response = await handleThreadSnapshot(snapshotRequest(), THREAD_ID);
+      const response = await handleThreadSnapshot(THREAD_ID);
 
       expect(response.status).toBe(200);
       await expect(response.json()).resolves.toStrictEqual({
@@ -76,7 +73,7 @@ describe('handleThreadSnapshot', () => {
         thread({ runId: 'run-1', runHeartbeatAt: '2026-10-14T11:59:58.000Z' }),
       );
 
-      const response = await handleThreadSnapshot(snapshotRequest(), THREAD_ID);
+      const response = await handleThreadSnapshot(THREAD_ID);
 
       await expect(response.json()).resolves.toStrictEqual({ running: true });
       expect(selectThreadMessages).not.toHaveBeenCalled();
@@ -85,9 +82,9 @@ describe('handleThreadSnapshot', () => {
 
   describe('異常系', () => {
     it('未許可の利用者には 401 を返す', async () => {
-      vi.mocked(requireAllowedSession).mockResolvedValue(null);
+      vi.mocked(getAllowedSession).mockResolvedValue(null);
 
-      const response = await handleThreadSnapshot(snapshotRequest(), THREAD_ID);
+      const response = await handleThreadSnapshot(THREAD_ID);
 
       expect(response.status).toBe(401);
       expect(selectThread).not.toHaveBeenCalled();
@@ -96,7 +93,7 @@ describe('handleThreadSnapshot', () => {
     it('スレッドが無ければ 404 を返す', async () => {
       vi.mocked(selectThread).mockResolvedValue(null);
 
-      const response = await handleThreadSnapshot(snapshotRequest(), THREAD_ID);
+      const response = await handleThreadSnapshot(THREAD_ID);
 
       expect(response.status).toBe(404);
     });
@@ -104,7 +101,7 @@ describe('handleThreadSnapshot', () => {
     it('ほかの利用者のスレッドには 404 を返し、メッセージを読まない', async () => {
       vi.mocked(selectThread).mockResolvedValue(thread({ userId: 'u2' }));
 
-      const response = await handleThreadSnapshot(snapshotRequest(), THREAD_ID);
+      const response = await handleThreadSnapshot(THREAD_ID);
 
       expect(response.status).toBe(404);
       expect(selectThreadMessages).not.toHaveBeenCalled();
@@ -117,7 +114,7 @@ describe('handleThreadSnapshot', () => {
         thread({ runId: 'run-1', runHeartbeatAt: '2026-10-14T11:59:29.999Z' }),
       );
 
-      const response = await handleThreadSnapshot(snapshotRequest(), THREAD_ID);
+      const response = await handleThreadSnapshot(THREAD_ID);
 
       await expect(response.json()).resolves.toStrictEqual({
         running: false,

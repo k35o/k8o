@@ -1,12 +1,11 @@
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import { getThreadSnapshot } from '../application/threads';
 
 export async function handleThreadSnapshot(
-  req: Request,
   threadId: string,
 ): Promise<Response> {
-  const session = await requireAllowedSession(req.headers);
+  const session = await getAllowedSession();
   if (session === null) {
     return new Response(null, { status: 401 });
   }

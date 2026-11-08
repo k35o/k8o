@@ -10,7 +10,7 @@ const allowedEmails = new Set(
 );
 
 // 許可リストはサインアップ時のみでなくセッション検証のたびに再評価する（失効ギャップ
-// 対策）。verifySession から参照される。
+// 対策）。ai の getAllowedSession から参照される。
 export const isAllowedEmail = (email: string): boolean =>
   allowedEmails.has(email);
 

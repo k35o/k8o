@@ -1,12 +1,9 @@
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import { requestStop } from '../application/threads';
 
-export async function handleStopRequest(
-  req: Request,
-  threadId: string,
-): Promise<Response> {
-  const session = await requireAllowedSession(req.headers);
+export async function handleStopRequest(threadId: string): Promise<Response> {
+  const session = await getAllowedSession();
   if (session === null) {
     return new Response(null, { status: 401 });
   }

@@ -1,9 +1,8 @@
 'use server';
 
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import { headers } from 'next/headers';
 
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import { highlightBlocks } from '../application/highlight';
 
@@ -28,7 +27,7 @@ export const highlightGenerated = async (
     return [];
   }
   // オーナー専用ツールに合わせ濫用防止のため action もゲートする。
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return blocks.map(() => null);
   }

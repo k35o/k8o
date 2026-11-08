@@ -1,7 +1,5 @@
 import 'server-only';
-import { headers } from 'next/headers';
-
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import { findShareOf } from '../application/artifact-shares';
 import type { ArtifactShare } from '../application/artifact-shares';
@@ -24,7 +22,7 @@ export type ArtifactForRoute = LoadedArtifact & {
 
 // 一覧が読めなくても、生成物のページそのものは使えるようにする
 export const listArtifactsForRoute = async (): Promise<ArtifactListItem[]> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return [];
   }
@@ -40,7 +38,7 @@ export const loadArtifactForRoute = async (
   artifactId: string,
   version: number | null,
 ): Promise<ArtifactForRoute | null> => {
-  const session = await requireAllowedSession(await headers());
+  const session = await getAllowedSession();
   if (session === null) {
     return null;
   }
