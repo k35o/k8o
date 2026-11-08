@@ -2,9 +2,10 @@ import { Hono } from 'hono';
 import * as z from 'zod/mini';
 
 import { validate } from '../../../shared/http/validate';
+import { BLOG_SLUG_PATTERN } from '../application/blog-slug';
+import { BLOG_STATS_PAGE_SIZE_MAX } from '../application/blog-stats';
 import { findBlogs } from '../infrastructure/blog-repository';
 import {
-  BLOG_SLUG_PATTERN,
   fetchBlogMarkdown,
   fetchPublishedBlogs,
 } from '../infrastructure/main-blog-source';
@@ -17,7 +18,9 @@ const statsQuerySchema = z.object({
   status: z.enum(['all', 'published', 'draft']),
   sort: z.enum(['recent', 'views']),
   page: z.coerce.number().check(z.int(), z.minimum(1)),
-  pageSize: z.coerce.number().check(z.int(), z.minimum(1), z.maximum(50)),
+  pageSize: z.coerce
+    .number()
+    .check(z.int(), z.minimum(1), z.maximum(BLOG_STATS_PAGE_SIZE_MAX)),
 });
 
 export const blogOwnerRoutes = new Hono()

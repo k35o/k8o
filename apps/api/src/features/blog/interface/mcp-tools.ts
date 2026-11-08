@@ -2,6 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { toolResult } from '../../../shared/mcp/tool-result';
+import { BLOG_STATS_PAGE_SIZE_MAX } from '../application/blog-stats';
 import { findBlogs } from '../infrastructure/blog-repository';
 
 export const registerBlogTools = (server: McpServer): void => {
@@ -15,7 +16,12 @@ export const registerBlogTools = (server: McpServer): void => {
         status: z.enum(['all', 'published', 'draft']).default('all'),
         sort: z.enum(['recent', 'views']).default('recent'),
         page: z.number().int().min(1).default(1),
-        pageSize: z.number().int().min(1).max(50).default(20),
+        pageSize: z
+          .number()
+          .int()
+          .min(1)
+          .max(BLOG_STATS_PAGE_SIZE_MAX)
+          .default(20),
       }),
       outputSchema: z.object({
         total: z.number(),

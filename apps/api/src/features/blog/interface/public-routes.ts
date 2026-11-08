@@ -3,11 +3,12 @@ import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
 import { validate } from '../../../shared/http/validate';
+import { BLOG_SLUG_PATTERN } from '../application/blog-slug';
 import { countBlogView } from '../application/count-view';
 import { submitBlogFeedback } from '../application/submit-feedback';
 
 const slugParamSchema = z.object({
-  slug: z.string().check(z.minLength(1), z.maxLength(200)),
+  slug: z.string().check(z.maxLength(200), z.regex(BLOG_SLUG_PATTERN)),
 });
 
 // 画面が送るのは「良い（1）」と「悪い（2）」だけ
