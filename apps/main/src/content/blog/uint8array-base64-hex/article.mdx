@@ -12,16 +12,14 @@ featureIds:
 <BrowserSupportStatus featureId="uint8array-base64-hex" />
 
 ## はじめに
-base64やHexは、バイナリデータをテキスト形式で表現するための方法です。
-そして、JavaScriptではバイナリデータを扱うために`Uint8Array`を用います。
+`Uint8Array.fromBase64()`・`toBase64()`・`fromHex()`・`toHex()`は、バイト列の`Uint8Array`と、base64や16進数（Hex）の文字列を相互に変換するメソッドです。Chrome 140のリリースで、Baseline 2025に入りました。
 
-これまでは、これらの表現を互いに変換するメソッドが用意されていませんでした。
-しかし、Chrome 140のリリースによりこれらの変換メソッドがBaselineの2025で利用可能になりました。
+英数字だけの文字列をbase64にするなら、これまでどおり`btoa()`と`atob()`で足ります。日本語を含む文字列やハッシュ値は、`btoa()`がLatin-1の範囲の文字しか受け取らないので、バイト列を`String.fromCharCode()`で1バイト1文字の文字列にしてから渡すことになり、大きなバイト列ではそこで失敗します。base64urlや16進数への変換は、自分で書くしかありませんでした。
 
 ## 変遷
 これまでは、変換処理を自前で組み込む必要がありました。
 
-以下に示すのは簡易的な実装であり、すべてのケースで正確に動作するとは限りません（今回追加されるメソッド相当の実装は
+以下に示すのは簡易的な実装であり、すべてのケースで正確に動作するとは限りません（これらのメソッド相当の実装は
 [polyfill](https://github.com/tc39/proposal-arraybuffer-base64/blob/main/playground/polyfill-core.mjs)が参考になります）。
 
 ```ts
@@ -54,26 +52,45 @@ function hexToUint8Array(hex: string): Uint8Array {
 console.log(hexToUint8Array("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
 ```
 
-正確で堅牢な変換処理を自作する必要があり、変換処理を用意するのが大変です。
+上の関数を試すと、次の問題がありました。
 
-今後は`Uint8Array`のメソッドで簡単に変換できるようになります。
+- `uint8ArrayToBase64`はバイト列を引数に展開するので、大きなバイト列で`RangeError`になります。Chrome 156では約12万バイト、Firefox 159では約50万バイト、Safari 27.2では約64万バイトを超えると失敗し、1MBのバイト列はどれでも変換できませんでした
+- `hexToUint8Array`は、`"abc"`のような奇数の長さや`"zz"`のような16進数でない文字列も、エラーにせず`[171, 12]`や`[0]`を返します
+
+`Uint8Array`のメソッドなら、それぞれ1回の呼び出しで変換できます。
 
 ```ts
 const bytes = new Uint8Array([72, 101, 108, 108, 111]);
 
 // Uint8Array → base64
-const base64 = bytes.toBase64(); // "SGVsbG8="
+console.log(bytes.toBase64()); // "SGVsbG8="
 
 // base64 → Uint8Array
-const fromBase64 = Uint8Array.fromBase64("SGVsbG8="); // Uint8Array([72, 101, 108, 108, 111])
+console.log(Uint8Array.fromBase64("SGVsbG8=")); // Uint8Array([72, 101, 108, 108, 111])
 
 // Uint8Array → Hex
-const hex = bytes.toHex(); // "48656c6c6f"
+console.log(bytes.toHex()); // "48656c6c6f"
 
 // Hex → Uint8Array
-const fromHex = Uint8Array.fromHex("48656c6c6f"); // Uint8Array([72, 101, 108, 108, 111])
+console.log(Uint8Array.fromHex("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
 ```
+
+コンソールに貼ると、コメントの値が順に出ます。Chrome 156、Safari 27.2、Firefox 159で試すと、`toBase64()`は10MBのバイト列も変換でき、`fromHex()`は`"abc"`も`"zz"`も`SyntaxError`にしました。
+
 `Uint8Array`を生成するときは、静的メソッドである`fromBase64`や`fromHex`で変換し、`Uint8Array`から変換するときはインスタンスメソッドである`toBase64`や`toHex`を使用するだけで変換できるようになりました。
+
+日本語を含む文字列は`TextEncoder`でUTF-8のバイト列にしてから、ハッシュ値は`crypto.subtle.digest()`の結果を`Uint8Array`にしてから変換します。
+
+```ts
+// 日本語を含む文字列をUTF-8のbase64にする
+console.log(new TextEncoder().encode("あいう").toBase64()); // "44GC44GE44GG"
+
+// SHA-256のハッシュ値を16進数の文字列にする
+const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("hello"));
+console.log(new Uint8Array(digest).toHex()); // "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+```
+
+`btoa("あいう")`は、Chrome 156、Safari 27.2、Firefox 159のどれでも`InvalidCharacterError`になりました。
 
 ## 追加された機能
 先ほど紹介した`fromBase64`、`fromHex`、`toBase64`、`toHex`に加えて、既存の`Uint8Array`に対してデータを設定するための`setFromBase64`と`setFromHex`も追加されました。
@@ -133,6 +150,8 @@ Uint8Array.fromBase64("SGVsbG8", { lastChunkHandling: "strict" });
 Uint8Array.fromBase64("SGVsbG1=", { lastChunkHandling: "strict" });
 ```
 
+例外のメッセージはChrome 156のものです。Safari 27.2ではどれも`Uint8Array.fromBase64 requires a valid base64 string`、Firefox 159では`unexpected incomplete base64 chunk`のように、ブラウザごとに文言が違いました。
+
 `"stop-before-partial"`を指定すると、不完全なチャンクがあればその前でデコードを停止します。
 
 ```ts
@@ -142,7 +161,7 @@ const stopBeforePartial = Uint8Array.fromBase64("SGVsbG1", { lastChunkHandling: 
 console.log(stopBeforePartial); // Uint8Array([72, 101, 108])
 ```
 
-`fromBase64`はbase64エンコードされた文字列をデコードする`atob`関数よりも利用が推奨されています。
+`atob`は、デコードした結果を1文字が1バイトを表す文字列で返すので、バイト列として扱うには変換が要ります。`fromBase64`は`Uint8Array`を直接返します。
 
 ### fromHex
 
@@ -231,4 +250,4 @@ uint8Array.setFromHex(hex); // uint8Array is now Uint8Array([72, 101, 108, 108, 
 
 ## おわりに
 Chrome 140以降で追加されたこれらの新しいメソッドにより、JavaScriptでのバイナリデータとテキスト形式の変換が大幅に簡素化されました。
-従来は複雑な変換処理を自作する必要がありましたが、今後は標準のメソッドを使って安全かつ簡潔に処理できるようになりました。
+従来は変換処理を自作する必要があり、大きなバイト列や不正な入力で失敗していましたが、標準のメソッドで安全かつ簡潔に処理できるようになりました。
