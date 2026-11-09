@@ -36,6 +36,12 @@ jobs:
         with:
           client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
           private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+          permission-checks: read
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          permission-statuses: write
+          permission-workflows: write
 
       - name: Checkout
         uses: actions/checkout@v7.0.1
