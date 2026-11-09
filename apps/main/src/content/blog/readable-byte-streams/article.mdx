@@ -2,7 +2,7 @@
 title: 'Readable Byte Streamsでバイナリを読み込む'
 description: 'Readable Byte Streamsは、読み取り側が確保したバッファにバイナリデータを書き込ませるReadableStreamです。fetchのレスポンスの先頭だけを読んだり、1つのバッファを使い回したりできます。'
 createdAt: 2026-04-05
-updatedAt: 2026-04-05
+updatedAt: 2026-11-09
 featureIds:
   - readable-byte-streams
 ---
@@ -14,27 +14,22 @@ featureIds:
 
 ## はじめに
 
-大きなファイルやネットワークからのデータを一度にすべてメモリに載せるのではなく、少しずつ処理したいことがあります。Streams APIの`ReadableStream`はそのための仕組みで、データを小さなかたまり（チャンク）に分けて順番に読み取れます。
+Readable Byte Streamsは、`type: 'bytes'`を指定して作る、バイト列のための`ReadableStream`です。BYOBリーダーを使うと、読み取り側が確保したバッファにデータを直接書き込ませられます。Safari 26.4の対応で、Baseline 2026に加わりました。
 
-```ts
-// fetchのレスポンスもReadableStream
-const response = await fetch('/large-file.bin');
-const reader = response.body.getReader();
+レスポンスやファイルの全体を1つの`ArrayBuffer`にするだけなら、`response.arrayBuffer()`や`blob.arrayBuffer()`で足ります。先頭の数バイトだけを読む、決まった大きさのバッファを使い回して大きなデータを最後まで読む、といった読む量と置き場所を自分で決めたい場面でBYOBリーダーを使います。`fetch()`のレスポンスの`body`と`Blob`の`stream()`はバイトストリームなので、そのままBYOBリーダーを取れます。
 
-while (true) {
-  // チャンクを1つずつ読み取る
-  const { done, value } = await reader.read();
-  if (done) break;
-  // valueはUint8Array（バイナリデータのかたまり）
-  processChunk(value);
-}
+```js
+const response = await fetch(location.href);
+const reader = response.body.getReader({ mode: 'byob' });
+const { value } = await reader.read(new Uint8Array(15));
+console.log(new TextDecoder().decode(value));
 ```
 
-`fetch`の例ではブラウザがストリームを作ってくれるので`read()`で読むだけですが、自分でストリームを作ることもできます。`new ReadableStream()`のコンストラクタにデータの供給方法を定義し、`getReader()`で取得したリーダーでデータを読み取ります。この記事ではデータを供給する側を「データソース側」、リーダーで読む側を「読み取り側」と呼びます。
+`<script type="module">`に書いて開くと、そのページのHTMLの先頭15バイトを受け取り、`<!doctype html>`で始まるページなら`<!doctype html>`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。1回の`read()`では`view`の一部しか埋まらないこともあり、`read(view, { min: 15 })`と書くと15バイト揃うまで待ちます。`min`も3つのブラウザで使えました。
 
-通常の`ReadableStream`ではチャンクは内部キューを経由して読み取り側に届きます。テキストデータであればこれで十分ですが、大きなバイナリデータを扱う場合はキューの経由がオーバーヘッドになることがあります。
+`new ReadableStream()`のコンストラクタにデータの供給方法を定義すれば、ストリームを自分で作ることもできます。この記事ではデータを供給する側をデータソース側、リーダーで読む側を読み取り側と呼びます。
 
-Baseline 2026に追加されたReadable Byte Streamsは、条件が揃えば内部キューを経由せず読み取り側のバッファに直接データを書き込む経路を提供します。
+通常の`ReadableStream`ではチャンクは内部キューを経由して読み取り側に届きます。テキストデータであればこれで十分ですが、大きなバイナリデータを扱う場合はキューの経由がオーバーヘッドになることがあります。Readable Byte Streamsは、条件が揃えば内部キューを経由せず読み取り側のバッファに直接データを書き込む経路を提供します。
 
 ## 通常のストリームでバイナリデータを読む
 
@@ -86,9 +81,9 @@ for (const chunk of chunks) {
 
 ## バイトストリームで同じデータを読む
 
-Readable Byte Streamsでは、読み取り側が自分でバッファを用意し、データソースにそのバッファへ直接書き込んでもらえます。この「自分のバッファを持ち込む」仕組みをBYOB（Bring Your Own Buffer）と呼びます。
+Readable Byte Streamsでは、読み取り側が自分でバッファを用意し、データソースにそのバッファへ直接書き込んでもらえます。自分のバッファを持ち込むこの仕組みを、BYOB（Bring Your Own Buffer）と呼びます。
 
-コンストラクタに`type: 'bytes'`を指定するとバイトストリームになります。`pull`関数で受け取るコントローラーは通常と異なり、`byobRequest`というプロパティを持ちます。これは「読み取り側がこのバッファにデータを書き込んでほしいと要求している」ことを表すオブジェクトです。
+コンストラクタに`type: 'bytes'`を指定するとバイトストリームになります。`pull`関数で受け取るコントローラーは通常と異なり、`byobRequest`というプロパティを持ちます。これは、読み取り側がこのバッファにデータを書き込むよう求めていることを表すオブジェクトです。
 
 ```js
 const stream = new ReadableStream({
@@ -218,7 +213,29 @@ const { value } = await reader.read(view);
 console.log(value[0]);
 ```
 
-データソース側でも同様に、`byobRequest.respond()`を呼んだ時点で`byobRequest.view`はdetachedになります。
+データソース側でも同様に、`byobRequest.respond()`を呼んだ時点で、取り出しておいた`byobRequest.view`はdetachedになり、`controller.byobRequest`は`null`に戻ります。Chrome 156、Safari 27.2、Firefox 159で、`read(view)`を呼んだ直後の`view.byteLength`も、`respond()`の後の`view.byteLength`も0でした。
+
+`value.buffer`は渡したバッファと同じ大きさのまま戻ってくるので、次の`read()`にそれを渡せば、1つのバッファを使い回して大きなファイルを最後まで読めます。
+
+```js
+// fileはinput要素などで受け取ったFile
+const reader = file.stream().getReader({ mode: 'byob' });
+let buffer = new ArrayBuffer(65536);
+let total = 0;
+
+while (true) {
+  const { done, value } = await reader.read(new Uint8Array(buffer));
+  if (done) break;
+  // valueには、今回書き込まれたバイト列が入っている
+  total += value.byteLength;
+  // 戻ってきたメモリを次のread()に渡す
+  buffer = value.buffer;
+}
+
+console.log(total);
+```
+
+1MBの`File`を64KBのバッファで読むと、3つのブラウザのどれでも16回の`read()`で読み終わり、`value.buffer`は毎回64KBのままでした。手元のサーバーが返す1MBの`fetch()`のレスポンスを同じように読んでも、回数と大きさは同じでした。
 
 ## autoAllocateChunkSize
 
@@ -261,4 +278,4 @@ const { value } = await reader.read();
 
 Readable Byte Streamsは、条件が揃えば内部キューをバイパスして読み取り側のバッファへ直接書き込める仕組みです。BYOBリーダーで読み取り側がバッファの管理を制御でき、`autoAllocateChunkSize`で通常のリーダーとの互換性も保てます。
 
-大きなファイルの読み取りやネットワークストリームの処理など、バイナリデータのコピーコストが問題になる場面で活用できます。
+大きなファイルの読み取りやネットワークストリームの処理など、バイナリデータのコピーコストが問題になる場面で活用できます。データソースを自分で作るときは、終端で`close()`の後に`byobRequest.respond(0)`を呼ぶことを忘れないでください。
