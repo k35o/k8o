@@ -90,7 +90,7 @@ Readable Byte Streamsでは、読み取り側が自分でバッファを用意�
 
 コンストラクタに`type: 'bytes'`を指定するとバイトストリームになります。`pull`関数で受け取るコントローラーは通常と異なり、`byobRequest`というプロパティを持ちます。これは「読み取り側がこのバッファにデータを書き込んでほしいと要求している」ことを表すオブジェクトです。
 
-```ts
+```js
 const stream = new ReadableStream({
   type: 'bytes',
 
@@ -104,6 +104,7 @@ const stream = new ReadableStream({
 
     if (bytesRead === 0) {
       controller.close();
+      controller.byobRequest.respond(0);
     } else {
       // 書き込んだバイト数を通知
       controller.byobRequest.respond(bytesRead);
@@ -112,9 +113,11 @@ const stream = new ReadableStream({
 });
 ```
 
+データの終端で`close()`を呼んだら、続けて`byobRequest.respond(0)`で0バイト書き込んだことを伝えます。BYOBリーダーの`read()`が待っているところで`close()`だけを呼ぶと、その`read()`はいつまでも終わりません。Chrome 156、Safari 27.2、Firefox 159のどれでも、`respond(0)`を足すと`done: true`が返りました。
+
 読み取り側では`getReader({ mode: 'byob' })`でBYOBリーダーを取得します。通常の`read()`と異なり、BYOBリーダーの`read()`には書き込み先のメモリ領域を`Uint8Array`で指定します。データソースはそのメモリ領域に直接データを書き込みます。
 
-以下はデータの総サイズが事前にわかっている場合の例です。1つのバッファを確保し、未使用部分を順番に渡していきます。
+以下はデータの総サイズが事前にわかっている場合の例です。1つのバッファを確保し、未使用部分を順番に渡していきます。バッファが埋まったら、`done`を待たずにループを抜けます。埋まったあとに長さ0の`view`で`read()`を呼ぶと、Chrome 156では`This readable stream reader cannot be used to read as the view has byte length equal to 0`という`TypeError`になりました。Safari 27.2とFirefox 159も`TypeError`です。
 
 ```ts
 const reader = stream.getReader({ mode: 'byob' });
@@ -123,7 +126,8 @@ const reader = stream.getReader({ mode: 'byob' });
 let buffer = new ArrayBuffer(knownSize);
 let offset = 0;
 
-while (true) {
+// 埋まったら抜ける。長さ0のviewを渡すとread()がTypeErrorになる
+while (offset < buffer.byteLength) {
   // bufferの未使用部分をUint8Arrayで指定して渡す
   const view = new Uint8Array(buffer, offset, buffer.byteLength - offset);
   // read(view)は「viewが指すメモリ領域にデータを書き込んで」という意味
@@ -153,12 +157,12 @@ const result = new Uint8Array(buffer, 0, offset);
 
 `getReader()`で読み取った場合は、データソース側の`pull`で`byobRequest`が`null`になるため、`enqueue`でデータを渡します。
 
-```ts
+```js
 // データソース側: byobRequestの有無で分岐
 const stream = new ReadableStream({
   type: 'bytes',
 
-  async pull(controller: ReadableByteStreamController) {
+  async pull(controller) {
     if (controller.byobRequest) {
       // BYOBリーダーが使われている場合: 直接書き込み
       const view = controller.byobRequest.view;
@@ -168,6 +172,7 @@ const stream = new ReadableStream({
 
       if (bytesRead === 0) {
         controller.close();
+        controller.byobRequest.respond(0);
       } else {
         controller.byobRequest.respond(bytesRead);
       }
@@ -189,7 +194,7 @@ const stream = new ReadableStream({
 // BYOBリーダーとは異なり、バッファを渡す必要がない
 const reader = stream.getReader();
 
-const chunks: Uint8Array[] = [];
+const chunks = [];
 while (true) {
   const { done, value } = await reader.read();
   if (done) break;
@@ -203,7 +208,7 @@ while (true) {
 
 BYOBリーダーの`read(view)`を呼ぶと、渡した`view`は使用不可（detached）になります。これは、データの書き込み中にアプリケーション側が同じメモリ領域を変更してしまうことを防ぐためです。書き込みが完了すると、戻り値の`value`から同じメモリ領域にアクセスできるようになります。
 
-```ts
+```js
 // [!og]
 const view = new Uint8Array(new ArrayBuffer(1024));
 const { value } = await reader.read(view);
@@ -219,13 +224,13 @@ console.log(value[0]);
 
 バイトストリームの例ではBYOBリーダーを使いましたが、既存のコードが通常の`getReader()`を使っている場合もあります。`autoAllocateChunkSize`を指定すると、通常のリーダーからの読み取り時にストリームが自動でバッファを確保し、データソース側で`byobRequest`を通じた書き込みが利用できるようになります。ただし、キューにデータが残っている場合は通常通り`byobRequest`が`null`になります。
 
-```ts
+```js
 const stream = new ReadableStream({
   type: 'bytes',
   // 通常のリーダーからの読み取り時に自動で1024バイトのバッファを確保
   autoAllocateChunkSize: 1024,
 
-  async pull(controller: ReadableByteStreamController) {
+  async pull(controller) {
     if (!controller.byobRequest) {
       // キューにデータが残っている場合はbyobRequestがnullになるため、何もしない
       return;
@@ -238,6 +243,7 @@ const stream = new ReadableStream({
 
     if (bytesRead === 0) {
       controller.close();
+      controller.byobRequest.respond(0);
     } else {
       controller.byobRequest.respond(bytesRead);
     }
