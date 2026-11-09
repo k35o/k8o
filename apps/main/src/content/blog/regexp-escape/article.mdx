@@ -35,7 +35,7 @@ console.log(regexp.test('ab')); // true
 ```ts
 // [!og]
 const str = 'abc*';
-// \\x61bc\\*
+// \x61bc\*
 const escapedStr = RegExp.escape(str);
 const regexp = new RegExp(escapedStr);
 console.log(regexp.test('abc')); // false
@@ -43,7 +43,7 @@ console.log(regexp.test('abc*')); // true
 console.log(regexp.test('ab')); // false
 ```
 
-`abc*`という文字列が`RegExp.escape`によって`\\x61bc\\*`に変換され、`ab`や`abc`にはマッチしなくなりました。
+`abc*`という文字列が`RegExp.escape`によって`\x61bc\*`に変換され、`ab`や`abc`にはマッチしなくなりました。
 
 `RegExp.escape`は手動では達成できない複数のパターンを考慮して実装されています。
 単純に正規表現の構文の前に`\`を追加するだけでは対処できないケースをカバーしてくれるので、古いブラウザのバージョンをサポートしていない限りは`RegExp.escape`を使うようにしましょう。
@@ -52,7 +52,7 @@ console.log(regexp.test('ab')); // false
 
 #### 先頭の文字が0~9,a~z,A~Zである場合
 
-先ほどの例で、`RegExp.escape('abc*')`は`\\x61bc\\*`に変換されました。`\\*`は想定通りですが、`a`が`\\x61`に変換されるのは、少し意外だった人もいるのではないでしょうか。
+先ほどの例で、`RegExp.escape('abc*')`は`\x61bc\*`に変換されました。`\*`は想定通りですが、`a`が`\x61`に変換されるのは、少し意外だった人もいるのではないでしょうか。
 
 `RegExp.escape`は、テキストの先頭の文字が`0~9,a~z,A~Z`である場合、特殊なエスケープをします。
 これらの文字は、`\x`に続く16進数コード（例: `a`はASCIIコードが61なので`\x61`）としてエスケープされます。
@@ -76,8 +76,8 @@ console.log(escapedRegexp.test('aa0')); // true
 `^`・`$`・`\`・`.`・`*`・`+`・`?`・`(`・ `)`・`[`, `]`・`{`・`}`・`|`・`/`は、`\`を前に付けてエスケープされます。
 
 ```ts
-const str = '^$\.*+?()[]{}|/';
-// \\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|\\/
+const str = '^$\\.*+?()[]{}|/';
+// \^\$\\\.\*\+\?\(\)\[\]\{\}\|\/
 console.log(RegExp.escape(str));
 ```
 
@@ -87,7 +87,7 @@ console.log(RegExp.escape(str));
 
 ```ts
 const str = ',-=<>#&!%:;@~`" ';
-// \\x2c\\x2d\\x3d\\x3c\\x3e\\x23\\x26\\x21\\x25\\x3a\\x3b\\x40\\x7e\\x60\\x22\\x20
+// \x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x60\x22\x20
 console.log(RegExp.escape(str));
 ```
 
@@ -95,17 +95,17 @@ console.log(RegExp.escape(str));
 
 ```ts
 const str = '\f\n\r\t\v';
-// \\f\\n\\r\\t\\v
+// \f\n\r\t\v
 console.log(RegExp.escape(str));
 ```
 
 #### その他の文字
 
-タブ、全角スペースなどの空白文字は、`\u`に続くUTF-16コード単位へエスケープされます。
+空白文字は、`\x`か`\u`に続く16進数コードへエスケープされます。Node.js 26で試すと、半角スペースは`\x20`、全角スペースは`\u3000`になりました。タブは制御文字として扱われ、`\t`になります。
 
 ```ts
 const str = '　';
-// \\u3000
+// \u3000
 console.log(RegExp.escape(str));
 ```
 
@@ -113,7 +113,7 @@ console.log(RegExp.escape(str));
 
 ```ts
 const str = 'ab\uD800 \uDFFFab';
-// \\x61b\\ud800\\x20\\udfffab
+// \x61b\ud800\x20\udfffab
 console.log(RegExp.escape(str));
 ```
 
