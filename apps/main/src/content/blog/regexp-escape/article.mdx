@@ -1,14 +1,14 @@
 ---
-title: 文字列に潜む特殊文字を構文として解釈されないように置き換えるRegExp.escape
-description: RegExpオブジェクトを生成するときに正規表現のテキストをそのままの文字として扱いたい時があります。これまでは手動でエスケープする必要がありましたが、RegExp.escapeを使うことで構文として解釈されないような文字列に変換し、文字通りの並びとして検索できます。RegExp.escapeを使ってエスケープ漏れとは縁のない生活を送りましょう。
+title: 'RegExp.escapeで正規表現の特殊文字をエスケープする'
+description: 'RegExp.escapeは、文字列の中の正規表現の特殊文字をエスケープし、new RegExpで文字どおりに検索できる形にするメソッドです。手書きのエスケープで漏れるケースと、文字ごとの変換の規則を説明します。'
 createdAt: 2025-05-15
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - regexp-escape
 ---
 
 
-# 文字列に潜む正規表現の構文を置き換えるRegExp.escape
+# RegExp.escapeで正規表現の特殊文字をエスケープする
 
 <BrowserSupportStatus featureId="regexp-escape"></BrowserSupportStatus>
 
