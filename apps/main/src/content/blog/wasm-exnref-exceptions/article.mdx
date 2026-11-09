@@ -1,13 +1,13 @@
 ---
-title: 'WebAssemblyのexnrefで例外を値として扱う'
-description: 'WebAssemblyの例外処理は、try_table命令と例外参照exnrefを使う形式に改定されました。例外の種類を表すタグとJavaScriptとの受け渡しから順に追い、旧形式では手に持てなかった例外を値として受け取れる、Baseline 2025の新形式を説明します。'
+title: 'exnrefでWebAssemblyの例外を捕まえて投げ直す'
+description: 'exnrefは、WebAssemblyで捕まえた例外を値として持つ型です。try_tableで捕まえた例外を変数に取っておき、後始末の後にthrow_refで投げ直せます。旧形式との違いも説明します。Baseline 2025で使えます。'
 createdAt: 2026-09-27
 updatedAt: 2026-11-09
 featureIds:
   - wasm-exnref-exceptions
 ---
 
-# WebAssemblyのexnrefで例外を値として扱う
+# exnrefでWebAssemblyの例外を捕まえて投げ直す
 
 <BrowserSupportStatus featureId="wasm-exnref-exceptions" />
 
