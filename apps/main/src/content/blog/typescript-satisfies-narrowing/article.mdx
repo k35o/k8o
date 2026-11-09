@@ -9,11 +9,13 @@ updatedAt: 2026-11-09
 
 ## はじめに
 
-`satisfies`はTypeScript 4.9で追加された演算子です。[4.9のドキュメント](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator)では次のように紹介されています。
+`satisfies`は、式の型が指定した型に合うかを検査し、式の型はそのまま残す演算子で、TypeScript 4.9で追加されました。[4.9のドキュメント](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator)では次のように紹介されています。
 
 > The new `satisfies` operator lets us validate that the type of an expression matches some type, without changing the resulting type of that expression.
 >
 > (翻訳 by DeepL)新しい `satisfies` 演算子を使うと、式の結果の型を変更することなく、式の型がある型にマッチするかどうかを検証することができる。
+
+変数の型を宣言した型そのものにしたいなら、型注釈で足ります。型を検査しながら、推論されたリテラル型を残したいときに`satisfies`を使います。ただし、制約にリテラル型のユニオンがあると、`satisfies`を付けた式の型が付けないときより絞り込まれます。この記事では、それが起きる例と理由を紹介します。
 
 下の3つの`palette`オブジェクトに注目してください（[TypeScript Playground](https://www.typescriptlang.org/play/?#code/FAFwngDgpgBAwgewDYIE4GcYF4YCJVQAmuMAPngOYFQB2J5uARkgK5S4DcwwAxgjehAwIAQyRQQIKAEZsMAN7AYymAUIAuPAGIAZjoAMh-bgA0SlVSi1NuLYb2HT55czY27RvU4C+MEZj4BEC5efkFhMQkpACZNACUoPlRCAB5EFAwTGEFUAEsaCgA+OUUVVSJ3ByMnMstrbXsDYzMy1yh3I30vM19-GEDBEIGhUXFJKABmEudyjW0qxxaLahoOrqaalTa1xp8-ALChdBEQXPQdXKhMBKTU9LR0LJz8oo4gA)）。
 
@@ -39,7 +41,7 @@ const palette3 = {
   bleu: "#0000ff"
 } as const satisfies Record<Colors, string>;
 ```
-各例では`blue`を`bleu`と誤って記述しています。`palette1`には型の制約がないため、このミスを検出できません。一方、`palette2`は型注釈で、`palette3`は`satisfies`演算子で制約を課しているため、タイプミスがエラーとして検出されます。
+各例では`blue`を`bleu`と誤って記述しています。`palette1`には型の制約がないため、このミスを検出できません。一方、`palette2`は型注釈で、`palette3`は`satisfies`演算子で制約を課しているため、タイプミスがエラーとして検出されます。TypeScript 7.0.2では、`palette2`と`palette3`の`bleu`の行が`Object literal may only specify known properties, and 'bleu' does not exist in type 'Record<Colors, string>'.`（TS2353）になりました。
 
 タイプミスを修正するとそれぞれの型は以下のように推論されます。
 
@@ -126,6 +128,22 @@ type User2 = {
 
 `is_verified`の制約は`boolean`ですが、`true`は`boolean`に拡張されていません。これは`boolean`が`true | false`のエイリアスであり、リテラル型のユニオンとして扱われるためです。
 
+絞り込まれた型は、あとで値を書き換えるときに効いてきます。`user2`を`let`で宣言して書き換えると、TypeScript 7.0.2と5.9.3のどちらでも、ユニオンのほかの値を代入した行がエラーになりました。
+
+```ts
+let user2 = {
+  id: 'a',
+  type: 'teacher',
+  name: 'a a',
+  is_verified: true,
+} satisfies User;
+
+user2.type = 'pupil'; // Type '"pupil"' is not assignable to type '"teacher"'.
+user2.is_verified = false; // Type 'false' is not assignable to type 'true'.
+```
+
+あとで書き換える値は、`const user3: User = { ... }`のように型注釈で宣言すれば、`'pupil'`も`false`も代入できます。
+
 配列の場合でも同じような型推論が行われます（[TypeScript Playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAcgrgWwEYQE4GcoF4oAoCMUAPlAEzFQDMFALAJQDaAugNwBQbAxgPYB26wKL0QoMhHA3wAaMjMqsOPfoOHI06chOmyqTKOgCGwAJboAZsYiZ4ajOyA)）。
 
 ```ts
@@ -196,7 +214,7 @@ type Result2 = {
 
 ## まとめ
 
-リテラル型のユニオンで制約が課されると、リテラル型がそのまま保持されます。`satisfies`を使う際はこの挙動を理解しておくと良いでしょう。
+リテラル型のユニオンで制約が課されると、リテラル型がそのまま保持されます。`satisfies`で絞り込まれた型にはユニオンのほかの値を代入できないので、あとで書き換える値は型注釈で宣言します。
 
 ## 参考
 
