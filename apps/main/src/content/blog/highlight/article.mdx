@@ -21,7 +21,7 @@ featureIds:
 
 `CSS Custom Highlight API`では、ハイライトする範囲を`Range`で表し、範囲のまとまりを`Highlight`にして、`CSS.highlights`に名前を付けて登録します。登録した名前を`::highlight()`に渡すと、その範囲を装飾できます。
 
-このAPIは`::selection`、`::spelling-error`、`::grammar-error`、`::target-text`のような擬似要素を拡張したようなもので、`::highlight`擬似要素を利用します。
+このAPIは`::selection`・`::spelling-error`・`::grammar-error`・`::target-text`のような擬似要素を拡張したようなもので、`::highlight`擬似要素を利用します。
 
 <PlaygroundEmbed demo="基本的なハイライト" headingLevel="h4" sectionId="highlight" />
 
@@ -108,7 +108,7 @@ highlightAll(document.body, 'highlight');
 }
 ```
 
-2000段落にある4000か所で試すと、この関数で登録してから次の描画まではChrome 156で約30ms、Safari 27.2で約60ms、Firefox 159で約33msでした。同じ箇所を`<mark>`で囲む処理では、それぞれ約330ms、約550ms、約820msかかり、要素が4000個増えました。
+2000段落にある4000か所で試すと、この関数で登録してから次の描画まではChrome 156で約30ms、Safari 27.2で約60ms、Firefox 159で約33msでした。同じ箇所を`<mark>`で囲む処理はそれぞれ約330ms・約550ms・約820msかかり、要素が4000個増えました。
 
 ## APIへの理解を深める
 
@@ -154,7 +154,7 @@ highlight.clear();
 highlight.delete(range1);
 ```
 
-この他にも、`Set`オブジェクトが持つような`entries`や`forEach`、`keys`、`values`、`has`メソッドも利用可能です。
+この他にも、`Set`オブジェクトが持つような`entries`・`forEach`・`keys`・`values`・`has`メソッドも利用可能です。
 
 つまり、`Highlight`オブジェクトは`Range`だけを持つ`Set`オブジェクトのような振る舞いをします。
 
