@@ -96,7 +96,7 @@ document.startViewTransition({
 }
 ```
 
-`ViewTransition`オブジェクトは`finished`、`ready`、`updateCallbackDone`という3つのプロミスをプロパティに持っています。Chrome 156、Safari 27.2、Firefox 159とも`updateCallbackDone`、`ready`、`finished`の順に解決しました。
+`ViewTransition`オブジェクトは`finished`、`ready`、`updateCallbackDone`という3つのプロミスをプロパティに持っています。Chrome 156、Safari 27.2、Firefox 159とも`updateCallbackDone`・`ready`・`finished`の順に解決しました。
 
 ```js
 const transition = document.startViewTransition(() =>
