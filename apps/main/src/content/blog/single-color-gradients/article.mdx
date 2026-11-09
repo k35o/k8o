@@ -2,7 +2,7 @@
 title: CSS グラデーションの新仕様：単色カラーストップの導入
 description:
 createdAt: 2025-04-21
-updatedAt: 2025-04-21
+updatedAt: 2026-11-09
 featureIds:
   - single-color-gradients
 ---
@@ -11,20 +11,12 @@ featureIds:
 
 <BrowserSupportStatus featureId="single-color-gradients"></BrowserSupportStatus>
 
-Baseline 2025に、グラデーションを表現するCSS関数である`liner-gradient`・`radial-gradient`・`conic-gradient`において、単色のカラーストップを持つグラデーションの記法が追加されました。
+Baseline 2025に、グラデーションを表現するCSS関数である`linear-gradient`・`radial-gradient`・`conic-gradient`において、単色のカラーストップを持つグラデーションの記法が追加されました。
 
 <LinkCard href="https://github.com/w3c/csswg-drafts/issues/10092" />
 
-これまでは、「グラデーションは少なくとも2つの色間の移行を意味する」という従来の[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様と、実際には単色グラデーションを実装している主要なブラウザとの間に矛盾が存在していました。
+これまでの[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様は、グラデーションに2つ以上の色を求め、色が1つだけのグラデーションを構文で認めていませんでした。一方で主要なブラウザは、`linear-gradient(red 0% 100%)`のように位置を2つ持つ色を1つだけ書いた形を受け付けていて、仕様と実装が食い違っていました。
 
-この矛盾を解決するため、CSS Images 4の仕様がブラウザ側の実装サイドの仕様に変更されました。
-変更された背景にある、単一のカラーストップを許可する利点は以下が挙げられます。
-
-- CSS の開発体験の向上
-- 冗長性の軽減
-- 可読性の向上
-- 他の記法との独立性
-- 特別な文法を導入するなどの欠点がない
-- 既存のCSSとの互換性
+この食い違いを受けて、CSS Images 4は、色が1つだけなら位置が0個でも1個でも書けるように構文を広げました。実装に合わせたのではなく、実装より緩めた形です。提案では、意味の無い位置を書かずに済み意図が読み取りやすくなることや、色ごとに有効か無効かが決まりスクリプトで扱いやすくなることが利点に挙げられています。
 
 これにより、`linear-gradient(red 0%, red 100%)`や`conic-gradient(red 0deg, red 360deg)`のように記述していた単色のグラデーションは、`linear-gradient(red)`や`conic-gradient(red)`のようにより簡潔に記述できるようになります。
