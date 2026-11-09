@@ -48,7 +48,7 @@ WebSocketと比較すると、WebTransportには次のような違いがあり�
 
 ## 使い方
 
-WebTransportはHTTPSが必須で、ポート番号も明示する必要があります。Web Workerからも利用できます。
+WebTransportに渡すURLは`https`で始めます。`http`のURLや`#`の付いたURLを渡すと、コンストラクタが`SyntaxError`を投げます。ポート番号を省くと、`https`の既定の443番につなぎます。Web Workerからも利用できます。
 
 ### コネクションを開く
 
@@ -73,11 +73,13 @@ transport.closed
 データグラムは順序保証も再送もない、もっとも軽量な送受信方法です。
 最悪届かなくても最新の値で上書きすればよい、チャットの入力状態やキャラクターの座標のようなデータの送受信に向いています。
 
-データグラムの読み書きは`transport.datagrams`の`readable`と`writable`を通して行います。これらは標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+データグラムは`transport.datagrams`の`readable`で受け取り、`createWritable()`で作った書き込み用のストリームで送ります。Chrome 156は`createWritable()`を持たず、`writable`だけを持ちます。Safari 27.2は逆に`writable`を持たないので、`transport.datagrams.writable.getWriter()`と書くと`TypeError`になりました（Firefox 159は両方を持つ）。どちらも標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
 
-```ts
+```js
 // 送信
-const writer = transport.datagrams.writable.getWriter();
+const writable =
+  transport.datagrams.createWritable?.() ?? transport.datagrams.writable;
+const writer = writable.getWriter();
 await writer.write(new Uint8Array([1, 2, 3]));
 writer.releaseLock();
 
