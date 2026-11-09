@@ -14,13 +14,11 @@ updatedAt: 2026-11-09
 
 ## はじめに
 
-2025年の4月23日に[Reactのブログ](https://ja.react.dev/blog/2025/04/23/react-labs-view-transitions-activity-and-more)で実験的な機能として`unstable_ViewTransition`と`unstable_Activity`が紹介されました。
+`SuspenseList`は、並べた複数の`Suspense`を、読み込みが終わった順ではなく上から順に、または全部そろってから表示させるReactのコンポーネントです。Reactの実験版でだけ、`unstable_SuspenseList`という名前で使えます（以後は`SuspenseList`と呼びます）。
 
-これらの新しい実験的機能はとてもパワフルで目が惹かれました。これらの他にあるReactの実験機能も気になりますよね！
+それぞれの`Suspense`が、読み込めたものから表示されてよいなら、`Suspense`を並べるだけで足ります。全部そろってから表示するだけなら、外側を1つの`Suspense`で包んでも同じです。読み込みの速さに関わらず上から順に表示したいときや、次に表示するものだけにフォールバックUIを出したいときに、`SuspenseList`が要ります。
 
-[`ed07719`のコミット](https://github.com/facebook/react/tree/ed077194b5b76df6f8fdbf805e1b895e2deb5a07)時点で他の実験的な機能を探してみると、`unstable_LegacyHidden`、`unstable_Activity`、`unstable_Scope`、`unstable_SuspenseList`、`unstable_TracingMarker`、`unstable_ViewTransition`、`unstable_addTransitionType`、`unstable_getCacheForType`、`unstable_useCacheRefresh`の9種類の機能が提供されていそうでした（[参考](https://github.com/facebook/react/blob/ed077194b5b76df6f8fdbf805e1b895e2deb5a07/packages/react/index.js#L49-L57)）。
-
-この記事は、そのうちの一つである`unstable_SuspenseList`の基本的な使い方とその利点について解説します（以後記事では`unstable_SuspenseList`を単に`SuspenseList`と呼びます）。
+2025年4月の[Reactのブログ](https://ja.react.dev/blog/2025/04/23/react-labs-view-transitions-activity-and-more)で実験的な機能の`ViewTransition`と`Activity`が紹介されたのをきっかけに、ほかの実験的な機能も調べました。この記事では、そのうちの`SuspenseList`の使い方と利点を紹介します。
 
 ## SuspenseListとは
 
@@ -28,6 +26,31 @@ updatedAt: 2026-11-09
 複数の非同期処理が同時に発生する場面で、UXを向上させるために使用されます。
 
 <LinkCard href="https://github.com/facebook/react/pull/15902" />
+
+実験版のReactを入れたプロジェクト（`npm i react@experimental react-dom@experimental`）で次のコンポーネントを描くと、動きを確かめられます。読み込みに1.5秒、2秒、0.5秒、1秒かかる4つの`Suspense`を並べています。
+
+```jsx
+import { Suspense, unstable_SuspenseList as SuspenseList, use } from 'react';
+
+const wait = (ms) => new Promise((resolve) => setTimeout(() => resolve(ms), ms));
+const items = [1500, 2000, 500, 1000].map(wait);
+
+const Item = ({ promise }) => <p>{use(promise)}ms</p>;
+
+export default function App() {
+  return (
+    <SuspenseList revealOrder="forwards" tail="collapsed">
+      {items.map((promise, i) => (
+        <Suspense key={i} fallback={<p>Loading {i + 1}...</p>}>
+          <Item promise={promise} />
+        </Suspense>
+      ))}
+    </SuspenseList>
+  );
+}
+```
+
+開くと、最初は`Loading 1...`だけが出ます。1.5秒ほどで`1500ms`と`Loading 2...`に変わり、2秒ほどで4つがそろって表示されます。0.5秒で読み込みが終わる3つ目も、上の2つが表示されるまで待ちます。React 0.0.0-experimental-e84e1492-20261031を、Chrome 156、Safari 27.2、Firefox 159で開いて同じ結果でした。`SuspenseList`を外すと、3つ目が0.5秒ほどで先に表示されます。
 
 ## 基本的な使い方
 
@@ -71,7 +94,7 @@ updatedAt: 2026-11-09
 </SuspenseList>
 ```
 
-並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。
+先ほどの4つの`Suspense`を`backwards`で並べると、画面には上から4つ目、3つ目、2つ目、1つ目の順に並び、いちばん下の1つ目から表示されました。並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。こちらは上から1つ目、2つ目の順に並んだまま、4つ目と3つ目が先に表示されました。
 
 #### together（同時表示）
 
@@ -99,7 +122,7 @@ updatedAt: 2026-11-09
 
 ### tail
 
-`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。省略すると`hidden`になります。
+`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。省略すると`hidden`になります。`together`に`tail`を渡すと、開発用のビルドでは`<SuspenseList tail="collapsed" /> is only valid if revealOrder is "forwards" (default) or "backwards".`という警告がコンソールに出て、`tail`は無視されました。
 
 #### collapsed
 
