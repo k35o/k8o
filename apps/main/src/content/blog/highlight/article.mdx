@@ -35,16 +35,18 @@ featureIds:
 まず初めに、`Range`オブジェクトを使用して、ハイライトしたいテキストの範囲を定義します。
 
 ```ts
-// ハイライトするテキストのElementを取得
-const targetNode = document.getElementById('target-text');
+// ハイライトするテキストを持つ要素の、中のテキストノードを取得
+const textNode = document.getElementById('target-text')!.firstChild!;
 
 // Rangeオブジェクトを作成
 const range = new Range();
 
-// テキストノードの開始位置と終了位置を設定（例では最初の2文字めまで）
-range.setStart(targetNode, 0);
-range.setEnd(targetNode, 2);
+// テキストノードの開始位置と終了位置を設定（例では最初の2文字）
+range.setStart(textNode, 0);
+range.setEnd(textNode, 2);
 ```
+
+`setStart`と`setEnd`に要素を渡すと、位置は文字ではなく子ノードの番号として数えられます。子がテキストノード1つだけの要素に`setEnd(要素, 2)`を渡すと、Chrome 156、Safari 27.2、Firefox 159のどれでも`IndexSizeError`になりました。文字の位置で指定するには、テキストノードを渡します。
 
 次に、`Range`オブジェクトを使用して`Highlight`オブジェクトを作成し、それを`HighlightRegistry`に登録します。
 
