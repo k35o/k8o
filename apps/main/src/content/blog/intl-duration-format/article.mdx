@@ -39,7 +39,7 @@ new Intl.DurationFormat('ja').format(duration);
 `Intl.DurationFormat`は`locale`に応じた書式の期間を表示するためのオブジェクトです。
 他の`Intl`オブジェクトと同じように静的メソッドとして`supportedLocalesOf()`やインスタンスメソッド`resolvedOptions()`を持っています。
 
-`locale`に応じた期間の出力は`Intl.DurationFormat`オブジェクトを作成して、`format`及びに`formatToParts`メソッドで行います。
+`locale`に応じた期間の出力は`Intl.DurationFormat`オブジェクトを作成して、`format`と`formatToParts`メソッドで行います。
 
 `locale`や書式設定は`Intl.DurationFormat`オブジェクトを作成するタイミングで設定します。
 
@@ -51,7 +51,7 @@ new Intl.DurationFormat('ja-JP', {
 
 第一引数に`locale`を文字列や配列で渡し、第二引数でその他のオプションをオブジェクト形式で渡します。
 
-オプションの全ては説明しませんが、`style`で表示する期間の長さ、`years`・`months`等で個別の`style`を決定、`yearsDisplay`・`monthsDisplay`などで0の時の表示を決めます。
+オプションの全ては説明しませんが、`style`で表示の形式、`years`・`months`等で単位ごとの`style`を決定、`yearsDisplay`・`monthsDisplay`などで0の時の表示を決めます。
 
 `style`には`long`と`short`と`narrow`と`digital`の4つがあります。`locale`が`ja`の場合、以下のような表示になります。
 
@@ -81,7 +81,7 @@ new Intl.DurationFormat('ja').format(duration);
 
 全ての期間を含める必要はありません。
 
-言い忘れましたが、期間は`years`、`months`、`weeks`、`days`、`hours`、`minutes`、`seconds`、`milliseconds`、`microseconds`、`nanoseconds`の9つに対応しています。これらを`format`に渡すオブジェクトのキーとして利用できます。
+期間は`years`・`months`・`weeks`・`days`・`hours`・`minutes`・`seconds`・`milliseconds`・`microseconds`・`nanoseconds`の10個の単位に対応しています。これらを`format`に渡すオブジェクトのキーとして利用できます。
 
 ## formatToParts
 
