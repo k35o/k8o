@@ -40,11 +40,11 @@ CSSの単位や関数をフル活用しながら、直線・曲線・円弧を�
 `clip-path`で使う場合、`shape()`で定義した図形の内側だけが表示され、外側は切り取られます。
 
 ```css
-/* shape(<fill-rule>?, from 開始点, <shape-command>, ...) */
+/* shape(<fill-rule>? from 開始点, <shape-command>, ...) */
 clip-path: shape(from 50% 0%, line to 100% 100%, line to 0% 100%, close);
 ```
 
-`<fill-rule>`は`polygon()`や`path()`と同じく指定できます。
+`<fill-rule>`（`nonzero`か`evenodd`）も指定できますが、`polygon()`や`path()`と違い、後ろにカンマを置きません。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`shape(evenodd, from 0 0, ...)`は無効な値になり、`shape(evenodd from 0 0, ...)`なら有効でした。
 `from`で開始点を指定し、カンマ区切りで描画コマンドを並べます。
 座標は参照ボックス（`clip-path`のデフォルトは`border-box`）の左上隅を原点とし、`<length-percentage>`（`<length>`または`<percentage>`）で指定します。
 
