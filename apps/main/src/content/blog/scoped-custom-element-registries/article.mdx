@@ -34,7 +34,7 @@ customElements.define('x-badge', BadgeV2); // NotSupportedError
 
 レジストリは`new CustomElementRegistry()`で作ります。`define()`・`get()`・`getName()`・`whenDefined()`・`upgrade()`は`customElements`と同じように使えます。作ったレジストリを`attachShadow()`の`customElementRegistry`オプションに渡すと、そのシャドウルートに結びつきます。
 
-例では、つながったときに版を表示するだけの2つの定義を使います。
+例では、ページに追加されたときに版の文字を出すだけの2つの定義を使います。
 
 ```js
 class BadgeV1 extends HTMLElement {
