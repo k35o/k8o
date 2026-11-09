@@ -13,8 +13,9 @@ import detailsSlot from './_images/details-slot.avif';
 
 <BrowserSupportStatus featureId="details-content" />
 
-`details`要素に関する新たなCSS擬似要素`::details-content`が導入されました。
-`::details-content`擬似要素を使用することで、`details`要素内のコンテンツ部分に対してスタイルを適用できます。
+`::details-content`は、`details`要素のうち`summary`以外の中身、つまり開閉する部分を選ぶCSSの擬似要素です。中身全体に枠や背景を付けたり、開閉にアニメーションを付けたりできます。
+
+中身の子要素を1つずつ装飾するだけなら、`details > :not(summary)`のようなセレクターで足ります。開くときのアニメーションも、子要素に`@keyframes`を当てれば付けられます。子要素に手を入れずに中身全体を1つの箱として装飾することと、閉じるときのアニメーションをCSSだけで付けることは、`::details-content`でしかできません。Chrome 156、Safari 27.2、Firefox 159で試すと、子要素に当てた`@keyframes`は開くときには動きましたが、閉じるときは中身がすぐに消えました。
 
 `details`要素は、アコーディオンのように折りたたみ可能なコンテンツを作成するためのHTML要素です。
 `summary`要素と組み合わせて使用され、ユーザーのアクションに合わせてコンテンツが開閉するUIを提供します。
@@ -66,15 +67,18 @@ details::details-content {
 
 ここから、`details`の子要素に依存せずに、`details`のコンテンツ部分にスタイルを付与できる`::details-content`擬似要素の強力さが読み取れます。
 
-後者のケースは`slot`要素に対するスタイルなので、閉じている時にも装飾が行われます。
-展開中の時のみスタイルを付与したいときは`[open]`を利用して以下のように書きます。
+後者のケースは`slot`要素に対するスタイルなので、閉じている時にも装飾が行われます。Chrome 156、Safari 27.2、Firefox 159のどれでも、上の2pxの枠を付けると、閉じた`details`の高さが枠の上下の分の4pxだけ増えました。
+展開中の時のみスタイルを付与したいときは`[open]`を利用して以下のように書きます。背景も同じように付けられます。
 
 ```css
 /* 後者 */
 details[open]::details-content {
   border: 2px solid var(--color-primary-border);
+  background-color: var(--color-primary-bg-mute);
 }
 ```
+
+こう書くと、閉じた`details`の高さは装飾を付けないときと同じになりました。
 
 また、`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
 
@@ -96,6 +100,28 @@ details[open]::details-content {
 }
 ```
 
-`height: 0`から`height: auto`へのトランジションは、`interpolate-size: allow-keywords`があって初めて補間されます。高さ200pxの中身を入れた`details`を開いて、100ms後に`summary`を含む`details`全体の高さを測ると、Chrome 156では83pxと開いている途中でしたが、Safari 27.2とFirefox 159では開ききった224pxでした。SafariとFirefoxは`interpolate-size`に対応しておらず（`CSS.supports('interpolate-size: allow-keywords')`が`false`）、開閉は一瞬で切り替わります。開閉そのものはどのブラウザでも動くので、アニメーションは対応したブラウザだけで付く飾りとして扱います。
+`height: 0`から`height: auto`へのトランジションは、`interpolate-size: allow-keywords`があって初めて補間されます。高さ200pxの中身を入れた`details`を開いて、100ms後に`summary`を含む`details`全体の高さを測ると、Chrome 156では83pxと開いている途中でしたが、Safari 27.2とFirefox 159では開ききった224pxでした。閉じるときも、Chrome 156では100ms後に165pxと閉じている途中でした。SafariとFirefoxは`interpolate-size`に対応しておらず（`CSS.supports('interpolate-size: allow-keywords')`が`false`）、開閉は一瞬で切り替わります。開閉そのものはどのブラウザでも動くので、アニメーションは対応したブラウザだけで付く飾りとして扱います。
+
+デモの注記のとおり、この例は動きを減らす設定（`prefers-reduced-motion`）に対応していません。対応するには、`transition`だけをメディアクエリの中に移します。
+
+```css
+details::details-content {
+  interpolate-size: allow-keywords;
+  height: 0;
+  overflow: clip;
+}
+
+details[open]::details-content {
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  details::details-content {
+    transition: height 0.5s ease, content-visibility 0.5s ease allow-discrete;
+  }
+}
+```
+
+Chrome 156で動きを減らす設定をエミュレートすると、開いて100ms後にはもう224pxで、開閉は一瞬で切り替わりました。設定が無いときは、上と同じく途中の高さを通ります。
 
 `::details-content`擬似要素はBaseline 2025で導入され、主要なブラウザで利用できます。中身の装飾から試してみてください。
