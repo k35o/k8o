@@ -1,13 +1,13 @@
 ---
-title: 'Math.sumPrecise()で浮動小数点数の合計を正確に計算する'
-description: 'Baseline 2026で追加されたMath.sumPrecise()は、数値のiterableを受け取り、中間結果の丸め誤差を抑えて合計を計算する静的メソッドです。reduceやforループで合計の順序によって結果が変わってしまう浮動小数点数の問題を抑えられます。'
+title: 'Math.sumPreciseで配列の合計の丸め誤差を抑える'
+description: 'Math.sumPrecise()は、数値の配列などの合計を、足すたびの丸め誤差を残さずに求めます。reduceで0.1を10回足すと0.9999999999999999になる計算も1を返します。Baseline 2026で使えます。'
 createdAt: 2026-04-25
 updatedAt: 2026-04-25
 featureIds:
   - math-sum-precise
 ---
 
-# Math.sumPrecise()で浮動小数点数の合計を正確に計算する
+# Math.sumPreciseで配列の合計の丸め誤差を抑える
 
 <BrowserSupportStatus featureId="math-sum-precise" />
 
