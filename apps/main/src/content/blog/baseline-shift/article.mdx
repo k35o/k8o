@@ -2,7 +2,7 @@
 title: 'baseline-shiftでSVGの文字を上付き・下付きにする'
 description: 'baseline-shiftは、文字のベースラインを上下にずらすCSSプロパティです。SVGのtextの中で化学式や単位の数字を上付き・下付きにする書き方と、subとsuperでずれる量のブラウザごとの違いを説明します。'
 createdAt: 2026-05-23
-updatedAt: 2026-05-23
+updatedAt: 2026-11-09
 featureIds:
   - baseline-shift
 ---
@@ -13,24 +13,11 @@ featureIds:
 
 ## はじめに
 
-SVGの`<text>`の中で化学式や数式、図中のラベルを書くとき、特定の文字だけ上付き・下付きにしたい場面があります。SVGには古くから`baseline-shift`という属性があり、`<text>`や`<tspan>`の属性として書けばずらせました。この属性は同じ名前のCSSプロパティの値を決めるプレゼンテーション属性で、CSSから`baseline-shift`を指定しても同じようにずれます。
+`baseline-shift`は、文字が並ぶ基準の線（ベースライン）を、親の文字に対して上下にずらすCSSプロパティです。SVGの`<text>`の中の`<tspan>`に指定すると、化学式や単位の数字のように、その部分だけを上付き・下付きにできます。
 
-`baseline-shift`プロパティはCSS Inline 3でも定義され、Firefox 149が対応したことでBaseline 2026に入りました。SVG中のテキストの上付き・下付き調整を、主要ブラウザのどれでもCSSで書けるようになりました。
+HTMLの文章なら、今までどおり`<sub>`・`<sup>`や`vertical-align`で足ります。SVGの`<text>`の中では、Chrome 156とSafari 27.2で`vertical-align`が効きません。`<tspan>`の`dy`属性でもずらせますが、後ろの文字まで一緒にずれるので、戻すための`dy`がもう1つ要ります。ずらした部分の後ろを元の高さに残したまま上付き・下付きにできるのは`baseline-shift`です。
 
-## プロパティの値
-
-`baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただしHTMLのインライン要素に指定してずれるのはFirefox 159だけで、Chrome 156とSafari 27.2では位置が変わりませんでした。実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
-
-<LinkCard href="https://drafts.csswg.org/css-inline-3/#baseline-shift-property" />
-
-- `<length-percentage>` - 任意の長さや割合でずらす。`em` / `px` / `%`などが使える。正の値で上、負の値で下に動く
-- `sub` - 親フォントに定義されている下付き位置までずらす
-- `super` - 親フォントに定義されている上付き位置までずらす
-- `top` - 行ボックスの上端にベースラインを揃える
-- `center` - 行ボックスの上下中央にベースラインを揃える
-- `bottom` - 行ボックスの下端にベースラインを揃える
-
-`sub`と`super`でずれる量はブラウザで違います。基本の使い方のコード（親が28pxのsans-serif、`<tspan>`が0.8em）で数字の位置を比べると、Chrome 156とSafari 27.2では`sub`で12px下がり、`super`で11px上がりました。Firefox 159では`sub`で6px、`super`で10pxでした。ブラウザ間で揃えたいときは`0.3em`のような長さで指定します（3つとも6〜7px上がりました）。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
+SVGには古くから`baseline-shift`という属性があり、`<text>`や`<tspan>`の属性として書けばずらせました。この属性は同じ名前のCSSプロパティの値を決めるプレゼンテーション属性で、CSSから`baseline-shift`を指定しても同じようにずれます。`baseline-shift`プロパティはCSS Inline 3でも定義され、Firefox 149が対応したことでBaseline 2026に入りました。
 
 ## 基本の使い方
 
@@ -74,6 +61,23 @@ SVGの`<text>`の中で`<tspan>`に`baseline-shift`を当てると、その部�
 CSSプロパティとして書くことで、SVGの`baseline-shift`属性を直接書くより一貫した記述ができます。属性とCSSの両方が効く場合、CSSの方が優先されます。
 
 <PlaygroundEmbed demo="baseline-shift値の比較" headingLevel="h4" sectionId="baseline-shift" />
+
+セレクトで値を切り替えると、赤い数字が灰色の破線（親の`<text>`のベースライン）から上下に動きます。`sub`と`super`は、開いたブラウザによってずれる量が変わります。
+
+## プロパティの値
+
+`baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただしHTMLのインライン要素に指定してずれるのはFirefox 159だけで、Chrome 156とSafari 27.2では位置が変わりませんでした。実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
+
+<LinkCard href="https://drafts.csswg.org/css-inline-3/#baseline-shift-property" />
+
+- `<length-percentage>` - 任意の長さや割合でずらす。`em` / `px` / `%`などが使える。正の値で上、負の値で下に動く
+- `sub` - 親フォントに定義されている下付き位置までずらす
+- `super` - 親フォントに定義されている上付き位置までずらす
+- `top` - 行ボックスの上端にベースラインを揃える
+- `center` - 行ボックスの上下中央にベースラインを揃える
+- `bottom` - 行ボックスの下端にベースラインを揃える
+
+`sub`と`super`でずれる量はブラウザで違います。基本の使い方のコード（親が28pxのsans-serif、`<tspan>`が0.8em）で数字の位置を比べると、Chrome 156とSafari 27.2では`sub`で12px下がり、`super`で11px上がりました。Firefox 159では`sub`で6px、`super`で10pxでした。ブラウザ間で揃えたいときは`0.3em`のような長さで指定します（3つとも6〜7px上がりました）。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
 
 ## vertical-alignとの関係
 
