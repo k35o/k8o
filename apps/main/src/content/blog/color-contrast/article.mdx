@@ -1,15 +1,15 @@
 ---
-title: 色のコントラスト比は重要だけどどうやって求めるんだっけ？
-description: WCAG 2.1では背景色とテキスト色のコントラスト比についての達成基準が定められています。コントラスト比とは何でしょうか？コントラスト比の計算はツールを用いることが多いので、その計算方法を理解せずに検査している方は少なくないです。この記事ではコントラスト比の計算方法を理解して、そこから読み取れる重要な情報を紐解きます。
+title: 'コントラスト比の計算式：相対輝度の求め方とWCAGの基準'
+description: 'コントラスト比は2色の相対輝度から求める値で、WCAG 2.1はテキストと背景に4.5:1以上（大きな文字は3:1以上）を求めます。RGBから相対輝度を出す計算式を順に追い、コントラスト比を計算する関数をTypeScriptで書きます。'
 createdAt: 2024-02-12
-updatedAt: 2024-09-28
+updatedAt: 2026-11-09
 ---
 
 import '@repo/mdx-preset/katex.css';
 import luminanceVsLightness from './_images/luminance-vs-lightness.avif';
 import powByTwoPointFour from './_images/pow-by-two-point-four.avif';
 
-# 色のコントラスト比は重要だけどどうやって求めるんだっけ？
+# コントラスト比の計算式：相対輝度の求め方とWCAGの基準
 
 ## はじめに
 
