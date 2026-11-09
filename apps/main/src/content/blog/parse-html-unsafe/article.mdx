@@ -11,14 +11,14 @@ featureIds:
 
 <BrowserSupportStatus featureId="parse-html-unsafe" />
 
-`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`parseHtmlUnsafe()`関数がBaseline 2025に追加されました。
+`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`Document.parseHTMLUnsafe()`静的メソッドがBaseline 2025に追加されました。
 
 名前に`Unsafe`とついている通り、このメソッドはXSSの危険性がある要素を自動的には削除しません。
-安全性を重視した`parseHTML()`メソッドも存在しますが、こちらは多くのブラウザでまだ実装されていないため、現時点では`parseHTMLUnsafe()`が主に使用されています。
+安全性を重視した`Document.parseHTML()`もあり、Chrome 156とFirefox 159は実装していますが、Safari 27.2にはまだありません。
 
 `Unsafe`な状況を軽減するため、いくつかの対策が用意されています。
-変換元の値として`TrustedHTML`を使用する方法や、第2引数のオプションで`sanitizer`を指定する方法などです。ただし、`TrustedHTML`は本記事執筆時点ではFirefoxでサポートされておらず、`sanitizer`オプションも多くのブラウザで未対応という状況です。
+変換元の値として`TrustedHTML`を使用する方法や、第2引数のオプションで`sanitizer`を指定する方法などです。`TrustedHTML`はChrome 156、Safari 27.2、Firefox 159のどれでも渡せます。`sanitizer`オプションはChrome 156とFirefox 159で効き、Safari 27.2では無視されます。
 
 この機能はDeclarative Shadow DOMを扱う際に特に有効です。
-似た機能を持つ`DOMParser.parseFromString()`プロパティを使ってDeclarative Shadow DOMを用いたWeb Componentsを含むHTMLレスポンスを解析しても、`parseFromString`はDeclarative Shadow DOMを解析できません。
+似た機能を持つ`DOMParser`の`parseFromString()`メソッドを使ってDeclarative Shadow DOMを用いたWeb Componentsを含むHTMLレスポンスを解析しても、`parseFromString`はDeclarative Shadow DOMを解析できません。
 一方、`parseHTMLUnsafe()`はDeclarative Shadow DOMも解析できるため、これらのコンポーネントを正しく解析することが可能です。
