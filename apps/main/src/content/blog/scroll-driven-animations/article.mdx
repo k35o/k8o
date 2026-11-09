@@ -13,9 +13,9 @@ featureIds:
 
 ## はじめに
 
-読み進めた割合をバーで示したり、画面に入ってきたカードを少しずつ表示したりしたいことがあります。これまでは`scroll`イベントや`IntersectionObserver`で状態を受け取り、JavaScriptからスタイルを書き換えていました。
+Scroll-driven animationsは、CSSのアニメーションを時間ではなくスクロールで進める機能です。`animation-timeline`に`scroll()`を書くとスクロールの位置で、`view()`を書くと要素の見え方でアニメーションが進みます。
 
-Scroll-driven animationsは、CSSのアニメーションを時間ではなくスクロールで進める機能です。スクロールの位置で進める`scroll()`と、要素の見え方で進める`view()`の2つを使い分けます。Chrome 115とSafari 26に続いてFirefox 159が対応し、Baseline 2026に加わりました。
+読み進めた割合をバーで示したり、画面に入ってきたカードを少しずつ表示したりしたいことがあります。画面に入ったときに一度クラスを付けるだけなら、今も`IntersectionObserver`で足ります。スクロールの量に合わせて途中の状態まで少しずつ進めるには、これまで`scroll`イベントで位置を受け取り、JavaScriptからスタイルを書き換えていました。これをCSSだけで書けるのがScroll-driven animationsです。Chrome 115とSafari 26に続いてFirefox 159が対応し、Baseline 2026に加わりました。
 
 ## scroll()でスクロールの位置に合わせる
 
@@ -50,6 +50,8 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
   headingLevel="h4"
   sectionId="scroll-driven-animations"
 />
+
+枠の中をスクロールすると、上のバーが読み進めた割合だけ右へ伸びます。
 
 スクロールコンテナの中身があふれずスクロールできないときは、タイムラインが働かず、キーフレームの値が当たりません。プログレスバーの例では、ページが短いと最初から伸びきった状態で表示されます。
 
