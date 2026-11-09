@@ -62,9 +62,9 @@ const pattern3 = new URLPattern({
 });
 ```
 
-`pattern1`、`pattern2`、`pattern3`はすべて同じ意味になります。
+`pattern1`と`pattern3`は同じ意味になります。`pattern2`だけは`port`が`*`になるので、`https://k8o.me:8080/blog/a`のようにポート番号の付いたURLにも一致します。
 
-指定していないプロパティは`*`が渡された、つまりワイルドカードとして扱われます。ただし、`baseURL`を指定した場合はその限りではなく、各プロパティに`''`が設定されたとして扱われます。
+指定していないプロパティは`*`が渡された、つまりワイルドカードとして扱われます。ただし、`baseURL`を指定した場合は、指定したプロパティより前の部品を`baseURL`の値で埋めます。部品の順は`protocol`・`hostname`・`port`・`pathname`・`search`・`hash`です。`baseURL`だけを渡せばどの部品も`baseURL`の値になり、`https://k8o.me`なら`port`・`search`・`hash`が`''`、`pathname`が`/`になります。`username`と`password`は`baseURL`から埋めず、`*`のままです。
 
 ```ts
 // 同じ
@@ -125,15 +125,15 @@ const result = pattern.exec("https://k8o.me/blog/urlpattern?query=abc#section1")
 // 一致しない場合はnullが返る
 if (result) {
   console.log(result.inputs);  // ["https://k8o.me/blog/urlpattern?query=abc#section1"]
-  console.log(result.pathname); // { input: "/blog/urlpattern", groups: {id: 'urlpattern'} }
-  console.log(result.search);   // { input: "query=abc", groups: {} }
-  console.log(result.hash);     // { input: "section1", groups: {} }
-  console.log(result.username); // { input: "", groups: {} }
+  console.log(result.pathname); // { input: "/blog/urlpattern", groups: { id: "urlpattern" } }
+  console.log(result.search);   // { input: "query=abc", groups: { 0: "query=abc" } }
+  console.log(result.hash);     // { input: "section1", groups: { 0: "section1" } }
+  console.log(result.username); // { input: "", groups: { 0: "" } }
 } else {
   console.log("パターンに一致しませんでした");
 }
 ```
-戻り値は各部品ごとに一致した情報をオブジェクトで返します。`input`には一致した文字列が、`groups`にはパターンマッチでキャプチャされた値が格納されます。
+戻り値は各部品ごとに一致した情報をオブジェクトで返します。`input`には一致した文字列が、`groups`にはパターンマッチでキャプチャされた値が格納されます。パターンが`*`の部品では、`*`に当たった文字列が`0`という名前で`groups`に入ります。
 
 返り値のオブジェクトは部品の他に`inputs`プロパティも持ち、入力された情報が配列で返ってきます。
 
@@ -193,7 +193,7 @@ console.log(pattern3.search);   // "*"
 console.log(pattern3.hash);     // "*"
 ```
 
-初めの方に紹介した`URLPattern`オブジェクトの異なる第1引数による同一性は、この機能を用いて確認しました。
+初めの方に紹介した、第1引数の渡し方による違いも、この機能を用いて確認しました。文字列で`https://k8o.me`のようにホスト名まで書くと`port`が`''`になり、オブジェクトで`port`を省くと`*`になります。
 
 ## おわりに
 URLのパターンマッチを簡単にするためのURLPattern APIについて紹介しました。
