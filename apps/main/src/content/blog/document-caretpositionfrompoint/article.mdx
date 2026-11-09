@@ -13,9 +13,23 @@ featureIds:
 
 ## はじめに
 
-リッチテキストエディタやドラッグ&ドロップによるテキスト挿入を実装する際、マウスやタッチの座標からテキスト内の挿入位置を特定する必要があります。
+`document.caretPositionFromPoint`は、画面上の座標を渡すと、そこにキャレット（テキストカーソル）を置いたときのノードと文字の位置を返すメソッドです。クリックやドロップの座標が、テキストの何文字目にあたるかが分かります。
 
-`document.caretPositionFromPoint`は、画面上の座標からキャレット（テキストカーソル）の位置を取得するためのAPIです。このAPIを使うことで、指定した座標がテキストのどの位置に対応するかを簡単に判定できます。
+入力欄をクリックした位置なら、クリックのあとの`selectionStart`で分かります。Chrome 156では、ふつうの文章をクリックしたあとの`getSelection()`も同じ位置を返しました。一方、マウスを重ねただけのときやドロップしたときは選択範囲が動かないので、座標の下の文字の位置はこのメソッドで求めます。
+
+これまでChromeとSafariは非標準の`caretRangeFromPoint`だけを、Firefoxはこのメソッドだけを持っていて、ブラウザごとに書き分けていました。Safari 26.2が対応し、Baseline 2025で揃いました。
+
+```js
+document.addEventListener('click', (event) => {
+  const position = document.caretPositionFromPoint(
+    event.clientX,
+    event.clientY,
+  );
+  console.log(position?.offsetNode, position?.offset);
+});
+```
+
+開発者ツールのコンソールに貼ってこのページの本文をクリックすると、クリックしたテキストノードと、その中の位置が出ます。Chrome 156、Safari 27.2、Firefox 159のどれでも、文字の左半分を押すとその文字の前、右半分を押すと後ろの位置が返りました。
 
 ## document.caretPositionFromPoint
 
@@ -42,6 +56,8 @@ const caretPosition = document.caretPositionFromPoint(x, y, {
 - 座標が負の値またはビューポート外の場合
 - 指定した座標にテキスト挿入ポイントがない場合
 
+Chrome 156、Safari 27.2、Firefox 159で試すと、`null`が返ったのはビューポートの外と負の座標だけでした。テキストの無い空の`div`の上ではその`div`と0が、ページの下の余白では近くのテキストの末尾が返ります。座標は`clientX`と`clientY`と同じビューポートの座標です。スクロールしたページで`pageY`を渡すと、違う位置が返りました。
+
 ### CaretPositionのプロパティ
 
 `CaretPosition`オブジェクトは以下のプロパティを持ちます。
@@ -49,6 +65,8 @@ const caretPosition = document.caretPositionFromPoint(x, y, {
 #### offsetNode
 
 キャレット位置を含むノードを返します。通常はテキストノードですが、要素ノードの場合もあります。
+
+`input`や`textarea`の上では、その要素が返り、`offset`は`value`の中の文字の位置になります。画像の上では、Chrome 156とSafari 27.2は親の要素と画像の位置を、Firefox 159は`img`要素と0を返しました。
 
 #### offset
 
@@ -58,11 +76,13 @@ const caretPosition = document.caretPositionFromPoint(x, y, {
 
 #### getClientRect()
 
-キャレット位置の矩形情報を`DOMRect`オブジェクトとして返します。キャレットの正確な画面上の位置を取得できます。
+キャレット位置の矩形情報を`DOMRect`オブジェクトとして返します。テキストノードのときは、キャレットの立つ位置にある幅0、高さが行の高さの矩形です。
+
+Chrome 156、Safari 27.2、Firefox 159のどれでも、`offsetNode`が要素のときは`null`ではなく、x・y・幅・高さがすべて0の矩形が返りました。Safari 27.2は、`input`と`textarea`の中を指したときも0の矩形を返します。
 
 ## 基本的な使い方
 
-クリックした位置のキャレット情報を取得する例です。
+クリックした文字を取り出す例です。文字の右半分を押すと`offset`はその文字の後ろを指すので、`getClientRect()`の`x`とクリックした`x`を比べ、クリックした点が左にあれば1つ前の文字を取ります。
 
 ```ts
 // [!og]
@@ -71,20 +91,21 @@ document.addEventListener('click', (event) => {
     event.clientX,
     event.clientY,
   );
+  if (caretPosition?.offsetNode.nodeType !== Node.TEXT_NODE) return;
 
-  if (caretPosition) {
-    console.log('ノード:', caretPosition.offsetNode);
-    console.log('オフセット:', caretPosition.offset);
-
-    const rect = caretPosition.getClientRect();
-    if (rect) {
-      console.log('位置:', rect.x, rect.y);
-    }
-  }
+  const { offsetNode, offset } = caretPosition;
+  const rect = caretPosition.getClientRect();
+  // 文字の右半分を押すと、offset はその文字の後ろを指す
+  const index = rect && event.clientX < rect.x ? offset - 1 : offset;
+  console.log('クリックした文字:', offsetNode.textContent?.[index]);
 });
 ```
 
+左から右へ書く横書きの文字で試すと、Chrome 156、Safari 27.2、Firefox 159のどれでも、文字の左半分と右半分のどちらを押しても同じ文字が出ました。行の右の余白を押すと`undefined`になります。
+
 <PlaygroundEmbed demo="キャレット位置取得" headingLevel="h4" sectionId="caret-position-from-point" />
+
+テキストをクリックすると、`offset`と`offsetNode`の種類と名前が並び、キャレットの立つ位置に縦線が入ります。
 
 ### ドラッグ&ドロップでのテキスト挿入
 
@@ -114,12 +135,14 @@ dropZone.addEventListener('drop', (event) => {
 });
 ```
 
+ドロップ先の中にヒントの文のような別のテキストがあると、そのテキストノードに挿入されます。Chrome 156、Safari 27.2、Firefox 159で、ドロップ先の中のヒントの文の上に落とすと、ヒントの文のほうに文字が入りました。下のデモでは、`offsetNode`が本文の要素の中にあるかを`contains()`で確かめてから挿入しています。
+
 <PlaygroundEmbed demo="ドラッグ&ドロップ" headingLevel="h5" sectionId="caret-position-from-point" />
+
+単語のチップを文章の好きな位置へドラッグして落とすと、その位置に単語が入ります。
 
 ## おわりに
 
-`document.caretPositionFromPoint`を紹介しました。似たような名前で`document.caretRangeFromPoint`もありますが、こちらは標準化されていないので`document.caretPositionFromPoint`を使用するようにしましょう。
+`document.caretPositionFromPoint`を紹介しました。似た名前の`document.caretRangeFromPoint`はFirefox 159にもありますが、仕様にあるのは`document.caretPositionFromPoint`のほうです。
 
-座標からテキスト内の位置を特定できるこのAPIは、リッチテキストエディタやドラッグ&ドロップ機能の実装などさまざまな箇所で役立ちます。
-
-Baseline 2025に含まれているため、最新のモダンブラウザのみをサポートしている場合は、テキスト編集機能を実装する際に活用してみてください。
+座標からテキストの中の位置が分かるので、クリックした文字を調べたり、ドロップした位置に文字を入れたりするときに使えます。Baseline 2025で主要なブラウザに揃っています。
