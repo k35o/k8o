@@ -15,8 +15,9 @@ import monitor from './_images/monitor.avif';
 
 ## はじめに
 
-Screen Wake Lock APIが2025年のBaselineに追加されました。
-Screen Wake Lock APIは、デバイスの画面がスリープ状態に入るのを防ぐためのAPIです。 料理中もずっとレシピを表示しておけるようにするなど、処理を行わず継続的に画面を表示させたいアプリケーションに役立ちます。
+Screen Wake Lock APIは、ページを表示しているあいだ、端末の画面が暗くなったりスリープしたりするのを止めるAPIです。`navigator.wakeLock.request('screen')`でロックを取ると、タブを離れるか`release()`を呼ぶまで画面が点いたままになります。
+
+ユーザーが画面を触っているあいだは、OSが画面を点けたままにするので、このAPIは要りません。レシピを見ながら料理するときのように、画面を見ているのに触らない場面では、OSの設定した時間で画面が暗くなります。この場面でページの側から画面を点けたままにできるのが、Screen Wake Lock APIです。2025年のBaselineに追加されました。
 
 ## Screen Wake Lock APIによるスリープを体験する
 
@@ -24,9 +25,9 @@ Screen Wake Lock APIを使用してスリープのロックを要求するボタ
 
 <PlaygroundEmbed demo="スクリーンスリープ防止" headingLevel="h4" sectionId="screen-wake-lock" />
 
-「スリープ機能をロックする」ボタンを押して、ロックを獲得すると「スリープ機能のロックを解除する」ボタンに切り替わります。
+ボタンを押してロックを取ると、ボタンの文言がロックを解除する文言に切り替わります。
 
-Macをご使用の場合は、標準のアクティビティモニタを開いて「エネルギー」を確認すると、お使いのブラウザの項目の「非スリープ」が「はい」になっていることでロックされていることを確認できます。
+Macでは、標準のアクティビティモニタで確かめられます。`エネルギー`のタブを開くと、ロックしているあいだは、お使いのブラウザの行の`非スリープ`の列が`はい`になります。
 
 <Image
   src={monitor}
@@ -35,12 +36,14 @@ Macをご使用の場合は、標準のアクティビティモニタを開い�
   height={216}
 />
 
-ブラウザのタブを切り替えたり、スクリーンを畳んだりすると「非スリープ」が「いいえ」に変わります。
+ブラウザのタブを切り替えたり、スクリーンを畳んだりすると`非スリープ`が`いいえ`に変わります。
 
-「スリープ機能をロックする」ボタンを押してから別のタブに切り替えて戻ってくると、再び「スリープ機能をロックする」ボタンに戻っていることがわかります。
+ボタンを押してから別のタブに切り替えて戻ってくると、ボタンの文言がロックする前の文言に戻っていることがわかります。
 
 これは表示中のタブが有効な範囲でのみScreen Wake Lock APIが有効になり、有効範囲からはみ出るとロックが解除されるためです。
 この仕様はセキュリティとプライバシーの問題を解決してくれています。
+
+ターミナルからは`pmset -g assertions`で確かめられます。Chrome 156とFirefox 159でロックを取ると、ブラウザのプロセスに`NoDisplaySleepAssertion`の行が加わり、その名前はChromeでは`Blink Wake Lock`、Firefoxでは`screen`でした。Firefox 159では、別のタブに切り替えるとこの行が消えました。
 
 ## Screen Wake Lock APIの使い方
 
@@ -62,12 +65,18 @@ await wakeLock.release();
 
 ### navigator.wakeLock.request
 
-`navigator.wakeLock.request`は画面のロックを防ぐことを要求するメソッドです。
+`navigator.wakeLock.request`は画面のスリープを防ぐことを要求するメソッドです。
 
-`navigator.wakeLock.request`は第1引数にロックする画面についての種類を任意で渡せます。
-執筆時点では、何も渡さない時と機能が変わらない`screen`のみがサポートされています。
+`navigator.wakeLock.request`は第1引数にロックの種類を任意で渡せます。
+指定できるのは`screen`だけで、省略しても`screen`になります。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`'system'`のような別の値を渡すと`TypeError`になりました。
 
-戻り値は`WakeLockSentinel`インスタンスです。画面をロックする権限がない時には`NotAllowedError`をスローします。
+戻り値は`WakeLockSentinel`インスタンスで解決するPromiseです。ロックを取れないときは`NotAllowedError`で拒否されます。試したなかでは、次のときに`NotAllowedError`になりました。
+
+- タブが隠れているとき（Firefox 159）
+- `allow="screen-wake-lock 'none'"`を付けた`iframe`の中（Chrome 156、Safari 27.2、Firefox 159）
+- ボタンを押すといったユーザーの操作を経ずに呼んだとき（Safari 27.2）
+
+Safari 27.2では、ページを開いた直後に呼んでも、`button.click()`でスクリプトからクリックして呼んでも断られ、`navigator.permissions.query({ name: 'screen-wake-lock' })`は`prompt`を返しました。Chrome 156とFirefox 159は`granted`を返し、ページを開いた直後でもロックを取れました。Safariに対応するなら、デモのようにボタンを押したときに`request()`を呼ぶ形にします。
 
 ### WakeLockSentinel
 
@@ -97,11 +106,33 @@ wakeLock.addEventListener('release', () => {
 });
 ```
 
-`navigator.wakeLock.request`によるロックが解除された時に発火するだけで、実際のロック状況には依存しないことに注意してください。
+`release`イベントは、そのインスタンスのロックが外れたことを知らせるだけで、画面のロックが外れたとは限りません。Chrome 156とFirefox 159で`request()`を2回呼び、片方だけ`release()`すると、`release`は呼んだほうにだけ発火しました。もう片方の`released`は`false`のままで、`pmset -g assertions`の行も残りました。同じインスタンスの`release()`を2回呼んでもエラーにはならず、イベントも1回しか発火しません。
+
+### タブに戻ったときに取り直す
+
+タブを離れるとロックは外れ、戻ってきても取り直されません。レシピのページのように見ているあいだずっと画面を点けておきたいときは、`visibilitychange`でタブに戻ったことを知り、もう一度`request()`を呼びます。
+
+```js
+let wakeLock = null;
+
+const requestWakeLock = async () => {
+  wakeLock = await navigator.wakeLock.request('screen');
+};
+
+button.addEventListener('click', requestWakeLock);
+
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    await requestWakeLock();
+  }
+});
+```
+
+Firefox 159で試すと、別のタブに切り替えたときに`visibilitychange`、`release`の順に発火し、隠れているあいだの`request()`は`NotAllowedError`で断られました。元のタブに戻ると`visibilitychange`の中で新しいロックが取れ、`pmset -g assertions`の行も戻りました。Safari 27.2では、ボタンを押さずに開いたページで試すと、タブに戻ったときの`visibilitychange`の中で呼んだ`request()`も`NotAllowedError`で断られました。
 
 ## おわりに
 
 Baseline 2025に追加された、Screen Wake Lock APIの紹介を行いました。
 ページを開いたままデバイスの外側で作業を行うときに悩まされるスリープの問題を解決してくれるAPIです。
 
-ぜひ、Screen Wake Lock APIを使用して、より良い体験を提供できるようにしましょう。
+ロックはタブを離れると外れるので、レシピのページのように見続けてもらうページでは、タブに戻ったときに取り直します。Safariではユーザーの操作を経ずに呼ぶと断られるので、最初のロックはボタンを押したときに取る形にしておきます。
