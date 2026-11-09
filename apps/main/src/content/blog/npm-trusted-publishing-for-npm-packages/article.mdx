@@ -11,20 +11,21 @@ import setTP from './_images/set-trusted-publisher.avif';
 # npm Trusted Publishingでトークンなしに公開する
 
 ## はじめに
-npmパッケージを公開するにあたり、GitHub ActionsまたはGitLab CI/CD PipelinesではOIDCを利用した認証が可能になりました。
+
+npmのTrusted Publishingは、GitHub ActionsなどのCIから、OIDCで発行される短い期限の資格情報を使ってパッケージを公開する仕組みです。npmのアクセストークンを発行してCIに置かなくても公開できます。
 
 <LinkCard href="https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available/" />
 
-これまで、これらのCI・CDからの公開は、npmで生成したAccess Tokensを用いて行う必要がありました。
+これまで、CIからの公開は、npmで生成したAccess Tokensを用いて行う必要がありました。
 トークンは生成する際に有効期限を設ける必要があり、定期的な更新が面倒でした。
 
-OIDCを利用した公開に切り替えると最初にnpm側の設定を行うだけで、トークンの交換を考えずに開発を行えるようになります。
+手元のPCから公開するときや、Trusted Publishingが対応していないセルフホストランナーから公開するときは、Trusted Publishingを使えないので、これまでどおりログインやアクセストークンで公開します。対応しているのは、GitHubがホストするランナーのGitHub Actions、GitLab.comの共有ランナーのGitLab CI/CD、CircleCIのクラウドです。これらから公開するなら、最初にnpm側で設定するだけで、トークンを置かずに公開できます。
 
 これを機に、このウェブサイトで利用していたReactのコンポーネントとhooksをnpmパッケージとして公開してみました。
-[@k8ordo/ui](https://www.npmjs.com/package/@k8ordo/ui)という名前で公開していますので興味があれば覗いてみてください（このサイトから剥がしただけで使いやすい状況になっていません。今後使いやすい形にしていく予定です）。
+[@k8ordo/ui](https://www.npmjs.com/package/@k8ordo/ui)という名前で公開しています。
 
 このパッケージの公開は、[Changesets](https://github.com/changesets/changesets)とGitHub Actionsを利用して行いました。
-この記事ではChangesetsとGitHub Actionsの設定と、設定中に詰まったポイントについて紹介します。GitLabでもOIDCを利用したパッケージの公開ができますが、GitLabについては言及していません。
+この記事ではChangesetsとGitHub Actionsの設定と、設定中に詰まったポイントについて紹介します。GitLab CI/CDとCircleCIについては言及していません。
 
 ## Changesets
 詳しい使い方は[公式のREADME.md](https://github.com/changesets/changesets/blob/main/README.md)やこれを紹介するブログ記事に譲りますが、
@@ -158,7 +159,7 @@ GitHub Actionsの`permissions`で`id-token`に`write`権限を付与する必要
 ドキュメントに大きく書いてありますが、OIDCを利用しないケースでは不要なため、つけ忘れが起きました。
 
 ### npmのバージョン
-`npm`のバージョンが`11.5.1`以上である必要があります。
+`npm`のバージョンが`11.5.1`以上で、Node.jsのバージョンが`22.14.0`以上である必要があります。
 `pnpm`を利用していたので、`npm`のバージョンに無頓着で、GitHub Actions上では10系を用いていたので動きませんでした。
 
 そのため、`npm`のバージョンを最新にする`steps`を追加しました。
@@ -168,7 +169,7 @@ GitHub Actionsの`permissions`で`id-token`に`write`権限を付与する必要
   run: npm install -g npm@latest
 ```
 
-`npm`のバージョンを上げるより良い方法がありそうな気がしているので、あればコメントや[Issue](https://github.com/k35o/k8o/issues/new)などで教えていただきたいです。
+Node.js 22に同梱されるnpmは10系ですが、Node.js 24.5.0以降に同梱されるnpmは11.5.1以上です。Node.js 24.5.0以降を使うなら、npmを入れ直すこのstepは要りません。手元のNode.js 26.13.0では、同梱のnpmは11.20.0でした。
 
 ### package.jsonのrepositoryフィールドの設定
 `package.json`の`repository`フィールドにtypoがあるとリリースが失敗します。
