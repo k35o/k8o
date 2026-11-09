@@ -15,13 +15,13 @@ featureIds:
 
 `fetch()`のレスポンスを少しずつ処理したいとき、これまでは`response.body.getReader()`でリーダーを取り、`read()`が`done: true`を返すまで`while (true)`で回す書き方が定番でした。動きはしますが、ループの終了条件は自分で書く必要があり、途中で抜けるときは`releaseLock()`や`cancel()`の呼び分けも引き受けることになります。
 
-Streams APIの仕様には、`ReadableStream`を非同期イテラブルとして扱う定義が2020年ごろから入っています。Firefox 110とChrome 124が実装したあとも、`for await`で書いたコードがSafariでだけ`TypeError`になる状態が長く続きました。Safari 27の対応により、非同期イテラブルなストリームはBaseline 2026に加わりました。
+Streams APIの仕様には、`ReadableStream`を非同期イテラブルとして扱う定義が2019年から入っています。Firefox 110とChrome 124が実装したあとも、`for await`で書いたコードがSafariでだけ`TypeError`になる状態が長く続きました。Safari 27の対応により、非同期イテラブルなストリームはBaseline 2026に加わりました。
 
 ## リーダーのループを置き換える
 
 `ReadableStream`が非同期イテラブルになったので、`for await...of`にそのまま渡せます。
 
-```ts
+```js
 // [!og]
 // これまで: リーダーを取って done になるまで回す
 const reader = response.body.getReader();
@@ -66,7 +66,7 @@ const reader = stream.getReader();
 
 そこで2つの手当てをします。`TextDecoderStream`を`pipeThrough()`でつないでバイト列を文字列のストリームに変え、行の途中で切れた末尾は次のチャンクに持ち越します。
 
-```ts
+```js
 const response = await fetch('/api/events');
 const texts = response.body.pipeThrough(new TextDecoderStream());
 
