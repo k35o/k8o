@@ -2,11 +2,10 @@
 title: 'Service WorkerでES Modulesのimportを使う'
 description: 'Service Workerを登録するときにtypeをmoduleにすると、sw.jsでimport文が使え、ページと同じモジュールを読み込めます。importScriptsとの違いと、動的importが使えないといった制限を説明します。'
 createdAt: 2026-01-25
-updatedAt: 2026-01-25
+updatedAt: 2026-11-09
 featureIds:
   - js-modules-service-workers
 ---
-
 
 # Service WorkerでES Modulesのimportを使う
 
@@ -14,7 +13,11 @@ featureIds:
 
 ## はじめに
 
-Service Workerで外部モジュールを読み込むには、これまで`importScripts()`を使う必要がありました。
+Service WorkerのES Modules対応は、`navigator.serviceWorker.register()`に`type: 'module'`を渡すと、Service Workerのスクリプトで`import`文を使えるようにするものです。ページと同じESモジュールのファイルを、Service Workerからもそのまま読み込めます。
+
+ビルドツールでService Workerを1つのファイルにまとめているなら、これまでどおりの書き方で足ります。ビルドせずに、ページと同じモジュールをService Workerから読みたいときに`type: 'module'`が要ります。
+
+Service Workerで外部のスクリプトを読み込むには、これまで`importScripts()`を使う必要がありました。
 
 ```js
 // sw.js（従来の方法）
@@ -24,46 +27,61 @@ importScripts('./cache-config.js');
 
 `importScripts()`は読み込んだスクリプトの変数や関数がすべてグローバルスコープに追加されるため、依存関係が不明確になりやすいという課題がありました。
 
-Baseline 2026では、Service Workerの登録時に`type: 'module'`オプションを指定することで、ES Modulesの`import`文が使えるようになりました。
+Baseline 2026で、`type: 'module'`を指定したService Workerが主要なブラウザで使えるようになりました。
 
 ## 使い方
 
 Service Workerの登録時に`type`オプションで`'module'`を指定します。
 
-```js
-// main.js
-navigator.serviceWorker.register('./sw.js', {
-  type: 'module',
-});
+```html title="index.html"
+<!doctype html>
+<script type="module">
+  import { cacheName } from './cache-config.js';
+  console.log(cacheName);
+  navigator.serviceWorker.register('./sw.js', { type: 'module' });
+</script>
 ```
 
 `type`オプションには`'classic'`と`'module'`の2つの値があり、デフォルトは`'classic'`です。
 `'module'`を指定することで、Service Worker内でES Modulesの静的インポートが使えるようになります。
 
-```js
+```js title="sw.js"
 // [!og]
-// sw.js
-
-// ES Modulesのimportが使える！
 import { cacheName, precacheFiles } from './cache-config.js';
-import { handleFetch } from './fetch-handler.js';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(cacheName).then((cache) => {
-      return cache.addAll(precacheFiles);
-    }),
+    caches.open(cacheName).then((cache) => cache.addAll(precacheFiles)),
   );
 });
 
-self.addEventListener('fetch', handleFetch);
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((res) => res ?? fetch(event.request)),
+  );
+});
 ```
+
+ページとService Workerの両方が読む`cache-config.js`は、ふつうのESモジュールです。
+
+```js title="cache-config.js"
+export const cacheName = 'app-v1';
+export const precacheFiles = ['/', '/cache-config.js'];
+```
+
+3つのファイルを同じフォルダに置き、`npx serve`などで配って`http://localhost`から開きます。Service Workerは`https`か`localhost`でしか登録できませんが、`localhost`なら`http`でも登録できます。開くとコンソールに`app-v1`が出て、DevToolsでService Workerが動いていることと、キャッシュ`app-v1`に2つのファイルが入ったことが見えます。Chrome 156とSafari 27.2で、2回目に開いたページがService Workerの制御下に入ることも確かめました。
 
 ES Modulesを使う最大のメリットは、ウェブアプリとService Workerで同じコードを共有できることです。
 `importScripts()`では難しかったコードの再利用が、`import`文によって自然に行えるようになります。
 
 `import()`による動的なインポートはサポートされていないことに注意してください。
-また、`type`を`'module'`に設定すると、`importScripts()`の使用も不可になるので気をつけてください。
+また、`type`を`'module'`に設定すると、`importScripts()`の使用も不可になるので気をつけてください。どちらも呼ぶと`TypeError`になり、メッセージはブラウザで違いました。
+
+- Chrome 156: `import() is disallowed on ServiceWorkerGlobalScope by the HTML specification.`、`Module scripts don't support importScripts().`
+- Safari 27.2: `Dynamic-import is not available in Worklets or ServiceWorkers`、`importScripts cannot be used if worker type is "module"`
+- Firefox 159: `Dynamic import not supported in this context`、`` Using `ImportScripts` inside a Module Worker is disallowed. ``
+
+反対に、`type: 'module'`を付けずに`import`文を書いたService Workerは、3つのブラウザとも登録の時点で`TypeError`になりました。メッセージは、Chrome 156が`ServiceWorker script evaluation failed`、Safari 27.2が`SyntaxError: Unexpected token '{'. import call expects one or two arguments.`でした。また、`import`で読むファイルは、JavaScriptのMIMEタイプで配る必要があります。`text/plain`で返すと、3つのブラウザとも登録に失敗しました。
 
 ## おわりに
 
