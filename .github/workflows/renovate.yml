@@ -9,7 +9,8 @@ on:
     branches: [main]
   issues:
     types: [edited]
-  pull_request_target:
+  # PR のコードは checkout も実行もしない。持ち主が renovate の PR を編集したら Renovate を起こすだけ
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [edited, closed]
   workflow_dispatch:
 

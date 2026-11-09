@@ -10,13 +10,15 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review_comment:
     types: [created]
-  issue_comment:
+  # /pavo で始まるコメントだけで動き、呼び出し先の review.yml がフォークの PR と許可していない bot を弾く
+  issue_comment: # zizmor: ignore[dangerous-triggers]
     types: [created]
 
 jobs:
   pavo:
     if: ${{ github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/pavo') }}
-    uses: k35o/pavo/.github/workflows/review.yml@1ac038aeca27bc50203a18f3c293429214104e1d # main
+    # main を digest で固定する。pavo の main が進んでから Renovate が digest を上げるまでは、コメントの main とずれる
+    uses: k35o/pavo/.github/workflows/review.yml@1ac038aeca27bc50203a18f3c293429214104e1d # main zizmor: ignore[ref-version-mismatch]
     with:
       instructions: default,nextjs,typescript
       extra_prompt: |
