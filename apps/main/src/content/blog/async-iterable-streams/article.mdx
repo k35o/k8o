@@ -1,13 +1,13 @@
 ---
-title: 'ReadableStreamをfor await...ofで読む'
-description: 'ReadableStreamが非同期イテラブルになり、for await...ofでチャンクを順に読めるようになりました。getReader()とread()のループとの違い、途中で抜けるとストリームがキャンセルされる既定の挙動とpreventCancelでの回避、fetchのレスポンスを行単位で処理する例を扱います。'
+title: 'ReadableStreamをfor awaitで少しずつ読む'
+description: 'ReadableStreamをfor await...ofに渡すと、fetchのレスポンスを届いた分から順に読めます。getReader()のループとの違いと、途中で抜けるとキャンセルされる動き、行ごとに処理する例も説明します。'
 createdAt: 2026-09-25
 updatedAt: 2026-09-25
 featureIds:
   - async-iterable-streams
 ---
 
-# ReadableStreamをfor await...ofで読む
+# ReadableStreamをfor awaitで少しずつ読む
 
 <BrowserSupportStatus featureId="async-iterable-streams" />
 
