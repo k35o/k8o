@@ -15,8 +15,11 @@ import sample from './_images/sample.avif';
 
 ## はじめに
 
+`contenteditable`は、付けた要素の中身をページの上でそのまま編集できるようにするHTMLのグローバル属性です。値を`plaintext-only`にすると、貼り付けた書式や太字などの装飾を受け付けず、テキストだけを編集させられます。
+
+フォームに文字を入力させるだけなら、`textarea`や`input`で足ります。`contenteditable`が要るのは、見出しや段落のようなページの中の要素を、その見た目のまま編集させたいときです。`contenteditable="true"`では貼り付けた書式も入るため、テキストだけに限るには`paste`イベントで書式を落とす処理を書いていました。`plaintext-only`なら、属性だけでテキストに限れます。
+
 Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`を渡せるようになったことで、2025年のBaselineに`contenteditable="plaintext-only"`が追加されました。
-`contenteditable="plaintext-only"`を付与された要素は、その要素のテキストのみを編集可能にすることができます。
 
 <LinkCard href="https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable" />
 
@@ -40,8 +43,8 @@ Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`�
   </div>
 </Playground>
 
-上記のサンプルで「ここを編集できます」と記述された部分を選択すると、内容が変更可能であることがわかると思います。
-サンプルの上部に書かれた「div要素にcontenteditable="true"を付与したサンプル」をコピーして貼り付けると、対象のテキストに加えて背景色と太字もそのままの状態で反映されることが確認できます。
+上記のサンプルの文字を選択すると、内容が変更可能であることがわかると思います。
+サンプルの上部に書かれた題をコピーして貼り付けると、対象のテキストに加えて背景色と太字もそのままの状態で反映されることが確認できます。
 
 単純な文字の他にも、下の画像のようにBaselineの埋め込み要素をそのまま貼り付けることも可能です(この画像自体も反映できます)。
 
@@ -80,8 +83,24 @@ Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`�
 </Playground>
 
 上記は先ほどのサンプルと同じ条件で、値を`plaintext-only`に変更したものです。
-「div要素にcontenteditable="plaintext-only"を付与したサンプル」をコピーして貼り付けを行うと、テキストだけが追加されることが確認できます。背景やフォントの太さは反映されません。
+サンプルの上部の題をコピーして貼り付けを行うと、テキストだけが追加されることが確認できます。背景やフォントの太さは反映されません。
 これが`plaintext-only`の特徴です。`true`を付与したときと異なり、テキストのみを編集可能にするので、実装上で考慮するケースが少なくなります。
+
+書式を付けるコマンドも効きません。Chrome 156、Safari 27.2、Firefox 159で、選んだ文字に`document.execCommand('bold')`を実行すると、`true`では`<b>`で囲まれ、`plaintext-only`では`false`が返って何も変わりませんでした。`insertHTML`のコマンドで`<b>太字</b>`を入れても、`plaintext-only`ではタグが落ちて文字だけが入ります。
+
+編集した値を読むときは、`textContent`ではなく`innerText`を使います。`plaintext-only`の要素でも、改行のコマンドによっては`<br>`や`<div>`の要素が入るからです。改行を入れる`insertLineBreak`のコマンドを実行すると、Chrome 156では`\n`の文字が、Safari 27.2とFirefox 159では`<br>`が入りました。`<br>`が入ると`textContent`からは改行が消えますが、`innerText`ならどのブラウザでも改行を`\n`で取れました。
+
+```html
+<h1 contenteditable="plaintext-only" id="title">記事のタイトル</h1>
+```
+
+```js
+document.querySelector('#title').addEventListener('input', (event) => {
+  console.log(event.currentTarget.innerText);
+});
+```
+
+入力のたびに、改行を`\n`にした値がコンソールに出ます。
 
 ## おわりに
 これまでは、`contenteditable`を利用する際には、リッチテキストのスタイルが付与されることを考慮して実装を行う必要がありました。
