@@ -65,7 +65,7 @@ export const Primary = {
 
 戻り値が`HTMLElement`の場合、html-viteは中身に触らずその要素をcanvasに差し込むだけなので、`hono/jsx/dom`のランタイムが生きたまま保たれます。`useState`もイベントハンドラも動き、単一storyのinteraction testであれば通せます。
 
-ただし`hono/jsx/dom`には`unmount` APIが存在せず、`render`は`void`を返します。Storybookが古いhostをcanvasから外しても、`hono/jsx/dom`側はそれを検知できず、実行中の`useEffect`のcleanupは呼ばれません。argsが変わるたびに新しいhostを作り直す方式では、古いhostに紐付いたeffectsが残留してしまい、`useEffect`でリスナやタイマーを貼るコンポーネントでは静かに漏れていきます。
+ただし`hono/jsx/dom`の`render`は`void`を返し、描いたものを外す手段を持ちません。Storybookが古いhostをcanvasから外しても、`hono/jsx/dom`側はそれを検知できず、実行中の`useEffect`のcleanupは呼ばれません。argsが変わるたびに新しいhostを作り直す方式では、古いhostに紐付いたeffectsが残留してしまい、`useEffect`でリスナやタイマーを貼るコンポーネントでは静かに漏れていきます。`hono/jsx/dom/client`の`createRoot`なら`unmount`を持つRootを返しますが、html-viteの`render`関数には、hostを外すときに`unmount`を呼ぶ場所がありません。
 
 さらにdecoratorと組み合わせると、storyが返す`HTMLElement`をdecorator側で受け取ってラップする必要が出てきます。html-viteのdecoratorは`HTMLElement | string`を返す想定なので、Hono JSXで`<div><Story /></div>`のように宣言的に包むことができず、`document.createElement`で作ったwrapperに`appendChild`で差し込む、あるいはwrapper自体もHono JSXで別hostにマウントしてさらに入れ子にする、といった手続き的な組み立てが必要になります。decoratorの利点が薄れ、host要素の入れ子管理の手間が増えます。
 
@@ -149,7 +149,7 @@ const meta = {
 } satisfies Meta<typeof Counter>;
 ```
 
-interaction testとa11yチェックをVitest経由で回す場合は、`vitest.config.ts`に`@storybook/addon-vitest`のプラグインを仕込みます。Vitestのbrowser modeでstoryを実際のブラウザ上に立ち上げ、play関数を実行する構成です。ここもReact系で書いていたVitest構成と差はありません。以下はPlaywrightのproviderを使う例です。
+interaction testとa11yチェックをVitest経由で回す場合は、`vitest.config.ts`に`@storybook/addon-vitest`のプラグインを仕込みます。Vitestのbrowser modeでstoryを実際のブラウザ上に立ち上げ、play関数を実行する構成です。ここもReact系で書いていたVitest構成と差はありません。以下はPlaywrightのproviderを使う例です。ブラウザのコンテキストの設定（ここでは`reducedMotion`）は`playwright()`の`contextOptions`に渡します。
 
 ```ts
 import { fileURLToPath } from 'node:url';
@@ -168,19 +168,18 @@ export default defineConfig({
     browser: {
       enabled: true,
       headless: true,
-      provider: playwright(),
-      instances: [
-        {
-          browser: 'chromium',
-          context: {
-            reducedMotion: 'reduce',
-          },
+      provider: playwright({
+        contextOptions: {
+          reducedMotion: 'reduce',
         },
-      ],
+      }),
+      instances: [{ browser: 'chromium' }],
     },
   },
 });
 ```
+
+Vitest 5.0.5では、`instances`の要素に`context`を書くと型エラーになり、実行しても使われません。手元でplay関数から`matchMedia('(prefers-reduced-motion: reduce)').matches`を出すと、`instances`の`context`に書いたときは`false`、`contextOptions`に書いたときは`true`でした。
 
 これで、Hono JSXで書いたコンポーネントを`@storybook/react-vite`と同じ感覚でStorybookで確認・テストできます。`useState`を含むインタラクティブな挙動もそのまま動き、interaction testとa11yチェックをVitest経由で回せます。
 
