@@ -1,13 +1,13 @@
 ---
-title: 'Top-level awaitでモジュールの評価を非同期処理の完了まで待たせる'
-description: 'Top-level awaitは、ESモジュールのトップレベルでawaitを書けるようにする構文です。Chrome 89とFirefox 89では2021年から使えていましたが、Safariに残っていた不具合がSafari 27で解消され、Baseline 2026に加わりました。モジュールグラフの評価がどう変わるか、使いどころと避けるべき場面はどこかを整理します。'
+title: 'Top-level awaitでasync関数の外にawaitを書く'
+description: 'Top-level awaitは、ESモジュールのトップレベルでawaitを書ける構文です。設定の取得やWebAssemblyの初期化を待ってから値をexportできます。循環参照やService Workerでの注意点も説明します。'
 createdAt: 2026-09-26
 updatedAt: 2026-09-26
 featureIds:
   - top-level-await
 ---
 
-# Top-level awaitでモジュールの評価を非同期処理の完了まで待たせる
+# Top-level awaitでasync関数の外にawaitを書く
 
 <BrowserSupportStatus featureId="top-level-await" />
 
