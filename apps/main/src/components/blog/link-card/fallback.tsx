@@ -12,18 +12,15 @@ export const LinkCardFallback: FC<{
   <div className={styles.root}>
     <Card interactive variant={variant}>
       <a
-        aria-label={href}
         className={styles.link}
         href={href}
         rel="noopener noreferrer"
         target="_blank"
       >
-        <div className={styles.body}>
-          <p className={styles.title}>{href}</p>
-          <div className={styles.host}>
-            <ExternalLinkIcon size="sm" />
-            <p>{new URL(href).hostname}</p>
-          </div>
+        <p className={styles.title}>{href}</p>
+        <div className={styles.host}>
+          <ExternalLinkIcon size="sm" />
+          <p>{new URL(href).hostname}</p>
         </div>
       </a>
     </Card>

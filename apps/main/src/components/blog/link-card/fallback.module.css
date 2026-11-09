@@ -5,22 +5,17 @@
 }
 
 .link {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
   height: 100%;
+  padding: calc(var(--spacing) * 4);
 
   @media (hover: hover) {
     &:hover .title {
       color: var(--color-primary-fg);
     }
   }
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-  height: 100%;
-  padding: calc(var(--spacing) * 4);
 }
 
 .title {
