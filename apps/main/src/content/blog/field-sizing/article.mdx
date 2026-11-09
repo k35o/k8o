@@ -13,9 +13,17 @@ featureIds:
 
 ## はじめに
 
-`input`や`textarea`は、入力内容の量に関わらず最初に決めた幅や高さのまま表示されます。テキストエリアを入力に合わせて伸ばしたいときは、`scrollHeight`を読んで`height`を書き換えるようなJavaScriptをよく書いてきました。
+`field-sizing`は、`input`や`textarea`、`select`の大きさを、入力された内容に合わせて伸び縮みさせるかを決めるCSSプロパティです。`field-sizing: content`を指定すると、改行するたびに`textarea`の高さが伸び、文字を打つたびに`input`の幅が広がります。
 
-`field-sizing`プロパティを使うと、こうしたフォームコントロールのサイズを入力内容にフィットさせる挙動をCSSだけで指定できます。Chromeでは先行して使えていましたが、Safari 26.2とFirefox 152が対応したことでBaseline 2026に加わりました。
+大きさが決まっていてよい入力欄なら、今までどおり`width`や`rows`で決めれば足ります。入力に合わせて伸ばしたいときは、これまで`input`イベントで`scrollHeight`を読んで`height`を書き換えるJavaScriptが要りました。`field-sizing: content`なら、その処理をCSSだけで書けます。
+
+Chromeでは先行して使えていましたが、Safari 26.2とFirefox 152が対応したことでBaseline 2026に加わりました。
+
+## デモ
+
+<PlaygroundEmbed demo="field-sizing: contentの挙動" headingLevel="h4" sectionId="field-sizing" />
+
+`content`のまま、テキストエリアで改行すると高さが伸び、セレクトボックスで選択肢を選ぶと幅がその選択肢に合います。`fixed`に切り替えると、どのコントロールも入力に関わらず大きさが変わらなくなります。
 
 ## field-sizingの値
 
@@ -44,7 +52,7 @@ input {
 - `textarea`
 - `select`
 
-`textarea`は単一行のテキスト入力に近い挙動になり、幅の制約に達すると今度は高さ方向に行が増え、高さの制約にも達するとスクロールバーが出ます。`select`はドロップダウンなら選択中の選択肢の幅にフィットし、`multiple`属性付きのリストボックスならスクロールせずに全選択肢が見える高さになります。
+`textarea`は単一行のテキスト入力に近い挙動になり、幅の制約に達すると今度は高さ方向に行が増え、高さの制約にも達するとスクロールバーが出ます。`select`はドロップダウンなら選択中の選択肢の幅にフィットし、`multiple`属性付きのリストボックスならスクロールせずに全選択肢が見える高さになります。Chrome 156、Safari 27.2、Firefox 159で選択肢が7つの`multiple`の`select`を比べると、`fixed`では4つ分ほどの高さだったのが、`content`では7つすべてが見える高さになりました。
 
 `file`の`input`は、手元で試すとブラウザによって結果が分かれました。Chrome 156では`content`にすると選んだファイル名に合わせて幅が変わり、Safari 27.2では`content`にしても幅が変わりません。Firefox 159では`fixed`のままでもファイル名に合わせて幅が変わります。今のところ、`file`の`input`の幅は`field-sizing`ではブラウザ間で揃いません。
 
@@ -86,19 +94,13 @@ textarea {
 
 ## 属性との関係
 
-`field-sizing: content`を指定すると、サイズに関わる一部の属性は意味を持たなくなります。`input`の`size`、`textarea`の`rows`・`cols`はいずれも既定の推奨サイズを決める属性なので、サイズが内容に追従する`content`では効きません。
+`field-sizing: content`を指定すると、サイズに関わる一部の属性は意味を持たなくなります。`input`の`size`、`textarea`の`rows`・`cols`はいずれも既定の推奨サイズを決める属性なので、サイズが内容に追従する`content`では効きません。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`rows="8"`の`textarea`は空のとき1行分の高さになり、`size="40"`の`input`も空のときは数pxの幅まで縮みました。
 
 伸びる上限を内容側から決めたいときは`maxlength`が使えます。文字数の上限に達するとコントロールはそれ以上大きくなりません。
 
 ```html
 <input type="tel" maxlength="15" />
 ```
-
-## デモ
-
-`field-sizing`を`content`と`fixed`に切り替えながら、各コントロールに入力してサイズの変化を確かめられます。テキストエリアは行を増やすと高さが伸び、セレクトボックスは選んだ選択肢に幅が合います。
-
-<PlaygroundEmbed demo="field-sizing: contentの挙動" headingLevel="h4" sectionId="field-sizing" />
 
 ## おわりに
 
