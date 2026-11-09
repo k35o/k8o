@@ -7,9 +7,6 @@ runs:
     - name: Setup mise
       uses: jdx/mise-action@v5.2.5 # zizmor: ignore[unpinned-uses] $/ で呼ぶワークフローの actions.lock がコミットを固定する
       with:
-        # 書かないと実行のたびに最新の mise を落とし、出たばかりの版の配布物が壊れていると全部の CI が落ちる。
-        # Renovate が出てから 7 日経った版に上げる
-        version: 2026.11.4
         cache: true
 
     - name: Install dependencies
