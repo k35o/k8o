@@ -197,7 +197,7 @@ export const Primary = {
 
 ただし`hono/jsx/dom`の`render`は`void`を返し、描いたものを外す手段を持ちません。Storybookが古いhostをcanvasから外しても、`hono/jsx/dom`側はそれを検知できず、実行中の`useEffect`のcleanupは呼ばれません。argsが変わるたびに新しいhostを作り直す方式では、古いhostに紐付いたeffectsが残留してしまい、`useEffect`でリスナやタイマーを貼るコンポーネントでは静かに漏れていきます。`hono/jsx/dom/client`の`createRoot`なら`unmount`を持つRootを返しますが、html-viteの`render`関数には、hostを外すときに`unmount`を呼ぶ場所がありません。
 
-さらにdecoratorと組み合わせると、storyが返す`HTMLElement`をdecorator側で受け取ってラップする必要が出てきます。html-viteのdecoratorは`HTMLElement | string`を返す想定なので、Hono JSXで`<div><Story /></div>`のように宣言的に包むことができず、`document.createElement`で作ったwrapperに`appendChild`で差し込む、あるいはwrapper自体もHono JSXで別hostにマウントしてさらに入れ子にする、といった手続き的な組み立てが必要になります。decoratorの利点が薄れ、host要素の入れ子管理の手間が増えます。
+さらにdecoratorと組み合わせると、storyが返す`HTMLElement`をdecorator側で受け取ってラップする必要が出てきます。html-viteのdecoratorは`HTMLElement | string`を返す想定なので、Hono JSXで`<div><Story /></div>`のように宣言的に包むことができません。`document.createElement`で作ったwrapperに`appendChild`で差し込むか、wrapper自体もHono JSXで別hostにマウントしてさらに入れ子にするといった、手続き的な組み立てが必要になります。decoratorの利点が薄れ、host要素の入れ子管理の手間が増えます。
 
 #### どちらもstory側にボイラープレートが要る
 
