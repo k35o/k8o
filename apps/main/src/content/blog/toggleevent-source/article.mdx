@@ -2,7 +2,7 @@
 title: ToggleEvent.sourceでポップオーバーを開いた要素を特定する
 description: ToggleEvent.sourceはBaseline 2026で追加された、toggle / beforetoggleイベントに発火元の要素を載せて渡すプロパティです。同じポップオーバーを複数のボタンから開くケースで、どのボタンから開かれたかをリスナー側で素直に判定できます。
 createdAt: 2026-05-23
-updatedAt: 2026-05-23
+updatedAt: 2026-11-09
 featureIds:
   - toggleevent-source
 ---
@@ -23,11 +23,13 @@ Popover APIや`<details>`、`<dialog>`では、開閉のたびに`beforetoggle` 
 
 ### `source`に何が入るか
 
-`source`にはイベントを引き起こした呼び出し元が入ります。呼び出し元として拾われるのは次の3パターンで、開く方向でも閉じる方向でも同じです。
+`source`にはイベントを引き起こした呼び出し元が入ります。呼び出し元として拾われるのは次の3パターンです。
 
 - `popovertarget`属性を持つボタン
 - `commandfor` + `command="show-popover"` / `"hide-popover"` / `"toggle-popover"`が指定されたボタン
 - スクリプトから`showPopover({ source })` / `togglePopover({ source })`の`source`オプションで渡した要素
+
+ボタンの2つは、開く方向でも閉じる方向でも押したボタンが入ります。`togglePopover({ source })`で閉じたときは、Chrome 156とFirefox 159では`null`、Safari 27.2では渡した要素が入りました。
 
 ### `source`が`null`になるケース
 
