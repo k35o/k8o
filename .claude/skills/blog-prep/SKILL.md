@@ -60,7 +60,9 @@ featureIds:
 
 {/* ここに記事の内容を執筆する */}
 
-<PlaygroundEmbed demo="デモタイトル" sectionId="my-feature" />
+## セクション
+
+<PlaygroundEmbed demo="デモタイトル" headingLevel="h4" sectionId="my-feature" />
 ```
 
 - 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/components/blog/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる
@@ -69,6 +71,7 @@ featureIds:
 - `<LinkCard href="..." />` を足したら、`pnpm run -F main generate:link-card-metadata` を流し、更新された `apps/main/src/content/link-card-metadata.json` もコミットする。カードはこの JSON の OGP で描き、ビルドではリンク先へ取りに行かない。流し忘れは `features/blog/application/article-files.test.ts` が落とす。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出る URL（`http://` や OGP を持たないページ）は `{}` のままでよい。`--refresh` は使わない
 - `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない
 - `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、`<PlaygroundEmbed>` を書かない
+- `<PlaygroundEmbed>` と `<Playground>` の `headingLevel` には、置いた節の見出しの一つ下の段を書く。`##` は h3 で描かれるので、`##` の節の中は `h4`、`###` の中は `h5`、`####` の中は `h6`、最初の `##` より前は `h3`。書き忘れと段の取り違えは `components/site/mdx-base/article-outline.test.ts` が落とす
 - OGP画像には記事のタイトルが入る。コードが主役の記事では、載せたいコードブロックの1つに `// [!og]` を書くと、そのコードも描かれる
 
 ### 2. 数式（KaTeX）を使う記事

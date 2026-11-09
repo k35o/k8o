@@ -2,7 +2,6 @@ import { fmt, nextjs, test, TEST_GLOBS } from '@k8o/oxc-config';
 import { defineConfig } from 'vite-plus';
 
 const ignorePatterns = [
-  '.agents/**',
   '**/mockServiceWorker.js',
   '**/migrations/meta/**',
   '**/public/**',

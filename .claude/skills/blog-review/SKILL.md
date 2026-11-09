@@ -83,7 +83,7 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 ## ブログ固有2: frontmatter整合性
 
-`packages/helpers/src/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BrowserSupportStatus>`の一致は慣習なので人手で確認する。
+`apps/main/src/shared/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BrowserSupportStatus>`の一致は慣習なので人手で確認する。
 
 | フィールド | 必須 | チェック |
 |-----------|:----:|---------|
@@ -101,8 +101,8 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 | コンポーネント | 主なprops |
 |---------------|-----------|
 | `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
-| `PlaygroundEmbed` | `sectionId`（必須。`apps/main/src/playgrounds/<id>/`のディレクトリ名＝セクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
-| `Playground` | `title`（必須）。子にデモ |
+| `PlaygroundEmbed` | `sectionId`（必須。`apps/main/src/playgrounds/<id>/`のディレクトリ名＝セクションの`id`） / `headingLevel`（必須。置いた節の一つ下の段） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
+| `Playground` | `title`（必須） / `headingLevel`（記事の中では必須。置いた節の一つ下の段）。子にデモ |
 | `LinkCard` | `href`（必須） / `variant?` |
 | `Image` / `FloatImage` | `src`・`alt`・`width`・`height`（すべて必須。width と height は画像の縦横比に合わせる） / `loading?` |
 | `Alert` | `tone`（`warning`等） / `message` |
@@ -115,11 +115,11 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 
 > 見出しの**中身**（具体性・オチにしない・二要素を詰め込まない）は `/writing-review`（整合性・流れ）で見る。ここは MDX 描画に絡む**階層**とリンク・画像・テーブル。
 
-- **見出し階層**: `# H1`は記事タイトルの1つだけ（非表示）。実セクションは`##`から。階層を飛ばさない（`##`の次に`####`を置かない）。同名見出しの重複に注意（アンカーID衝突）。
+- **見出し階層**: `# H1`は記事タイトルの1つだけ（非表示）。実セクションは`##`から。階層を飛ばさない（`##`の次に`####`を置かない）。同名見出しの重複に注意（アンカーID衝突）。`<Playground>`・`<PlaygroundEmbed>`の`headingLevel`が置いた節の一つ下の段か（`##`の中は`h4`、`###`の中は`h5`、`####`の中は`h6`、最初の`##`より前は`h3`）。抜けと取り違えは`components/site/mdx-base/article-outline.test.ts`が落とす。
 - **テーブルは使わない**（要修正）: markdownテーブル（`| … | … |`）は**横スクロールに弱く、特にモバイルや縦書き表示で崩れる**。本文では使わず、箇条書き・段落・定義（`用語：説明`）、または必要なら画像（`<Image>`）で代替する。機械検出は機械コマンド(4)。
 - **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。`<LinkCard>`を足したら`pnpm run -F main generate:link-card-metadata`を流したか（抜けは`features/blog/application/article-files.test.ts`が落とす）。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出るURL（`http://`やOGPを持たないページ）は`{}`のままでよい。`--refresh`は使わない。
 - **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。`_images/`の画像が`pnpm run -F main optimize:image`で変換したAVIFか。width と height の縦横比は`features/blog/application/article-files.test.ts`が確かめる。
-- **数式（KaTeX）**: 数式を使う記事が`import '@repo/mdx-preset/katex.css';`を持つことは`features/blog/application/article-files.test.ts`が確かめる。`pnpm run test --filter=main -- --project="features test"`が通ることを確かめる。
+- **数式（KaTeX）**: 数式を使う記事が`import '@repo/mdx-preset/katex.css';`を持つことは`features/blog/application/article-files.test.ts`が確かめる。`pnpm run test --filter=main -- --project="features test" --project="components test"`が通ることを確かめる。
 
 ## レポート形式
 
@@ -162,5 +162,5 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 - [ ] ブログ固有1: `@repo/code-highlight`の活用（言語・`[!og]`較正・`[!hl]`/`[!callout:]`）
 - [ ] ブログ固有2: frontmatter整合性（必須キー・`featureIds`⇔`BrowserSupportStatus`）
 - [ ] ブログ固有3: MDXコンポーネントのprops（importしない。MCP不在時は型定義/docsで確認）
-- [ ] ブログ固有4: 見出し階層・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`が通る
+- [ ] ブログ固有4: 見出し階層（Playgroundの`headingLevel`含む）・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`と`article-outline.test.ts`が通る
 - [ ] 文章面とブログ固有を統合し、重要度つきレポートを出力した（ファイルは変更していない）
