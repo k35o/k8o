@@ -15,14 +15,21 @@ import '@repo/mdx-preset/katex.css';
 
 ## はじめに
 
-Webページで数式を表示する際、適切なフォントがないと正しく表示されないことがあります。
-上付き文字（$x^2$）や下付き文字（$a_n$）、分数（$\frac{a}{b}$）、積分記号（$\int$）など、数学特有の表現には専用のグリフが必要です。
+`font-family: math`は、数式の描画に向いたフォントをブラウザに選ばせる一般フォントファミリーです。MathMLの`<math>`要素には既定でこれが当たり、OSに入っている数式用フォントで分数や添字が組まれます。
 
-CSSではBaseline 2026より、`font-family`プロパティとして`math`を指定することで数式を適切に表示できるようになりました。
+上付き文字（$x^2$）や下付き文字（$a_n$）、分数（$\frac{a}{b}$）、積分記号（$\int$）など、数学特有の表現には専用のグリフが必要です。KaTeXやMathJaxで数式を描くなら、それぞれが自前のフォントを持つので、この指定は要りません。ブラウザがMathMLで描く式や、x²のようにUnicodeの記号で書いた式に数式用フォントを使うには、これまで`Cambria Math`や`STIX Two Math`のようにOSごとのフォント名を並べていました。`math`と書けば、その環境にある数式用フォントをブラウザが選びます。
+
+Chrome 109で先に使えており、Safari 26.2とFirefox 149が対応してBaseline 2026に加わりました。
+
+## デモ
+
+<PlaygroundEmbed demo="font-family: mathプロパティ" headingLevel="h4" sectionId="font-family-math" />
+
+チェックを外して`sans-serif`にすると、macOSのChrome 156では1行の中で字ごとにフォントが変わります。ℕ・ℤ・ℝはMenlo、ℚ・ℂはHelvetica、⊂はApple Symbolsで描かれました。`math`のままなら、aₙのₙだけがシステムのフォント（.SF NS）になり、ほかの字はSTIX Two Mathで描かれました。
 
 ## font-family: mathとは
 
-`math`は、数式の描画に向いたフォントを選ばせる一般フォントファミリーです。選ばれるのは、OpenTypeのMATHテーブルを持つフォントです。MATHテーブルには、次のような表現に要る字形や、添字をずらす量といった寸法が入っています。ブラウザはMathMLの数式を、この寸法を使って組みます。
+`math`に選ばれるのは、OpenTypeのMATHテーブルを持つフォントです。MATHテーブルには、次のような表現に要る字形や、添字をずらす量といった寸法が入っています。ブラウザはMathMLの数式を、この寸法を使って組みます。
 
 - 上付き文字・下付き文字: $x^2$や$a_n$などの指数や添字
 - 複数行にまたがる括弧: $$\left( \frac{a}{b} \right)$$
@@ -36,7 +43,7 @@ CSSではBaseline 2026より、`font-family`プロパティとして`math`を指
 
 ## 使い方
 
-一般フォントファミリーなので、フォントの読み込み指定は不要で、以下のように指定するだけで使用できます。
+一般フォントファミリーなので、フォントを読み込む指定は要りません。x²のようにUnicodeの記号で書いた式を入れる要素に、次のように指定します。
 
 ```css
 /* [!og] */
@@ -84,22 +91,16 @@ CSSではBaseline 2026より、`font-family`プロパティとして`math`を指
 </math>
 ```
 
+上の`<math>`に`font-family: sans-serif`を当てると、MATHテーブルの無いフォントで組まれます。文字サイズ60pxで比べると、Chrome 156では積分記号が大きくならず、式の高さが164pxから106pxに縮みました。Safari 27.2でも164pxから112pxに縮みました。Firefox 159は積分記号を大きく描いたままで、数字と文字の形だけが変わりました。
+
 ## 使われるフォント
 
 `font-family: math`を指定すると、ブラウザが数式表示に適したフォントを自動的に選択します。
-`serif`を指定したときに明朝体が選ばれるのと同じ仕組みです（実際に選ばれるフォントは環境によって異なります）。
+`serif`を指定したときに明朝体が選ばれるのと同じ仕組みです。
 
 どのフォントが選ばれるかはブラウザとOSの組み合わせによって異なります。
 macOS 27.2では、Chrome 156、Safari 27.2、Firefox 159のいずれでも、OSに入っている`STIX Two Math`が選ばれました。文字の幅が`font-family: "STIX Two Math"`と一致し、Chrome 156の開発者ツールでも描画に使われたフォントはSTIX Two Mathでした。Windowsには数式用の`Cambria Math`が入っています。
 
-## デモ
-
-<PlaygroundEmbed demo="font-family: mathプロパティ" headingLevel="h4" sectionId="font-family-math" />
-
 ## おわりに
 
-`font-family: math`を紹介しました。
-
-`font-family`を`math`にするだけで、数式に適切なフォントが適用され、見やすく美しい表示が可能になる便利な機能です。
-
-数式を簡単に表示する際はぜひ活用してみてください。
+`font-family: math`は、その環境にある数式用フォントをブラウザに選ばせる一般フォントファミリーです。MathMLの`<math>`には既定で当たっているので、MathMLで書いた式はそのままでSTIX Two Mathのような数式用フォントで組まれます。x²のようにUnicodeの記号で書いた式も、`math`を指定すれば字の形がそろいます。KaTeXやMathJaxで描く式は、それぞれのフォントを使うので指定は要りません。
