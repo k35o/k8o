@@ -13,9 +13,20 @@ featureIds:
 
 ## はじめに
 
-2025年のBaselineに`Promise.try`が追加されました。`Promise.try`は同期的な関数と非同期的な関数を区別せずに手続きを進めさせるメソッドです。
+`Promise.try`は、渡した関数をその場で呼び、結果を`Promise`に包んで返すメソッドです。関数が同期的に例外を投げても、返した`Promise`が拒否されても、`catch`で受け取れます。2025年にBaselineに入りました。
 
 <LinkCard href="https://github.com/tc39/proposal-promise-try" />
+
+`async`関数の中なら、`await fn()`を`try...catch`で囲めば、同期の例外も拒否も受け取れます。`Promise.try`が要るのは、`then`と`catch`をつなぐ書き方で、同期的に例外を投げるかもしれない関数を扱うときです。`Promise.resolve(fn())`では同期の例外が`catch`に届かず、`Promise.resolve().then(fn)`では`fn`の呼び出しが後回しになります。
+
+```js
+const parse = (text) => JSON.parse(text);
+
+Promise.try(parse, '{').catch((error) => console.log('catchで受け取った', error.name));
+Promise.resolve(parse('{')).catch((error) => console.log('catchで受け取った', error.name));
+```
+
+コンソールに貼ると、`Promise.try`の行は`catchで受け取った SyntaxError`を出し、`Promise.resolve`の行は`catch`に届かずに`Uncaught SyntaxError`になります。Chrome 156、Safari 27.2、Firefox 159のどれでも同じでした。
 
 この記事では`Promise.try`の使い方と、有効な場面について解説します。
 
@@ -86,6 +97,8 @@ TypeScriptでは`Promise.try`の型が以下の様に定義されているので
 try<T, U extends unknown[]>(callbackFn: (...args: U) => T | PromiseLike<T>, ...args: U): Promise<Awaited<T>>;
 ```
 
+TypeScript 7.0.2では、`lib`に`es2025`か`esnext`を指定するとこの型が使えます。`es2024`のままでは、`Property 'try' does not exist on type 'PromiseConstructor'`のエラーになりました。
+
 ## Promise.tryが使えない場合
 
 `Promise.try`が使えない時代では、`Promise.try`と同じことをするために`new Promise`を用いて以下のように実装されていました。
@@ -137,10 +150,10 @@ console.log(readFileWithCache('path/to/file')); // 初回はPromise {<pending>}�
 console.log(Promise.try(() => readFileWithCache('path/to/file'))); // 何回目でもPromise
 ```
 
-この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、Promise.tryを活用することで、同期・非同期を意識せず統一的に扱えるメリットがよく分かるのではないでしょうか。
+この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、`Promise.try`を活用することで、同期・非同期を意識せず統一的に扱えるメリットがよく分かるのではないでしょうか。
 適切に活用することで、コードの可読性や保守性を向上させることができます。
 
 ## おわりに
-`Promise.try`の登場で、同期的な値を返すか非同期的な値を返すかを気にせずに関数の結果を扱えるようになりました。
+`Promise.try`の登場で、同期的な値を返すか非同期的な値を返すかを気にせずに関数の結果を扱えるようになりました。同期的に投げられた例外も、`catch`で受け取れます。
 
 同期・非同期が混在する関数を扱う際には、`Promise.try`を活用してコードの可読性と保守性を向上させましょう。
