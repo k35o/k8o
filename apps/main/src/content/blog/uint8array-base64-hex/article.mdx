@@ -93,7 +93,7 @@ console.log(new Uint8Array(digest).toHex()); // "2cf24dba5fb0a30e26e83b2ac5b9e29
 `btoa("あいう")`は、Chrome 156、Safari 27.2、Firefox 159のどれでも`InvalidCharacterError`になりました。
 
 ## 追加された機能
-先ほど紹介した`fromBase64`、`fromHex`、`toBase64`、`toHex`に加えて、既存の`Uint8Array`に対してデータを設定するための`setFromBase64`と`setFromHex`も追加されました。
+先ほど紹介した`fromBase64`・`fromHex`・`toBase64`・`toHex`に加えて、既存の`Uint8Array`に対してデータを設定するための`setFromBase64`と`setFromHex`も追加されました。
 
 それぞれの機能について以下で詳しく説明します。
 
