@@ -2,7 +2,7 @@
 title: 'Import AttributesでJSONをimportする'
 description: 'importにwith { type: "json" }を付けると、JSONファイルをオブジェクトとして読み込めます。ブラウザとNode.jsで同じ書き方ができ、JSON以外は実行せずにエラーにします。Baseline 2025で使えます。'
 createdAt: 2025-05-21
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - json-modules
 ---
@@ -14,8 +14,9 @@ import styles from './article.module.css';
 <BrowserSupportStatus featureId="json-modules"></BrowserSupportStatus>
 
 ## はじめに
-ESMモジュールのインポート時に、`with`キーワードを利用してJSONモジュールをインポートする機能がBaseline 2025に追加されました。
-この機能を利用することで、JSONファイルを安全にインポートし、JavaScriptコード内で直接利用できるようになります。
+JSONモジュールは、`import`に`with { type: 'json' }`を付けて、JSONファイルをJavaScriptのオブジェクトとして読み込む仕組みです。`with`以降をImport Attributesと呼び、Baseline 2025で使えるようになりました。
+
+読むたびにサーバーから最新の内容を取り直すなら、これまでどおり`fetch()`と`response.json()`で足ります。JSONモジュールは、同じURLを何度インポートしても最初に読んだオブジェクトを返します。設定や辞書のように、コードと一緒に読み込んで`await`なしで使いたいJSONを、ブラウザでもNode.jsでも同じ`import`文で読めるのがJSONモジュールです。
 
 この記事では、機能の元となるImport Attributeの概要と、JSON Import Attributeの使い方について解説します。
 
@@ -23,11 +24,20 @@ ESMモジュールのインポート時に、`with`キーワードを利用し�
 
 Import Attributeは、ESMモジュールのインポート時に、モジュールの形式に関する情報をランタイムに伝えるための属性です。
 
-```ts
-// [!og]
-import json from './data.json' with { type: 'json' };
-import('./data.json', { with: { type: 'json' } });
+```json title="data.json"
+{ "name": "k8o", "tags": ["css", "js"] }
 ```
+
+```js title="main.mjs"
+// [!og]
+import data from './data.json' with { type: 'json' };
+console.log(data.name); // k8o
+
+const { default: sameData } = await import('./data.json', { with: { type: 'json' } });
+console.log(sameData === data); // true
+```
+
+2つのファイルを同じフォルダに置き、`node main.mjs`を実行すると`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。Node.js 26.13.0では、`with { type: 'json' }`を外すと`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーになりました。
 
 `with`キーワードを使って、モジュールの形式を指定します。
 
@@ -51,6 +61,12 @@ JSONと伝えた状態で、JSON以外のファイルをインポートしたと
 
 逆に、属性を付けずにJSONファイルをインポートすると、JavaScriptのモジュールとして読み込もうとして失敗します。Chrome 156のコンソールには`Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/json"`と出ました。
 
+ほかにも、試すと次のことが分かりました。Chrome 156、Safari 27.2、Firefox 159とNode.js 26.13.0のどれでも同じでした。
+
+- 読み込めるのは`default`だけで、`import { name } from './data.json' with { type: 'json' }`は`SyntaxError`になる
+- 返るオブジェクトは凍結されておらず、書き換えると、同じJSONをインポートしたほかの場所からも書き換えた値が見える
+- 以前の書き方の`assert { type: 'json' }`は`SyntaxError`になる
+
 <iframe
   height="300"
   className={styles.embed}
@@ -59,10 +75,10 @@ JSONと伝えた状態で、JSON以外のファイルをインポートしたと
   loading="lazy"
 />
 
-上記の例では、取得ボタンを押すとインプットテキストをJSON Import Attribute付きインポートします。
+上記の例では、取得ボタンを押すと、入力欄の値をJSON Import Attribute付きでインポートします。
 デフォルトの入力はJSONを返すので問題なくインポートできますが、他の形式を入力するように変えるとコンソールにエラーが発生します。
 
 ## おわりに
 JSON Import Attributeを紹介しました。この機能を利用することで、ESMモジュールのインポート時に、その対象がJSONであることをランタイムに伝えられるような機能でした。
 
-無秩序にファイルのインポートを行うのは危険ですので、Import Attributeを使って、JSONファイルであることを明示的に伝えるようにしましょう。
+JSONを読み込むときは、Import Attributeで対象がJSONであることを伝え、JavaScriptが返ってきても実行されないようにしましょう。
