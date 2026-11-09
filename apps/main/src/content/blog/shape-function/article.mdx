@@ -2,7 +2,7 @@
 title: 'CSS shape()で曲線のある図形をレスポンシブに描く'
 description: 'CSSのshape()関数は、clip-pathの図形を直線・ベジェ曲線・円弧のコマンドで描き、%やcalc()、CSS変数を座標に使えます。要素の大きさに追従する吹き出しや波形の作り方と、path()との違いを説明します。'
 createdAt: 2026-03-08
-updatedAt: 2026-03-08
+updatedAt: 2026-11-09
 featureIds:
   - shape-function
 ---
@@ -15,34 +15,34 @@ import { ShapeCommandDemo } from './_components/shape-command-demo';
 
 ## はじめに
 
-CSSで図形を定義する方法として、`circle()`や`polygon()`、`path()`などの`<basic-shape>`関数があります。
-しかし、それぞれに制限がありました。
+`shape()`は、`clip-path`で要素を切り抜く図形を、直線・ベジェ曲線・円弧のコマンドを並べて描くCSS関数です。座標に`%`や`calc()`、CSS変数を使えるので、要素の大きさに合わせて伸び縮みする図形を作れます。
 
-- `circle()` / `ellipse()`: 円と楕円しか描けない
-- `polygon()`: 直線の辺しか描けず、曲線は表現できない
-- `path()`: SVGのパス構文を使うため単位なしのピクセル値しか指定できず、レスポンシブに対応できない
-
-この記事では`path()`の制限に注目します。
-`path()`はSVGのパス構文を使うため`%`や`calc()`が使えず、要素のサイズに応じて図形を変化させるにはSVGに頼る必要がありました。
+円や楕円、直線だけの多角形なら、今までどおり`circle()`・`ellipse()`・`polygon()`で足ります。曲線を含む図形は`path()`でも描けますが、SVGのパス構文を使うため単位なしのピクセル値しか指定できず、`%`や`calc()`が使えません。要素のサイズに応じて図形を変化させるには、SVGに頼る必要がありました。
 
 ```css
 /* path()は固定のピクセル値しか使えない */
 clip-path: path('M 50 0 L 100 100 L 0 100 Z');
 ```
 
-`shape()`はこの問題を解決する新しい`<basic-shape>`関数です。
-CSSの単位や関数をフル活用しながら、直線・曲線・円弧を自由に組み合わせた図形を定義できます。
+SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさに合わせて描けるのが`shape()`です。
 
 ## shape()
 
-`shape()`は主に`clip-path`と`offset-path`プロパティで使用できます。
+`shape()`は主に`clip-path`と`offset-path`プロパティで使用できます。`shape-outside`にも書けますが、有効な値として受け付けたのはChrome 156だけで、Safari 27.2とFirefox 159では無効になりました。
 
 `clip-path`で使う場合、`shape()`で定義した図形の内側だけが表示され、外側は切り取られます。
 
 ```css
-/* shape(<fill-rule>? from 開始点, <shape-command>, ...) */
-clip-path: shape(from 50% 0%, line to 100% 100%, line to 0% 100%, close);
+.triangle {
+  width: 200px;
+  height: 100px;
+  background-color: teal;
+  /* shape(<fill-rule>? from 開始点, <shape-command>, ...) */
+  clip-path: shape(from 50% 0%, line to 100% 100%, line to 0% 100%, close);
+}
 ```
+
+`class="triangle"`の要素に当てると、幅200px・高さ100pxの箱が、上辺の中央を頂点とする三角形に切り抜かれます。`width`を400pxにしても、三角形のまま横に伸びます。切り抜いた外側の左上と右上の隅で`document.elementFromPoint()`を呼ぶと、Chrome 156、Safari 27.2、Firefox 159のいずれでも、切り抜いた要素ではなく下にある要素が返りました。
 
 `<fill-rule>`（`nonzero`か`evenodd`）も指定できますが、`polygon()`や`path()`と違い、後ろにカンマを置きません。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`shape(evenodd, from 0 0, ...)`は無効な値になり、`shape(evenodd from 0 0, ...)`なら有効でした。
 `from`で開始点を指定し、カンマ区切りで描画コマンドを並べます。
@@ -236,5 +236,5 @@ clip-path: shape(
 
 `shape()`は、`path()`の表現力とCSSの柔軟性を兼ね備えた関数です。
 `%`や`calc()`、CSS変数が使えるため、要素のサイズに追従する図形をCSSだけで定義できます。
-line、curve、smooth、arcといったコマンドを組み合わせることで、直線から複雑な曲線まで幅広い図形に対応できます。
+line・curve・smooth・arcといったコマンドを組み合わせることで、直線から複雑な曲線まで幅広い図形に対応できます。
 `path()`の固定ピクセル値に制約を感じていた場面で、`shape()`が有効な選択肢になります。
