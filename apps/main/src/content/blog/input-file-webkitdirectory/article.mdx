@@ -17,6 +17,10 @@ import {
 <BrowserSupportStatus featureId="input-file-webkitdirectory" />
 
 ## はじめに
+`webkitdirectory`は、`<input type="file">`でファイルの代わりにフォルダ（ディレクトリ）を選ばせる属性です。選んだフォルダの中のファイルがサブフォルダの中まで`files`に入り、各ファイルの`webkitRelativePath`には、選んだフォルダから見たパスが入ります。
+
+ファイルを1つ、または`multiple`で複数選ばせるなら、これまでの`type="file"`で足ります。`<input>`でフォルダを丸ごと選ばせて、どのファイルがどのサブフォルダにあったかまで受け取るのは、`webkitdirectory`でしかできません。
+
 `<input>`要素に`type="file"`を付与すると、ファイルを入力するための要素になります。
 
 ```html
@@ -38,6 +42,8 @@ import {
 ```
 
 <WebkitDirectoryInputExample />
+
+ボタンを押すと、ファイルではなくフォルダを選ぶダイアログが開きます。フォルダを選ぶと、中のファイルがまとめて`files`に入ります。
 
 ## webkitdirectory属性
 `webkitdirectory`は真偽値の属性で、付けるとディレクトリの選択になり、付けなければファイルの選択になります。
@@ -76,11 +82,26 @@ for (const file of files ?? []) {
 }
 ```
 
+Chrome 156で、`a.txt`と`.hidden`のほかにサブフォルダと空のフォルダを置いた`photos`フォルダを渡すと、上のコードは次の4行を出しました。
+
+```txt
+photos/.hidden
+photos/a.txt
+photos/sub/b.txt
+photos/sub/deeper/c.txt
+```
+
+パスは選んだフォルダの名前から始まり、`.`で始まるファイルも入ります。空のフォルダ（`photos/empty`）は何も残しません。`multiple`属性は付けていません。そのままフォームで送ると、multipartの`filename`にも`photos/sub/b.txt`のパスが入りました。フォルダは、Playwrightの`setInputFiles()`にフォルダのパスを渡して選ばせています。
+
+テストで`DataTransfer`を使って`files`に`File`を入れても、`webkitRelativePath`は空文字のままです。Chrome 156、Safari 27.2、Firefox 159のいずれでもそうでした。`webkitRelativePath`を使う処理を確かめるときは、上のようにブラウザにフォルダを渡します。
+
 下記の例では渡したディレクトリに含まれるファイルの`webkitRelativePath`プロパティを表示しています。
 
 <PlaygroundEmbed demo="webkitRelativePathの例" headingLevel="h5" sectionId="input-file-webkitdirectory" />
 
-`input`要素が持つ複数のファイルを扱う別の方法として`webkitEntries`プロパティがありますが、このプロパティはいくつかのブラウザで`webkitdirectory`属性と併用できないようなので注意してください。
+ボタンを押してフォルダを選ぶと、中の各ファイルが`webkitRelativePath`のパスと一緒に一覧になります。
+
+`input`要素が持つ複数のファイルを扱う別の方法として`webkitEntries`プロパティがありますが、このプロパティはいくつかのブラウザで`webkitdirectory`属性と併用できないようなので注意してください。Chrome 156では、上と同じようにフォルダを渡したあとの`webkitEntries`は空の配列でした。
 
 > INTEROP: In Chrome, if webkitdirectory is specified on a HTMLInputElement, webkitEntries is not populated; the files collection and webkitRelativePath properties must be used instead to reconstruct the directory structure. Should we fix this so it is always populated?
 
@@ -89,6 +110,6 @@ for (const file of files ?? []) {
 <LinkCard href="https://wicg.github.io/entries-api/#html-forms" />
 
 ## おわりに
-`input`要素でファイルを扱う際に、`webkitdirectory`属性を利用することでディレクトリごと選択可能になり、より高度なファイル操作が可能になりました。
+`input`要素でファイルを扱う際に、`webkitdirectory`属性を利用することでディレクトリごと選択可能になり、中のファイルを`webkitRelativePath`のパスと一緒に受け取れるようになりました。
 
 `webkitdirectory`属性のような`webkit`prefixがついている機能は利用を躊躇いますが、Baseline 2025に追加されたことで安心して利用できるようになったのではないでしょうか。
