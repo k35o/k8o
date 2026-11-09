@@ -18,21 +18,42 @@ import styles from './article.module.css';
 </div>
 
 ## はじめに
-Web上のさまざまなUIの遷移を簡単にアニメーション化するView Transition APIがBaseline 2025に追加されました。
+View Transition API（View Transitions API）は、DOMを書き換える前と後の画面をブラウザが撮り、その間をアニメーションでつなぐAPIです。同じページの中のDOMの更新にも、同じオリジンのページへの移動にも使えます。同じページの中の遷移は、Firefox 144の対応でBaseline 2025になりました。
 
-異なる`Document`間（同一のオリジン）の遷移や、同一`Document`内のDOM更新時に、要素の位置やスタイルの変化に対するアニメーションを付与します。
+1つの要素の色や大きさを変えるだけなら、CSSの`transition`で足ります。並び替えで要素の位置が変わる、要素を足したり消したりする、別のページへ移るといった、前と後で要素が入れ替わる変化は`transition`では動かせません。前と後の画面をつないで動かせるのが、View Transition APIです。
 
-この記事では、そんなView Transition APIについて紹介します。この記事ではView Transition APIによって発生するアニメーションのことを「遷移アニメーション」と呼びます。
+```html
+<button id="reverse">並びを逆にする</button>
+<ul id="list">
+  <li style="view-transition-name: a">A</li>
+  <li style="view-transition-name: b">B</li>
+  <li style="view-transition-name: c">C</li>
+</ul>
+<script>
+  document.getElementById('reverse').addEventListener('click', () => {
+    document.startViewTransition(() => {
+      const list = document.getElementById('list');
+      list.append(...[...list.children].reverse());
+    });
+  });
+</script>
+```
+
+貼って開き、ボタンを押すと、AとCが互いの位置へ0.25秒かけて滑るように動きます。
+
+この記事では、View Transition APIによって発生するアニメーションのことを遷移アニメーションと呼びます。
 
 ## 異なるDocument間の遷移アニメーション
 異なる`Document`間の遷移アニメーションは同一のオリジン間でのみ適用できます。
-さらに、両者がそれぞれ読み込むCSSでView Transitionを`@view-transition`を用いて有効にする必要があります（Firefoxは`@view-transition`未対応）。
+さらに、両者がそれぞれ読み込むCSSでView Transitionを`@view-transition`を用いて有効にする必要があります。
 
 ```css
 @view-transition {
   navigation: auto;
 }
 ```
+
+同じオリジンの2つのページにこのCSSを書き、片方からもう片方へ移ると、既定では画面全体がクロスフェードで切り替わります。Chrome 156とSafari 27.2では、移った先のページの`pagereveal`イベントの`viewTransition`に値が入り、遷移アニメーションが最後まで走りました。Firefox 159は`@view-transition`に対応しておらず、`pagereveal`イベントも発火しませんでした。
 
 `view-transition-name`に同一の値を付与することで、遷移前の古いページと遷移後の新しいページの要素が対応付けられ、アニメーションが適用されます。
 
@@ -52,8 +73,8 @@ document.startViewTransition(() => {
 });
 ```
 
-また、オプションとして、オブジェクト、`update`と`types`を指定することができます。
-`update`は`updateCallback`と同じものを指しており、`types`は遷移アニメーションに対するクラス名や識別子を指定できます。これによって、遷移アニメーションのスタイルをカスタマイズできます。
+また、引数にはオブジェクトを渡して、`update`と`types`を指定することもできます。
+`update`は`updateCallback`と同じものを指しており、`types`は遷移アニメーションの種類を表す名前を指定できます。これによって、遷移アニメーションのスタイルを種類ごとに変えられます。
 
 ```js
 // [!og]
@@ -66,7 +87,16 @@ document.startViewTransition({
 });
 ```
 
-`ViewTransition`オブジェクトは`finished`、`ready`、`updateCallbackDone`という3つのプロミスをプロパティに持っています。
+`types`を渡した遷移の間は、ルート要素が`:active-view-transition-type()`に当たります（Chrome 156、Safari 27.2、Firefox 159で確認）。種類ごとのスタイルはこの疑似クラスに続けて書きます。
+
+```css
+/* custom-transitionの遷移だけ、画面全体の切り替えを1秒にする */
+:root:active-view-transition-type(custom-transition)::view-transition-group(root) {
+  animation-duration: 1s;
+}
+```
+
+`ViewTransition`オブジェクトは`finished`、`ready`、`updateCallbackDone`という3つのプロミスをプロパティに持っています。Chrome 156、Safari 27.2、Firefox 159とも`updateCallbackDone`、`ready`、`finished`の順に解決しました。
 
 ```js
 const transition = document.startViewTransition(() =>
@@ -133,11 +163,11 @@ transition.finished.then(() => {
 
 `view-transition-name`の初期値は`none`で、名前の無い要素は個別には動かず、`root`の画面全体の一部として切り替わります。`:root`に`none`を指定すると画面全体が対象から外れ、名前を付けた要素だけが動きます。
 
-一つの画面に同一の`view-transition-name`がある場合、その遷移アニメーションはスキップされます。
+一つの画面に同一の`view-transition-name`がある場合、その遷移アニメーションはスキップされます。Chrome 156、Safari 27.2、Firefox 159では、`ready`が`InvalidStateError`で拒否され、DOMの更新は行われました。リストの要素に名前を付けるときは、`item-1`のように要素ごとに違う名前にします。
 
 ### view-transition-class
 
-`view-transition-class`は後に紹介する`::view-transition-group`や`view-transition-image-pair`疑似要素等を用いた遷移アニメーションのスタイルをまとめて適用するためのプロパティです。
+`view-transition-class`は後に紹介する`::view-transition-group`や`::view-transition-image-pair`疑似要素等を用いた遷移アニメーションのスタイルをまとめて適用するためのプロパティです。
 
 ```css
 .tag {
@@ -165,7 +195,7 @@ transition.finished.then(() => {
 ### ::view-transition
 `::view-transition`疑似要素は、遷移アニメーション全体のOverlayに対するスタイルを付与できます。
 
-遷移アニメーション中は最上位レイヤーにビューポート全体を覆うコンテナが存在し（`<dialog>`要素の`overlay`のような感じ？）、それに対するスタイルを適用することができます。
+遷移アニメーション中は、ページの上にビューポート全体を覆う箱が重なり、それに対するスタイルを適用することができます。遷移中に`getComputedStyle`で読むと、Chrome 156、Safari 27.2、Firefox 159とも`position: absolute`と`inset: 0px`でした。
 
 ```css
 /* デフォルトのUAのスタイル */
@@ -270,7 +300,19 @@ transition.finished.then(() => {
 
 <PlaygroundEmbed demo="View Transition基本デモ" headingLevel="h4" sectionId="view-transitions" />
 
-各擬似要素がどのような役割でどのようにスタイルが適用されているがなんとなくわかると思います。
+シャッフルを押すと、カードが元の位置から新しい位置へ1秒かけて動きます。View TransitionをOFFにすると、カードは一瞬で入れ替わります。各擬似要素がどのような役割でどのようにスタイルが適用されているかが、なんとなくわかると思います。
+
+デモはReactで書いています。Reactの状態の更新は`updateCallback`が終わってから画面に反映されるので、そのままでは更新後の画面を撮れません。`flushSync`で包み、`updateCallback`の中でDOMを書き換えます。
+
+```tsx
+import { flushSync } from 'react-dom';
+
+document.startViewTransition(() => {
+  flushSync(() => {
+    setItems(nextItems);
+  });
+});
+```
 
 ## おわりに
 View Transition APIは、Webアプリケーションに滑らかで自然な遷移アニメーションを簡単に実装できる強力なAPIです。
@@ -279,4 +321,4 @@ View Transition APIは、Webアプリケーションに滑らかで自然な遷�
 
 CSSの`view-transition-name`や`view-transition-class`を使った要素の対応付け、`::view-transition`などの疑似要素による細かなスタイル制御など、柔軟なカスタマイズが可能な点も魅力です。
 
-ReactなどのUIライブラリにも専用のコンポーネント`<ViewTransition>`が組み込まれていたり、使いやすい状況になっているため、ぜひ活用してみてください。
+React 19.3.1では、`react`から`<ViewTransition>`コンポーネントをimportできるようになっています。ぜひ活用してみてください。
