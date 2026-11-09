@@ -14,6 +14,29 @@ featureIds:
 
 ## はじめに
 
+Navigation APIは、リンクのクリックやフォーム送信、ブラウザの戻る・進むといったページの遷移を、`navigation`オブジェクトの`navigate`イベント1つで受け取れるAPIです。イベントの`intercept()`を呼ぶと、ページを読み込み直す代わりに、JavaScriptで画面を書き換えるSPAの遷移になります。
+
+遷移のたびにページを読み込み直すサイトなら、どちらのAPIも要りません。SPAでも、ルーターのライブラリが用意する`<Link>`のような部品でリンクを書くなら、ライブラリの内側のHistory APIで足ります。素の`<a>`やフォーム、戻る・進むまでを1か所で受け取り、遷移の途中でデータを取りに行く処理を挟めるのは、Navigation APIだけです。
+
+次のコードを、ローカルのサーバーで配るHTMLに貼り、リンクを押してみてください。
+
+```html
+<a href="/about">About</a>
+<p id="view"></p>
+<script>
+  navigation.addEventListener('navigate', (event) => {
+    if (!event.canIntercept) return;
+    event.intercept({
+      handler() {
+        document.getElementById('view').textContent = location.pathname;
+      },
+    });
+  });
+</script>
+```
+
+ページを読み込み直さずにURLが`/about`に変わり、段落に`/about`と出ます。ブラウザの戻るボタンを押すと、URLと段落が`/`に戻ります。Chrome 156、Safari 27.2、Firefox 159で、リンクのクリックと`history.back()`をスクリプトから行うと、どちらでも段落が書き換わり、ページの読み込みは起きませんでした。
+
 SPAでクライアントサイドルーティングを実現するために、これまではHistory API（`pushState`/`popstate`）を使うのが一般的でした。
 しかしHistory APIはSPAが普及する前に設計されたものであり、ルーティングライブラリは多くの課題を回避しながら実装する必要がありました。
 
@@ -43,9 +66,7 @@ window.addEventListener('popstate', () => {
 実際のルーティングライブラリでは、通常の`<a>`タグの代わりに`<Link>`コンポーネントを提供することでこの複雑さを隠蔽しています。
 たとえばTanStack Routerでは、[`<Link>`コンポーネントのクリックハンドラ](https://github.com/TanStack/router/blob/1acc8eaf3a07cbe1c19ffcf2d4dcecdef34ffc1f/packages/react-router/src/link.tsx#L605-L642)で修飾キーやボタン種別を判定して`preventDefault()`を呼び出し、[Historyモジュール](https://github.com/TanStack/router/blob/1acc8eaf3a07cbe1c19ffcf2d4dcecdef34ffc1f/packages/history/src/index.ts)では`popstate`リスナーの登録に加えて`pushState`/`replaceState`をネイティブの関数ごと上書きして呼び出しを検知しています。
 
-Baseline 2026で追加されたNavigation APIは、これらの課題を根本から解決します。すべてのナビゲーションを単一の`navigate`イベントで捕捉でき、`intercept()`メソッドでSPAルーティングを宣言的に実現できます。
-
-この記事では、Navigation APIの主要な機能を紹介します。
+Baseline 2026で追加されたNavigation APIは、これらの課題を根本から解決します。この記事では、Navigation APIの主要な機能を紹介します。
 
 ## Navigation APIの基本
 
@@ -72,7 +93,7 @@ await finished;  // ナビゲーションに伴う非同期処理が完了した
 ## navigateイベント
 
 Navigation APIの最大の特徴は、`navigate`イベントですべての種類のナビゲーションを一元的にハンドリングできることです。
-リンクのクリック、フォーム送信、`navigation.navigate()`の呼び出し、ブラウザの戻る/進む、これらすべてが`navigate`イベントとして発火します。
+リンクのクリックやフォーム送信、`navigation.navigate()`の呼び出し、ブラウザの戻る/進むは、どれも`navigate`イベントとして発火します。
 
 ```js
 navigation.addEventListener('navigate', (event) => {
@@ -80,6 +101,8 @@ navigation.addEventListener('navigate', (event) => {
   console.log(event.destination.url);
 });
 ```
+
+History APIの`history.pushState()`を呼んだときも、`navigate`イベントが発火します。Chrome 156、Safari 27.2、Firefox 159で試すと、`navigationType`が`"push"`のイベントが届き、`popstate`は発火しませんでした。History APIで遷移するライブラリと同じページにあっても、`pushState()`を上書きせずに遷移を知れます。
 
 `NavigateEvent`には、ナビゲーションの種類を判別するための豊富なプロパティが用意されています。
 
@@ -92,7 +115,7 @@ navigation.addEventListener('navigate', (event) => {
 - `signal`：別のナビゲーションが開始されたり、ユーザーが停止ボタンを押した場合に中断される`AbortSignal`を返す
 - `info`：`navigate()`の呼び出し時に渡された一時的なデータ
 - `userInitiated`：ユーザーが能動的に発生させたナビゲーションか（`navigation.navigate()`や`navigation.back()`などJavaScriptからの遷移では`false`）
-- `sourceElement`：ナビゲーションを発生させた要素（クリックされた`<a>`など。JavaScriptからの遷移では`null`）
+- `sourceElement`：ナビゲーションを発生させた要素（クリックされた`<a>`や送信された`<form>`など。`navigation.navigate()`や`history.pushState()`による遷移では`null`）
 - `hasUAVisualTransition`：ブラウザがこのイベントの前にビジュアルトランジションを実行済みか
 
 これらのプロパティを使えば、SPAとしてインターセプトすべきナビゲーションを判別できます。
@@ -119,6 +142,8 @@ navigation.addEventListener('navigate', (event) => {
 });
 ```
 
+`download`属性の付いたリンクでも`canIntercept`は`true`になるので、`downloadRequest`で除きます。値の無い`download`属性では`downloadRequest`が空文字になるため、真偽ではなく`null`と比べます。Chrome 156、Safari 27.2、Firefox 159のいずれでもそうでした。
+
 ### intercept()
 
 `NavigateEvent`の`intercept()`メソッドは、ブラウザのデフォルトのナビゲーション（ページの全体リロード）を抑止し、代わりにSPAとしてのナビゲーションを実行します。
@@ -135,7 +160,7 @@ event.intercept({
 });
 ```
 
-`handler`は、ナビゲーションがコミットされた後（URLバーが更新された後）に実行されます。
+`handler`は、ナビゲーションがコミットされた後（URLバーが更新された後）に実行されます。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`handler`の中で読んだ`location.pathname`はすでに遷移先のパスでした。
 `handler`のPromiseが解決するまでの間、ブラウザはネイティブのローディングインジケータを表示し、ユーザーが停止ボタンを押すと`event.signal`が中断されます。
 
 また、`intercept()`はフォーカスリセットやスクロール復元も自動で処理します。これらはオプションで制御できます。
@@ -151,14 +176,16 @@ navigation.addEventListener('navigatesuccess', () => {
 });
 
 navigation.addEventListener('navigateerror', (event) => {
-  showErrorMessage(event.message);
+  showErrorMessage(event.error.message);
 });
 ```
+
+`handler`が投げたエラーそのものは`event.error`に入ります。`event.message`は形がブラウザで違い、`TypeError('boom')`を投げると、Chrome 156とSafari 27.2では`Uncaught TypeError: boom`、Firefox 159では`TypeError: boom`でした。
 
 ### \<Link\>コンポーネントが必須ではなくなる
 
 `navigate`イベントは通常の`<a>`タグのクリックでも発火します。
-そのため、`<a>`タグに`click`イベントのハンドラーを追加する必要がなく、SPA遷移の実現だけであれば「はじめに」で触れた`<Link>`コンポーネントは必須ではなくなります。
+そのため、`<a>`タグに`click`イベントのハンドラーを追加する必要がなく、SPA遷移の実現だけであれば、はじめにで触れた`<Link>`コンポーネントは必須ではなくなります。
 通常の`<a>`タグを書くだけでクライアントサイドナビゲーションが成立します。
 
 ```tsx
@@ -182,7 +209,7 @@ for (const entry of entries) {
 }
 ```
 
-同じオリジンでも、別のオリジンのページをはさむと、それより前のエントリは入りません。Chrome 156、Safari 27.2、Firefox 159で、同じオリジンで3つのエントリを進み、別のオリジンのページを経て同じオリジンの`/c`へ進むと、`entries()`は`/c`の1件だけを返し、`navigation.canGoBack`も`false`でした。`history.length`には、はさんだページより前のエントリも数えられています。
+同じオリジンでも、別のオリジンのページをはさむと、それより前のエントリは入りません。Chrome 156、Safari 27.2、Firefox 159で試すと、同じオリジンで3つ進んでから別のオリジンのページを経て`/c`へ進んだとき、`entries()`は`/c`の1件だけを返しました。`navigation.canGoBack`も`false`です。`history.length`には、はさんだページより前のエントリも数えられています。
 
 各`NavigationHistoryEntry`には`id`と`key`の2つの識別子があります。
 
@@ -212,7 +239,7 @@ navigation.navigate('/product', {
 });
 ```
 
-`state`は履歴エントリに永続化され、`entry.getState()`で取得できます。History APIの`history.state`と似ていますが、Navigation APIではエントリごとに独立して管理されるため、`navigation.entries()`の各エントリから個別に取得できます。
+`state`は履歴エントリに永続化され、`entry.getState()`で取得できます。History APIの`history.state`と似ていますが、Navigation APIではエントリごとに独立して管理されるため、`navigation.entries()`の各エントリから個別に取得できます。2つは別に持たれていて、Chrome 156、Safari 27.2、Firefox 159では、`navigate()`に`state`を渡しても`history.state`は`null`でした。
 
 `info`は今回のナビゲーションでのみ利用できる一時的なデータで、`navigate`イベントの`event.info`として受け取れます。
 `back()`/`forward()`/`traverseTo()`でも`info`のみ渡すことができます。
@@ -233,7 +260,7 @@ navigation.updateCurrentEntry({
 ## おわりに
 
 Navigation APIは、History APIの根本的な設計上の課題を解決し、SPAのルーティングをブラウザネイティブの仕組みで実現するAPIです。
-単一の`navigate`イベントによるナビゲーションの一元管理、`intercept()`による宣言的なSPAルーティング、`entries()`による安全な履歴操作、そして`state`/`info`による柔軟な状態管理まで、SPAに必要な機能が統合的に提供されています。
+単一の`navigate`イベントによるナビゲーションの一元管理と`intercept()`による宣言的なSPAルーティングを軸に、`entries()`による履歴の参照や`state`/`info`による状態の管理まで、SPAに必要な機能がそろっています。
 
 History APIでは散在していたナビゲーション処理が`navigate`イベントに集約され、`<Link>`コンポーネントのような中間層も必須ではなくなります。この記事を読んだだけでも、SPAのルーティングライブラリを自作するための道筋がすこし見えてきたのではないでしょうか。
 
