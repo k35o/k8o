@@ -2,7 +2,7 @@
 title: 'text-decoration-skip-inkで下線を文字に重ねない'
 description: 'text-decoration-skip-inkは、下線が文字と重なる箇所で線を途切れさせるかを決めるCSSプロパティです。漢字の下端にかかる下線も切るallと、英字だけを避けるautoの違いを、ブラウザごとの結果と合わせて説明します。'
 createdAt: 2026-05-16
-updatedAt: 2026-05-16
+updatedAt: 2026-11-09
 featureIds:
   - text-decoration-skip-ink-all
 ---
@@ -13,9 +13,11 @@ featureIds:
 
 ## はじめに
 
-underlineやoverlineは文字の上下を横切るときに、ディセンダのある`g`や`p`、`y`のような文字とぶつかってしまうことがあります。underlineを引いただけだとそうした文字のループの底に線が突き刺さって読みにくくなるので、ブラウザは標準でグリフのインクと交差する箇所では線を途切れさせてくれます。
+`text-decoration-skip-ink`は、underline（下線）やoverline（上線）が文字の形と重なる箇所で、線を途切れさせるかを決めるCSSプロパティです。既定の`auto`では英字の`g`や`p`、`y`のディセンダを避けて線が切れ、`all`を指定すると、Chrome 156とFirefox 159では漢字の下端にかかる線も切れます。
 
-その制御を担うのが`text-decoration-skip-ink`プロパティです。これまでは`auto`と`none`の2つの値で、ブラウザに任せるか一切途切れさせないかを選べました。Baseline 2026では`all`という3つ目の値が揃いました。
+英字の下線なら、何も指定しない`auto`のままで足ります。日本語の下線を漢字に重ねたくないだけなら、`text-underline-offset`で線を下へ離す方法もあります。`text-underline-offset: 0.1em`にすると、Chrome 156、Safari 27.2、Firefox 159のいずれでも漢字と線が重ならなくなりました。線の位置を変えずに、漢字にかかる箇所だけを切るのが`all`です。
+
+これまでは`auto`と`none`の2つの値で、ブラウザに任せるか一切途切れさせないかを選べました。2026年5月のChrome 148が`all`に対応し、3つ目の値がBaseline 2026に揃いました。
 
 ## プロパティの基本と3つの値
 
@@ -25,7 +27,23 @@ underlineやoverlineは文字の上下を横切るときに、ディセンダの
 - `none` - 途切れさせない。常に1本の線として描画する
 - `all` - すべてのグリフのインクと交差する箇所で必ず途切れさせる
 
-`auto`では仕様上ブラウザに裁量があり、どこを避けてどこを避けないかは実装次第です。`all`を指定すると裁量を排除して、グリフがあれば必ず線を切る挙動になります。
+`auto`では仕様上ブラウザに裁量があり、どこを避けてどこを避けないかは実装次第です。仕様では、`all`を指定すると裁量が無くなり、グリフがあれば必ず線を切ることになります。
+
+```css
+/* [!og] */
+p {
+  text-decoration: underline;
+  text-decoration-skip-ink: all;
+}
+```
+
+<PlaygroundEmbed
+  demo="skip-ink値の比較"
+  headingLevel="h4"
+  sectionId="text-decoration-skip-ink-all"
+/>
+
+セレクトで`auto`・`none`・`all`を切り替えると、下線の切れ方が変わります。英文の`j`や`p`の下は`auto`と`all`で切れ、`none`にすると切れずにつながります。日本語の部分で`all`が線を切るかは、次の節のとおりブラウザで変わります。
 
 ## auto と all の挙動の差
 
@@ -42,20 +60,6 @@ underlineやoverlineは文字の上下を横切るときに、ディセンダの
 > UAs must interrupt underlines and overlines where the line would cross glyph ink
 
 と義務になります（`may`と`must`の部分が異なります）。同じ文で`all`にすると、Chrome 156とFirefox 159では漢字の下端にかかる箇所で線が切れました。切れるのは字の形が下線にかかる箇所だけで、かなの下では線はつながったままです。Safari 27.2では`all`にしても漢字の下で線が切れず、`auto`と同じ見た目でした。`auto`の連続したunderlineを前提に組んだデザインに後付けで入れると、印象が大きく変わる点には注意してください。
-
-```css
-/* [!og] */
-p {
-  text-decoration: underline;
-  text-decoration-skip-ink: all;
-}
-```
-
-<PlaygroundEmbed
-  demo="skip-ink値の比較"
-  headingLevel="h4"
-  sectionId="text-decoration-skip-ink-all"
-/>
 
 ## おわりに
 
