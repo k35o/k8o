@@ -1,6 +1,6 @@
 ---
-title: 'MapのgetOrInsert、getOrInsertComputedで冗長なコードを減らす'
-description: 'Baseline 2026で追加されたMap.prototype.getOrInsertとgetOrInsertComputedを紹介します。キーが存在しない場合にデフォルト値を挿入して返す新しいメソッドで、グループ化やカウントなどの定番パターンを簡潔に書けます。'
+title: 'MapのgetOrInsertComputedでキーが無ければ追加する'
+description: 'MapのgetOrInsertとgetOrInsertComputedは、キーが無ければ値を追加し、あればその値を返します。has・set・getを1行にまとめ、数え上げやグループ化に使えます。Baseline 2026で使えます。'
 createdAt: 2026-03-02
 updatedAt: 2026-03-02
 featureIds:
@@ -8,7 +8,7 @@ featureIds:
 ---
 
 
-# MapのgetOrInsert、getOrInsertComputedで冗長なコードを減らす
+# MapのgetOrInsertComputedでキーが無ければ追加する
 
 <BrowserSupportStatus featureId="getorinsert" />
 
