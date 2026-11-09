@@ -1,13 +1,13 @@
 ---
-title: 数値の精度を失わずにJSONを読み書きするJSON source text access
-description: JavaScriptの数値は倍精度の浮動小数点数なので、JSON.parseで巨大な数値を読むと精度が失われます。Baseline 2025のJSON source text accessを使うと、reviverのcontext.sourceで元のJSONテキストを読み取り、JSON.rawJSONで指定したテキストをそのまま書き出せるので、BigIntと組み合わせて欠損のないJSONの読み書きができます。
+title: 'JSON.rawJSONでJSONの大きな数値を丸めずに扱う'
+description: 'JSON.rawJSONは、渡したテキストをJSON.stringifyにそのまま書き出させます。reviverのcontext.sourceと合わせ、64ビット整数のIDを丸めずに読み書きできます。Baseline 2025で使えます。'
 createdAt: 2026-07-30
 updatedAt: 2026-07-30
 featureIds:
   - json-raw
 ---
 
-# 数値の精度を失わずにJSONを読み書きするJSON source text access
+# JSON.rawJSONでJSONの大きな数値を丸めずに扱う
 
 <BrowserSupportStatus featureId="json-raw" />
 
