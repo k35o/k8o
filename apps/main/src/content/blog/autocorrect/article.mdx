@@ -13,9 +13,11 @@ featureIds:
 
 ## はじめに
 
-ユーザー名や招待コードを入力する欄で、iPhoneが単語を勝手に置き換えてしまい、正しく打ったはずの値が送信できない。この経験がある人は多いはずです。対処として`autocorrect="off"`を書く習慣が広まりましたが、これはSafari独自の属性で、HTMLの仕様には載っていませんでした。他のブラウザは無視するだけで害もないため、おまじないとして書き継がれてきました。
+`autocorrect`は、入力中の単語をOSやブラウザが置き換える自動修正を、要素ごとに働かせるか止めるかを決めるHTMLのグローバル属性です。`autocorrect="off"`と書いた入力欄では、自動修正が止まります。
 
-その属性が2024年にHTML標準へ取り込まれ、Firefox 136とChrome 153が対応して、`autocorrect`はBaseline 2026に加わりました。Safariでは14.1から使えていたので、おまじないのつもりで書いていた指定が、そのまま標準の挙動として扱われるようになりました。
+ふつうの文章を書く欄では、何も書かずに既定のままで足ります。`type`を`email`や`url`、`password`にできる欄も、それだけで自動修正は働きません。`type="text"`のまま受けるユーザー名や招待コードの欄で、iPhoneが単語を置き換えて打ったとおりの値が送れなくなるのを止めるのが、この属性です。
+
+`autocorrect="off"`は長くSafari独自の属性で、HTMLの仕様には載っていませんでした。他のブラウザは無視するだけで害もないため、おまじないとして書き継がれてきました。その属性が2024年にHTML標準へ取り込まれ、Firefox 136とChrome 153が対応して、Baseline 2026に加わりました。Safariでは14.1から使えていたので、おまじないのつもりで書いていた指定が、そのまま標準の挙動として扱われるようになりました。
 
 ## 値と対象
 
@@ -25,7 +27,7 @@ featureIds:
 - `<textarea>`要素
 - `contenteditable`を持つ要素
 
-値は`on`か`off`で、自動修正が止まるのは`off`と書いたときだけです。空文字列も、`on`と`off`以外の値も、属性を書かない場合も、すべて`on`として扱われます。
+値は`on`か`off`で、自動修正を止める値は`off`だけです。空文字列も、`on`と`off`以外の値も、属性を書かない場合も、すべて`on`として扱われます。
 
 ```html
 <!-- [!og] -->
@@ -40,6 +42,8 @@ JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。この
 
 <PlaygroundEmbed demo="属性の値と反映されるプロパティを見る" headingLevel="h4" sectionId="autocorrect" />
 
+属性の値を選び替えると、下の入力欄の`autocorrect`プロパティの値が変わります。`off`のときだけ`false`になり、空文字列や`yes`のような値では`true`のままです。
+
 ## formからの継承
 
 `<form>`要素に`autocorrect`を書くと、自分に属性を持たない`<input>`や`<textarea>`はフォームの値を引き継ぎます。仕様上は`<button>`や`<select>`などフォームに属する要素も同じ扱いですが、編集できるテキストを持たないので、`autocorrect`プロパティの値がフォームと同じになる以上のことは起きません。`contenteditable`の要素は`<form>`の中にあっても引き継ぎません。
@@ -53,6 +57,8 @@ JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。この
 </form>
 ```
 
+Chrome 156、Safari 27.2、Firefox 159で上のフォームの要素の`autocorrect`プロパティを読むと、属性の無い`input`は`false`、`autocorrect="on"`の`textarea`は`true`を返しました。フォームの外に置いて`form`属性で結びつけた`input`も`false`です。空文字列や`yes`のように`on`と`off`以外の値を書いた要素は、フォームの`off`を引き継がず`true`になりました。
+
 識別子ばかりを入力するフォームでは、入力欄ごとに書くと付け忘れが起きます。`<form>`にまとめて書けば、その心配がありません。
 
 ## spellcheckとの違い
@@ -63,4 +69,4 @@ JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。この
 
 ## おわりに
 
-`autocorrect`は、Safari独自の実装からHTML標準の属性になり、Firefox 136とChrome 153の対応で主要ブラウザに揃いました。値は`on`と`off`で、`<form>`に書けば子要素に継承されます。識別子を入力する欄に`autocorrect="off"`を付ける長年のおまじないは、仕様に裏付けのある指定になりました。
+`autocorrect`は、Safari独自の実装からHTML標準の属性になり、Firefox 136とChrome 153の対応で主要ブラウザに揃いました。値は`on`と`off`で、`<form>`に書けばフォームに属する入力欄が引き継ぎます。識別子を入力する欄に`autocorrect="off"`を付ける長年のおまじないは、仕様に裏付けのある指定になりました。
