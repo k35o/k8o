@@ -1,13 +1,13 @@
 ---
-title: 'Scoped custom element registriesで同じ名前のカスタム要素を共存させる'
-description: 'Scoped custom element registriesは、グローバルなcustomElementsとは別にカスタム要素のレジストリを作り、シャドウルートに結びつける仕組みです。Safari 26とChrome 146に続いてFirefox 159が対応し、Baseline 2026に加わりました。レジストリの結びつけ方、要素のレジストリが決まるタイミング、宣言的Shadow DOMでの使い方を整理します。'
+title: 'CustomElementRegistryでカスタム要素名の衝突を防ぐ'
+description: 'Scoped custom element registriesは、customElementsとは別のレジストリをシャドウルートに結びつけ、同じ名前のカスタム要素を別の定義で共存させる仕組みです。宣言的Shadow DOMにも使えます。'
 createdAt: 2026-11-07
 updatedAt: 2026-11-09
 featureIds:
   - scoped-custom-element-registries
 ---
 
-# Scoped custom element registriesで同じ名前のカスタム要素を共存させる
+# CustomElementRegistryでカスタム要素名の衝突を防ぐ
 
 <BrowserSupportStatus featureId="scoped-custom-element-registries" />
 
