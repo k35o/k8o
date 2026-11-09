@@ -87,10 +87,10 @@ nodeList[Symbol.iterator]().forEach((x) => console.log(x.innerText)); // '...', 
 
 ### 使い方
 
-`next`メソッドを実行すると0から3までの値を返す`Iterator`オブジェクトのような値`counter`について考えます。
+`next`メソッドを実行すると0から2までの値を順に返す、`Iterator`オブジェクトのような値`counter`について考えます。`createCounter()`を呼ぶたびに、0から数え直す`counter`を作ります。
 
 ```js
-const counter = {
+const createCounter = () => ({
   count: 0,
   next() {
     if (this.count < 3) {
@@ -98,7 +98,8 @@ const counter = {
     }
     return { value: undefined, done: true };
   },
-};
+});
+const counter = createCounter();
 ```
 
 `counter.next()`を実行すると`value`が`2`になるまで、`done`が`false`のオブジェクトを返します。
@@ -110,18 +111,21 @@ console.log(counter.next()); // { value: 2, done: false }
 console.log(counter.next()); // { value: undefined, done: true }
 ```
 
+一度数え終わった`counter`は`done: true`を返し続けるので、以降の例では`createCounter()`で作り直してから使います。
+
 #### from
 
-`from`は、`Iterator`オブジェクトの静的メソッドです。引数に渡した反復可能なオブジェクトから新しい`Iterator`オブジェクトを生成します。
+`from`は、`Iterator`オブジェクトの静的メソッドです。引数に渡した反復可能なオブジェクトや、`counter`のように`next`メソッドを持つオブジェクトから、新しい`Iterator`オブジェクトを生成します。
 
-これにより`[Symbol.iterator]()`を経由して`next`メソッドを呼び出せるようになります。
+`counter`は`next`メソッドを持つだけで、`Iterator`を継承しておらず、`[Symbol.iterator]`も持ちません。そのままでは`for...of`で回せず、以後紹介するメソッドもありません。`Iterator.from`で包むと、どちらも使えるようになります。
 
 ```js
-const counterIter = Iterator.from(counter);
-console.log(counterIter[Symbol.iterator]().next()); // { value: 0, done: false }
-console.log(counterIter[Symbol.iterator]().next()); // { value: 1, done: false }
-console.log(counterIter[Symbol.iterator]().next()); // { value: 2, done: false }
-console.log(counterIter[Symbol.iterator]().next()); // { value: undefined, done: true }
+// for (const x of counter) {} はTypeErrorになる
+const counterIter = Iterator.from(createCounter());
+for (const x of counterIter) {
+  console.log(x); // 0 1 2
+}
+console.log(counterIter instanceof Iterator); // true
 ```
 
 以後紹介するメソッドはこの変換を通すことで利用可能になります（`Set.prototype.values`のような`Iterator`オブジェクトを継承したオブジェクトで実行する場合は変換不要です）。
@@ -131,7 +135,7 @@ console.log(counterIter[Symbol.iterator]().next()); // { value: undefined, done:
 `map`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、新しい`Iterator`オブジェクトを返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const mappedIter = counterIter.map((x) => x * 2);
 console.log(mappedIter.next()); // { value: 0, done: false }
 console.log(mappedIter.next()); // { value: 2, done: false }
@@ -145,7 +149,7 @@ console.log(mappedIter.next()); // { value: undefined, done: true }
 
 ```js
 // [!og]
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const mappedIter = counterIter.map((x) => {
   console.log(x);
   return x * 2;
@@ -164,7 +168,7 @@ console.log(mappedIter.next()); // 2 { value: 4, done: false }
 `filter`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、真となる要素だけを含む新しい`Iterator`オブジェクトを返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const filteredIter = counterIter.filter((x) => x % 2 === 0);
 console.log(filteredIter.next()); // { value: 0, done: false }
 console.log(filteredIter.next()); // { value: 2, done: false }
@@ -174,14 +178,14 @@ console.log(filteredIter.next()); // { value: undefined, done: true }
 `filter`も遅延評価されます。偽だった場合は真になるまで値を取り出し続けます。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const filteredIter = counterIter.filter((x) => {
   console.log(x);
   return x % 2 === 0;
 });
 console.log(filteredIter.next()); // 0 { value: 0, done: false }
 console.log(filteredIter.next()); // 1 2 { value: 2, done: false }
-console.log(filteredIter.next()); // undefined { value: undefined, done: true }
+console.log(filteredIter.next()); // { value: undefined, done: true }
 ```
 
 #### take
@@ -189,7 +193,7 @@ console.log(filteredIter.next()); // undefined { value: undefined, done: true }
 `take`は、`Iterator`オブジェクトから指定した数の要素を取り出し、新しい`Iterator`オブジェクトを返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const takenIter = counterIter.take(2);
 console.log(takenIter.next()); // { value: 0, done: false }
 console.log(takenIter.next()); // { value: 1, done: false }
@@ -201,7 +205,7 @@ console.log(takenIter.next()); // { value: undefined, done: true }
 `drop`は、`Iterator`オブジェクトから指定した数の要素をスキップし、新しい`Iterator`オブジェクトを返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const droppedIter = counterIter.drop(2);
 console.log(droppedIter.next()); // { value: 2, done: false }
 console.log(droppedIter.next()); // { value: undefined, done: true }
@@ -212,7 +216,7 @@ console.log(droppedIter.next()); // { value: undefined, done: true }
 `flatMap`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、得られた値をフラットにした新しい`Iterator`オブジェクトを返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const flatMappedIter = counterIter.flatMap((x) => [x, x * 2]);
 console.log(flatMappedIter.next()); // { value: 0, done: false }
 console.log(flatMappedIter.next()); // { value: 0, done: false }
@@ -230,7 +234,7 @@ console.log(flatMappedIter.next()); // { value: undefined, done: true }
 `reduce`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、最終的な値を返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const reducedValue = counterIter.reduce((acc, x) => {
   return acc + x;
 }, 0);
@@ -244,7 +248,7 @@ console.log(reducedValue); // 3
 `toArray`は、`Iterator`オブジェクトの全ての要素を配列に変換します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const array = counterIter.toArray();
 console.log(array); // [ 0, 1, 2 ]
 ```
@@ -256,7 +260,7 @@ console.log(array); // [ 0, 1, 2 ]
 `forEach`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 counterIter.forEach((x) => {
   console.log(x);
 });
@@ -272,15 +276,15 @@ counterIter.forEach((x) => {
 `some`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、真となる要素が1つでもあれば`true`を返します。
 
 ```js
-const counterIter = Iterator.from(counter);
-const hasOdd = counterIter.some((x) => x % 2 === 0);
-console.log(hasOdd); // true
+const counterIter = Iterator.from(createCounter());
+const hasEven = counterIter.some((x) => x % 2 === 0);
+console.log(hasEven); // true
 ```
 
 `some`は遅延評価されます。真となる要素が見つかるまで値を取り出し続け、見つからない場合に`false`を返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const hasOdd = counterIter.some((x) => {
   console.log(x);
   return x % 2 === 1;
@@ -293,7 +297,7 @@ console.log(hasOdd); // 0 1 true
 `every`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、全ての要素が真であれば`true`を返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const allEven = counterIter.every((x) => x % 2 === 0);
 console.log(allEven); // false
 ```
@@ -301,7 +305,7 @@ console.log(allEven); // false
 `every`は遅延評価されます。偽となる要素が見つかるまで値を取り出し続けます。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const allEven = counterIter.every((x) => {
   console.log(x);
   return x % 2 === 0;
@@ -314,7 +318,7 @@ console.log(allEven); // 0 1 false
 `find`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、真となる要素を返します。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const found = counterIter.find((x) => x === 1);
 console.log(found); // 1
 ```
@@ -322,7 +326,7 @@ console.log(found); // 1
 `find`は遅延評価されます。真となる要素が見つかるまで値を取り出し続けます。
 
 ```js
-const counterIter = Iterator.from(counter);
+const counterIter = Iterator.from(createCounter());
 const found = counterIter.find((x) => {
   console.log(x);
   return x === 1;
