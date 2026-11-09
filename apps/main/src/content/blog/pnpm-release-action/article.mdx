@@ -9,25 +9,61 @@ updatedAt: 2026-11-09
 
 ## はじめに
 
-pnpm 11.13.0で、モノレポのリリース管理に必要な機能一式がpnpm本体に出揃いました。`pnpm change`で変更の意図を記録し、`pnpm version -r`でバージョンと変更履歴を更新するワークフローを、追加のツールなしで使えます。
+`pnpm-release-action`は、pnpm本体のリリース管理（`pnpm change`と`pnpm version -r`）をGitHub Actionsにつなぐアクションです。変更の意図が溜まったらリリースPRを開き、マージされたらnpmへの公開とタグ付け、GitHub Releaseの作成まで進めます。
 
-ここまで揃うと、次はこれをCIに乗せたくなります。変更の意図が溜まったらリリースPRを開き、マージされたらpublishとタグ付けとGitHub Releaseの作成まで進める、という自動化です。しかし、コミットやリリースPRを作る部分をpnpmは担いません。設計元の[RFC](https://github.com/pnpm/rfcs/blob/main/text/0006-monorepo-versioning.md)でも未解決の論点として残されていて、どう運用するかはいまのところユーザーに委ねられています。
-
-委ねられているのなら、自分の運用に合わせて自由に作れます。そのためのGitHub Actionとして、`pnpm-release-action`を作りました。
+手元で`pnpm version -r`と`pnpm publish -r`を打ってリリースするなら、pnpmだけで足ります。pnpmはコミットもタグも作らないので、リリースPRからGitHub Releaseまでを自動にしたいときに、このアクションを使います。
 
 <LinkCard href="https://github.com/k35o/pnpm-release-action" />
 
-この記事では、このアクションの仕組みと設計方針を紹介します。
+pnpm 11.13.0以上を使うリポジトリに、次のワークフローを置きます。
+
+```yaml title=".github/workflows/release.yml"
+name: Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # npmのOIDC trusted publishing用
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+      # pnpmのバージョンはpackage.jsonのpackageManagerから解決される（11.13.0以上が必要）
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: k35o/pnpm-release-action@5e009384bf5b1d2501f8405817b5d5578a90624e # v0.2.2
+        with:
+          build: pnpm build
+          github-token: ${{ steps.app-token.outputs.token }}
+          auto-merge: true # CIが通ったらリリースPRを自動マージ
+```
+
+変更の意図を書いたファイルを含むPRをmainにマージすると、`pnpm-release/main`ブランチからリリースPRが開きます。そのリリースPRをマージすると、次の実行でnpmに公開し、タグとGitHub Releaseを作ります。このアクション自身のリポジトリでは、GitHub Appのk8o-botが開いたリリースPR（`chore: prepare release`）の本文に版の表と変更履歴が載り、versionコミットには検証済みの署名が付いていました。そのPRをマージした約20秒後に、v0.2.2のGitHub Releaseができています。
+
+リリース管理の機能はpnpm 11.13.0で本体に出揃いましたが、コミットやリリースPRを作る部分は、pnpmが担わずユーザーに委ねています。この記事では、そこを受け持つこのアクションの仕組みと設計方針を紹介します。
 
 ## コミットやリリースPRは誰が作るのか
 
-`pnpm version -r`が行うのはファイルの書き換えまでで、gitには一切触れません。コミットもタグも作られず、リリースPRもGitHub Releaseも存在しません。
+`pnpm version -r`が行うのはファイルの書き換えまでで、gitには書き込みません。コミットもタグも作られず、リリースPRもGitHub Releaseも存在しません。pnpm 12.17.0で流すと、`Versions applied:`の下に版の変化が出るだけで、コミットもタグもできませんでした。作業ツリーに未コミットの変更があると、`ERR_PNPM_UNCLEAN_WORKING_TREE`で止まります。
 
-gitに触れないのは、実装が追いついていないからではありません。この機能の設計を提案したRFCには、決めきらずに残した論点を集めたUnresolved Questionsという節があります。その中に、この領域の論点が2つ挙げられています。1つは、リリースコミットやタグをpnpm自身が作るべきか、それともgitをCIに任せるべきかという論点です。もう1つは、リリースPRを開いてマージでpublishする公式のGitHub Actionを提供するか、レシピの文書化に留めるかという論点です。
+gitに書き込まないのは、実装が追いついていないからではありません。この機能の設計を提案したRFCには、決めきらずに残した論点を集めたUnresolved Questionsという節があります。その中に、この領域の論点が2つ挙げられています。1つは、リリースコミットやタグをpnpm自身が作るべきか、それともgitをCIに任せるべきかという論点です。もう1つは、リリースPRを開いてマージでpublishする公式のGitHub Actionを提供するか、レシピの文書化に留めるかという論点です。
 
 <LinkCard href="https://github.com/pnpm/rfcs/blob/main/text/0006-monorepo-versioning.md" />
 
-執筆時点で、この2つに結論は出ていません。実際に11.13で出荷された`pnpm version -r`はgitに触れない実装のままで、公式のGitHub Actionもまだありません（pnpm公式にあるのは、インストール用の`pnpm/action-setup`だけです）。当面この層をどう組むかは、ユーザーの手に委ねられています。
+2026年11月時点でも、この2つはRFCの未解決の論点に残っています。11.13で出荷された`pnpm version -r`は、12.17.0でもgitに書き込まない実装のままで、公式のGitHub Actionもまだありません（pnpm公式にあるのは、インストール用の`pnpm/action-setup`だけです）。当面この層をどう組むかは、ユーザーの手に委ねられています。
 
 `pnpm-release-action`は、この委ねられた層を引き受けるアクションです。
 
@@ -60,6 +96,8 @@ Release plan:
   @example/core: 0.8.1 → 0.8.2 (patch, via intent)
   @example/ui: 1.2.0 → 1.3.0 (minor, via intent)
 ```
+
+pnpm 12.17.0で確かめると、npmにまだ公開していないパッケージは、intentがあっても`@example/core: 0.8.1 → 0.8.1`のように今の版のまま出る計画になりました。初めて公開する版はmanifestに書いた版で出て、intentは次のリリースから効きます。上の出力は、公開済みのパッケージか、`private`のパッケージのものです。
 
 ### pnpm version -rでリリース計画を適用する
 
@@ -110,7 +148,7 @@ versioning:
     storage: repository # CHANGELOG.mdをコミットする方式に切り替える
 ```
 
-`fixed`は、常に同じバージョンで一緒にリリースするパッケージのグループです。ほかにも、対象から外す`ignore`や、バージョンアップの上限を課す`maxBump`、プレリリース用のlanesといった設定が同じキーに並びます。
+`fixed`は、常に同じバージョンで一緒にリリースするパッケージのグループです。グループの最も高い版に、最も大きいbumpを当てます。pnpm 12.17.0で、2.0.0の`@example/cli`にpatchのintentを置くと、2.1.0の`@example/cli-bindings`とそろって2.1.1になりました。ほかにも、対象から外す`ignore`や、バージョンアップの上限を課す`maxBump`、プレリリース用のlanesといった設定が同じキーに並びます。
 
 ## 2つのモードによるリリースループ
 
@@ -124,43 +162,7 @@ intentがなければpublishモードです。`build`入力があればそのコ
 
 なお、リリースと関係ないpushでも、intentがなければpublishモードに入ります。それでも何かが二重に出ることはありません。pnpmはレジストリにまだ無いバージョンだけをpublishし、タグとGitHub Releaseの対象もledgerの差分から決まるためです。
 
-ワークフローは次のようになります。
-
-```yaml title=".github/workflows/release.yml"
-name: Release
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-concurrency: ${{ github.workflow }}-${{ github.ref }}
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write # npmのOIDC trusted publishing用
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
-        id: app-token
-        with:
-          client-id: ${{ secrets.APP_CLIENT_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
-      # pnpmのバージョンはpackage.jsonのpackageManagerから解決される（11.13.0以上が必要）
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-      - uses: k35o/pnpm-release-action@5e009384bf5b1d2501f8405817b5d5578a90624e # v0.2.2
-        with:
-          build: pnpm build
-          github-token: ${{ steps.app-token.outputs.token }}
-          auto-merge: true # CIが通ったらリリースPRを自動マージ
-```
-
-認証には、デフォルトの`GITHUB_TOKEN`ではなくGitHub Appのトークンを勧めています。`GITHUB_TOKEN`で作ったPRやタグは他のワークフローを起動しないため、リリースPRのCIが走らないという定番のハマりどころがあるからです。また、デフォルトの`commit-mode: github-api`では、versionコミットをGitHub APIで作ります。GitHubがApp名義で署名してくれるので、botのコミットにも検証済みの署名が付きます。
+はじめにのワークフローでは、認証にデフォルトの`GITHUB_TOKEN`ではなくGitHub Appのトークンを使っています。`GITHUB_TOKEN`で作ったPRやタグは他のワークフローを起動しないため、リリースPRのCIが走らないという定番のハマりどころがあるからです。また、デフォルトの`commit-mode: github-api`では、versionコミットをGitHub APIで作ります。GitHubがApp名義で署名してくれるので、botのコミットにも検証済みの署名が付きます。
 
 ## 実装の工夫
 
