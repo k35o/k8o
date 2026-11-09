@@ -113,7 +113,7 @@ image.addEventListener('command', (event) => {
 });
 ```
 
-`command`に応じた自由な動作を実装できます。`command`に`--`ではじまらない名前を渡した場合は`event.command`に値がセットされないので注意してください。
+`command`に応じた自由な動作を実装できます。`--`で始まらない名前は、組み込みのコマンドでなければ無視され、`command`イベントも発火しません。Chrome 156、Safari 27.2、Firefox 159のどれでも、`command="zoom-in"`のボタンを押すと`command`イベントは届かず、ボタンの`command`プロパティは空文字列を返しました。
 
 <PlaygroundEmbed demo="カスタムコマンド" headingLevel="h4" sectionId="invoker-commands" />
 
