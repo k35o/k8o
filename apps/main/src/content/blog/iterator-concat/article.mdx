@@ -128,7 +128,7 @@ console.log(iter.next());
 
 なお、先頭に無限Iterableを渡すと後続のIterableには永遠に到達しないため、順序には注意が必要です。
 
-手元で100万要素の配列を2つつないで先頭の10個を取ると、スプレッド構文で配列にする書き方はChrome 156で約7ms、Safari 27.2で約5ms、Firefox 159で約9msかかり、`Iterator.concat()`と`take()`はどれも1ms未満でした。全部の値を`for...of`で取り出すときはスプレッド構文の方が速く、Chrome 156で約18msと約23ms、Safari 27.2で約4msと約17ms、Firefox 159で約10msと約34msでした。`yield*`のジェネレータ関数と比べても、`Iterator.concat()`の方が速かったのはChrome 156だけでした。
+手元で100万要素の配列を2つつないで先頭の10個を取ると、スプレッド構文で配列にする書き方はChrome 156で約7ms、Safari 27.2で約5ms、Firefox 159で約9msかかりました。`Iterator.concat()`と`take()`はどれも1ms未満でした。全部の値を`for...of`で取り出すときはスプレッド構文の方が速く、Chrome 156で約18msと約23ms、Safari 27.2で約4msと約17ms、Firefox 159で約10msと約34msでした。`yield*`のジェネレータ関数と比べても、`Iterator.concat()`の方が速かったのはChrome 156だけでした。
 
 ## 引数はIterableであること
 
