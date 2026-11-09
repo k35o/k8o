@@ -2,7 +2,7 @@
 title: 'WebAssemblyのexnrefで例外を値として扱う'
 description: 'WebAssemblyの例外処理は、try_table命令と例外参照exnrefを使う形式に改定されました。例外の種類を表すタグとJavaScriptとの受け渡しから順に追い、旧形式では手に持てなかった例外を値として受け取れる、Baseline 2025の新形式を説明します。'
 createdAt: 2026-09-27
-updatedAt: 2026-09-27
+updatedAt: 2026-11-09
 featureIds:
   - wasm-exnref-exceptions
 ---
@@ -182,8 +182,8 @@ end
 WATを手で書く場面は少ないので、実際に気にするのはコンパイラがどちらの形式を出力するかです。
 
 - Emscripten：`-fwasm-exceptions`でWebAssemblyの例外を有効にすると、既定では旧形式が出力される。新形式にするには`-sWASM_LEGACY_EXCEPTIONS=0`も指定する
-- Binaryen：`wasm-opt`の`--enable-exception-handling`で例外処理を有効にする。旧形式のバイナリは`--translate-to-exnref`で新形式に変換できる
-- wabt：現行の`wat2wasm`は既定で`try_table`と`throw_ref`を受け付ける。古い版では`--enable-exceptions`を付ける
+- Binaryen：`wasm-opt`の`--enable-exception-handling`で例外処理を有効にする。旧形式のバイナリは`--translate-to-exnref`で新形式に変換できる。変換するときは`--enable-reference-types`も付ける。binaryen 132では`--enable-exception-handling`だけだと、出力の`exnref`が許されずに検証で落ちた
+- wabt：1.0.42からの`wat2wasm`は既定で`try_table`と`throw_ref`を受け付ける。それより前の版では`--enable-exceptions`を付ける。npmのwabtは1.0.39で、付けないと`tag not allowed`などのエラーになった
 
 新形式のバイナリは、対応していない古いブラウザでは読み込みに失敗します。対象のブラウザがすべて新形式に対応しているなら新形式を選び、既存の旧形式のバイナリはBinaryenで変換しておきます。旧形式も互換性のためにブラウザに残っていますが、標準になったのは新形式で、旧形式はレガシー扱いです。
 
