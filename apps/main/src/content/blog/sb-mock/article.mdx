@@ -9,11 +9,13 @@ updatedAt: 2026-11-09
 
 ## はじめに
 
-Storybookのv9.1.0で`sb.mock`を用いてモジュールをモックする`Automocking`という機能が追加されました。
+`sb.mock`は、Storybookのストーリーが読み込むモジュールを、モック関数に置き換える関数です。`.storybook/preview.ts`に書いたモジュールはどのストーリーでもモックになり、戻り値をストーリーごとに変えられます。Storybookのv9.1.0で、`Automocking`という機能として追加されました。
 
 <LinkCard href="https://github.com/storybookjs/storybook/releases/tag/v9.1.0" />
 
-従来のStorybookで主流だった、サブパスインポートや`Vite`・`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
+コンポーネントにpropsで渡せる値なら、ストーリーの`args`で変えれば足ります。コンポーネントが直接importする関数（データベースやAPIを呼ぶ関数など）の戻り値をストーリーごとに変えたいときに、モジュールのモックが要ります。従来のStorybookで主流だった、サブパスインポートや`Vite`・`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
+
+この記事のコードは、Storybook 10.6.5と`@storybook/react-vite`でビルドし、Chrome 156でストーリーを開いて確かめています。
 
 ## sb.mockを使ってみる
 
@@ -46,10 +48,14 @@ Storybook 10.6.5で、拡張子を省いた`'../src/services/users'`や、プロ
 
 ```ts
 // .storybook/preview.ts
+import { sb } from 'storybook/test';
+
 sb.mock('../src/services/users.ts');
 ```
 
-`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。
+この行を足すと、`src/services/users.ts`の`getUser`を呼ぶコンポーネントのストーリーでは、`getUser`の戻り値が`undefined`になります。戻り値の決め方は後で紹介します。
+
+`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。10.6.5でストーリーのファイルに`sb.mock`を書くと、エラーにはならず、モジュールもモックされませんでした。
 
 `import()`構文を用いてより確実にモジュールをモックすることも可能です。
 
@@ -57,7 +63,6 @@ sb.mock('../src/services/users.ts');
 // .storybook/preview.ts
 sb.mock(import('../src/services/users.ts'));
 ```
-
 
 #### デフォルトの挙動
 
@@ -78,7 +83,7 @@ export const getUser = async (id: number) => {
 
 上記のように定義されている場合、Storyに表示するコンポーネント内で`getUser`メソッドを呼び出しても、`users.ts`に定義された元の`getUser`は実行されません。`getUser`はモック関数に置き換わり、呼ぶと`undefined`を返します。元の`getUser`は`async`の関数ですが、モックはPromiseも返しません。
 
-ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。
+ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。Chrome 156でストーリーを開くと、モックしていても開発者ツールのコンソールに`users.ts`の`console.log`が出ました。
 
 #### モックしたモジュールのメソッドをspyする
 
@@ -106,7 +111,7 @@ export const getUser = async (id: number) => {
 
 ### モックしたモジュールのメソッドを検証する
 
-デフォルトの挙動ではメソッドの戻り値がないため、何かしらの値を返すようにしたことが多いです。spyした場合であっても（そうでなくても）、検証のためにモックしたメソッドを制御したいです。
+デフォルトの挙動ではメソッドの戻り値がないため、何かしらの値を返すようにしたいことが多いです。spyした場合であっても（そうでなくても）、検証のためにモックしたメソッドを制御したいです。
 
 そのような場合はストーリーの`beforeEach`で`mocked`関数を用いて制御できます。
 
