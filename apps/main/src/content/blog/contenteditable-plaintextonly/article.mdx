@@ -23,7 +23,7 @@ Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`�
 ## contenteditable
 
 `contenteditable`はグローバル属性(全てのHTML要素で共通な属性)で、付与した要素の中身を直接編集できるようにします。
-`contenteditable`はグローバル属性ではありますが、一部の要素では利用できません。利用の可否はJavaScriptで`HTMLElement.isContentEditable`から確認できます。
+付与した要素が編集できる状態かは、JavaScriptで`HTMLElement.isContentEditable`から確認できます。ただし、子要素を持てない`img`や`input`に付けても、Chrome 156、Safari 27.2、Firefox 159のどれでも`true`が返りました。要素が編集に向くかどうかの判定には使えません。
 
 ```html
 <div contenteditable="true">
