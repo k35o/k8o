@@ -39,24 +39,6 @@ navigator.clipboard.readText().then(console.log);
 navigator.clipboard
   .writeText('Hello, world!')
   .then(() => console.log('Text copied to clipboard!'));
-
-// read
-navigator.clipboard.read().then((clipboardItems) => {
-  for (const clipboardItem of clipboardItems) {
-    for (const type of clipboardItem.types) {
-      const blob = clipboardItem.getType(type);
-      console.log(blob);
-    }
-  }
-});
-
-// write
-const item = new ClipboardItem({
-  'image/png': new Blob(['...'], { type: 'image/png' }),
-});
-navigator.clipboard
-  .write([item])
-  .then(() => console.log('Image copied to clipboard!'));
 ```
 
 `readText`と`writeText`は、テキストデータを扱うための簡単なメソッドです。`read`と`write`もベースは同じですが、テキスト以外のコンテンツも扱うため少し複雑です。こちらについては後ほど詳しく紹介します。
@@ -85,9 +67,13 @@ writePermission.state === 'prompt'; // ユーザーに許可を求める
 writePermission.state === 'denied'; // クリップボードの書き込みが拒否されている
 ```
 
-これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。FirefoxやSafariはオリジン間の読み込みは許可されていますが、異なるオリジンで読み込むことは許可されていません(書き込みはデフォルトで許可されています)。
+これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。Safari 27.2とFirefox 159では、`navigator.permissions.query()`に`clipboard-read`や`clipboard-write`を渡すと`TypeError`で失敗します。
+
+ユーザーの操作を挟まずに`readText()`を呼ぶと、Safari 27.2とFirefox 159はどちらも`NotAllowedError`で拒否しました。
 
 > Safariで発生するエラー: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
+
+Firefoxのエラーは`Clipboard read request was blocked due to lack of user activation.`で、ユーザーの操作が無いことを理由に挙げています。
 
 ### 権限チェックとテキストの読み書き
 
@@ -95,7 +81,7 @@ Permission APIと合わせて、`readText`と`writeText`を用いた例を下に
 
 <PlaygroundEmbed demo="テキストのコピー・ペースト" headingLevel="h5" sectionId="async-clipboard" />
 
-Permission APIを使って権限判定を行なっています。SafariやFirefoxを利用の方は利用できないです🙏。
+Permission APIを使って権限判定を行なっています。SafariとFirefoxでは権限の状態を取れないため、権限の欄には読み込めなかったことが表示されます。
 
 ## ClipboardItem
 
@@ -104,14 +90,13 @@ Permission APIを使って権限判定を行なっています。SafariやFirefo
 
 ```ts
 // read
-navigator.clipboard.read().then((clipboardItems: ClipboardItem) => {
-  for (const clipboardItem of clipboardItems) {
-    for (const type of clipboardItem.types) {
-      const blob = clipboardItem.getType(type);
-      console.log(blob);
-    }
+const clipboardItems = await navigator.clipboard.read();
+for (const clipboardItem of clipboardItems) {
+  for (const type of clipboardItem.types) {
+    const blob = await clipboardItem.getType(type);
+    console.log(blob);
   }
-});
+}
 
 // write
 const item = new ClipboardItem({
@@ -211,7 +196,7 @@ ClipboardItemを利用してPNG画像のコピーと貼り付けを行う例を�
 
 ```ts
 const copyImage = async () => {
-  const img = document.getElementById(xxx) as HTMLImageElement | null;
+  const img = document.getElementById('source') as HTMLImageElement | null;
   if (!img) return;
   const canvas = document.createElement('canvas');
   canvas.width = img.naturalWidth;
@@ -219,21 +204,22 @@ const copyImage = async () => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   ctx.drawImage(img, 0, 0);
-  const blob = await new Promise<Blob>((resolve) => {
+  const blob = await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
-        throw new Error('Blobが取得できませんでした');
+        reject(new Error('Blobが取得できませんでした'));
+        return;
       }
       resolve(blob);
     });
   });
-  const file = new File([blob], 'xxx.png', { type: 'image/png' });
+  const file = new File([blob], 'image.png', { type: 'image/png' });
   const data = [new ClipboardItem({ 'image/png': file })];
   await navigator.clipboard.write(data);
 };
 
 const pasteImage = async () => {
-  const img = document.getElementById(xxx) as HTMLImageElement | null;
+  const img = document.getElementById('pasted') as HTMLImageElement | null;
   if (!img) return;
   const items = await navigator.clipboard.read();
   for (const item of items) {
