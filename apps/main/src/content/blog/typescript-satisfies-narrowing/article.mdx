@@ -1,11 +1,11 @@
 ---
-title: '特定のケースではsatisfies演算子で型が絞り込まれてしまう？？？'
-description: 'TypeScript 4.9で追加されたsatisfies演算子の予期しない挙動について解説します。リテラル型のユニオンで制約を課された場合に型が絞り込まれる理由と、その仕組みを詳しく説明します。'
+title: 'TypeScriptのsatisfiesで型が絞り込まれる理由'
+description: 'TypeScriptのsatisfiesは式の型を変えずに型を検査する演算子ですが、制約にリテラル型のユニオンがあると、その部分がリテラル型に絞り込まれます。起きる例と理由、絞り込まれた型に別の値を代入したときのエラーを紹介します。'
 createdAt: 2023-07-10
-updatedAt: 2026-01-16
+updatedAt: 2026-11-09
 ---
 
-# 特定のケースではsatisfies演算子で型が絞り込まれてしまう？？？
+# TypeScriptのsatisfiesで型が絞り込まれる理由
 
 ## はじめに
 
