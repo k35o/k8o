@@ -13,13 +13,13 @@ featureIds:
 
 ## はじめに
 
-SVGの`<text>`の中で化学式や数式、図中のラベルを書くとき、特定の文字だけ上付き・下付きにしたい場面があります。SVGには古くから`baseline-shift`という同名の属性があり、`<text>`や`<tspan>`の属性として書けばずらせました。ただこの属性は非推奨化が進んでおり、CSSプロパティへの移行が推奨されています。
+SVGの`<text>`の中で化学式や数式、図中のラベルを書くとき、特定の文字だけ上付き・下付きにしたい場面があります。SVGには古くから`baseline-shift`という属性があり、`<text>`や`<tspan>`の属性として書けばずらせました。この属性は同じ名前のCSSプロパティの値を決めるプレゼンテーション属性で、CSSから`baseline-shift`を指定しても同じようにずれます。
 
-CSS Inline 3で再定義された`baseline-shift`プロパティはこの後継で、SVGの`<text>`内のテキスト要素のベースラインをCSSから制御できます。Baseline 2026で主要ブラウザに揃い、SVG中のテキストの上付き・下付き調整をCSSで素直に書けるようになりました。
+`baseline-shift`プロパティはCSS Inline 3でも定義され、Firefox 149が対応したことでBaseline 2026に入りました。SVG中のテキストの上付き・下付き調整を、主要ブラウザのどれでもCSSで書けるようになりました。
 
 ## プロパティの値
 
-`baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただし現状ChromeやEdgeはHTMLのインラインへの視覚適用が未対応で、実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
+`baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただしHTMLのインライン要素に指定してずれるのはFirefox 159だけで、Chrome 156とSafari 27.2では位置が変わりませんでした。実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
 
 <LinkCard href="https://drafts.csswg.org/css-inline-3/#baseline-shift-property" />
 
@@ -30,18 +30,18 @@ CSS Inline 3で再定義された`baseline-shift`プロパティはこの後継�
 - `center` - 行ボックスの上下中央にベースラインを揃える
 - `bottom` - 行ボックスの下端にベースラインを揃える
 
-`sub`と`super`はフォントごとに埋め込まれた下付き・上付きの標準位置を使うので、ブラウザが`<sub>` / `<sup>`を表示するときの位置に近い結果になります。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
+`sub`と`super`でずれる量はブラウザで違います。基本の使い方のコード（親が28pxのsans-serif、`<tspan>`が0.8em）で数字の位置を比べると、Chrome 156とSafari 27.2では`sub`で12px下がり、`super`で11px上がりました。Firefox 159では`sub`で6px、`super`で10pxでした。ブラウザ間で揃えたいときは`0.3em`のような長さで指定します（3つとも6〜7px上がりました）。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
 
 ## 基本の使い方
 
 SVGの`<text>`の中で`<tspan>`に`baseline-shift`を当てると、その部分だけベースラインが動きます。化学式や単位の上付き・下付きをCSSで揃えて書きたい場面で使えます。
 
 ```html
-<svg viewBox="0 0 360 60" width="360" height="60">
+<svg viewBox="0 0 360 100" width="360" height="100">
   <text x="0" y="40" font-size="28">
     水の化学式は H<tspan class="sub">2</tspan>O です。
   </text>
-  <text x="0" y="40" font-size="28">
+  <text x="0" y="85" font-size="28">
     面積は 10 m<tspan class="sup">2</tspan> です。
   </text>
 </svg>
@@ -77,24 +77,24 @@ CSSプロパティとして書くことで、SVGの`baseline-shift`属性を直�
 
 ## vertical-alignとの関係
 
-CSS Inline Layout 3では、`vertical-align`は`baseline-source`、`alignment-baseline`、`baseline-shift`の3つを束ねるショートハンドとして定義されています。SVGテキストでも`vertical-align`が同じ意味で使えますが、`baseline-shift`はずらしの量だけを単独で扱えるロングハンドとして、デザインシステムやレイヤーで合成したいときに役立ちます。
+CSS Inline Layout 3では、`vertical-align`は`baseline-source`、`alignment-baseline`、`baseline-shift`の3つを束ねるショートハンドとして定義されています。SVG 2の草案も、新しく書くなら`vertical-align`を使うよう勧めています。ただ、今`vertical-align`をショートハンドとして扱うのはFirefox 159だけです。Chrome 156とSafari 27.2では、`<tspan>`に`vertical-align: 0.3em`や`vertical-align: super`を指定しても位置が変わらず、`baseline-shift`の計算値もそのままでした。SVGのテキストをずらすなら、今は`baseline-shift`を書きます。
 
 ```css
-/* shorthand: 他のサブプロパティも同時にリセットされる */
+/* ショートハンド。Chrome 156とSafari 27.2のtspanでは効かない */
 text .note {
   vertical-align: 0.3em;
 }
 
-/* longhand: 他のベースライン関連を触らずにずれだけを管理したいとき */
+/* ロングハンド。3つのブラウザで効く */
 text .note {
   baseline-shift: 0.3em;
 }
 ```
 
-なお3つのロングハンドのうち、`baseline-shift`がBaseline 2026で揃った一方で、残りの2つはまだ温度差があります。`alignment-baseline`はFirefox 149で実装が入り、Chrome / Edge / Safari / Firefoxすべてで動くようになったので、近いうちにBaselineに正式に組み込まれるのを待っている状態です。`baseline-source`はSafariの対応待ちで、現状はChrome / Edge / Firefoxのみです。3つすべてが揃って初めて、`vertical-align`をショートハンドとしてフルに使える状態になります。
+なお3つのロングハンドのうち、`alignment-baseline`はFirefox 149で入り、Chrome 156、Safari 27.2、Firefox 159のいずれでも`CSS.supports('alignment-baseline', 'middle')`が`true`を返します。`baseline-source`はSafariが未対応で、Safari 27.2では`CSS.supports('baseline-source', 'last')`が`false`でした。`vertical-align`をショートハンドとして使うには、ロングハンドが揃うことに加えて、ChromeとSafariが`vertical-align`をショートハンドとして扱う必要があります。
 
 ## おわりに
 
-`baseline-shift`はSVGテキストのベースラインをずらすCSSプロパティとして、SVGの古い同名属性に代わる位置付けでBaseline 2026に揃いました。化学式・数式・図中ラベルなど、SVGの`<text>`に細かい上付き・下付きを入れたい場面で素直に書ける選択肢です。
+`baseline-shift`はSVGテキストのベースラインをずらすCSSプロパティで、Firefox 149の対応でBaseline 2026に揃いました。化学式・数式・図中ラベルなど、SVGの`<text>`に細かい上付き・下付きを入れたい場面で素直に書ける選択肢です。
 
-ただ、HTMLインラインへの視覚適用や`top` / `center` / `bottom`、`baseline-source`など、CSS Inline 3の周辺プロパティはFirefoxだけが先行している部分が多く、ChromeやSafariで安心して使えるようになるまではまだ距離があるように感じました。Baselineに揃ったとはいえ、実用面でフルに活かせるのはもう少し先になりそうです。
+ただ、HTMLのインライン要素への適用や`top`・`center`・`bottom`の値、`vertical-align`をショートハンドとして扱うことは、今のところFirefoxだけが対応しています。SVGのテキストをずらす用途なら今すぐ使えますが、HTMLの文章で`vertical-align`の代わりに使えるのはもう少し先になりそうです。
