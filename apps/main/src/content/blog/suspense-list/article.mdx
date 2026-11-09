@@ -94,7 +94,7 @@ export default function App() {
 </SuspenseList>
 ```
 
-先ほどの4つの`Suspense`を`backwards`で並べると、画面には上から4つ目、3つ目、2つ目、1つ目の順に並び、いちばん下の1つ目から表示されました。並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。こちらは上から1つ目、2つ目の順に並んだまま、4つ目と3つ目が先に表示されました。
+先ほどの4つの`Suspense`を`backwards`で並べると、画面には4つ目が上、1つ目がいちばん下に並び、その1つ目から表示されました。並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。こちらは上から1つ目、2つ目の順に並んだまま、4つ目と3つ目が先に表示されました。
 
 #### together（同時表示）
 
