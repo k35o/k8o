@@ -2,7 +2,7 @@
 title: 'Performance Event Timing APIで操作の待ち時間を計測する'
 description: 'Performance Event Timing APIはユーザーの操作によって発生したイベントの待ち時間を計測するためのAPIです。クリックやキーボード等の操作で発生したイベントの処理時間を計測し、INP（Interaction to Next Paint）の計測に利用されます。'
 createdAt: 2025-12-30
-updatedAt: 2025-12-30
+updatedAt: 2026-11-09
 featureIds:
   - event-timing
 ---
@@ -90,7 +90,7 @@ Performance Event Timing APIは、ユーザーの操作で発生したイベン�
 
 #### target
 
-イベントのターゲット要素を返します。ただし、ターゲットがDOMから削除された場合や、Shadow DOM内にある場合は`null`を返します。
+イベントのターゲット要素を返します。ターゲットがDOMから削除された場合は`null`を返します。Shadow DOMの中の要素で起きたイベントでは、Shadow DOMを持つホストの要素を返します。Chrome 156とFirefox 159で、Shadow DOMの中のボタンをクリックすると、`target`はホストの`div`でした。
 
 ### 基本的な使い方
 
@@ -165,12 +165,14 @@ const observer = new PerformanceObserver((list) => {
   }
 });
 
-observer.observe({ type: 'event', buffered: true });
+observer.observe({ type: 'event', buffered: true, durationThreshold: 16 });
 ```
+
+`durationThreshold`を指定しないと、`duration`が104ms未満のインタラクションは届きません。INPが104ms未満のページでは値を求められないので、下限の16msを指定します。
 
 ### FIDの計測
 
-`type: 'first-input'`を指定すると、最初の入力イベントのみを取得できます。つまり、FID（First Input Delay）を計測できます。FIDは2024年9月にCore Web VitalsからINPに置き換えられた指標です。
+`type: 'first-input'`を指定すると、最初の入力イベントのみを取得できます。つまり、FID（First Input Delay）を計測できます。FIDは、2024年3月にCore Web VitalsでINPに置き換えられた指標です。
 
 ```ts
 const observer = new PerformanceObserver((list) => {
