@@ -1,8 +1,8 @@
 ---
-title: UIが遷移するアニメーションを簡単にするView Transition API
-description: View Transition APIがBaseline 2025に追加され、Web上のUI遷移を簡単にアニメーション化可能になりました。異なるページ間の遷移や同一ページ内のDOM更新時に、要素の位置やスタイルの変化をアニメーション化できます。CSSによるスタイル制御も豊富に用意されており、柔軟なカスタマイズが可能です。
+title: 'View Transitions APIでページ遷移をアニメーション'
+description: 'View Transition APIは、DOMの更新やページ移動の前後をアニメーションでつなぐAPIです。startViewTransitionとview-transition-nameの書き方と、擬似要素での調整を説明します。'
 createdAt: 2025-11-08
-updatedAt: 2026-05-13
+updatedAt: 2026-11-09
 featureIds:
   - view-transitions
   - view-transition-class
@@ -10,7 +10,7 @@ featureIds:
 
 import styles from './article.module.css';
 
-# view-transitions
+# View Transitions APIでページ遷移をアニメーション
 
 <div className={styles.supportStatuses}>
   <BrowserSupportStatus featureId="view-transitions" />
