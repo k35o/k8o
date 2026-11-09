@@ -31,7 +31,7 @@ Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 
 `Reporting-Endpoints`ヘッダーで定義したエンドポイント名を`report-to`の引数として渡すことで、CSP違反のレポートがそのエンドポイントに送信されます。エンドポイントのURLはHTTPSである必要があります。
 
-ブラウザはレポートを即時には送信せず、バッチ処理でまとめて送信します。送信タイミングはブラウザに委ねられており、配信が保証されないことに注意してください。
+いつ送るかはブラウザに委ねられていて、配信も保証されません。手元で試すと、Firefox 159は数秒のうちに複数のレポートを1つの配列にまとめて送り、Safari 27.2は違反のたびに1件ずつすぐ送りました。
 
 レポートはJSON形式でPOSTされ、`type`は`csp-violation`、`body`には違反したリソースのURLやディレクティブ、ポリシー文字列などが入ります。送信形式の全体像は[Reporting APIでブラウザのレポートを収集する](/blog/reporting)を参照してください。
 
@@ -59,7 +59,7 @@ document.addEventListener('securitypolicyviolation', (event) => {
 - `originalPolicy` - 違反したCSPポリシー文字列
 - `documentURI` - 違反が発生したドキュメントのURI（レポートでは`documentURL`）
 - `sourceFile` / `lineNumber` / `columnNumber` - 違反を起こしたスクリプトの位置情報
-- `sample` - 違反した内容のスニペット（`'report-sample'`が指定されている場合のみ）
+- `sample` - 違反した内容の先頭40文字。インラインのスクリプトや`eval()`の違反では`'report-sample'`を指定したときだけ入り、Trusted Typesの違反では指定しなくても入る
 - `disposition` - `"enforce"`または`"report"`
 - `statusCode` - ドキュメントのHTTPステータスコード
 - `referrer` - 違反が発生したドキュメントのリファラー
