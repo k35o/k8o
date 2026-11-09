@@ -31,12 +31,14 @@ Popover APIによって作られたポップオーバーは
 
 - その外側をクリックすると閉じられる
 - ESCキーを押すと閉じられる
-- 開いた時にフォーカスが内部に移動する
+- 中の要素に`autofocus`を付けておくと、開いたときにそこへフォーカスが移る
 - Top layer（重ね合わせコンテキストの最上位のレイヤー）に配置される
 
 の性質を持ちます。
 
-Popover APIは関連する3つのHTMLの属性と2つのCSSの機能が用意されています(それらを管理するJavaScriptの機能も存在しますが、この記事ではHMTLとCSSにだけ注目します)。
+`autofocus`が無いときは、開いてもフォーカスは開いたボタンに残ります。Chrome 156、Safari 27.2、Firefox 159のいずれでもそうでした。
+
+Popover APIは関連する3つのHTMLの属性と2つのCSSの機能が用意されています(それらを管理するJavaScriptの機能も存在しますが、この記事ではHTMLとCSSにだけ注目します)。
 
 HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機能は`::backdrop`と`:popover-open`です。
 
@@ -151,6 +153,17 @@ Popover APIを使った簡単な例を紹介します。3つのボタンがあ�
 Popover APIは表示するポップオーバーを`popover`属性で表し、その表示を管理する要素に`popovertarget`属性を渡すことで利用できます。
 従来はJavaScriptで実装する必要があったツールチップやドロップダウンメニューの表示非表示を、HTMLとCSSだけで簡単に実装できるようになったのは大きな進歩でした。
 
-サンプルで画面の中央にポップオーバーを表示していたように、まだ表示位置を制御する方法は提供されていません。
-[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)が利用可能になると、HTMLとCSSだけでポップオーバーやツールチップの位置を制御できるようになるので、表示を誘発する要素の側にポップオーバーを表示することが可能になります。
-Popover APIの登場がとてもありがたいと同時に、`CSS Anchor Positioning`への期待も高まりますね。
+サンプルでは画面の中央にポップオーバーを表示しましたが、ツールチップやドロップダウンメニューのように開いたボタンのそばに出すときは、[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)を組み合わせます。`popovertarget`で開いたポップオーバーは、開いたボタンを暗黙のアンカーとして持つので、`anchor-name`を書かずに`position-area`だけで置き場所を決められます。
+
+```html
+<button popovertarget="tooltip">ヘルプ</button>
+<div id="tooltip" popover>入力した内容は自動で保存されます</div>
+```
+
+```css
+#tooltip {
+  position-area: bottom;
+}
+```
+
+Chrome 156、Safari 27.2、Firefox 159で試すと、どれもボタンの真下に、ボタンと中央を揃えてポップオーバーが表示されました。画面の左端に近いボタンでは、ポップオーバーが画面からはみ出さないよう左端に寄せて表示されます。
