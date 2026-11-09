@@ -23,7 +23,7 @@ workflows:
     '.github/workflows/renovate.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/create-github-app-token@v3.3.0'
-        - 'renovatebot/github-action@v46.3.11'
+        - 'renovatebot/github-action@v46.3.12'
     '.github/workflows/vercel-prebuilt.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/create-github-app-token@v3.3.0'
@@ -80,8 +80,8 @@ dependencies:
         commit: 'sha1-8d514149157cc5f38eb53b66cb19061f7422ffd6'
         owner_id: 61353435
         repo_id: 1172516387
-    'renovatebot/github-action@v46.3.11':
-        ref: 'v46.3.11'
-        commit: 'sha1-43b963bf5dd5e57f1f95c59765a018d782870211'
+    'renovatebot/github-action@v46.3.12':
+        ref: 'v46.3.12'
+        commit: 'sha1-1c0cf989c02653fba0efe7ca5772338860ca71dc'
         owner_id: 38656520
         repo_id: 252754603
