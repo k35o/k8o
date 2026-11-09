@@ -11,13 +11,26 @@ import compositionSidebar from './_images/composition-sidebar.avif';
 
 ## はじめに
 
-[Chromatic](https://www.chromatic.com/)はStorybookのメンテナーが提供するクラウドサービスで、Storybookの公開やビジュアルテスト、UIレビューなど多くの機能を備えています。
+[Chromatic](https://www.chromatic.com/)はStorybookのメンテナーが提供するクラウドサービスで、Storybookの公開やビジュアルテスト、UIレビューなど多くの機能を備えています。`@storybook/addon-mcp`を入れたStorybookをChromaticにPublishすると、公開したURLの末尾に`/mcp`を付けたアドレスが、AIエージェントにコンポーネントの情報を渡すMCPサーバーになります。
 
-この記事ではその中でもStorybookをChromaticにPublishすることに焦点を当て、公開することで得られる恩恵を紹介します。
-UI TestsやUI Reviewといったテスト・レビュー機能には触れず、Publishそのものがもたらすメリットに絞って解説します。
+コンポーネントを見せるだけなら、`storybook build`の出力をどの静的ホスティングに置いても足ります。Storybookの開発サーバーを立てずにAIエージェントからコンポーネントの情報を引きたいときに、ChromaticへのPublishが効いてきます。Chromaticのパーマリンクは、別のリポジトリのStorybookをまとめて表示するStorybook Compositionの参照先にもそのまま使えます。
 
-このサイトでも以前からStorybookをChromaticにPublishしていますが、MCPサーバーやStorybook Compositionといった機能が登場したことで、公開していることの恩恵がさらに広がりました。
-この記事では、[公開しているStorybook](https://main--647acebb9da23d6c605c4afd.chromatic.com)を例に、その恩恵を紹介していきます。
+たとえば、このサイトで使っているデザインシステム@k8ordo/uiのStorybookは公開設定がPublicなので、Claude Codeの`.mcp.json`に次のように書くだけで使えます。
+
+```json
+{
+  "mcpServers": {
+    "storybook-mcp": {
+      "url": "https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp",
+      "type": "http"
+    }
+  }
+}
+```
+
+エージェントから`docs-list`を呼ぶと、ボタンやフォームなど84個のコンポーネントの一覧が返ります。`docs-show`に`components-buttons-button`を渡すと、Buttonのストーリーのコードと、`size`や`variant`などのpropsの型が返ります（2026年11月9日に確認）。
+
+この記事では、Chromaticの機能のうちStorybookのPublishに絞り、MCPサーバーとStorybook Compositionで何ができるかを、このサイトの[公開しているStorybook](https://main--647acebb9da23d6c605c4afd.chromatic.com)を例に紹介します。UI TestsやUI Reviewといったテスト・レビュー機能には触れません。
 
 ## StorybookをChromaticにPublishする
 
@@ -58,18 +71,7 @@ ChromaticにPublishすると、リモートのMCPサーバーとして常時利�
 通常通りChromaticにビルドをPublishするだけで、リモートMCPサーバーのURLが生成されます。
 公開するStorybookのURLが`https://main--687a213c85e2e4589d8db1bb.chromatic.com`であれば、MCPサーバーのURLは[https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp](https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp)です。
 
-```json
-{
-  "mcpServers": {
-    "storybook-mcp": {
-      "url": "https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp",
-      "type": "http"
-    }
-  }
-}
-```
-
-上記のように利用するエージェントのMCP設定にURLを登録しておけば、ローカルのStorybookを起動していなくてもコンポーネント情報を参照できます。
+はじめにの設定のように、利用するエージェントのMCP設定にURLを登録しておけば、ローカルのStorybookを起動していなくてもコンポーネント情報を参照できます。
 
 Storybookの公開設定がPrivateの場合は、認証の設定を追加する必要があります。Claude Codeでは`oauth`の`clientId`に、Chromatic共通の値を書きます（Cursorでは`auth.client_id`、Codexでは`auth.CLIENT_ID`に書きます）。
 
