@@ -184,7 +184,7 @@ self.addEventListener('connect', (event) => {
 - トップレベルのvar / function宣言はモジュールスコープに閉じ、Worker全体のグローバルを汚染しない
 - `credentials`オプション（`'omit'` / `'same-origin'` / `'include'`）が有効になり、モジュールのフェッチに使う認証情報を制御できる
 
-なお、起動中のSharedWorkerに対して異なる`type`や`credentials`で`new SharedWorker(...)`しようとするとエラーになります。`classic`モードと`module`モードを同居させたいときは、別の`name`を指定して別インスタンスとして扱います。
+なお、起動中のSharedWorkerに対して異なる`type`や`credentials`で`new SharedWorker(...)`しても、例外は投げられません。返った`SharedWorker`に`error`イベントが届き、そのポートにはメッセージが届かないまま終わります。クラシックで起動したWorkerに`type: 'module'`でつなぐと、Chrome 156、Safari 27.2、Firefox 159のどれでもそうなりました。`classic`モードと`module`モードを同居させたいときは、別の`name`を指定して別インスタンスとして扱います。
 
 `type: 'module'`の挙動はService Workerの場合とほぼ同じです。Service Worker側の解説は[Service WorkerでES Modulesを使う](/blog/js-modules-service-workers)を参照してください。
 
