@@ -76,7 +76,7 @@ if (result.async) {
     });
 }
 ```
-考えられる例外は`not-equal`のパターンぐらいで、他には考えられないので`value`が`reject`されることはありません。
+共有していない配列を渡すなど引数が不正なときは、呼び出した時点で`TypeError`が投げられます。`value`の`Promise`が`reject`されることはありません。
 
 ## おわりに
 `Atomics`の新しいメソッド、`waitAsync`について解説しました。
