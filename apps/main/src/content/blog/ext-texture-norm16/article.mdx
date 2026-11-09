@@ -1,13 +1,13 @@
 ---
-title: 'EXT_texture_norm16で16bitのデータの細かさを保ったままWebGLで描く'
-description: 'EXT_texture_norm16は、WebGL 2に16bitの正規化形式のテクスチャを足す拡張で、Firefox 159の対応でBaseline 2026に加わりました。標高データのような16bitの値を、細かさを落とさずにシェーダーで読めます。WebGLの前提から順に、8bitや浮動小数点数の形式との違いと注意点を整理します。'
+title: 'EXT_texture_norm16で16bit画像をWebGLで描く'
+description: 'EXT_texture_norm16は、16bitの整数を0.0〜1.0の小数として読むテクスチャをWebGL 2で作れる拡張です。標高データなどの16bitの値を、8bitに丸めずにシェーダーで読めます。Baseline 2026です。'
 createdAt: 2026-11-08
 updatedAt: 2026-11-09
 featureIds:
   - ext-texture-norm16
 ---
 
-# EXT_texture_norm16で16bitのデータの細かさを保ったままWebGLで描く
+# EXT_texture_norm16で16bit画像をWebGLで描く
 
 <BrowserSupportStatus featureId="ext-texture-norm16" />
 
