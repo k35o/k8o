@@ -7,14 +7,17 @@ featureIds:
   - trusted-types
 ---
 
-
 # Trusted TypesとCSPでDOM XSSを防ぐ
 
 <BrowserSupportStatus featureId="trusted-types" />
 
 ## はじめに
 
-DOM XSSは、`innerHTML`や`document.write`などのDOM APIに攻撃者が制御可能な文字列が渡されることで発生します。
+Trusted Typesは、`innerHTML`のように文字列をHTMLやスクリプトとして扱うDOM API（シンク）に、生の文字列を渡すことをブラウザに禁止させる仕組みです。CSPの`require-trusted-types-for 'script'`で有効にすると、シンクにはポリシーを通して作った`TrustedHTML`などの値しか渡せなくなります。
+
+文字列を表示するだけなら`textContent`で足り、HTMLとして入れる箇所もDOMPurifyなどで毎回サニタイズすればXSSは防げます。Trusted Typesでしかできないのは、サニタイズを忘れた代入やサードパーティのスクリプトによる代入まで、ブラウザが実行時に止めることです。
+
+DOM XSSは、`innerHTML`や`document.write`などのシンクに攻撃者が制御可能な文字列が渡されることで発生します。
 
 ```js
 // ユーザー入力をそのままinnerHTMLに渡してしまう
@@ -23,8 +26,6 @@ el.innerHTML = userInput; // XSSが実行される
 ```
 
 この種の脆弱性は、コードレビューやLinterで注意を払っても完全には防ぎきれず、プロジェクトが大きくなるほどリスクが高まります。
-
-Baseline 2026に追加されたTrusted Typesは、これらの危険なDOM API（シンク）に対して生の文字列ではなく型付きオブジェクトの使用を強制することで、DOM XSSを大幅に軽減するブラウザAPIです。
 
 ## CSPヘッダーによる強制
 
@@ -46,19 +47,34 @@ Content-Security-Policy: trusted-types myPolicy
 Content-Security-Policy: require-trusted-types-for 'script'; trusted-types myPolicy
 ```
 
-この設定が有効な状態でシンクに生の文字列を渡すと、`TypeError`がスローされます。
+この設定が有効な状態でシンクに生の文字列を渡すと、`TypeError`がスローされます。CSPは`<meta>`で書いても効くので、次のHTMLをファイルに保存してブラウザで開けば試せます。
 
-```js
-el.innerHTML = '<b>Hello</b>';
-// TypeError: Failed to set the 'innerHTML' property on 'Element':
-// This document requires 'TrustedHTML' assignment.
+```html
+<!doctype html>
+<meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'">
+<div id="el"></div>
+<script>
+  document.getElementById('el').innerHTML = '<b>Hello</b>';
+</script>
 ```
+
+開くと画面には何も表示されず、DevToolsのコンソールにエラーが出ます。Chrome 156、Safari 27.2、Firefox 159で開くと、メッセージはブラウザごとに違いました。
+
+- Chrome 156: `This document requires 'TrustedHTML' assignment. The action has been blocked.`に続いて、`TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.`
+- Safari 27.2: `TypeError: This assignment requires a TrustedHTML`
+- Firefox 159: `TypeError: Element.innerHTML setter: Sink type mismatch violation blocked by CSP`
+
+どれも、シンクに生の文字列を渡した箇所があるという意味です。Chrome 156とSafari 27.2では、`setTimeout`に文字列を渡すと`TrustedScript`、`script.src`に代入すると`TrustedScriptURL`と、求められた型の名前がメッセージに入ります。直すには、その代入をポリシーを通した値に書き換えるか、すぐには直せないコードのためにデフォルトポリシーを用意します（どちらも後述）。
+
+どの代入で止まったかは、`securitypolicyviolation`イベントの`sample`でも分かります。3つのブラウザとも、`Element innerHTML|<b>Hello</b>`のようにシンクの名前と値の先頭が入りました。
 
 段階的に導入する場合は、`Content-Security-Policy-Report-Only`ヘッダーを使って違反をレポートのみにすることもできます。
 
 ```http
 Content-Security-Policy-Report-Only: require-trusted-types-for 'script'; trusted-types myPolicy; report-uri /csp-endpoint
 ```
+
+このヘッダーでは代入はそのまま通り、Chrome 156のコンソールには`This document requires 'TrustedHTML' assignment. The policy is report-only, so the violation has been logged but no further action has been taken.`と出ます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`/csp-endpoint`には`effective-directive`が`require-trusted-types-for`のレポートが届きました。
 
 ## ポリシーの作成
 
@@ -103,6 +119,8 @@ el.innerHTML = '<b>Hello</b><script>alert(1)</script>';
 ```
 
 作成したデフォルトポリシーは`trustedTypes.defaultPolicy`から参照できます。
+
+デフォルトポリシーのコールバックは、第2引数に求められた型の名前、第3引数にシンクの名前を受け取ります。上の代入では、Chrome 156、Safari 27.2、Firefox 159のどれでも`'TrustedHTML'`と`'Element innerHTML'`が渡りました。移行の途中で、どのシンクに文字列が渡っているかをログに残すのに使えます。
 
 デフォルトポリシーは既存のコードベースへの移行手段として設計されています。
 変更が難しいサードパーティスクリプトへの対応にも有効ですが、ルールが緩くなりがちでTrusted Typesのメリットが薄まるため、最終的には各シンクで明示的にポリシーを使うようリファクタリングすることが推奨されます。
