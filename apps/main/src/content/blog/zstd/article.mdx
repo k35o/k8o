@@ -43,7 +43,7 @@ Content-Encoding: br
 
 なお、サーバーが圧縮に対応していない場合や、クライアントが送った`Accept-Encoding`の中に対応形式がなかった場合は、`Content-Encoding`ヘッダーなしで非圧縮のまま返されます。
 
-ただし、`identity;q=0`等で非圧縮も明示的に拒否している場合は、`406 Not Acceptable`が返されます。
+`identity;q=0`等で非圧縮も明示的に拒否している場合、サーバーは`406 Not Acceptable`を返せます。ただし、返すかどうかはサーバーが決め、`Accept-Encoding`を無視して非圧縮で返すこともできます。このサイトに2026年11月に`curl`で`Accept-Encoding: identity;q=0`を送ると、`200`で非圧縮のまま返りました。
 
 `zstd`はこの仕組みに乗っかる形で、Baseline 2026で新たに加わった圧縮形式です。
 
