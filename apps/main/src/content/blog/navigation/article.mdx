@@ -2,7 +2,7 @@
 title: 'Navigation APIの全体像とSPAルーティングのこれから'
 description: 'Baseline 2026で追加されたNavigation APIの主要な機能を紹介します。navigateイベントによるナビゲーションの一元管理、intercept()による宣言的なSPAルーティング、履歴エントリの操作など、SPAに必要な機能が統合的に提供されています。'
 createdAt: 2026-03-03
-updatedAt: 2026-03-03
+updatedAt: 2026-11-09
 featureIds:
   - navigation
 ---
@@ -87,7 +87,7 @@ navigation.addEventListener('navigate', (event) => {
 - `destination`：遷移先の情報を持つオブジェクト。`destination.url`で遷移先のURLを取得できる
 - `canIntercept`：インターセプト可能か（クロスオリジンでは`false`）
 - `hashChange`：フラグメントのみの変更か
-- `downloadRequest`：ダウンロードリクエストか
+- `downloadRequest`：`download`属性の付いたリンクなら、その属性の値（値の無い`download`属性では空文字、ダウンロードでなければ`null`）
 - `formData`：POSTフォーム送信時の`FormData`（それ以外では`null`）
 - `signal`：別のナビゲーションが開始されたり、ユーザーが停止ボタンを押した場合に中断される`AbortSignal`を返す
 - `info`：`navigate()`の呼び出し時に渡された一時的なデータ
@@ -173,7 +173,7 @@ import { Link } from 'react-router';
 ## 履歴エントリの管理
 
 History APIでは`history.length`で履歴の長さは取得できましたが、個々のエントリのURLや状態を参照する手段はありませんでした。
-Navigation APIでは`navigation.currentEntry`で現在のエントリを、`navigation.entries()`で同一オリジンの全履歴エントリを`NavigationHistoryEntry`の配列として取得できます。
+Navigation APIでは`navigation.currentEntry`で現在のエントリを、`navigation.entries()`で現在のエントリから別のオリジンをはさまずに続く、同じオリジンの履歴エントリを`NavigationHistoryEntry`の配列として取得できます。
 
 ```js
 const entries = navigation.entries();
@@ -181,6 +181,8 @@ for (const entry of entries) {
   console.log(entry.url, entry.key, entry.id, entry.index);
 }
 ```
+
+同じオリジンでも、別のオリジンのページをはさむと、それより前のエントリは入りません。Chrome 156、Safari 27.2、Firefox 159で、同じオリジンで3つのエントリを進み、別のオリジンのページを経て同じオリジンの`/c`へ進むと、`entries()`は`/c`の1件だけを返し、`navigation.canGoBack`も`false`でした。`history.length`には、はさんだページより前のエントリも数えられています。
 
 各`NavigationHistoryEntry`には`id`と`key`の2つの識別子があります。
 
