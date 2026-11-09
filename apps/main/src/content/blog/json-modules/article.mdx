@@ -37,18 +37,19 @@ import('./data.json', { with: { type: 'json' } });
 - 末尾のコンマが許可されるため編集が簡単
 - 複数行に分割するときに終わりを明確にするため
 
-現在多くの場所でサポートされているモジュール形式は、`json`だけです。Baseline 2025に追加された構文も`json`だけになります。
+Baselineに入っているモジュール形式は`json`だけです。`type: 'css'`でCSSを`CSSStyleSheet`として読み込む形式もあり、Chrome 156とFirefox 159では読み込めましたが、Safari 27.2では`Import attribute type "css" is not valid`のエラーになりました。Node.js 26.13.0も`css`には対応していません。
 
 ## JSON Import Attribute
 
 `with: { type: 'json' }`を付けて、インポートされたデータをJSONとして解釈するように伝えることができます。
 
-JSONと伝えた状態で、JSON以外のファイルをインポートしたときに下記のようなエラーが発生します（下の引用はChromeで`text/html`なものをインポートしたとき）。
+JSONと伝えた状態で、JSON以外のファイルをインポートしたときに下記のようなエラーが発生します（下の引用は、Chrome 156で`text/html`を返すURLをインポートしたときのコンソール）。
 
 > Failed to load module script: Expected a JSON module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
 
-JSON Import Attributeをつけない場合は、エラーを発生させずにインポートした結果をそのまま利用してしまいます。
-JavaScriptがインポートされたときは、構文解析及びに実行まで行うので、セキュリティ上のリスクになります。
+ブラウザは、レスポンスのMIMEタイプがJSONのものかを確かめます。`text/javascript`を返すURLを`with { type: 'json' }`で読み込むと、Chrome 156、Safari 27.2、Firefox 159のどれでも読み込みは失敗し、中のコードは実行されませんでした。属性を付けずに読み込めば、返ってきたJavaScriptはモジュールとして実行されます。JSONを返すはずのURLがJavaScriptを返しても、属性があればページで動かずに済みます。
+
+逆に、属性を付けずにJSONファイルをインポートすると、JavaScriptのモジュールとして読み込もうとして失敗します。Chrome 156のコンソールには`Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/json"`と出ました。
 
 <iframe
   height="300"
