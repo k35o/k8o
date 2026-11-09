@@ -21,6 +21,15 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "setup の mise-action が入れる mise 本体の版",
+      "managerFilePatterns": ["/^\\.github/actions/setup/action\\.yml$/"],
+      "matchStrings": ["version: (?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "jdx/mise",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.+)$"
+    },
+    {
+      "customType": "regex",
       "description": "イメージのタグを npm の playwright と同じ PR で上げる。docker として数えると、MCR には公開日時が無く minimumReleaseAge に止められる",
       "managerFilePatterns": ["/^\\.github/workflows/(ci|vrt)\\.yml$/"],
       "matchStrings": [
@@ -60,6 +69,12 @@
     },
     {
       "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "github actions"
+    },
+    {
+      "description": "CI の道具なので、action の non-major と同じ PR で上げる",
+      "matchDepNames": ["jdx/mise"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "github actions"
     },
