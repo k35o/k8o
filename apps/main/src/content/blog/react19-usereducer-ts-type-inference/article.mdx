@@ -2,7 +2,7 @@
 title: React19で変化したuseReducerの型から学ぶTypeScriptの型推論
 description: '@types/reactのバージョン19ではuseReducerの型の変更が行われました。これまではreducer関数から状態の型を推論していましたが、バージョン19からはreducer関数と初期値から状態の型を推論する形に変更されました。この記事では、この変更を元にTypeScriptにおける型の推論方法について提案します。'
 createdAt: 2025-05-24 14:00:00.000000+00
-updatedAt: 2025-05-24 14:00:00.000000+00
+updatedAt: 2026-11-09
 ---
 
 import '@repo/mdx-preset/katex.css';
@@ -20,13 +20,13 @@ import react18vsreact19 from './_images/react18vsreact19.avif';
 これまでは`useReducer`を用いるために`reducer`関数から状態の型を推論していました。しかし、バージョン19からは初期値を含めた引数全体から型を推論する形に変更されました。
 これにより、これまで通りの使い心地を保ちつつ、冗長な型定義を防ぐことに成功しました。
 
-以下の例は、型の推論方法の変更によって、React18の`useReducer`で型エラーの発生する記述が、React19で起きないようになったものです。
+以下の例は、型の推論方法の変更によって、React18の`useReducer`では状態の型が`any`になる記述が、React19では`number`と推論されるようになったものです。
 
 ```ts
 // React18
-// [any, Dispatch<Action>]
+// [any, DispatchWithoutAction]
 const [state, dispatch] = useReducer(
-  // 💣 Parameter 'state' implicitly has an 'any' type.
+  // prevCount: any（型エラーにはならないが、型が付かない）
   (prevCount) => prevCount + 1,
   0,
 );
@@ -322,7 +322,7 @@ declare namespace Reducer {
 }
 ```
 
-`AnyActionArg`型は`Action`自体、`ActionDispatch`型は更新関数の型です。
+`AnyActionArg`型は`Action`を受け取る引数の並び（引数が無いか1つのタプル）、`ActionDispatch`型は更新関数の型です。
 
 ```ts
 type AnyActionArg = [] | [any];
@@ -362,8 +362,7 @@ React18では`reducer`関数の型（`Reducer<S, A>`型か`ReducerWithoutAction<
 // React18
 const [state, dispatch] = useReducer<Reducer<State, Action>>(
   reducer,
-  initialArg,
-  init,
+  initialState,
 );
 const [state, dispatch] = useReducer<Reducer<State, Action>, I>(
   reducer,
@@ -374,8 +373,7 @@ const [state, dispatch] = useReducer<Reducer<State, Action>, I>(
 // React19
 const [state, dispatch] = useReducer<State, [Action]>(
   reducer,
-  initialArg,
-  init,
+  initialState,
 );
 const [state, dispatch] = useReducer<State, I, [Action]>(
   reducer,
@@ -384,7 +382,9 @@ const [state, dispatch] = useReducer<State, I, [Action]>(
 );
 ```
 
-初期化関数を用いるときに利用する型引数`I`型を渡す順番には違和感を覚えますが、内部の型を使わずに型を渡せるようになったのは良い変化だと感じました。
+初期化関数を渡すときは、React18でもReact19でも型引数に`I`型を足します。React19で型引数を`<State, [Action]>`の2つにしたまま初期化関数を渡すと、`Expected 2 arguments, but got 3.`という型エラーになります。React18で型引数を1つにしたまま渡しても、`initialArg`が`State`型に合わないという型エラーになります。
+
+`I`型を渡す順番には違和感を覚えますが、内部の型を使わずに型を渡せるようになったのは良い変化だと感じました。
 
 なお、React19では`useReducer`に型引数を渡さないことがベストプラクティスとされているので、推論でカバーできないときにのみ型引数を利用するようにしましょう。
 
@@ -392,9 +392,9 @@ const [state, dispatch] = useReducer<State, I, [Action]>(
 
 ### 型の推論の向上
 
-はじめに紹介したReact18では型推論がうまく働かず、型エラーが発生してしまう例についてです。
+React18の型で、型の無い`reducer`関数を渡したときに状態の型が付かない例を見ます。`Action`を受け取る`reducer`関数で、状態の引数に型を書かないと、型エラーになります。
 
-このエラーは、React18の`useReducer`では`reducer`関数からのみ状態の型を推論することが原因で起きています。`reducer`関数の型が不十分なので、状態の型を推論する方法がなく、型エラーが生じていたのです。
+このエラーは、React18の`useReducer`では`reducer`関数からのみ状態の型を推論することが原因で起きています。`reducer`関数の型が不十分なので、状態の型を推論する方法がなく、型エラーが生じていたのです。はじめの例のように`Action`の無い`reducer`関数では、型エラーにはならずに状態が`any`になります。
 
 そのため、React18では`reducer`関数が型を持っていない状態で、`useReducer`の宣言はできませんでした。
 
@@ -525,8 +525,8 @@ const result1 = arrayFilter1(
   (val) => val > 0,
 );
 
-// result1: number[]
-const result1 = arrayFilter1<Filter<number>>(
+// result3: number[]
+const result3 = arrayFilter1<Filter<number>>(
   [1, 2, 3],
   // val: number
   (val) => val > 0,
@@ -578,10 +578,10 @@ const plus3 = partial((num1: number, num2: number) => num1 + num2, 3);
 
 `plus3`は、2つの数値を足し合わせる関数をベースに、一方の数値を3へ固定した関数になります。
 
-この関数は適用元の関数が主役となるように作られているので、適用元の関数に型がない場合は型エラーが発生します。
-また、適用元の関数が受け取れない値を第二引数に渡したときは第二引数だけにエラーが発生します。
+この関数は適用元の関数が主役となるように作られているので、適用元の関数が受け取れない値を第二引数に渡したときは第二引数だけにエラーが発生します。
+一方、適用元の関数に型がない場合は型エラーにはならず、`partial((num1, num2) => num1 + num2, 3)`は`(num2: any) => any`になります。適用元の関数に型を書くことが前提の作りです。
 
-これらのエラーは適用元の関数を主として考える上であえて発生させた（ある種リンターのような意味合いを持つ）ものです。このような制約をあえて設けたいケースでは、React18式を用いることがおすすめです。
+第二引数のエラーは、適用元の関数を主として考える上であえて発生させた（ある種リンターのような意味合いを持つ）ものです。このような制約をあえて設けたいケースでは、React18式を用いることがおすすめです。
 
 ### React19式が使われるケース
 
@@ -603,10 +603,10 @@ interface Array<T> {
   ): U;
 }
 
-// sum: number, prev: number, curr: number
+// sum1: number, prev: number, curr: number
 const sum1 = [1, 2, 3].reduce((prev, curr) => prev + curr, 0);
 
-// sum: number, prev: number, curr: number
+// sum2: number, prev: number, curr: number
 const sum2 = [1, 2, 3].reduce(
   (prev: number, curr: number) => prev + curr,
   0,
