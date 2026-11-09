@@ -2,7 +2,7 @@
 title: 'autocorrect属性で入力の自動修正を制御する'
 description: 'autocorrectは、編集可能な要素でOSやブラウザの自動修正を有効にするかを指定するHTMLのグローバル属性です。長くSafari独自の属性として使われてきましたが、HTML標準に入り、Firefox 136とChrome 153が対応してBaseline 2026に加わりました。値の解釈、form要素からの継承、spellcheckとの違いを整理します。'
 createdAt: 2026-09-25
-updatedAt: 2026-09-25
+updatedAt: 2026-11-09
 featureIds:
   - autocorrect
 ---
@@ -36,7 +36,7 @@ featureIds:
 <textarea id="bio" name="bio"></textarea>
 ```
 
-JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。このプロパティが返すのは属性の文字列ではなく真偽値で、`autocorrect="off"`の要素では`false`、それ以外では`true`になります。対応しているかどうかは`'autocorrect' in HTMLElement.prototype`で判定できます。
+JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。このプロパティが返すのは属性の文字列ではなく、その要素で自動修正が働くかを表す真偽値です。`autocorrect="off"`の要素のほか、`type`が`password`・`email`・`url`の`input`と、`off`の`<form>`を引き継いだ要素でも`false`になり、それ以外では`true`です。Chrome 156、Safari 27.2、Firefox 159のどれでも、`<input type="password" autocorrect="on">`は`false`を返しました。`false`を代入すると属性は`off`に、`true`なら`on`になります。対応しているかどうかは`'autocorrect' in HTMLElement.prototype`で判定できます。
 
 <PlaygroundEmbed demo="属性の値と反映されるプロパティを見る" headingLevel="h4" sectionId="autocorrect" />
 
