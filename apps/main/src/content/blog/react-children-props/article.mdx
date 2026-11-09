@@ -9,7 +9,9 @@ updatedAt: 2026-11-09
 
 ## はじめに
 
-`children`として任意のコンポーネントを受け取る親コンポーネントから、子コンポーネントにpropsを渡したいことがあります。
+`children`は、コンポーネントのタグの間に書いた要素を受け取るpropsです。TypeScriptでは、propsの型を`PropsWithChildren`で包むと`children`の型（`ReactNode`）が足されます。
+
+`children`として受け取った要素に、親コンポーネントからpropsを渡したいことがあります。たとえば、受け取ったボタンに親が`onClick`を足したい場面です。呼び出し側で`children`の要素にpropsを書けるなら、それで足ります。親が持つ値や関数を、呼び出し側を通さずに`children`へ渡したいときに、この記事の方法が要ります。
 
 ```tsx
 import { FC, PropsWithChildren } from 'react';
@@ -54,7 +56,9 @@ const ParentComponent: FC<PropsWithChildren> = ({ children }) => {
 `cloneElement`の第1引数は`ReactElement`を渡したいので、`ReactNode`から`isValidElement`を用いて`ReactElement`を抽出しました。
 `children`が`ReactElement`ではなかった場合は`button`要素で囲んだものを渡すようにしています。
 
-第2引数には上書きしたい`props`をオブジェクトで渡します。上書きされるのは第2引数に渡したキーだけで、`children`が元々持っていたほかの`props`は残ります。ただし、`children`が`onClick`を持っていた場合、その`onClick`は親の`onClick`に置き換わって呼ばれなくなります。
+`<ParentComponent><button>押す</button></ParentComponent>`と書くと、ボタンを押したときに親のアラートが出ます。`<ParentComponent>押す</ParentComponent>`のように文字列を渡すと、`<button>押す</button>`として描かれます。
+
+第2引数には上書きしたい`props`をオブジェクトで渡します。上書きされるのは第2引数に渡したキーだけで、`children`が元々持っていたほかの`props`は残ります。React 19.3.1で`className`と`type`と`onClick`を持つ`button`要素を複製し、`onClick`だけを渡すと、`className`と`type`は残りました（Node.js 26.13.0の`renderToStaticMarkup`で確認）。ただし、`children`が`onClick`を持っていた場合、その`onClick`は親の`onClick`に置き換わって呼ばれなくなります。
 子の`onClick`も呼びたい場合は、`isValidElement`の型引数で`props`の型を決め、親の`onClick`の中から子の`onClick`を呼びます。
 
 ```tsx
@@ -91,11 +95,15 @@ const ParentComponent: FC<PropsWithChildren> = ({ children }) => {
 };
 ```
 
-`Slot`は子要素に自身の`props`をマージして渡します。これにより、`cloneElement`を直接使用するよりも可読性が高く、型安全なコードを書けます。
+`Slot`は子要素に自身の`props`をマージして渡します。これにより、`cloneElement`を直接使用するよりも可読性が高いコードを書けます。
+
+`@radix-ui/react-slot` 1.5.0で試すと、マージの決まりはpropsによって違いました。`onClick`のようなイベントハンドラーは、子のものと`Slot`のものが子、`Slot`の順に両方呼ばれます。`className`はつながり、`style`は合わさり、それ以外のpropsは子の値が残ります。`cloneElement`と違って子の`onClick`が消えないので、上の両方を呼ぶコードは要りません。
+
+`children`に文字列だけを渡すと、`Slot failed to slot onto its children.`というエラーになります。`Slot`の`children`には要素を1つだけ渡します。
 
 ## render propパターン
 
-続いては[render propパターン](https://ja.react.dev/reference/react/cloneElement#passing-data-with-a-render-prop)呼ばれる`props`を利用した実装です。
+続いては[render propパターン](https://ja.react.dev/reference/react/cloneElement#passing-data-with-a-render-prop)と呼ばれる`props`を利用した実装です。
 親コンポーネントは`renderItem`という関数を`props`として受け取り、渡したい`props`を引数にしてその関数を呼び出します。
 
 ```tsx
@@ -134,4 +142,4 @@ const ParentComponent: FC<Props> = ({ renderItem }) => {
 
 この記事では、`children`にpropsを渡す方法として`cloneElement`とrender propパターンを紹介しました。
 
-`cloneElement`はレガシーAPIのため、直接使用するのではなく`@radix-ui/react-slot`の`Slot`で隠蔽することをおすすめします。また、型安全で明示的なrender propパターンも検討してみてください。
+`cloneElement`はレガシーAPIのため、新しく実装するなら、型安全で明示的なrender propパターンをおすすめします。`children`を受け取る形を保ちたいときは、`cloneElement`を直接使用せずに`@radix-ui/react-slot`の`Slot`で隠蔽してください。
