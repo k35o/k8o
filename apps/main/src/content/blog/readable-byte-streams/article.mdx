@@ -1,6 +1,6 @@
 ---
-title: 'Readable Byte Streamsでバイナリデータを効率的に読み取る'
-description: 'Readable Byte Streamsは、ReadableStreamのバイトストリーム拡張で、内部キューを経由せずバッファへ直接書き込む経路を提供します。BYOBリーダーによるバッファの持ち込みや、autoAllocateChunkSizeによるデフォルトリーダーとの互換性を解説します。'
+title: 'Readable Byte Streamsでバイナリを読み込む'
+description: 'Readable Byte Streamsは、読み取り側が確保したバッファにバイナリデータを書き込ませるReadableStreamです。fetchのレスポンスの先頭だけを読んだり、1つのバッファを使い回したりできます。'
 createdAt: 2026-04-05
 updatedAt: 2026-04-05
 featureIds:
@@ -8,7 +8,7 @@ featureIds:
 ---
 
 
-# Readable Byte Streamsでバイナリデータを効率的に読み取る
+# Readable Byte Streamsでバイナリを読み込む
 
 <BrowserSupportStatus featureId="readable-byte-streams" />
 
