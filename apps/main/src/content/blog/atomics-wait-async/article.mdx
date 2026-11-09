@@ -1,6 +1,6 @@
 ---
-title: Atomics.waitAsyncで非同期に共有メモリ上のデータを待機する
-description: Baseline 2025にAtomics.waitAsyncが追加されました。Atomics.waitの非同期版のメソッドで、メインスレッドで共有メモリ上のデータを待機したい場合に便利です。
+title: 'Atomics.waitAsyncでメインスレッドを止めずに待つ'
+description: 'Atomics.waitAsyncは、共有メモリの値がnotifyで通知されるのをPromiseで待ちます。スレッドを止めないので、メインスレッドでもWorkerからの通知を待てます。Baseline 2025で使えます。'
 createdAt: 2025-11-15
 updatedAt: 2025-11-15
 featureIds:
@@ -8,7 +8,7 @@ featureIds:
 ---
 
 
-# Atomics.waitAsyncで非同期に共有メモリ上のデータを待機する
+# Atomics.waitAsyncでメインスレッドを止めずに待つ
 
 <BrowserSupportStatus featureId="atomics-wait-async"></BrowserSupportStatus>
 
