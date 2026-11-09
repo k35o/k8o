@@ -2,7 +2,7 @@
 title: 'Largest Contentful Paint APIで最大コンテンツの描画時間を計測する'
 description: 'Largest Contentful Paint APIはビューポート内で最も大きなコンテンツ要素が描画されるまでの時間を計測するためのAPIです。Web VitalsのLCP指標の計測に使用され、ページの読み込み体験を評価する重要な機能です。'
 createdAt: 2025-12-30
-updatedAt: 2025-12-30
+updatedAt: 2026-11-09
 featureIds:
   - largest-contentful-paint
 ---
@@ -46,7 +46,7 @@ LCPの計測のためのAPIなので、`img`要素、`svg`内の`image`要素、
 
 要素が実際にレンダリングされた時間です。
 
-クロスオリジンのリソースで`Timing-Allow-Origin`ヘッダーが設定されていない場合は`0`になります。
+クロスオリジンの画像で`Timing-Allow-Origin`ヘッダーが無い場合、以前は`0`でしたが、今は少し粗くした時刻を返してよいことになっています。Chrome 156、Safari 27.2、Firefox 159で`Timing-Allow-Origin`を付けずに別のオリジンの画像を読むと、どれも`0`ではなく描画の時刻が入りました。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
 
 #### loadTime
 
