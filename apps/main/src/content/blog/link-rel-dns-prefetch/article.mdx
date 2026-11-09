@@ -21,12 +21,13 @@ featureIds:
 
 ```html
 <!-- [!og] -->
-<!-- head内に置く必要があります -->
 <head>
   <!-- example.comに対してDNSルックアップを行う -->
   <link rel="dns-prefetch" href="https://example.com">
 </head>
 ```
+
+`<link rel="dns-prefetch">`は`<head>`の中に置くのが一般的ですが、HTMLの仕様では`<body>`の中にも置けます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`<body>`に置いても名前解決が前倒しされました。
 
 `preconnect`と似ていますが、`preconnect`は`dns-prefetch`で行うDNSルックアップに加えて、TCP接続やTLSハンドシェイクを行うところに違いがあります。
 
