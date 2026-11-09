@@ -24,7 +24,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 ## SuspenseListとは
 
-`SuspenseList`は、React18で実験的機能として導入されたコンポーネントで、複数の`Suspense`の読み込み順序や表示パターンを制御できる機能です。
+`SuspenseList`は、2019年にReactの実験的機能として追加されたコンポーネントで、複数の`Suspense`の読み込み順序や表示パターンを制御できる機能です。今も実験版（`react@experimental`）にだけあり、安定版のReact 19.3.1とcanary版には含まれていません。
 複数の非同期処理が同時に発生する場面で、UXを向上させるために使用されます。
 
 <LinkCard href="https://github.com/facebook/react/pull/15902" />
@@ -49,7 +49,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 ### revealOrder
 
-`revealOrder`は、子要素の表示順序を制御します。
+`revealOrder`は、子要素の表示順序を制御します。省略すると`forwards`になります。
 
 #### forwards（順次表示）
 
@@ -63,13 +63,15 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 #### backwards（逆順表示）
 
-子要素を下から順番に表示します。最後の要素から逆順で表示されます。
+子要素を逆の順に並べて、下から順番に表示します。最初の子要素がいちばん下に置かれ、そこから上へ表示されます。
 
 ```jsx
 <SuspenseList revealOrder="backwards" tail="hidden">
-  {/* 最後の要素から逆順で表示 */}
+  {/* 最初の子要素をいちばん下に置き、下から順に表示 */}
 </SuspenseList>
 ```
+
+並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。
 
 #### together（同時表示）
 
@@ -91,18 +93,13 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 </SuspenseList>
 ```
 
-`independent`は執筆当時のReactの最新版19.1では動きません。下の対応が追加されることで利用が可能になります。
+`independent`は、以前は`revealOrder`を省いたときの動作でした。下の変更で値として渡せるようになり、そのあと`revealOrder`の既定値が`forwards`に変わりました。
 
 <LinkCard href="https://github.com/facebook/react/pull/33424" />
 
-この対応に追従する[`@types/react`側の対応](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/72949)が先に完了しているので、最新の`@types/react`を用いている場合は`independent`を付与しても型エラーが発生しないことに注意してください。
-
-[React側の変更](https://github.com/facebook/react/pull/33424)では`revealOrder`を渡さなかったときの動作を`independent`という値を渡した時に動くようにして、デフォルト値を渡せないようにしています。
-そのため、最新のReactと`@types/react`を使用している場合は、`independent`相当の動作を起こせないのに注意してください（この動作を実現したい時は`SuspenseList`を使う必要がないのですぐに気にする必要はなさそうです）。
-
 ### tail
 
-`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。
+`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。省略すると`hidden`になります。
 
 #### collapsed
 
@@ -116,7 +113,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 #### hidden
 
-すべての子要素のフォールバックUIを非表示にします。
+準備前の子要素のフォールバックUIを表示しません。前の子要素が表示されるまで、その下には何も出ません。
 
 ```jsx
 <SuspenseList revealOrder="forwards" tail="hidden">
@@ -144,7 +141,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 </SuspenseList>
 ```
 
-この値も`revealOrder`の`independent`と同様に、執筆当時のReactの最新版19.1では動きません。対応を待ちましょう。
+`visible`は、以前は`tail`を省いたときの動作でした。`independent`と同じ変更で値として渡せるようになっています。
 
 ## SuspenseListの利点
 
@@ -155,7 +152,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 ## Playground
 
-当初はこのPlaygroundで`revealOrder`や`tail`を切り替えながら`SuspenseList`を体験できましたが、その後のReact・Next.jsの更新で、このサイトが動く環境（React 19.2 / Next.js 16）では`SuspenseList`自体が利用できなくなりました。現在のPlaygroundでは、`SuspenseList`なしで複数の`Suspense`が並列に解決されていく様子と、フォールバックUIの有無による見え方の違いを確認できます。
+当初はこのPlaygroundで`revealOrder`や`tail`を切り替えながら`SuspenseList`を体験できましたが、このサイトは安定版のReact（19.3.1）で動いていて、`SuspenseList`を含まないため使えません。現在のPlaygroundでは、`SuspenseList`なしで複数の`Suspense`が並列に解決されていく様子と、フォールバックUIの有無による見え方の違いを確認できます。
 
 <PlaygroundEmbed
   demo="SuspenseListによる読み込み制御"
@@ -169,12 +166,4 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 `SuspenseList`は複数の非同期コンポーネントの表示を制御する強力な機能です。適切に使用することで、UXを大幅に向上させることができます。
 
-Reactのブログで紹介された`ViewTransition`・`addTransitionType`・`Activity`、今回紹介した`SuspenseList`の他にも実験的な機能は5つもあります。
-
-- `unstable_LegacyHidden`
-- `unstable_Scope`
-- `unstable_TracingMarker`
-- `unstable_getCacheForType`
-- `unstable_useCacheRefresh`
-
-興味がある機能があれば触ってみるのはいかがでしょうか。新たな世界を体験できるかもしれません。
+Reactのブログで実験的機能として紹介された`ViewTransition`・`addTransitionType`・`Activity`は安定版のReactに入り、19.3.1にはどれも含まれています。`SuspenseList`は今も実験版にだけあり、既定値や`backwards`の意味が変わっています。使うときは、入れた実験版で`revealOrder`と`tail`の動きを確かめてください。
