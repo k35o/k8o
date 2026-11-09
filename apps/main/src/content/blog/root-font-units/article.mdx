@@ -2,7 +2,7 @@
 title: 'rcap, rch, rex, ric単位でルート要素に基づいたサイズを指定する'
 description: 'rcap, rch, rex, ricはルート要素のフォントの特性に基づいたCSSの長さ単位です。cap, ch, ex, icのルート要素を基準にした単位として、ページ全体で一貫したサイズ指定が可能になります。'
 createdAt: 2026-01-20
-updatedAt: 2026-01-20
+updatedAt: 2026-11-09
 featureIds:
   - rcap
   - rch
@@ -62,10 +62,12 @@ CSSにはフォントに基づいた相対単位があります。`em`や`ex`、
 ```css
 /* [!og] */
 .input-number {
-  /* 数字10桁分の幅を確保 */
+  /* 入力欄の文字サイズに関係なく、ルートの文字で数字10桁分の幅にそろえる */
   width: 10rch;
 }
 ```
+
+`10rch`は、入力欄の中の数字10桁が収まる幅ではありません。入力欄は既定で親のフォントを継承せず、Chrome 156では13.33pxのArialで描かれます。`font-size: 24px`の入力欄に`width: 10rch`を指定すると、Chrome 156、Safari 27.2、Firefox 159のいずれでも10桁の数字が収まりませんでした（Chrome 156では幅109pxに対して中身が137px）。中の数字に合わせるなら`10ch`を使います。
 
 ### rex
 
