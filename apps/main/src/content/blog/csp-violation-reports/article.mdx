@@ -1,6 +1,6 @@
 ---
-title: 'CSP violation reportsでContent Security Policyの違反を検知する'
-description: 'Content Security Policyに違反するリソースの読み込みやスクリプトの実行は、CSP violation reportsとして収集できます。report-toディレクティブによるサーバー送信とsecuritypolicyviolationイベントによるクライアントサイド検知、2つの方法でCSPの違反を可視化する方法を解説します。'
+title: 'CSP違反をReport-Onlyとreport-toで検知する'
+description: 'CSPに違反した読み込みや実行を、report-toでサーバーに集め、securitypolicyviolationイベントでページ内から検知します。Report-Onlyでポリシーを強制せずに試す方法と、届くレポートの形も説明します。'
 createdAt: 2026-05-15
 updatedAt: 2026-05-15
 featureIds:
@@ -8,7 +8,7 @@ featureIds:
 ---
 
 
-# CSP violation reportsでContent Security Policyの違反を検知する
+# CSP違反をReport-Onlyとreport-toで検知する
 
 <BrowserSupportStatus featureId="reporting-csp-violations" />
 
