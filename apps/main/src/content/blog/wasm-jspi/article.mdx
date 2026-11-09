@@ -1,13 +1,13 @@
 ---
-title: 'WebAssemblyのJSPIで同期的なコードから非同期のJavaScriptを呼ぶ'
-description: 'JSPI（JavaScript Promise Integration）は、WebAssemblyから呼んだJavaScript関数がPromiseを返したとき、呼び出し元の実行を中断して解決後に再開する仕組みです。WebAssemblyとJavaScriptのつなぎ方から順に追い、Baseline 2026で主要ブラウザに揃ったJSPIを使ってC++やRustの同期的なコードからfetch()のような非同期APIを呼べるようになるまでを説明します。'
+title: 'JSPIでWebAssemblyから非同期関数の結果を待つ'
+description: 'JSPIは、WebAssemblyから呼んだJS関数がPromiseを返すと、解決まで実行を止めて待つ仕組みです。C++やRustの同期的なコードから、fetch()などの非同期APIを呼べます。Baseline 2026で使えます。'
 createdAt: 2026-09-27
-updatedAt: 2026-09-27
+updatedAt: 2026-11-09
 featureIds:
   - wasm-jspi
 ---
 
-# WebAssemblyのJSPIで同期的なコードから非同期のJavaScriptを呼ぶ
+# JSPIでWebAssemblyから非同期関数の結果を待つ
 
 <BrowserSupportStatus featureId="wasm-jspi" />
 
