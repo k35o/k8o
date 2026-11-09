@@ -1,14 +1,13 @@
 ---
-title: WebAssemblyのBranch Hintingで分岐予測を助ける
-description: Branch HintingはWebAssemblyのbr_ifやifの分岐に対してどちらに進みやすいかをメタデータとしてカスタムセクションに埋め込み、エンジンの最適化を助ける仕組みです。Baseline 2026で揃ったので、ホットパスのチューニングに使える選択肢になりました。
+title: 'Branch Hintingでwasmの分岐にlikelyを付ける'
+description: 'Branch Hintingは、WebAssemblyのifやbr_ifがどちらに進みやすいかをエンジンに伝えるメタデータです。C++の[[likely]]と同じヒントをwasmに残せます。Baseline 2026で使えます。'
 createdAt: 2026-05-23
 updatedAt: 2026-11-09
 featureIds:
   - wasm-branch-hinting
 ---
 
-
-# WebAssemblyのBranch Hintingで分岐予測を助ける
+# Branch Hintingでwasmの分岐にlikelyを付ける
 
 <BrowserSupportStatus featureId="wasm-branch-hinting" />
 
