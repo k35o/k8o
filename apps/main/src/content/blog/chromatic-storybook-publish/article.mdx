@@ -71,7 +71,7 @@ ChromaticにPublishすると、リモートのMCPサーバーとして常時利�
 
 上記のように利用するエージェントのMCP設定にURLを登録しておけば、ローカルのStorybookを起動していなくてもコンポーネント情報を参照できます。
 
-Storybookの公開設定がPrivateの場合は、`oauth`の設定を追加する必要があります。`clientId`はChromatic共通の値です。
+Storybookの公開設定がPrivateの場合は、認証の設定を追加する必要があります。Claude Codeでは`oauth`の`clientId`に、Chromatic共通の値を書きます（Cursorでは`auth.client_id`、Codexでは`auth.CLIENT_ID`に書きます）。
 
 ```json
 {
@@ -97,13 +97,13 @@ ChromaticにPublishするだけでリモートMCPサーバーが手に入るの�
 
 Storybook MCPサーバーはDocs、Development、Testingの3つの[ツールセット](https://storybook.js.org/docs/ai/mcp/overview#toolsets)を提供していますが、ChromaticにPublishしたリモートMCPサーバーで利用できるのはDocsツールセットのみです。DevelopmentやTestingはローカルのStorybook開発サーバーでのみ利用できます。
 
-Docsツールセットには以下のツールが含まれます。
+Docsツールセットには以下のツールが含まれます。名前は、Storybook 10.6.5でビルドして公開したMCPサーバーのものです。
 
-- `list-all-documentation`: 利用可能なコンポーネントとドキュメントの一覧を取得する
-- `get-documentation`: 個別のコンポーネントの詳細（Props情報、ストーリー、使用例など）を参照する
-- `get-documentation-for-story`: 特定のストーリーのコードとドキュメントを取得する
+- `docs-list`: 利用可能なコンポーネントとドキュメントの一覧を取得する
+- `docs-show`: 個別のコンポーネントの詳細（Props情報、ストーリー、使用例など）を参照する
+- `docs-show-story`: 特定のストーリーのコードとドキュメントを取得する
 
-`list-all-documentation`で利用可能なコンポーネントを探り、`get-documentation`で詳細を確認し、`get-documentation-for-story`でユースケースを深掘りする、というように段階的にコンテキストを深めていく形で利用します。
+`docs-list`で利用可能なコンポーネントを探り、`docs-show`で詳細を確認し、`docs-show-story`でユースケースを深掘りする、というように段階的にコンテキストを深めていく形で利用します。
 
 ローカルではこれに加えて、ストーリーの書き方ガイドやプレビューを提供するDevelopmentツールセットや、ストーリーのテスト実行とアクセシビリティチェックを行うTestingツールセットも利用できます。これらがリモートMCPサーバーでも使えるようになると嬉しいのですが、現状はローカル限定なのが残念です。
 
@@ -131,30 +131,28 @@ Storybook Compositionは、複数のStorybookを1つのStorybookのUIに統合�
 
 デザインシステムやコンポーネントライブラリが別リポジトリで管理されている場合、そのStorybookをChromaticにPublishしておくと、自分のStorybookから参照して統合表示できます。
 
-`.storybook/main.ts`に`refs`を追加して、外部のStorybookを参照します。このサイトでは、デザインシステムである[ArteOdyssey](https://main--687a213c85e2e4589d8db1bb.chromatic.com/)のStorybookをCompositionで統合しています。実際の設定は以下のようになっています。
+`.storybook/main.ts`に`refs`を追加して、外部のStorybookを参照します。このサイトでは、デザインシステムである[@k8ordo/ui](https://main--687a213c85e2e4589d8db1bb.chromatic.com/)のStorybookをCompositionで統合しています。実際の設定は以下のようになっています。
 
 ```ts
-import type { StorybookConfig } from '@storybook/nextjs-vite';
+import { defineMain } from '@storybook/react-vite/node';
 
-const config: StorybookConfig = {
+export default defineMain({
   // ...
   refs: {
-    'arte-odyssey': {
-      title: 'ArteOdyssey',
+    'k8ordo-ui': {
+      title: '@k8ordo/ui',
       url: 'https://main--687a213c85e2e4589d8db1bb.chromatic.com',
     },
   },
-};
-
-export default config;
+});
 ```
 
-Storybookを起動すると、サイドバーにArteOdysseyのコンポーネントが並列表示されます。
+Storybookを起動すると、サイドバーに@k8ordo/uiのコンポーネントが並列表示されます。
 
 <Image
   src={compositionSidebar}
-  alt="Storybookのサイドバーに自分のプロジェクトのコンポーネントとArteOdysseyのコンポーネントが並列表示されている"
-  width={586}
+  alt="Storybookのサイドバーに自分のプロジェクトのコンポーネントと@k8ordo/uiのコンポーネントが並列表示されている"
+  width={598}
   height={1594}
 />
 
@@ -162,9 +160,11 @@ Storybookを起動すると、サイドバーにArteOdysseyのコンポーネン
 
 ### MCPサーバーとの連携
 
-ローカルのMCPサーバーであれば、Storybook Compositionと組み合わせることもできます。外部のStorybookがマニフェストを生成している場合、`refs`に登録しておくことで、MCPサーバーが外部のコンポーネント情報もまとめて提供します。AIエージェントが`list-all-documentation`を実行すると、自分のプロジェクトのコンポーネントだけでなく、Compositionで統合した外部のコンポーネント情報も取得できます。
+MCPサーバーは、Storybook Compositionと組み合わせることもできます。外部のStorybookがマニフェストを生成している場合、`refs`に登録しておくことで、MCPサーバーが外部のコンポーネント情報もまとめて提供します。AIエージェントが`docs-list`を実行すると、自分のプロジェクトのコンポーネントだけでなく、Compositionで統合した外部のコンポーネント情報も取得できます。ソースが複数になると、`docs-show`と`docs-show-story`には、どのStorybookかを表す`storybookId`（自分のものは`local`、外部のものは`refs`のキー）を渡します。
 
-ただし、現状ではMCP Compositionはローカルのみ対応しており、ChromaticにPublishしたリモートMCPサーバーでは自身のStorybookのコンポーネント情報のみが提供されます。なお、マニフェストの生成は現状Reactプロジェクトが中心です。
+Storybook 10.6.5のこのサイトのStorybookで試すと、ローカルの開発サーバーのMCPサーバーでは、`storybookId`に`k8ordo-ui`を渡した`docs-show`で@k8ordo/uiのButtonの詳細が取れました。ChromaticにPublishしたリモートMCPサーバーでも、`docs-list`は@k8ordo/uiのコンポーネントをまとめて返します。ところが、リモートの`docs-show`と`docs-show-story`は入力に`storybookId`を持たず、渡しても`storybookId is required.`のエラーになり、自分のコンポーネントの詳細も取れませんでした（2026年11月9日に確認）。`refs`の無い@k8ordo/uiのリモートMCPサーバーでは、`docs-show`はそのまま使えます。
+
+なお、ChromaticのドキュメントではMCPサーバーにStorybook 10.3以上とReactが要るとされています。
 
 ## おわりに
 
@@ -172,6 +172,6 @@ Storybookを起動すると、サイドバーにArteOdysseyのコンポーネン
 
 しかし、MCPサーバーの登場によってAIエージェントにコンポーネント情報を提供できるようになり、Storybook Compositionによって別リポジトリのデザインシステムも統合して扱えるようになりました。Storybookの静的なホスティングにとどまらず、PublishしたStorybookを起点にした動的な機能が使えるようになっているのは嬉しいです。
 
-現状ではDevelopment・TestingツールセットやMCP Compositionなど、ローカルのStorybook開発サーバーでしか利用できない機能もあります。これらがリモートMCPサーバーでも利用できるようになる日が楽しみです。
+現状ではDevelopment・Testingツールセットなど、ローカルのStorybook開発サーバーでしか利用できない機能もあります。MCP Compositionも、リモートMCPサーバーでは一覧は取れても詳細が取れませんでした。これらがリモートMCPサーバーでも利用できるようになる日が楽しみです。
 
 Chromaticはビジュアルテストやレビュー機能が注目されがちですが、Publishするだけでもこれだけの価値があります。まだ試していない方はぜひ導入を検討してみてください。
