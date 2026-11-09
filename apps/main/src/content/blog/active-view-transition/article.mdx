@@ -86,7 +86,7 @@ document.startViewTransition({
 }
 ```
 
-ページをまたぐ遷移では、移った先のページのCSSに`@view-transition`を書きます。Chrome 156とSafari 27.2はこの規則を`CSSViewTransitionRule`として読み、`types`に`slide`が入りました。Firefox 159は規則ごと読み捨てるので、ページをまたぐ遷移そのものが動きません。
+ページをまたぐ遷移では、移る前と後の両方のページのCSSに`@view-transition`を書きます。Chrome 156とSafari 27.2はこの規則を`CSSViewTransitionRule`として読み、`types`に`slide`が入りました。Firefox 159は規則ごと読み捨てるので、ページをまたぐ遷移そのものが動きません。
 
 ## 基本的な使い方
 
