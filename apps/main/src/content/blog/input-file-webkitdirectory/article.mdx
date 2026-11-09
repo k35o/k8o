@@ -2,7 +2,7 @@
 title: input要素でディレクトリを扱うwebkitdirectory属性
 description: input要素のwebkitdirectory属性がBaseline 2025に追加されました。webkitdirectory属性を利用することで、input要素のtype="file"でディレクトリを選択できるようになります。
 createdAt: 2025-11-08
-updatedAt: 2025-11-08
+updatedAt: 2026-11-09
 featureIds:
   - input-file-webkitdirectory
 ---
@@ -40,8 +40,8 @@ import {
 <WebkitDirectoryInputExample />
 
 ## webkitdirectory属性
-`webkitdirectory`属性にはユーザーにディレクトリの選択をさせるときに`true`、ファイルを選択するときは`false`を渡します。
-デフォルトは挙動からもわかる通り`false`です。
+`webkitdirectory`は真偽値の属性で、付けるとディレクトリの選択になり、付けなければファイルの選択になります。
+値は見ないので、`webkitdirectory="false"`と書いてもディレクトリの選択になります。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`webkitdirectory="false"`の`input`の`webkitdirectory`プロパティは`true`でした。JavaScriptから切り替えるときは、プロパティに`true`か`false`を入れると属性が付け外しされます。
 
 ### ファイルの取得
 `webkitdirectory`属性を付与した`<input>`要素で選択したファイルの取得は、`multiple`属性を指定した時の取得方法と同じように`files`プロパティから取得します。
@@ -89,6 +89,6 @@ for (const file of files ?? []) {
 <LinkCard href="https://wicg.github.io/entries-api/#html-forms" />
 
 ## おわりに
-`input`要素でファイルを扱う際に、`webkitRelativePath`属性を利用することでディレクトリごと選択可能になり、より高度なファイル操作が可能になりました。
+`input`要素でファイルを扱う際に、`webkitdirectory`属性を利用することでディレクトリごと選択可能になり、より高度なファイル操作が可能になりました。
 
 `webkitdirectory`属性のような`webkit`prefixがついている機能は利用を躊躇いますが、Baseline 2025に追加されたことで安心して利用できるようになったのではないでしょうか。
