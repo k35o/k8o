@@ -27,7 +27,7 @@ const sab = new SharedArrayBuffer(4);
 const int32 = new Int32Array(sab);
 ```
 
-`Atomics`は静的なメソッドのみを持つオブジェクトで、共有メモリ上のデータを他の処理に割り込まれずに一度に完了する操作（不可分操作、Atomics操作）を行う関数や複数の実行単位でイベントを待機したり通知したりするための関数を提供します。​
+`Atomics`は静的なメソッドのみを持つオブジェクトで、共有メモリ上のデータを他の処理に割り込まれずに一度に完了する操作（不可分操作、Atomics操作）を行う関数や複数の実行単位でイベントを待機したり通知したりするための関数を提供します。
 
 ### 不可分操作、Atomics操作
 
@@ -102,15 +102,15 @@ console.log(Atomics.load(int32, 0)); // 1
 
 ```js
 // 0番目の値が1の場合に2で置き換える
-const oldValue = Atomics.compareExchange(int32, 0, 1, 2);
-console.log(oldValue); // 1
+const previous = Atomics.compareExchange(int32, 0, 1, 2);
+console.log(previous); // 1
 console.log(Atomics.load(int32, 0)); // 2
 ```
 
 ### イベントの待機と通知
 
 `Atomics`は`wait`と`notify`によってスレッド間でイベントを待機したり通知したりします。
-これらのメソッドは`SharedArrayBuffer`を元にした`Int32Array`または`BigInt64Array`でのみ利用可能です。
+`wait`は`SharedArrayBuffer`を元にした`Int32Array`または`BigInt64Array`でのみ利用でき、共有していない配列を渡すと`TypeError`になります。`notify`は共有していない配列にも呼べますが、待機しているスレッドが無いので常に0を返します。
 
 `wait`は指定したインデックスの値が指定した値と一致する場合`notify`からの通知があるまで待機します。
 待機中、スレッドはブロックされます。そのため、メインスレッドから呼び出すことは許可されていません。
@@ -129,7 +129,7 @@ console.log('waited');
 console.log(Atomics.load(int32, 0)); // 1
 ```
 
-`wait`で待機したスレッドが自動で再開することはありません。`notify`を使って通知する必要があります。
+タイムアウトを渡さなければ、`wait`で待機したスレッドは`notify`で通知されるまで再開しません。
 `notify`は指定したインデックスの値で待機しているスレッドに対して通知を送信します。
 
 ```js
@@ -182,8 +182,8 @@ do {
 上記の`SpinForALittleBit`はロックが解放されるのを待つ間に短時間だけ待機させるように、CPUに対して「現在スピン中である」というヒントを与える関数です。これによりリソースの消費の最適化が行われます。
 `Atomics.pause`はこれを実現したメソッドになります。
 
-`Atomics.pause`には任意引数があり、待機時間についてのヒントを正の整数で渡します(ヒントが利用されることは保証されていません)。利用された場合は、与えられた値より小さい値を渡された時の待機時間以上は待つように働きます。
-[Intleの最適化マニュアル](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html)ではループにおいてこれを使ったBackoff戦略を利用することが推奨されています。
+`Atomics.pause`には任意引数があり、待機時間についてのヒントを整数で渡します（ヒントが利用されることは保証されていません）。利用された場合は、与えられた値より小さい値を渡された時の待機時間以上は待つように働きます。
+[Intelの最適化マニュアル](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html)ではループにおいてこれを使ったBackoff戦略を利用することが推奨されています。
 
 ## おわりに
 
