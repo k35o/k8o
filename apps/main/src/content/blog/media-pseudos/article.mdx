@@ -1,13 +1,13 @@
 ---
-title: ':playingと:pausedでメディアの再生状態にCSSを追従させる'
-description: ':playing、:paused、:muted、:seeking、:buffering、:stalled、:volume-lockedは、audioとvideoの再生状態にマッチするCSS疑似クラスです。Baseline 2026になり、:has()と組み合わせればJavaScriptを経由せずにプレイヤーUI全体を再生状態に追従させられます。ただしChromeでの出荷は155の予定で、152ではまだ動きません。'
+title: ':playingと:pausedで動画の再生中だけスタイルを変える'
+description: ':playingと:pausedは、videoやaudioが再生中か一時停止中かに当たるCSSの疑似クラスです。:has()と組み合わせ、再生ボタンやスピナーの出し分けをイベントなしで書けます。Chrome 156は未対応です。'
 createdAt: 2026-09-09
-updatedAt: 2026-09-09
+updatedAt: 2026-11-09
 featureIds:
   - media-pseudos
 ---
 
-# :playingと:pausedでメディアの再生状態にCSSを追従させる
+# :playingと:pausedで動画の再生中だけスタイルを変える
 
 <BrowserSupportStatus featureId="media-pseudos" />
 
