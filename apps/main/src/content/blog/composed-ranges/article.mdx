@@ -1,13 +1,13 @@
 ---
-title: Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges
-description: getComposedRangesは、Shadow DOM境界を跨いだ選択範囲を取得できるSelectionオブジェクトのメソッドです。ShadowRootを指定することで、カプセル化された要素も正確に選択範囲として扱えます。
+title: 'getComposedRangesでShadow DOM内の選択を取得'
+description: 'getComposedRanges()は、Shadow DOMの中や境界をまたいで選んだ範囲を、中のテキストノードの位置で返すSelectionのメソッドです。getRangeAt(0)では崩れる選択範囲も正しく取れます。'
 createdAt: 2025-08-25
 updatedAt: 2026-11-09
 featureIds:
   - composed-ranges
 ---
 
-# Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges
+# getComposedRangesでShadow DOM内の選択を取得
 
 <BrowserSupportStatus featureId="composed-ranges" />
 
