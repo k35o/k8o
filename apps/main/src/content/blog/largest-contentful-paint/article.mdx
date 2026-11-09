@@ -117,13 +117,15 @@ const observer = new PerformanceObserver((list) => {
 
 observer.observe({ type: 'largest-contentful-paint', buffered: true });
 
-// ユーザーインタラクション時にLCPを確定
-['keydown', 'click', 'pointerdown'].forEach((type) => {
+// ユーザーの最初の操作でLCPを確定
+const controller = new AbortController();
+for (const type of ['keydown', 'pointerdown']) {
   window.addEventListener(type, () => {
     console.log(`最終LCP: ${lcpValue}ms`);
     observer.disconnect();
-  }, { once: true });
-});
+    controller.abort();
+  }, { signal: controller.signal });
+}
 ```
 
 最終的な状態を確定することはできないので、ここではユーザーの最初のインタラクション時にLCPを確定しています。
