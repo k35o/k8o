@@ -2,7 +2,7 @@
 title: 'Scoped custom element registriesで同じ名前のカスタム要素を共存させる'
 description: 'Scoped custom element registriesは、グローバルなcustomElementsとは別にカスタム要素のレジストリを作り、シャドウルートに結びつける仕組みです。Safari 26とChrome 146に続いてFirefox 159が対応し、Baseline 2026に加わりました。レジストリの結びつけ方、要素のレジストリが決まるタイミング、宣言的Shadow DOMでの使い方を整理します。'
 createdAt: 2026-11-07
-updatedAt: 2026-11-07
+updatedAt: 2026-11-09
 featureIds:
   - scoped-custom-element-registries
 ---
@@ -59,7 +59,7 @@ customElements.define('scoped-panel', ScopedPanel);
 <scoped-panel></scoped-panel> <!-- 中の x-badge は BadgeV2 -->
 ```
 
-`scoped-panel`のシャドウルートの中の要素は、定義を`registry`からだけ探し、`customElements`は見ません。そのため、中の`x-badge`は`BadgeV2`になり、ページの`BadgeV1`とは衝突しません。逆に`registry`に無い名前は、`customElements`に定義があっても未定義のまま残ります。シャドウルートの中を`innerHTML`や`setHTMLUnsafe()`で書いたときも、パーサーはこのレジストリで要素を作ります。
+`scoped-panel`のシャドウルートの中の要素は、定義を`registry`からだけ探し、`customElements`は見ません。そのため、中の`x-badge`は`BadgeV2`になり、ページの`BadgeV1`とは衝突しません。逆に`registry`に無い名前は、`customElements`に定義があっても未定義のまま残ります。シャドウルートの`innerHTML`や、シャドウルートの中の要素の`innerHTML`・`setHTMLUnsafe()`で書いたときも、パーサーはこのレジストリで要素を作ります。ただし、シャドウルートの`setHTMLUnsafe()`は、Chrome 156とSafari 27.2ではこのレジストリで要素を作りましたが、Firefox 159では`customElements`の定義で作りました。
 
 オプションを省くと、シャドウルートはこれまでどおりグローバルなレジストリ（`customElements`）に結びつきます。結びついたレジストリは、`shadowRoot.customElementRegistry`や`element.customElementRegistry`で確かめられます。
 
