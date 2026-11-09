@@ -2,7 +2,7 @@
 title: 'Intl.Localeで週の始まりの曜日や書字方向を調べる'
 description: 'Intl.LocaleのgetWeekInfoやgetTextInfoで、週の始まりの曜日や書字方向など、ロケールごとの慣習を取得できます。カレンダーの曜日の並びやdir属性を対応表なしに決められます。Baseline 2026で使えます。'
 createdAt: 2026-08-04
-updatedAt: 2026-08-04
+updatedAt: 2026-11-09
 featureIds:
   - intl-locale-info
 ---
@@ -13,20 +13,22 @@ featureIds:
 
 ## はじめに
 
-2026年7月リリースのFirefox 153の対応で、Intl.Locale infoがBaseline 2026に追加されました。
-`Intl.Locale`からロケール固有の情報を取得できるようにする機能です。
-週の始まりや週末の曜日、書字方向、好まれる暦や時刻表記といった、ロケールに紐づく慣習を標準APIだけで取得できます。
+Intl.Locale infoは、`Intl.Locale`に`getWeekInfo()`や`getTextInfo()`などのメソッドを足す機能で、週の始まりの曜日や書字方向といったロケールごとの慣習を返します。2026年7月リリースのFirefox 153の対応で、Baseline 2026に追加されました。
+
+日付や数値をロケールに合わせて表示するだけなら、`Intl.DateTimeFormat`や`Intl.NumberFormat`がロケールの慣習に従って整形するので足ります。カレンダーの列を何曜日から並べるかや、ページの`dir`属性のように、慣習の値そのものを受け取ってUIを組むときに、Intl.Locale infoが要ります。
 
 ```js
 // [!og]
 const locale = new Intl.Locale('ja-JP');
 
-locale.getWeekInfo();
+console.log(locale.getWeekInfo());
 // { firstDay: 7, weekend: [6, 7] }
 
-locale.getTextInfo();
+console.log(locale.getTextInfo());
 // { direction: 'ltr' }
 ```
+
+コンソールに貼ると、日本語の日本では週が日曜（7）から始まり、土曜（6）と日曜が週末で、文字を左から右へ書くことが分かります。
 
 <LinkCard href="https://github.com/tc39/proposal-intl-locale-info" />
 
@@ -55,6 +57,8 @@ Intl.Locale infoは、この`Intl.Locale`へ7つのメソッドを追加しま�
 - `getCollations()`: 文字列の並べ替え規則
 - `getTimeZones()`: 地域で使われるタイムゾーン
 
+TypeScript 7.0.2では、`lib`に`esnext`を含めると7つのメソッドの型が付きます。`es2025`までだと`Property 'getWeekInfo' does not exist on type 'Locale'`（TS2339）になります。
+
 ## 週の始まりと週末を返すgetWeekInfo
 
 `getWeekInfo()`は`firstDay`と`weekend`を持つオブジェクトを返します。
@@ -74,6 +78,22 @@ new Intl.Locale('ar-EG').getWeekInfo();
 
 日本のカレンダーは日曜始まりで土日が週末、イギリスは月曜始まり、エジプトは土曜始まりで金曜と土曜が週末です。
 カレンダーUIの列の並び順や週末の色分けを、ロケールごとに正しく組み立てられます。
+
+```js
+const tag = 'en-GB';
+const { firstDay, weekend } = new Intl.Locale(tag).getWeekInfo();
+const format = new Intl.DateTimeFormat(tag, { weekday: 'short', timeZone: 'UTC' });
+const days = Array.from({ length: 7 }, (_, i) => ((firstDay - 1 + i) % 7) + 1);
+// 2024年1月1日は月曜なので、1月1〜7日が曜日の1〜7に当たる
+const header = days.map((day) => ({
+  label: format.format(new Date(Date.UTC(2024, 0, day))),
+  isWeekend: weekend.includes(day),
+}));
+console.log(header.map(({ label }) => label).join(' '));
+// Mon Tue Wed Thu Fri Sat Sun
+```
+
+`tag`を`ja-JP`にすると`日 月 火 水 木 金 土`の順になり、`ar-EG`にすると土曜から始まって金曜と土曜の`isWeekend`が`true`になります。Chrome 156、Safari 27.2、Firefox 159で同じ並びでした。
 
 ## 書字方向を返すgetTextInfo
 
@@ -110,6 +130,7 @@ new Intl.Locale('ar-EG').getCalendars();
 ```
 
 日本語ではグレゴリオ暦に加えて和暦（`japanese`）が、エジプトのアラビア語ではコプト暦やヒジュラ暦が候補に入ります。
+`ar-EG`の結果はChrome 156とSafari 27.2のもので、Firefox 159は`islamic`を含めず、4つを返しました。
 
 ## 時刻の表記法を返すgetHourCycles
 
@@ -127,6 +148,8 @@ new Intl.Locale('en-US').getHourCycles(); // ['h12']
 ```
 
 日本語を含む多くのロケールは`h23`が、アメリカ英語は`h12`が既定です。
+
+この結果もChrome 156とSafari 27.2のものです。Firefox 159は既定以外の表記も並べ、`ja-JP`に`['h23', 'h11', 'h12']`を、`en-US`に`['h12', 'h23']`を返しました。先頭が既定なのはどのブラウザでも同じなので、既定の表記を知りたいときは先頭の値を使います。
 
 ## 数字の表記を返すgetNumberingSystems
 
@@ -153,6 +176,7 @@ new Intl.Locale('ja-JP').getCollations();
 
 日本語では、絵文字の並べ替え（`emoji`）や、漢字を部首と画数で並べる方式（`unihan`）などが候補として返ります。
 なお、既定の並べ替えを表す`standard`と検索用の`search`は、仕様で一覧から常に除くと決められています。
+Safari 27.2は`ja-JP`に`['unihan', 'emoji', 'eor']`を返し、アルファベット順になっていませんでした。並びに頼らず、`includes()`で含まれるかを調べます。
 
 返った識別子は、`Intl.Collator`の`collation`オプションに渡して実際の並べ替えへ反映できます。
 
@@ -184,7 +208,10 @@ new Intl.Locale('ja').getTimeZones(); // undefined
 ```js
 new Intl.Locale('ja-JP-u-ca-japanese').getCalendars(); // ['japanese']
 new Intl.Locale('ja-JP-u-hc-h12').getHourCycles(); // ['h12']
+new Intl.Locale('ja-JP-u-fw-mon').getWeekInfo(); // { firstDay: 1, weekend: [6, 7] }
 ```
+
+週の始まりも`fw`で指定でき、Chrome 156、Safari 27.2、Firefox 159のどれでも、`ja-JP-u-fw-mon`は月曜始まりになりました。既定以外の表記も並べるFirefox 159も、`hc`を指定すると`['h12']`だけを返しました。
 
 ユーザーが選んだ暦や時刻表記をロケール識別子に載せて引き回すアプリケーションでは、地域の既定とユーザーの選択を同じコードで解決できます。
 
@@ -202,3 +229,4 @@ new Intl.Locale('ja-JP-u-hc-h12').getHourCycles(); // ['h12']
 
 Firefox 153の対応でBaseline 2026のNewly availableになり、どのブラウザの最新版でも動くようになりました。
 多言語対応のUIを組むときの土台として、まずはカレンダーの週の並びや`dir`属性のような小さなところから使ってみてください。
+`getHourCycles()`や`getCollations()`の返す並びはブラウザで分かれるので、先頭の値か、含まれるかどうかで判断します。
