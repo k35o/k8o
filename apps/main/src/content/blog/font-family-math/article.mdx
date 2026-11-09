@@ -22,12 +22,14 @@ CSSではBaseline 2026より、`font-family`プロパティとして`math`を指
 
 ## font-family: mathとは
 
-`math`は数学的表現に特化した一般フォントファミリーです。以下のような表現に対応しています。
+`math`は、数式の描画に向いたフォントを選ばせる一般フォントファミリーです。選ばれるのは、OpenTypeのMATHテーブルを持つフォントです。MATHテーブルには、次のような表現に要る字形や、添字をずらす量といった寸法が入っています。ブラウザはMathMLの数式を、この寸法を使って組みます。
 
 - 上付き文字・下付き文字: $x^2$や$a_n$などの指数や添字
 - 複数行にまたがる括弧: $$\left( \frac{a}{b} \right)$$
 - 数式の入れ子構造: $$\frac{\frac{a}{b}}{c}$$
 - Blackboard bold: $\mathbb{N}$、$\mathbb{Z}$、$\mathbb{R}$など
+
+この節の式は、KaTeXが自前のフォントで描いたものです。`font-family: math`で描いた式は、次の節の`<math>`要素で見られます。
 
 一般フォントファミリーとは、特定のフォント名ではなくフォントの種類を指定するキーワードです。
 `serif`（明朝体）、`sans-serif`（ゴシック体）、`monospace`（等幅）などがあり、`math`はその数式版として追加されました。
@@ -43,7 +45,7 @@ CSSではBaseline 2026より、`font-family`プロパティとして`math`を指
 }
 ```
 
-`<math>`要素はUAスタイルシートで`font-family: math`が指定することになっています。
+`<math>`要素には、ブラウザの既定のスタイルで`font-family: math`が当たっています。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`<math>`の`font-family`の計算値は`math`でした。
 
 <math display="block">
   <mrow>
@@ -88,7 +90,7 @@ CSSではBaseline 2026より、`font-family`プロパティとして`math`を指
 `serif`を指定したときに明朝体が選ばれるのと同じ仕組みです（実際に選ばれるフォントは環境によって異なります）。
 
 どのフォントが選ばれるかはブラウザとOSの組み合わせによって異なります。
-Windowsには`Cambria Math`、macOS（Ventura以降）には`STIX Two Math`がプリインストールされているため、多くの環境では追加のインストールなしこれらが利用されます。
+macOS 27.2では、Chrome 156、Safari 27.2、Firefox 159のいずれでも、OSに入っている`STIX Two Math`が選ばれました。文字の幅が`font-family: "STIX Two Math"`と一致し、Chrome 156の開発者ツールでも描画に使われたフォントはSTIX Two Mathでした。Windowsには数式用の`Cambria Math`が入っています。
 
 ## デモ
 
