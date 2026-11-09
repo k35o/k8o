@@ -13,14 +13,22 @@ featureIds:
 
 ## はじめに
 
-別々のライブラリが同じタグ名のカスタム要素を使っていたり、同じデザインシステムの新旧の版が1つのページに同居したりすると、後から読み込んだほうの`define()`が失敗します。カスタム要素のレジストリはページ全体で`window.customElements`の1つしかなく、同じ名前を2回は定義できないからです。
+Scoped custom element registriesは、グローバルなレジストリ（`customElements`）とは別の`CustomElementRegistry`を作り、シャドウルートに結びつける仕組みです。シャドウルートごとに定義を分けられるので、同じ名前のカスタム要素を1つのページで別の定義のまま使えます。
+
+名前の重ならないカスタム要素だけを使うなら、これまでどおり`customElements`で足ります。別々のライブラリが同じタグ名のカスタム要素を使っていたり、同じデザインシステムの新旧の版が1つのページに同居したりすると、後から読み込んだほうの`define()`が失敗します。カスタム要素のレジストリはページ全体で`window.customElements`の1つしかなく、同じ名前を2回は定義できないからです。
 
 ```js
 customElements.define('x-badge', BadgeV1);
 customElements.define('x-badge', BadgeV2); // NotSupportedError
 ```
 
-Scoped custom element registriesは、グローバルなレジストリとは別の`CustomElementRegistry`を作り、シャドウルートに結びつける仕組みです。複数のライブラリが互いに調整しなくても共存できるように設計されています。Safari 26とChrome 146に続いてFirefox 159が対応し、Baseline 2026に加わりました。
+2回目の`define()`は、ブラウザごとに次のメッセージの`NotSupportedError`になります。
+
+- Chrome 156: `Failed to execute 'define' on 'CustomElementRegistry': the name "x-badge" has already been used with this registry`
+- Safari 27.2: `Cannot define multiple custom elements with the same tag name`
+- Firefox 159: `CustomElementRegistry.define: 'x-badge' has already been defined as a custom element`
+
+シャドウルートごとにレジストリを分ければ、複数のライブラリが互いに調整しなくても共存できます。Safari 26とChrome 146に続いてFirefox 159が対応し、Baseline 2026に加わりました。
 
 ## レジストリを作ってシャドウルートに結びつける
 
@@ -30,6 +38,17 @@ Scoped custom element registriesは、グローバルなレジストリとは別
 
 ```js
 // [!og]
+class BadgeV1 extends HTMLElement {
+  connectedCallback() {
+    this.textContent = 'v1';
+  }
+}
+class BadgeV2 extends HTMLElement {
+  connectedCallback() {
+    this.textContent = 'v2';
+  }
+}
+
 // ページ全体の x-badge は BadgeV1
 customElements.define('x-badge', BadgeV1);
 
@@ -58,6 +77,8 @@ customElements.define('scoped-panel', ScopedPanel);
 <x-badge></x-badge> <!-- BadgeV1 -->
 <scoped-panel></scoped-panel> <!-- 中の x-badge は BadgeV2 -->
 ```
+
+JavaScriptを`<script>`に入れ、HTMLと一緒に1つのファイルに貼って開くと、v1とv2が並びます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`scoped-panel`の中の`x-badge`は`BadgeV2`のインスタンスになりました。
 
 `scoped-panel`のシャドウルートの中の要素は、定義を`registry`からだけ探し、`customElements`は見ません。そのため、中の`x-badge`は`BadgeV2`になり、ページの`BadgeV1`とは衝突しません。逆に`registry`に無い名前は、`customElements`に定義があっても未定義のまま残ります。シャドウルートの`innerHTML`や、シャドウルートの中の要素の`innerHTML`・`setHTMLUnsafe()`で書いたときも、パーサーはこのレジストリで要素を作ります。ただし、シャドウルートの`setHTMLUnsafe()`は、Chrome 156とSafari 27.2ではこのレジストリで要素を作りましたが、Firefox 159では`customElements`の定義で作りました。
 
@@ -121,7 +142,7 @@ registryA.initialize(panel.shadowRoot); // registryA が設定される
 registryB.initialize(panel.shadowRoot); // 何もしない。registryA のまま
 ```
 
-後から呼んだほうは何もせず、例外も出ません。属性を付け忘れてグローバルなレジストリに結びついたシャドウルートを渡したときも同じです。思ったレジストリになっているかは、`shadowRoot.customElementRegistry`を読んで確かめます。
+Chrome 156、Safari 27.2、Firefox 159のどれでも、後から呼んだほうは何もせず、例外も出ませんでした。属性を付け忘れてグローバルなレジストリに結びついたシャドウルートを渡したときも同じです。思ったレジストリになっているかは、`shadowRoot.customElementRegistry`を読んで確かめます。
 
 ## おわりに
 
