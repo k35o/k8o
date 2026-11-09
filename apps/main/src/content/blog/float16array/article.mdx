@@ -14,7 +14,9 @@ featureIds:
 
 ## Float16Array
 
-`Float32Array`、`Float64Array`のように、浮動小数点数を扱う`TypedArray`として`Float16Array`がBaseline 2025に追加されました。これは、16bit浮動小数点数を扱うための配列です。
+`Float16Array`は、16bit（半精度）の浮動小数点数を1要素2バイトで並べる`TypedArray`です。`Float32Array`や`Float64Array`の16bit版にあたり、Baseline 2025に追加されました。
+
+JavaScriptの中で計算するだけなら、`Float32Array`や`Float64Array`、普通の配列で足ります。WebGPUのシェーダーや機械学習のモデルが16bitの浮動小数点数で受け渡すデータを、ビットを自分で組み立てずに読み書きできるのが`Float16Array`です。
 
 `Float16Array`が持つプロパティやメソッドは、親クラスの`TypedArray`と共通しています。
 各要素のサイズは2byteで、-65,504から65,504までの範囲の数値を扱えます。
@@ -32,6 +34,8 @@ console.log(float16.length); // 3
 console.log(float16.BYTES_PER_ELEMENT); // 2
 ```
 
+コンソールに貼ると、範囲を超えた`100000`は`Infinity`として出ます。Chrome 156、Safari 27.2、Firefox 159で境目を試すと、`65519`は`65504`に丸められ、`65520`は`Infinity`になりました。整数をそのまま表せるのは2048までで、`2049`を入れると`2048`になります。
+
 ### 嬉しいこと
 
 これまで、浮動小数点型の大量データを扱いたい場合は、メモリ効率を重視しても`Float32Array`を使うしかなく最小でも32bitという制約がありました。
@@ -39,7 +43,41 @@ console.log(float16.BYTES_PER_ELEMENT); // 2
 
 その点、`Float16Array`の登場によって浮動小数点型のまま小さなサイズで扱えるのはとても嬉しい進化です。
 
-特に、WebGPUやWebGL、Stable Diffusionなど、16bit浮動小数点数を扱うことが多い機械学習・グラフィックス等のAPIではこの進化が輝きます。
+特に、WebGPUやWebGLのシェーダー、Stable Diffusionのような機械学習のモデルは16bit浮動小数点数でデータを受け渡すことが多く、そこで役に立ちます。
+
+### WebGPUとWebGLに渡す
+
+WebGPUでは、`Float16Array`を`writeBuffer()`にそのまま渡せます。シェーダーで`f16`を使うには、デバイスを作るときに`shader-f16`の機能を要求します。
+
+```js
+const adapter = await navigator.gpu.requestAdapter();
+const device = await adapter.requestDevice({ requiredFeatures: ['shader-f16'] });
+const input = new Float16Array([0.5, 1.5, -2, 65504]);
+const buffer = device.createBuffer({
+  size: input.byteLength,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+});
+device.queue.writeBuffer(buffer, 0, input);
+```
+
+シェーダーの側では`enable f16;`を書き、`array<f16>`で受けます。
+
+```wgsl
+enable f16;
+@group(0) @binding(0) var<storage, read> src: array<f16>;
+```
+
+この`buffer`を`array<f16>`として読むコンピュートシェーダーで値を`f32`に写して読み戻すと、Chrome 156、Safari 27.2、Firefox 159のどれでも`[0.5, 1.5, -2, 65504]`が返りました。
+
+WebGL 2のテクスチャに`HALF_FLOAT`で渡すときは、`Float16Array`をそのまま渡せません。`texImage2D()`に渡すと、3つのブラウザのどれでも`INVALID_OPERATION`になりました。Chrome 156のコンソールには`type HALF_FLOAT_OES but ArrayBufferView is not NULL and not Uint16Array`と出ます。同じバッファを`Uint16Array`で包み直せば受け付けられ、読み戻すと入れた値のままでした。
+
+```js
+const gl = document.createElement('canvas').getContext('webgl2');
+const pixel = new Float16Array([0.5, 1.5, -2, 65504]);
+gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, 1, 1, 0, gl.RGBA, gl.HALF_FLOAT, new Uint16Array(pixel.buffer));
+console.log(gl.getError() === gl.NO_ERROR); // true
+```
 
 ### 注意すべきこと
 
@@ -73,7 +111,7 @@ console.log(typeof value); // 'number'
 最後に、読み書きの速さはブラウザによって分かれます。Apple M4のMacで、乱数を入れた500万要素の配列を`for`で読んで足すと、Chrome 156では`Float16Array`が約3msで`Float32Array`の約6msより速く、Safari 27.2でも約3msと約8msでした。Firefox 159では約7msと約5msで、`Float16Array`の方が遅くなりました。
 JavaScriptの中で計算するために、メモリの節約だけを目当てに`Float16Array`を選ぶと、精度を落としたうえに遅くなることもあります。
 
-### おわりに
+## おわりに
 
 普段のフロントエンド開発では`Float16Array`を使う機会は多くありませんが、WebGPUやAIモデルの推論処理などをフロントエンドで扱う場合は非常に有効な選択肢になります。
 
