@@ -2,11 +2,10 @@
 title: 'Reporting APIでCSP違反などのレポートをサーバーに集める'
 description: 'Reporting APIは、CSP違反や非推奨APIの使用などブラウザが検知した問題を、Reporting-Endpointsで指定したサーバーへ送らせます。ReportingObserverで受け取る方法と、届くJSONも説明します。'
 createdAt: 2026-04-05
-updatedAt: 2026-04-05
+updatedAt: 2026-11-09
 featureIds:
   - reporting
 ---
-
 
 # Reporting APIでCSP違反などのレポートをサーバーに集める
 
@@ -14,14 +13,47 @@ featureIds:
 
 ## はじめに
 
-Webアプリケーションを運用する中で、ユーザーのブラウザで何が起きているかを把握するのは容易ではありません。CSP違反、非推奨APIの使用、ブラウザによる介入など、開発環境では気づきにくい問題が本番環境で発生していることがあります。
+Reporting APIは、CSP違反や非推奨APIの使用のようにブラウザが検知した問題を、レポートとしてサーバーに送らせたり、JavaScriptで受け取ったりする仕組みです。
 
-Baseline 2026に追加されたReporting APIは、こうしたブラウザが検知する問題をレポートとして収集する仕組みを提供します。ただし、すべてのレポートが全ブラウザで利用できるわけではなく、現時点でBaseline 2026として使えるのはCSP違反レポートのみです。
+JavaScriptの例外なら、`window.onerror`で拾って`fetch`で送れば足ります。CSPやCOEPの違反、非推奨APIの使用は、ブラウザが検知してもページの例外にならないので、Reporting APIで受け取ります。ユーザーのブラウザで起きた、開発環境では気づきにくい問題を集められます。
 
 レポートの収集には2つのアプローチがあります。
 
 - `Reporting-Endpoints`ヘッダー: レポートをサーバーのエンドポイントに自動送信する
 - `ReportingObserver`: JavaScriptでレポートをクライアントサイドで検知する
+
+次のコードを`server.mjs`として保存し、`node server.mjs`で起動すると、両方を試せます。ページは別のオリジンの画像を読もうとし、CSPの`img-src 'self'`に違反します。
+
+```js title="server.mjs"
+import { createServer } from 'node:http';
+
+const page = `<script>
+  new ReportingObserver((reports) => {
+    for (const report of reports) console.log(report.type, report.body.blockedURL);
+  }).observe();
+</script>
+<img src="https://example.com/a.png">`;
+
+createServer((req, res) => {
+  if (req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => (body += chunk));
+    req.on('end', () => {
+      console.log(req.headers['content-type'], body);
+      res.writeHead(204).end();
+    });
+    return;
+  }
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Reporting-Endpoints': 'default="http://localhost:3000/reports"',
+    'Content-Security-Policy': "img-src 'self'; report-to default",
+  });
+  res.end(page);
+}).listen(3000);
+```
+
+`http://localhost:3000`を開くと、DevToolsのコンソールに`ReportingObserver`が受け取った`csp-violation https://example.com/a.png`が出ます。Chrome 156、Safari 27.2、Firefox 159のどれでも出ました（Safari 27.2のURLは`https://example.com:443/a.png`）。Firefox 159とSafari 27.2では、数秒のうちにターミナルにも同じ違反のレポートが出ました。
 
 ## レポートの種類
 
@@ -51,7 +83,7 @@ Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports",
                      coep-endpoint="https://example.com/coep-reports"
 ```
 
-エンドポイントのURLはHTTPSである必要があります。HTTP上のエンドポイントは無視されます。
+エンドポイントのURLはHTTPSにします。HTTPのエンドポイントは無視されますが、手元で試すときの`http://localhost`には届きます。
 
 ### エンドポイントの指定方法
 
@@ -108,7 +140,9 @@ Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 
 `age`フィールドはレポート生成からの経過ミリ秒数です。絶対時刻を含めるとブラウザの内部時計のズレからユーザーを特定するフィンガープリントに悪用される恐れがあるため、相対時間が使われています。
 
-レポートの送信は即時ではなく、ブラウザがバッチ処理で行います。送信タイミングはブラウザに委ねられており、配信は保証されません。
+上の`server.mjs`で試すと、Firefox 159はこの形の配列を送りました。Safari 27.2は`Content-Type`が`application/csp-report`で、`type`・`url`・`body`だけを持つオブジェクトを1件ずつ送り、`age`と`user_agent`はありませんでした。受け取るサーバーは両方の形を扱えるようにしておきます。
+
+いつ送るかはブラウザに委ねられていて、配信は保証されません。Firefox 159は数秒のうちに複数のレポートを1つの配列にまとめて送り、Safari 27.2は違反のたびにすぐ送りました。
 
 ### Report-Onlyモード
 
@@ -145,6 +179,8 @@ const observer = new ReportingObserver((reports) => {
 
 observer.observe();
 ```
+
+`ReportingObserver`がCSPの違反を受け取るかは、ブラウザで違いました。`report-to`を書いたCSPの違反は、Chrome 156、Safari 27.2、Firefox 159のどれでも届きました。`report-to`の無いCSP（`<meta>`で書いたものを含む）の違反は、Chrome 156にだけ届きました。ページ内で受け取るだけのときも、ヘッダーのCSPに`report-to`を書いておきます。
 
 ### コンストラクタ
 
