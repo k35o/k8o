@@ -122,15 +122,15 @@ console.log(loose1); // Uint8Array([72, 101, 108, 108, 111])
 console.log(loose2); // Uint8Array([72, 101, 108, 108, 111])
 ```
 
-`"strict"`は最も厳格です。最後のチャンクが`=`文字でパディングされた4文字の長さであり、オーバーフロービットが0でなければエラーをスローします。
+`"strict"`は最も厳格です。最後のチャンクが`=`で埋めた4文字になっていないときや、余ったビットが0でないときにエラーをスローします。
 
 ```ts
-const strict1 = Uint8Array.fromBase64("SGVsbG8=", { lastChunkHandling: "strict" });
-const strict2 = Uint8Array.fromBase64("SGVsbG8", { lastChunkHandling: "strict" });
-const strict3 = Uint8Array.fromBase64("SGVsbG1=", { lastChunkHandling: "strict" });
-console.log(strict1); // Uint8Array([72, 101, 108, 108, 111])
-console.log(strict2); // Uncaught SyntaxError: The base64 input terminates with a single character, excluding padding (=).
-console.log(strict3); // Uncaught SyntaxError: The base64 input terminates with non-zero padding bits.
+const strict = Uint8Array.fromBase64("SGVsbG8=", { lastChunkHandling: "strict" });
+console.log(strict); // Uint8Array([72, 101, 108, 108, 111])
+// Uncaught SyntaxError: The base64 input terminates with a single character, excluding padding (=).
+Uint8Array.fromBase64("SGVsbG8", { lastChunkHandling: "strict" });
+// Uncaught SyntaxError: The base64 input terminates with non-zero padding bits.
+Uint8Array.fromBase64("SGVsbG1=", { lastChunkHandling: "strict" });
 ```
 
 `"stop-before-partial"`を指定すると、不完全なチャンクがあればその前でデコードを停止します。
