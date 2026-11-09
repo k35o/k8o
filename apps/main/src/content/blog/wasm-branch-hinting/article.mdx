@@ -2,7 +2,7 @@
 title: WebAssemblyのBranch Hintingで分岐予測を助ける
 description: Branch HintingはWebAssemblyのbr_ifやifの分岐に対してどちらに進みやすいかをメタデータとしてカスタムセクションに埋め込み、エンジンの最適化を助ける仕組みです。Baseline 2026で揃ったので、ホットパスのチューニングに使える選択肢になりました。
 createdAt: 2026-05-23
-updatedAt: 2026-05-23
+updatedAt: 2026-11-09
 featureIds:
   - wasm-branch-hinting
 ---
@@ -105,7 +105,7 @@ WATでは`(@metadata.code.branch_hint ...)`というカスタムアノテーシ�
 
 WAT手書きで使うことはそう多くないので、実用上はツールチェイン側の対応が前提になります。
 
-- wabt - `wat2wasm`に`--enable-annotations`を付けると、アノテーション付きWATをバイナリに変換できます
+- wabt - `wat2wasm`に`--enable-annotations`と`--enable-code-metadata`の両方を付けると、ヒントを`metadata.code.branch_hint`のカスタムセクションとして出力します。npmのwabt 1.0.39では、`--enable-annotations`だけでも変換は通りますが、ヒントは出力されずに消えました
 - Binaryen - `wasm-opt`はフラグなしでbranch hintingを読み書きします。フィーチャーフラグでのガードはなく、各種最適化パスも一緒にヒントを保持・伝搬します。`--instrument-branch-hints`でヒントの的中率を測るための計装パスも用意されています
 - LLVM/Emscripten - C++の`[[likely]]` / `[[unlikely]]`などのヒント表現がwasm出力時にBranch Hintingに変換される流れが整いつつあります
 
