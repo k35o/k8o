@@ -33,7 +33,11 @@ export const configPromise = (async () => {
 // app.ts
 import { configPromise } from './config.ts';
 
-const config = await configPromise;
+async function main() {
+  const config = await configPromise;
+  console.log(config.apiBase);
+}
+main();
 ```
 
 Top-level awaitでは、モジュールのトップレベルに`await`を書くだけで済みます。`async`関数で包む必要はなく、`export`する値に`await`の結果をそのまま使えます。
