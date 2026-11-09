@@ -12,11 +12,21 @@ featureIds:
 
 ## はじめに
 
-`text-indent`プロパティはブロック要素の最初の行にインデントを設定するおなじみのプロパティです。
-しかし、従来は最初の行にしかインデントを適用できず、`<br>`による改行後の行やぶら下げインデントを実現するにはCSSのワークアラウンドが必要でした。
+`text-indent`は、段落の1行目の先頭に字下げを入れるCSSプロパティです。値に`hanging`を付けると字下げする行が反転して2行目以降が下がり、`each-line`を付けると`<br>`で改行した後の行も1行目と同じように下がります。
+
+段落の1行目を下げるだけなら、今までどおり長さだけを書けば足ります。2行目以降を下げるぶら下げインデントは、これまで`padding-left`と負の`text-indent`を組み合わせて書いていましたが、`hanging`なら値1つで書けます。要素を分けずに、`<br>`や改行文字で区切った行ごとに字下げするのは、`each-line`でしかできません。
 
 Chrome 146のリリースにより、`each-line`と`hanging`の2つのキーワードが主要ブラウザすべてで利用可能になりBaseline 2026に加わりました。
-これらのキーワードを使うことで、こうしたインデントの制御をシンプルに記述できるようになります。
+
+## デモ
+
+<PlaygroundEmbed
+  demo="text-indent each-line / hanging"
+  headingLevel="h4"
+  sectionId="text-indent-keywords"
+/>
+
+インデント量を選び、`each-line`や`hanging`にチェックを入れると、`<br>`で区切った3つの文の字下げが変わります。`hanging`だけを入れると、左端に出るのは全体の1行目だけで、`<br>`の後の行も下がります。`each-line`も入れると、`<br>`で区切った文ごとに1行目が左端に出るぶら下げインデントになります。
 
 ## text-indentプロパティのおさらい
 
@@ -45,6 +55,15 @@ p {
 
 これにより、`<br>`で区切られた各段落の先頭にインデントが入るようになります。
 
+`<br>`のほかに、`white-space: pre-line`で残した改行文字の後の行も下がります。Chrome 156、Safari 27.2、Firefox 159で試すと、改行文字で区切った文ごとに、`<br>`で区切ったときと同じく1行目だけが下がりました。フォームに入力された改行入りの文章をそのまま表示するときに、文ごとの字下げを付けられます。
+
+```css
+.comment {
+  white-space: pre-line;
+  text-indent: 1em each-line;
+}
+```
+
 ## hangingキーワード
 
 <BrowserSupportStatus featureId="text-indent-hanging"></BrowserSupportStatus>
@@ -58,7 +77,19 @@ p {
 }
 ```
 
-いわゆる「ぶら下げインデント」と呼ばれるレイアウトで、参考文献リストや用語集などで最初の行を目立たせたい場合に活用できます。
+いわゆるぶら下げインデントと呼ばれるレイアウトで、参考文献リストや用語集などで最初の行を目立たせたい場合に活用できます。
+
+これまでの`padding-left: 2em; text-indent: -2em;`と見た目は変わりません。Chrome 156、Safari 27.2、Firefox 159で両方の書き方の行の位置を比べると、どちらも1行目が左端、2行目以降が2em（32px）の位置に並びました。
+
+`※`で始まる注記なら、`※`の幅の1emだけ下げると、2行目以降が`※`の後ろの文字と揃います。
+
+```css
+.note {
+  text-indent: 1em hanging;
+}
+```
+
+ただし、`※`が1emの幅で描かれるのは日本語のフォントのときです。`lang="ja"`の無いページでは、Chrome 156とSafari 27.2で`※`の幅が16pxの文字に対して9pxほどになり、2行目以降の頭とずれました（Firefox 159は16px）。`<html lang="ja">`を書いておけば、3つのブラウザとも揃いました。
 
 ## キーワードの組み合わせ
 
@@ -73,13 +104,7 @@ p {
 
 この場合、最初の行と`<br>`による改行直後の行以外のすべての行にインデントが適用されます。
 
-## デモ
-
-<PlaygroundEmbed
-  demo="text-indent each-line / hanging"
-  headingLevel="h4"
-  sectionId="text-indent-keywords"
-/>
+キーワードと長さは順番を問いません。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`CSS.supports()`は`2em each-line hanging`や`hanging 2em`にも`true`を返しました。
 
 ## おわりに
 
@@ -87,3 +112,4 @@ p {
 
 従来、ぶら下げインデントを実現するには`padding-left`と`text-indent`の負の値を組み合わせるなどのテクニックが必要でした。
 `hanging`キーワードにより、意図が明確なシンプルな記述で同じレイアウトを実現できるようになりました。
+`each-line`は、`<br>`や改行文字で区切った文ごとに字下げしたいときに使います。
