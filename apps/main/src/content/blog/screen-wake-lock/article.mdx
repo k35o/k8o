@@ -43,7 +43,7 @@ Macでは、標準のアクティビティモニタで確かめられます。`�
 これは表示中のタブが有効な範囲でのみScreen Wake Lock APIが有効になり、有効範囲からはみ出るとロックが解除されるためです。
 この仕様はセキュリティとプライバシーの問題を解決してくれています。
 
-ターミナルからは`pmset -g assertions`で確かめられます。Chrome 156とFirefox 159でロックを取ると、ブラウザのプロセスに`NoDisplaySleepAssertion`の行が加わり、その名前はChromeでは`Blink Wake Lock`、Firefoxでは`screen`でした。Firefox 159では、別のタブに切り替えるとこの行が消えました。
+Macのターミナルからは`pmset -g assertions`で確かめられます。Chrome 156とFirefox 159でロックを取ると、ブラウザのプロセスに`NoDisplaySleepAssertion`の行が加わり、その名前はChromeでは`Blink Wake Lock`、Firefoxでは`screen`でした。Firefox 159では、別のタブに切り替えるとこの行が消えました。
 
 ## Screen Wake Lock APIの使い方
 
