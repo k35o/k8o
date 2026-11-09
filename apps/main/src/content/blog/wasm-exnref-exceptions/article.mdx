@@ -186,7 +186,7 @@ end
 
 `catch_all_ref`はタグを問わないので、JavaScriptから投げられた例外も受け取れます。受け取った`exnref`をそのまま`throw_ref`で投げ直せば、例外はWebAssemblyを素通りしてJavaScript側の`catch`に届きます。
 
-`throw_ref`で投げ直した例外は、JavaScript側には元の値のまま届きます。WebAssemblyが投げたものなら同じ`WebAssembly.Exception`、JavaScriptが投げたものなら元の`Error`オブジェクトです。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で、`$work`から`Error`と文字列、`WebAssembly.Exception`を投げると、新形式の`$with_cleanup`はどれも`$cleanup`を1回呼び、JavaScriptが受け取った値は元の値と`===`で一致しました。旧形式の`$with_cleanup`も同じ結果で、まだどのブラウザでも動きます。
+`throw_ref`で投げ直した例外は、JavaScript側には元の値のまま届きます。WebAssemblyが投げたものなら同じ`WebAssembly.Exception`、JavaScriptが投げたものなら元の`Error`オブジェクトです。`$work`から`Error`・文字列・`WebAssembly.Exception`を投げると、Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0のどれでも、新形式の`$with_cleanup`は`$cleanup`を1回呼びました。JavaScriptが受け取った値は、元の値と`===`で一致しました。旧形式の`$with_cleanup`も同じ結果で、まだどのブラウザでも動きます。
 
 `exnref`はWebAssemblyの中だけの型で、JavaScriptには公開されません。`exnref`を返す関数をエクスポートしてJavaScriptから呼ぶと、3つのブラウザで`TypeError`になりました（Chrome 156は`type incompatibility when transforming from/to JS`）。そのため新形式に移行しても、タグの節で示したJavaScript側のコードは書き換えずに済みます。
 
