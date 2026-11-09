@@ -98,18 +98,17 @@ Performance Event Timing APIは、ユーザーの操作で発生したイベン�
 
 ```ts
 // [!og]
-const interactionMap = new Map();
+const interactions = new Map();
 
 const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
     // interactionIdがないイベントはスキップ
     if (!entry.interactionId) continue;
 
-    // 同一インタラクションの中で最大のdurationを持つentryを記録
-    const existing = interactionMap.get(entry.interactionId);
-    if (!existing || entry.duration > existing.duration) {
-      interactionMap.set(entry.interactionId, entry);
-    }
+    // 1回の操作で起きたイベント（pointerupとclickなど）のentryをまとめる
+    const entries = interactions.get(entry.interactionId) ?? [];
+    entries.push(entry);
+    interactions.set(entry.interactionId, entries);
   }
 });
 
@@ -126,22 +125,34 @@ observer.observe({
 記録した`entry`から、各タイミングの内訳を計算できます。
 
 ```ts
-for (const entry of interactionMap.values()) {
-  // 入力遅延: イベント発生からハンドラ実行開始まで
-  const inputDelay = entry.processingStart - entry.startTime;
+for (const entries of interactions.values()) {
+  // durationが一番長いentryと、同じ描画で終わったentry
+  // durationは8ms単位に丸められるので、終わりが8ms以内なら同じ描画とみなす
+  const longest = entries.reduce((a, b) => (b.duration > a.duration ? b : a));
+  const paintTime = longest.startTime + longest.duration;
+  const sameFrame = entries.filter(
+    (entry) => Math.abs(entry.startTime + entry.duration - paintTime) <= 8,
+  );
+  const processingStart = Math.min(...sameFrame.map((entry) => entry.processingStart));
+  const processingEnd = Math.max(...sameFrame.map((entry) => entry.processingEnd));
 
-  // 処理時間: ハンドラの実行時間
-  const processingTime = entry.processingEnd - entry.processingStart;
+  // 入力遅延: 操作からハンドラ実行開始まで
+  const inputDelay = processingStart - longest.startTime;
 
-  // 描画遅延: ハンドラ実行完了から次の描画まで
-  const presentationDelay = entry.duration - (entry.processingEnd - entry.startTime);
+  // 処理時間: 同じ描画の前に動いたハンドラの実行時間
+  const processingTime = processingEnd - processingStart;
 
-  console.log(`${entry.name}: ${entry.duration}ms`);
+  // 描画遅延: ハンドラ実行完了から次の描画まで（丸めで負になる分は0にする）
+  const presentationDelay = Math.max(0, paintTime - processingEnd);
+
+  console.log(`${sameFrame.map((entry) => entry.name).join('・')}: ${longest.duration}ms`);
   console.log(`入力遅延: ${inputDelay}ms`);
   console.log(`処理時間: ${processingTime}ms`);
   console.log(`描画遅延: ${presentationDelay}ms`);
 }
 ```
+
+1回のクリックでは、`pointerup`と`click`が同じ描画の前に処理され、どちらの`duration`も同じ値になります。`duration`が一番長い`entry`を1つだけ選んで内訳を出すと、先に届く`pointerup`が選ばれ、`click`のハンドラの時間が描画遅延に数えられます。Chrome 156とFirefox 159で、押してから100ms後に離すクリックで50msかかる`click`のハンドラを動かすと、そのように選んだ内訳は処理時間が0ms、描画遅延が約48msでした。同じ描画で終わった`entry`の処理をまとめると、処理時間は約50msになります。
 
 <PlaygroundEmbed demo="イベントタイミング計測" headingLevel="h5" sectionId="event-timing" />
 
