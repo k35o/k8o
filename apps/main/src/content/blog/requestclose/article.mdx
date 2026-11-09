@@ -1,13 +1,13 @@
 ---
-title: <dialog>要素を閉じるように要求するrequestClose
-description: HTMLDialogElementのrequestCloseメソッドは<dialog>要素を閉じるように要求します。「要求」とは、closeメソッドのように即座にcloseイベントを発行して閉じるのではなく、cancelイベントを介して閉じることを意味します。これにより、ダイアログを閉じる前に任意の処理を挟むことが可能になります。
+title: 'requestCloseでdialogを閉じる前に確認を挟む'
+description: 'requestClose()は、cancelイベントを経てdialogを閉じるメソッドです。close()と違い、入力中ならpreventDefault()で閉じるのを止められます。Escキーとの違いとreturnValueも説明します。'
 createdAt: 2025-05-28
 updatedAt: 2026-11-09
 featureIds:
   - requestclose
 ---
 
-# \<dialog\>要素を制御された状態で閉じるrequestClose
+# requestCloseでdialogを閉じる前に確認を挟む
 
 <BrowserSupportStatus featureId="requestclose"></BrowserSupportStatus>
 
