@@ -12,6 +12,10 @@ featureIds:
 
 <BrowserSupportStatus featureId="regexp-escape"></BrowserSupportStatus>
 
+`RegExp.escape`は、文字列の中の正規表現の特殊文字をエスケープして返す静的メソッドです。ユーザーが入力した語句のように、中身の分からない文字列を`new RegExp()`に渡して、文字通りに検索するときに使います。
+
+文字列をそのまま探すだけなら、`includes()`や`indexOf()`、`replaceAll()`で足ります。大文字と小文字を区別しない`i`フラグや、前後の文字の条件と組み合わせるときは、正規表現の中に文字列を埋め込むのでエスケープが要ります。これまでは`replace()`で特殊文字の前に`\`を付ける関数を書いていましたが、それでは防げない場合があります（後述）。
+
 ## RegExp.escape
 
 `RegExp`オブジェクトを作る時は、`new RegExp(str)`のように正規表現のテキスト`str`を渡します。
@@ -45,6 +49,16 @@ console.log(regexp.test('ab')); // false
 
 `abc*`という文字列が`RegExp.escape`によって`\x61bc\*`に変換され、`ab`や`abc`にはマッチしなくなりました。
 
+ユーザーが入力した語句を、大文字と小文字を区別せずに探して囲む例です。
+
+```ts
+const query = 'C++';
+const regexp = new RegExp(RegExp.escape(query), 'gi');
+console.log('c++とC++'.replace(regexp, (match) => `[${match}]`)); // [c++]と[C++]
+```
+
+`new RegExp(query, 'gi')`のままでは、`+`が繰り返しの構文と読まれ、`SyntaxError`（nothing to repeat）になります。
+
 `RegExp.escape`は手動では達成できない複数のパターンを考慮して実装されています。
 単純に正規表現の構文の前に`\`を追加するだけでは対処できないケースをカバーしてくれるので、古いブラウザのバージョンをサポートしていない限りは`RegExp.escape`を使うようにしましょう。
 
@@ -70,6 +84,15 @@ console.log(escapedRegexp.test('aa0')); // true
 
 上の例では、`(.)\\1`の後ろに`0`を連結しています。`0`をエスケープしない場合、正規表現は`/(.)\10/`となり、`\10`がひとまとまりに読まれます。グループは1つしか無いので、`\10`は10番目のグループの後方参照にもならず、8進数のエスケープとしてU+0008（バックスペース）の1文字に解釈されます。そのため`aa0`にはマッチしません。
 `RegExp.escape`を使うと、`0`は`\x30`に変換され、正規表現は`/(.)\1\x30/`となります。1番目のグループの後方参照と`0`に分けて解釈されるので、意図した通りに`aa0`がマッチします。
+
+特殊文字の前に`\`を付けるだけの手作りのエスケープでは、`0`は変わらないので、この例は`false`のままです。
+
+```ts
+const manualEscape = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+console.log(new RegExp('(.)\\1' + manualEscape('0')).test('aa0')); // false
+```
+
+Chrome 156、Safari 27.2、Firefox 159のどれで試しても、`true`になったのは`RegExp.escape`を使ったときだけでした。
 
 #### 特殊文字
 
@@ -101,7 +124,7 @@ console.log(RegExp.escape(str));
 
 #### その他の文字
 
-空白文字は、`\x`か`\u`に続く16進数コードへエスケープされます。Node.js 26で試すと、半角スペースは`\x20`、全角スペースは`\u3000`になりました。タブは制御文字として扱われ、`\t`になります。
+空白文字は、`\x`か`\u`に続く16進数コードへエスケープされます。Chrome 156、Safari 27.2、Firefox 159とNode.js 26で試すと、半角スペースは`\x20`、全角スペースは`\u3000`になりました。タブは制御文字として扱われ、`\t`になります。
 
 ```ts
 const str = '　';
