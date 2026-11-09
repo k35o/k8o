@@ -2,7 +2,7 @@
 title: 'JSON.rawJSONでJSONの大きな数値を丸めずに扱う'
 description: 'JSON.rawJSONは、渡したテキストをJSON.stringifyにそのまま書き出させます。reviverのcontext.sourceと合わせ、64ビット整数のIDを丸めずに読み書きできます。Baseline 2025で使えます。'
 createdAt: 2026-07-30
-updatedAt: 2026-07-30
+updatedAt: 2026-11-09
 featureIds:
   - json-raw
 ---
@@ -11,6 +11,10 @@ featureIds:
 
 <BrowserSupportStatus featureId="json-raw" />
 
+`JSON.rawJSON`は、渡したテキストを`JSON.stringify`の出力にそのまま埋め込む値を作るメソッドです。`JSON.parse`のreviverに渡る`context.source`と合わせてJSON source text accessと呼ばれ、JSONのテキストとJavaScriptの値を行き来するときに丸められる数値を、元のテキストのまま扱えます。
+
+扱う整数が`Number.MAX_SAFE_INTEGER`以下なら、これまでの`JSON.parse`と`JSON.stringify`で足ります。それを超える64ビット整数のIDを、1桁も変えずに`BigInt`で読み書きするときに、この機能が要ります。
+
 ## JSONの数値とJavaScriptの数値のずれ
 
 JSONのテキストには、桁数の制限なく数値を書けます。
@@ -18,14 +22,14 @@ JSONのテキストには、桁数の制限なく数値を書けます。
 
 データベースの64ビット整数のIDやスノーフレークIDのように、この範囲を超える数値がJSONで送られてくると、`JSON.parse`した時点で精度が失われます。
 
-```ts
+```js
 const json = '{"value": 12345678901234567890}';
 console.log(JSON.parse(json).value); // 12345678901234567000
 ```
 
 書き出す側も同様です。
 
-```ts
+```js
 console.log(JSON.stringify({ value: 12345678901234567890 }));
 // {"value":12345678901234567000}
 ```
@@ -47,7 +51,7 @@ JSON source text accessは、値へ変換される前のJSONテキストと、�
 `JSON.parse`は第2引数に、パース結果を加工するためのreviver関数を受け取ります。
 パースで生まれた値ひとつひとつについて`(key, value)`の形で呼ばれ、返した値がその位置の値として採用されます。
 
-```ts
+```js
 const doubled = JSON.parse('{"a": 1, "b": 2}', (key, value) =>
   typeof value === 'number' ? value * 2 : value,
 );
@@ -58,7 +62,7 @@ console.log(doubled); // { a: 2, b: 4 }
 `context`は呼び出しのたびに新しく作られるオブジェクトで、処理中の値についての追加情報を保持します。
 いまのところ持つのは`source`プロパティだけで、処理中の値に対応する元のJSONテキストがそのまま入っています。
 
-```ts
+```js
 // [!og]
 const json = '{"balance": 12345678901234567890}';
 const data = JSON.parse(json, (key, value, context) =>
@@ -67,6 +71,7 @@ const data = JSON.parse(json, (key, value, context) =>
 console.log(data.balance); // 12345678901234567890n
 ```
 
+コンソールに貼ると`12345678901234567890n`が出て、末尾の`890`まで残っています。
 `value`は数値への変換がすでに終わった、精度の落ちた値です。
 一方で`context.source`には、変換前のテキスト`'12345678901234567890'`が残っています。
 これを`BigInt`に渡して変換をやり直すことで、レスポンスの形式を変えずに欠損なく読み取れます。
@@ -74,10 +79,17 @@ console.log(data.balance); // 12345678901234567890n
 なお、fetchの`Response.json()`にはreviverを渡せません。
 この手法をレスポンスへ適用するときは、`response.text()`で文字列として受け取ってから`JSON.parse`に渡します。
 
+```js
+const response = await fetch('/api/account');
+const data = JSON.parse(await response.text(), (key, value, context) =>
+  key === 'balance' ? BigInt(context.source) : value,
+);
+```
+
 `source`プロパティが存在するのは`value`がプリミティブ値（数値、文字列、真偽値、`null`）の場合だけです。
 オブジェクトや配列は、reviver自身の変換によって元のテキストとの対応が保てなくなるため、`source`を持たない空のオブジェクトが渡されます。
 
-```ts
+```js
 JSON.parse('{"a": 1, "b": [2, 3]}', (key, value, context) => {
   console.log(key, value, context);
   return value;
@@ -91,12 +103,24 @@ JSON.parse('{"a": 1, "b": [2, 3]}', (key, value, context) => {
 
 配列`[2, 3]`の各要素にはそれぞれの`source`が渡される一方、配列そのものである`b`と、最後に呼ばれるルートのオブジェクト（`key`は空文字列）では`context`が空になっています。
 
+`source`には、値を書いたときのテキストが崩れずに入ります。Chrome 156、Safari 27.2、Firefox 159のどれでも、`1.0`や`1e2`は書いたとおりの文字列になり、文字列は前後のダブルクォートとエスケープを含んだままでした。
+
+```js
+JSON.parse('{"a": 1.0, "b": 1e2, "c": "\\u0041"}', (key, value, context) => {
+  if (key) console.log(key, value, context.source);
+  return value;
+});
+// a 1 1.0
+// b 100 1e2
+// c A "\u0041"
+```
+
 ## 書き出すテキストを直接指定するJSON.rawJSON
 
 書き出し側の対になる機能が`JSON.rawJSON`です。
 渡したテキストをそのままJSONテキストとして埋め込む、raw JSONオブジェクトを作ります。
 
-```ts
+```js
 const raw = JSON.rawJSON('12345678901234567890');
 console.log(JSON.stringify({ balance: raw }));
 // {"balance":12345678901234567890}
@@ -106,9 +130,9 @@ console.log(JSON.stringify({ balance: raw }));
 値がJavaScriptの数値を一度も経由しないので、丸めが起きる場所がありません。
 
 `JSON.rawJSON`が返すのは、数値そのものではなく専用のオブジェクトです。
-上の`raw`を覗くと、渡したテキストを保持する`rawJSON`プロパティだけを持っていることがわかります。
+上の`raw`をNode.js 26.13.0で表示すると、渡したテキストを保持する`rawJSON`プロパティだけを持っていることがわかります。
 
-```ts
+```js
 console.log(raw); // [Object: null prototype] { rawJSON: '12345678901234567890' }
 console.log(raw.rawJSON); // 12345678901234567890
 ```
@@ -119,10 +143,11 @@ console.log(raw.rawJSON); // 12345678901234567890
 `JSON.rawJSON`に渡せるのは、プリミティブ値を表す有効なJSONテキストだけです。
 不正なJSONはもちろん、オブジェクトや配列を表すテキストも`SyntaxError`になるので、出力されるJSONの構造を壊すようなテキストは注入できません。
 
-```ts
+```js
 JSON.rawJSON('12,3'); // SyntaxError
 JSON.rawJSON('{"a": 1}'); // SyntaxError
 JSON.rawJSON('[1, 2]'); // SyntaxError
+JSON.rawJSON(' 1'); // SyntaxError（前後の空白も受け付けない）
 ```
 
 ### 数値以外の用途
@@ -130,7 +155,7 @@ JSON.rawJSON('[1, 2]'); // SyntaxError
 プリミティブ値を表すテキストであれば、数値以外も指定できます。
 たとえば`JSON.stringify`は文字列中の絵文字などをそのまま出力しますが、`JSON.rawJSON`を使うとエスケープ済みの表現を保ったまま出力できます。
 
-```ts
+```js
 const raw = JSON.rawJSON('"\\ud83d\\ude04"');
 const json = JSON.stringify({ emoji: raw });
 console.log(json); // {"emoji":"\ud83d\ude04"}
@@ -144,7 +169,7 @@ console.log(JSON.parse(json).emoji); // 😄
 `JSON.stringify`は第2引数に、シリアライズする値を加工するためのreplacer関数を受け取ります。
 reviverと同じく値ひとつひとつについて`(key, value)`の形で呼ばれ、返した値がシリアライズの対象になります。
 
-```ts
+```js
 const doubled = JSON.stringify({ a: 1, b: 2 }, (key, value) =>
   typeof value === 'number' ? value * 2 : value,
 );
@@ -153,7 +178,7 @@ console.log(doubled); // {"a":2,"b":4}
 
 このreplacerで`BigInt`をraw JSONオブジェクトに変換すれば、書き出しも欠損なく行えます。
 
-```ts
+```js
 const json = JSON.stringify({ balance: 12345678901234567890n }, (key, value) =>
   typeof value === 'bigint' ? JSON.rawJSON(value.toString()) : value,
 );
@@ -165,12 +190,27 @@ console.log(json); // {"balance":12345678901234567890}
 `JSON.isRawJSON`は、値が`JSON.rawJSON`で作られたraw JSONオブジェクトかどうかを判定します。
 raw JSONオブジェクトは内部的にマークされているため、同じ形をしたオブジェクトを自作しても`true`にはなりません。
 
-```ts
+```js
 console.log(JSON.isRawJSON(JSON.rawJSON('123'))); // true
 console.log(JSON.isRawJSON({ rawJSON: '123' })); // false
 ```
 
 シリアライズ処理をラップするライブラリやユーティリティで、受け取った値をraw JSONオブジェクトとして特別扱いすべきか判定する用途に使えます。
+
+## TypeScriptの型
+
+TypeScript 7.0.2には、`lib`を`esnext`にしても`JSON.rawJSON`と`JSON.isRawJSON`、reviverの`context`の型がありません。`JSON.rawJSON`は`Property 'rawJSON' does not exist on type 'JSON'`（TS2339）に、3つの引数を取るreviverはTS2345になります。型は、グローバルの`.d.ts`に足せば使えます。`source`はプリミティブ値のときだけあるので省略可能にしてあり、`BigInt`に渡すときは`context.source!`と書きます。
+
+```ts title="json-source-text-access.d.ts"
+interface JSON {
+  parse(
+    text: string,
+    reviver: (this: any, key: string, value: any, context: { source?: string }) => any,
+  ): any;
+  rawJSON(text: string): { readonly rawJSON: string };
+  isRawJSON(value: unknown): boolean;
+}
+```
 
 ## おわりに
 
