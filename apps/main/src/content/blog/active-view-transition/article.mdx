@@ -13,15 +13,51 @@ featureIds:
 
 ## はじめに
 
-[以前紹介したBaseline 2025に追加されたView Transition API](/blog/view-transitions)は、DOM更新時やページ遷移時に滑らかなアニメーションを適用できるAPIです。
+`:active-view-transition-type()`は、`startViewTransition()`の`types`オプションで渡したタイプのView Transitionが進んでいる間だけ、ルート要素（`<html>`）に当たる疑似クラスです。同じView Transitionでも、進むと戻るのようにタイプごとに別のアニメーションを書き分けられます。
 
-この記事では、`startViewTransition`の`types`オプションで指定したタイプに応じて異なるスタイルを適用できる`:active-view-transition-type()`疑似クラスを紹介します。
+アニメーションが1種類で済むなら、`::view-transition-old()`と`::view-transition-new()`に直接書けば足ります。進むと戻るで向きを変えるように遷移ごとにアニメーションを切り替えたい場合、これまでは遷移の前にJavaScriptで`<html>`へクラスを付け、終わったら外していました。`types`と`:active-view-transition-type()`を使うと、この付け外しをブラウザに任せられます。
+
+[以前紹介したBaseline 2025に追加されたView Transition API](/blog/view-transitions)は、DOM更新時やページ遷移時に滑らかなアニメーションを適用できるAPIです。この記事で紹介する疑似クラスは、Baseline 2026で追加されました。
 
 ## :active-view-transition-type()とは
 
 `:active-view-transition-type()`は、特定のタイプを持つView Transitionが進行中のときにマッチする疑似クラスです。`startViewTransition`の`types`オプションで指定したタイプに基づいて、異なるスタイルを適用できます。
 
-この疑似クラスはBaseline 2026で追加されました。
+```html
+<p id="page">1</p>
+<button id="prev">戻る</button>
+<button id="next">進む</button>
+
+<style>
+  @keyframes from-right { from { translate: 100% 0; } }
+  @keyframes from-left { from { translate: -100% 0; } }
+
+  html:active-view-transition-type(forwards)::view-transition-new(root) {
+    animation: from-right 0.4s;
+  }
+  html:active-view-transition-type(backwards)::view-transition-new(root) {
+    animation: from-left 0.4s;
+  }
+</style>
+
+<script>
+  const page = document.querySelector('#page');
+  const go = (type, diff) => {
+    document.startViewTransition({
+      update: () => {
+        page.textContent = Number(page.textContent) + diff;
+      },
+      types: [type],
+    });
+  };
+  document.querySelector('#next').addEventListener('click', () => go('forwards', 1));
+  document.querySelector('#prev').addEventListener('click', () => go('backwards', -1));
+</script>
+```
+
+貼って進むを押すと、数字の増えた新しい画面が右から滑り込みます。戻るを押すと、数字の減った画面が左から入ってきます。
+
+当たるのはルート要素だけです。Chrome 156で、遷移の間に`.card:active-view-transition-type(forwards)`と`:active-view-transition-type(forwards) .card`の2つの書き方を試すと、スタイルが当たったのは後者だけでした。ルートの外の要素を切り替えるときは、`html:active-view-transition-type(forwards) .card`のように子孫セレクタで書きます。
 
 ## タイプの設定方法
 
@@ -37,6 +73,10 @@ document.startViewTransition({
 });
 ```
 
+返り値の`ViewTransition`の`types`は、`add()`や`delete()`を持つSetに似たオブジェクトです。Chrome 156で、遷移の途中に`forwards`を消して`backwards`を足すと、当たるアニメーションも`backwards`のものに切り替わりました。
+
+`startViewTransition`があるかだけを見ると、`types`を受け取らない古い実装（BCDではChrome 111〜124、Safari 18.0〜18.1、Firefox 144〜146）を見分けられません。デモでは、同時に実装された疑似クラスに対応しているかを`CSS.supports('selector(:active-view-transition-type(forwards))')`で確かめてから呼び、対応していなければアニメーションなしでDOMだけを書き換えています。Reactで状態を変えるときは、`update`の中の更新を`flushSync()`で包みます。`update`が終わった時点のDOMが新しい画面として撮られるからです。
+
 ### 異なるDocument間（MPA）
 
 ```css
@@ -46,9 +86,11 @@ document.startViewTransition({
 }
 ```
 
+ページをまたぐ遷移では、移った先のページのCSSに`@view-transition`を書きます。Chrome 156とSafari 27.2はこの規則を`CSSViewTransitionRule`として読み、`types`に`slide`が入りました。Firefox 159は規則ごと読み捨てるので、ページをまたぐ遷移そのものが動きません。
+
 ## 基本的な使い方
 
-「進む」と「戻る」で異なるアニメーションを適用する例です。
+進むと戻るで異なるアニメーションを適用する例です。遷移の間だけカードに`view-transition-name`を付け、タイプごとに古いカードと新しいカードのアニメーションを書き分けます。
 
 ```css
 /* カードのView Transition設定 */
@@ -98,7 +140,7 @@ html:active-view-transition-type(backwards) {
 
 ## 例
 
-「進む」「戻る」ボタンでアニメーションの方向が変わるデモです。
+進むと戻るのボタンでアニメーションの方向が変わるデモです。
 
 <PlaygroundEmbed
   demo="タイプ別アニメーション"
@@ -108,11 +150,12 @@ html:active-view-transition-type(backwards) {
 
 このデモでは以下のことを確認できます。
 
-- `:active-view-transition-type(forwards)`で「進む」時は弾けて散るアニメーション
-- `:active-view-transition-type(backwards)`で「戻る」時は集まってくるアニメーション
+- 進むを押すと、`:active-view-transition-type(forwards)`が当たり、古いカードが拡大しながら消えて、新しいカードが小さい状態から現れる
+- 戻るを押すと、`:active-view-transition-type(backwards)`が当たり、古いカードが縮みながら消えて、新しいカードが大きい状態から収まる
+- 左上の丸は`html:active-view-transition`で遷移の間だけ点く
 
 ## おわりに
 
-`:active-view-transition-type()`を使うことで、遷移のタイプに応じた柔軟なスタイル制御が可能になります。
+`:active-view-transition-type()`を使うと、`<html>`のクラスを付け外しせずに、遷移のタイプごとにアニメーションを書き分けられます。進む・戻るのように向きのある移動で、操作に合ったアニメーションを付けられます。
 
-進む/戻るのような方向性を持つナビゲーションで、ユーザーの操作に応じた直感的なアニメーションを実現できる強力な機能です。
+同じDocumentの中の遷移なら、Chrome・Safari・Firefoxのいずれでも`types`を渡せます。ページをまたぐ遷移で`@view-transition`の`types`を使う書き方は、Firefox 159では動きません。
