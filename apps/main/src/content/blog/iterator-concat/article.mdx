@@ -121,7 +121,14 @@ console.log(iter.next());
 
 ## 引数はIterableであること
 
-`Iterator.concat()`の引数は**Iterable**（`[Symbol.iterator]`を持つオブジェクト）である必要があります。配列、`Set`、`Map`、文字列、ジェネレータオブジェクトなどの組み込みIterableはそのまま渡せます。
+`Iterator.concat()`の引数は**Iterable**（`[Symbol.iterator]`を持つオブジェクト）である必要があります。配列、`Set`、`Map`、ジェネレータオブジェクトなどの組み込みIterableはそのまま渡せます。
+
+文字列はIterableですが、オブジェクトではないので渡せません。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0のどれでも、`Iterator.concat('abc')`は`TypeError`になりました。文字列をつなぐときは、`Iterator.from('abc')`でイテレータにしてから渡します。
+
+```js
+Iterator.concat('abc'); // TypeError
+Iterator.concat(Iterator.from('abc'), ['d']).toArray(); // ['a', 'b', 'c', 'd']
+```
 
 `[Symbol.iterator]`を持つオブジェクトであれば渡せますが、`next`メソッドだけを持つ非Iterableなオブジェクトを渡すと`TypeError`になります。
 
