@@ -2,27 +2,26 @@
 title: 'WebTransportでQUIC（HTTP/3）の双方向通信をする'
 description: 'WebTransportは、QUIC（HTTP/3）の上でブラウザとサーバーが双方向にやり取りするAPIです。WebSocketと違い、独立したストリームを複数開け、再送しないデータグラムも送れます。手元でのつなぎ方も説明します。'
 createdAt: 2026-04-07
-updatedAt: 2026-04-07
+updatedAt: 2026-11-09
 featureIds:
   - webtransport
 ---
 
-
 # WebTransportでQUIC（HTTP/3）の双方向通信をする
 
-<BrowserSupportStatus featureId="webtransport"></BrowserSupportStatus>
+<BrowserSupportStatus featureId="webtransport" />
 
 ## はじめに
 
-ブラウザとサーバーの間でリアルタイムにデータをやり取りしたい場面では、これまで主にWebSocketが使われてきました。
-しかしWebSocketはTCPの上に作られているため、1つのコネクションが順序付きで信頼性のある単一のメッセージ列として扱われ、独立した複数のストリームを持てないといった制約があります。結果として、一部のデータが遅れるとあとの通信までまとめて待たされることがあります。
+WebTransportは、QUIC（HTTP/3）の上で、ブラウザとサーバーがデータを双方向にやり取りするAPIです。1本の接続に独立したストリームをいくつも開け、届かなくても再送しないデータグラムも送れます。
 
-WebTransportはこれらの問題を解決するために設計された、HTTP/3（QUIC）の上で動く新しい通信APIです。
+チャットや通知のように少量のテキストをやり取りするだけなら、これまでどおりWebSocketで足ります。WebSocketはTCPの上で1本のメッセージ列しか持てないので、一部のデータが遅れると後のデータまで待たされます。遅れたデータを待たずにほかの流れを進めたい通信や、ゲームの座標のように古い値を捨ててよい通信は、WebTransportで書けます。
+
 Baseline 2026で主要ブラウザすべてで利用可能になりました。
 
 ## WebTransportとは
 
-WebTransportはひとことで言うと「ブラウザからHTTP/3の機能を扱えるようにしたAPI」です。HTTP/3はTCPではなくUDP上に作られたQUICというプロトコルを使っており、WebTransportはこのQUICの特徴をそのままWebに持ち込みます。
+HTTP/3はTCPではなくUDP上に作られたQUICというプロトコルを使っており、WebTransportはこのQUICの特徴をそのままWebに持ち込みます。
 
 具体的には以下のような特徴があります。
 
@@ -68,6 +67,18 @@ transport.closed
 
 切断したいときは`transport.close()`を呼びます。
 
+手元のサーバーに開発用の自己署名の証明書でつなぐときは、`serverCertificateHashes`に証明書のSHA-256のハッシュを渡します。
+
+```ts
+const transport = new WebTransport('https://localhost:4433/chat', {
+  serverCertificateHashes: [{ algorithm: 'sha-256', value: certHash }],
+});
+```
+
+`certHash`は、`openssl x509 -in cert.pem -outform der | openssl dgst -sha256 -binary`で出る32バイトを`Uint8Array`にしたものです。仕様では、ハッシュで許す証明書はECDSAの鍵で、有効期間が2週間以内のものに限られます。
+
+手元では、Deno 2.9.8の`Deno.upgradeWebTransport`で立てたエコーのサーバーに、P-256の鍵で有効期間10日の証明書を使ってつなぎました。Chrome 156、Safari 27.2、Firefox 159のどれでもこの方法でつながり、データグラムと双方向ストリームが往復しました。`serverCertificateHashes`を渡さないと、どれも`ready`が`WebTransportError`で拒否されました。
+
 ### データグラムの送受信
 
 データグラムは順序保証も再送もない、もっとも軽量な送受信方法です。
@@ -91,6 +102,8 @@ while (true) {
   console.log('受信:', value);
 }
 ```
+
+1つのデータグラムで送れる大きさは`transport.datagrams.maxDatagramSize`で分かります。手元のサーバーにつなぐと、Chrome 156は1211、Firefox 159は1024、Safari 27.2は65535を返しました。
 
 ### 単方向ストリーム
 
