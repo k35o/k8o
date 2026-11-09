@@ -1,13 +1,13 @@
 ---
-title: 'イベントのanimationプロパティで発火元のCSSAnimationとCSSTransitionを取り出す'
-description: 'AnimationEventとTransitionEventにanimationプロパティが追加され、animationstartなどのイベントから発火元のCSSAnimationやCSSTransitionを受け取れるようになりました。Animation accessorsとしてBaseline 2026に加わったこの機能について、getAnimations()との違いや疑似要素の扱い、使うときの注意を整理します。'
+title: 'event.animationでCSSアニメーションを止める・速める'
+description: 'event.animationは、animationendやtransitionendのイベントから、発火元のCSSアニメーションやトランジションを受け取るプロパティです。pause()やplaybackRateで止めたり速めたりできます。'
 createdAt: 2026-10-10
-updatedAt: 2026-10-10
+updatedAt: 2026-11-09
 featureIds:
   - animations-css-animation-accessors
 ---
 
-# イベントのanimationプロパティで発火元のCSSAnimationとCSSTransitionを取り出す
+# event.animationでCSSアニメーションを止める・速める
 
 <BrowserSupportStatus featureId="animations-css-animation-accessors" />
 
