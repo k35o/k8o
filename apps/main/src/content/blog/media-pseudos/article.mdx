@@ -15,7 +15,7 @@ featureIds:
 
 動画の上に再生ボタンを重ねて、再生が始まったら消す。読み込み待ちの間だけスピナーを出す。こうしたプレイヤーUIを作るとき、CSSからは`<video>`が再生中かどうかを知る手段がありませんでした。そのため`play`や`pause`、`waiting`といったイベントを購読して、JavaScriptを経由してスタイルを当てる必要がありました。
 
-`:playing`をはじめとするメディア要素の疑似クラスは、この状態をセレクタとして直接書けるようにするものです。Safariは15.4で先行して対応しており、Firefox 150が続いたあと、web-featuresのデータ上はChrome 152で対応したことになってBaseline 2026に加わりました。ただし実際のChrome 152では動きません。この点は最後の章で触れます。
+`:playing`をはじめとするメディア要素の疑似クラスは、この状態をセレクタとして直接書けるようにするものです。Safariは15.4で先行して対応しており、Firefox 150が続きました。Chromeは156でもまだ対応しておらず、Baselineには入っていません。この点は最後の章で触れます。
 
 ## 7つの疑似クラス
 
@@ -80,17 +80,17 @@ featureIds:
 
 <PlaygroundEmbed demo=":mutedとmuted属性のずれ" headingLevel="h4" sectionId="media-pseudos" />
 
-## Chrome 152ではまだ動かない
+## Chromeではまだ動かない
 
-2026年9月時点の安定版であるChrome 152では、これらの疑似クラスはセレクタとして解釈されません。開発者ツールのコンソールで次を実行すると`false`が返ります。
+Chrome 156では、これらの疑似クラスはセレクタとして解釈されません。開発者ツールのコンソールで次を実行すると`false`が返ります。
 
 ```js
 CSS.supports('selector(:playing)');
 ```
 
-Chromium 152のソースを見ると、該当する機能フラグ`CSSMediaElementPseudos`は[`experimental`](https://chromium.googlesource.com/chromium/src/+/refs/tags/152.0.7977.76/third_party/blink/renderer/platform/runtime_enabled_features.json5)のままで、Experimental Web Platform Featuresを有効にしないと動きません。[chromestatusの登録](https://chromestatus.com/feature/5068277495758848)では出荷予定のマイルストーンが155になっています。Chromeは約4週間ごとにメジャーバージョンが上がるので、155の安定版は2026年11月ごろの見込みです。
+Chromium 156のソースを見ると、該当する機能フラグ`CSSMediaElementPseudos`は[`experimental`](https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.81/third_party/blink/renderer/platform/runtime_enabled_features.json5)のままで、Experimental Web Platform Featuresを有効にしないと動きません。158のタグでは`stable`に変わっていて、[chromestatusの登録](https://chromestatus.com/feature/5068277495758848)でも出荷予定のマイルストーンは158です。
 
-それでもBaseline 2026と判定されているのは、判定の元になるbrowser-compat-dataがChromeの対応バージョンを152と記録しているためです。この値が実態に合っていないので、いずれ修正されてChrome 155までBaselineから外れるか、155が出て追いつくかのどちらかになります。この記事のデモも、SafariかFirefoxで開かないと動きません。
+web-featuresのデータもChromeを未対応としていて、Baselineには入っていません。この記事のデモも、SafariかFirefoxで開かないと動きません。
 
 未対応のブラウザでは、`:has(video:playing)`のように未知の疑似クラスを含む規則は丸ごと無効になります。`:has()`の引数は寛容ではないので、外側の`.player`まで含めて規則が捨てられます。再生ボタンを表示する側を既定にしておき、`:playing`で消す向きに書いておけば、未対応のブラウザでもボタンが出続けるだけで壊れません。
 
@@ -108,4 +108,4 @@ Chromium 152のソースを見ると、該当する機能フラグ`CSSMediaEleme
 
 ## おわりに
 
-メディア要素の疑似クラスは、`HTMLMediaElement`が持っている状態をそのままセレクタに写したものです。プレイヤーUIの見た目に関わる部分については、イベントを購読してJavaScriptを経由していたスタイルを、`:has()`と組み合わせたCSSに置き換えられます。再生ボタンのオーバーレイやローディングのスピナーのように、これまで小さなスクリプトを毎回書いていた箇所を宣言的に書けるようになります。Chromeで動くのは155からなので、それまでは表示する側を既定にした書き方で先行して使えます。
+メディア要素の疑似クラスは、`HTMLMediaElement`が持っている状態をそのままセレクタに写したものです。プレイヤーUIの見た目に関わる部分については、イベントを購読してJavaScriptを経由していたスタイルを、`:has()`と組み合わせたCSSに置き換えられます。再生ボタンのオーバーレイやローディングのスピナーのように、これまで小さなスクリプトを毎回書いていた箇所を宣言的に書けるようになります。Chromeはまだ対応していない（出荷予定は158）ので、それまでは表示する側を既定にした書き方で先行して使えます。
