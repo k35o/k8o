@@ -83,7 +83,7 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 ## ブログ固有2: frontmatter整合性
 
-`packages/helpers/src/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BrowserSupportStatus>`の一致は慣習なので人手で確認する。
+`apps/main/src/shared/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BrowserSupportStatus>`の一致は慣習なので人手で確認する。
 
 | フィールド | 必須 | チェック |
 |-----------|:----:|---------|
