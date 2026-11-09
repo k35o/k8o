@@ -13,15 +13,17 @@ featureIds:
 
 ## はじめに
 
-これまで、Dialogをモーダルで開くにはJavaScriptで`<dialog>`要素の`show()`・`showModal()`メソッドを呼び出す必要がありました。
+Invoker Commands APIは、`<button>`に`commandfor`属性と`command`属性を書くだけで、ほかの要素を操作できるAPIです。`<dialog>`をモーダルで開く・閉じる、ポップオーバーを開閉するといった操作を、JavaScriptなしで実行できます。
+
+ポップオーバーの開閉だけなら、これまでの`popovertarget`属性で足ります。一方で、Dialogをモーダルで開くには、JavaScriptで`<dialog>`要素の`showModal()`メソッドを呼び出す必要がありました。
 
 ```js
 openButton.addEventListener('click', () => {
-  dialog.showModal(); // or dialog.show();
+  dialog.showModal();
 });
 ```
 
-Baseline 2025で追加されたInvoker Commands APIを使えば、これがHTML属性だけで実現できます。
+Baseline 2025で揃ったInvoker Commands APIを使えば、これをHTMLの属性だけで書けます。
 
 ```html
 <button commandfor="my-dialog" command="show-modal">開く</button>
@@ -29,19 +31,11 @@ Baseline 2025で追加されたInvoker Commands APIを使えば、これがHTML�
 <dialog id="my-dialog">Dialogの内容</dialog>
 ```
 
-Popover APIの`popovertarget`属性と`popovertargetaction`属性と同じ考え方で、より一般化してDialog等も宣言的に操作できるようになりました。
+開くを押すと、`showModal()`を呼んだときと同じく、Dialogがモーダルで開きます。Popover APIの`popovertarget`属性と`popovertargetaction`属性と同じ考え方を、Dialogなどにも広げたものです。
 
 ## 基本的な使い方
 
-Invoker Commands APIは`commandfor`と`command`の2つの属性で構成されます。
-
-```html
-<button commandfor="my-dialog" command="show-modal">開く</button>
-
-<dialog id="my-dialog">Dialogの内容</dialog>
-```
-
-`commandfor`は操作対象の要素の`id`を指定、`command`は実行するアクションを指定します。
+Invoker Commands APIは`commandfor`と`command`の2つの属性で構成されます。`commandfor`は操作対象の要素の`id`を指定、`command`は実行するアクションを指定します。
 
 `command`は現在カスタム値を除いて、Dialogの`show-modal`・`close`・`request-close`、Popoverの`show-popover`・`hide-popover`・`toggle-popover`が使えます。
 
@@ -59,6 +53,20 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 ```
 
 <PlaygroundEmbed demo="Dialogの操作" headingLevel="h5" sectionId="invoker-commands" />
+
+組み込みのコマンドでも、操作の前に`commandfor`で指定した要素へ`command`イベントが届きます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`event.command`は`show-modal`、`event.source`は押したボタンで、`preventDefault()`を呼ぶとDialogは開きませんでした。`close`のボタンに`value`属性を書くと、その値が閉じたあとの`returnValue`になります。
+
+`<form>`の中に置くボタンには`type="button"`を書きます。3つのブラウザのどれでも、`type`を書かずに`commandfor`と`command`を付けたボタンは、押してもフォームを送信せず、コマンドも実行しませんでした。`type="submit"`ではフォームを送信するだけで、コマンドは実行されません。`<form method="dialog">`の中のキャンセルボタンも同じです。
+
+```html
+<dialog id="edit-dialog">
+  <form method="dialog">
+    <input name="name" />
+    <button type="button" commandfor="edit-dialog" command="close">キャンセル</button>
+    <button>保存</button>
+  </form>
+</dialog>
+```
 
 ### Popoverの操作
 
@@ -121,7 +129,7 @@ image.addEventListener('command', (event) => {
 
 Invoker Commands APIを紹介しました。
 
-`commandfor`と`command`属性を使うことで、JavaScriptを書かずにDialogやPopoverを宣言的に操作できます。Popover APIの`popovertarget`属性と同じ考え方が、Dialogにも適用できるようになったのは嬉しいですね。
+`commandfor`と`command`属性を使うことで、JavaScriptを書かずにDialogやPopoverを宣言的に操作できます。Popover APIの`popovertarget`属性と同じ考え方が、Dialogにも適用できるようになったのは嬉しいですね。`<form>`の中のボタンには`type="button"`を書いてください。
 
 また、`--`で始まるカスタムコマンドと`command`イベントを組み合わせれば、組み込みコマンドでカバーできない独自の操作も実装できます。
 
