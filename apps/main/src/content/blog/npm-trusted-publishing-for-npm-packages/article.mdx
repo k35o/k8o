@@ -2,7 +2,7 @@
 title: OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる
 description: npmパッケージの公開で利用可能になったOIDC認証を、ChangesetsとGitHub Actionsを組み合わせて実装する方法を紹介します。従来のAccess Tokenによる認証と比べて、定期的な更新作業が不要になり効率的な開発環境を構築できます。設定も簡単なので、npmパッケージを公開する方にはぜひおすすめしたい認証方法です。
 createdAt: 2025-08-14
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 ---
 
 import initTP from './_images/init-trusted-publisher.avif';
@@ -119,13 +119,15 @@ jobs:
 
       - name: Create release Pull Request or publish to NPM
         uses: changesets/action@v1
+        with:
+          publish: npx @changesets/cli publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 このファイルは`.github/workflows`に`release.yml`という名前で作成しました。
 
 このActionは`main`ブランチにpushされたときに、Changesetsが`.changeset`の変更履歴に応じてバージョンアップのPRを作成・更新してくれます。（`npx @changesets/cli version`の役割）
-さらに、そこで作成されたPRが`main`ブランチにpushされたタイミングではnpmパッケージへのリリースを行なってくれます。（`npx @changesets/cli publish`の役割）
+さらに、そこで作成されたPRが`main`ブランチにpushされたタイミングでは、`publish`に渡したコマンドでnpmパッケージへのリリースを行なってくれます。（`npx @changesets/cli publish`の役割）`publish`を渡さないと、PRをマージしても公開されません。
 
 このままではこのActionは失敗します。npmに認証するため方法が提供されていないためです。
 
@@ -151,7 +153,7 @@ OIDCを利用する場合は、`NPM_TOKEN`の設定は不要です。
 うまく動かない場合は以下の点を確認してください。
 
 ### id-token権限の追加
-GitHub Actionsの`permissions`で`id-tokens`に`write`権限を付与する必要があります。
+GitHub Actionsの`permissions`で`id-token`に`write`権限を付与する必要があります。
 
 ドキュメントに大きく書いてありますが、OIDCを利用しないケースでは不要なため、つけ忘れが起きました。
 
@@ -171,12 +173,12 @@ GitHub Actionsの`permissions`で`id-tokens`に`write`権限を付与する必�
 ### package.jsonのrepositoryフィールドの設定
 `package.json`の`repository`フィールドにtypoがあるとリリースが失敗します。
 
-これは、OIDCを利用しなくても失敗するかもしれませんが、念の為記述しました。
+リポジトリとパッケージがどちらもpublicなら、Trusted Publishingは来歴（provenance）を自動で付けて公開します。そのとき、`repository.url`がGitHubのリポジトリと完全に一致している必要があります。
 
 ## おわりに
 今回OIDCによる認証を導入したことで、より安定した開発環境を構築できました。
 
-OIDCは一度設定してしまえばほぼ永続的に認証が維持されるため、期限切れを気にする必要がありません。
+Trusted Publisherを一度設定すれば、公開のたびにOIDCで短い期限の資格情報が発行されるので、トークンの期限切れを気にする必要がありません。
 簡単で安全に設定できるので、今後のパッケージ開発においてはこの認証方式を使用していきたいです。
 
-ただし、リリース用のワークファイル名を変更すると動作しなくなる点は忘れないようにしたいです。
+ただし、リリース用のワークフローのファイル名を変更すると動作しなくなる点は忘れないようにしたいです。
