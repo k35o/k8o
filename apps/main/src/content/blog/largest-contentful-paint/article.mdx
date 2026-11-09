@@ -81,7 +81,7 @@ for (const type of ['keydown', 'pointerdown']) {
 
 Largest Contentful Paint APIは、ビューポート内で一番大きなコンテンツ要素が描画されるまでの時間を、`LargestContentfulPaint`インターフェースで返します。
 
-LCPの計測のためのAPIなので、`img`要素、`svg`内の`image`要素、`video`要素、`background-image`でスタイリングされた要素、`p`要素などのテキスト要素が対象となります。
+LCPの計測のためのAPIなので、`img`要素・`svg`内の`image`要素・`video`要素・`background-image`でスタイリングされた要素と、`p`要素などのテキスト要素が対象となります。
 
 ### PerformanceEntryから継承したプロパティ
 
@@ -97,7 +97,7 @@ LCPの計測のためのAPIなので、`img`要素、`svg`内の`image`要素、
 
 ### LargestContentfulPaint独自のプロパティ
 
-また、独自のプロパティとして、`renderTime`、`loadTime`、`size`、`element`、`url`、`id`を持ちます。
+また、独自のプロパティとして`renderTime`・`loadTime`・`size`・`element`・`url`・`id`を持ちます。
 
 #### renderTime
 
