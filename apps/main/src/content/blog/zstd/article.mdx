@@ -74,9 +74,7 @@ Accept-Encoding: gzip, deflate, br, zstd
 Content-Encoding: zstd
 ```
 
-実際に`zstd`に対応したブラウザでこのページの通信を確認すると、`Content-Encoding: zstd`でレスポンスが返ってきていることがわかります。
-
-このサイトはVercelで配信しており、アプリ側で特別な設定をしなくても、Vercelのエッジネットワークがzstdをサポートしているため自動的に有効になっています。
+ただし、ブラウザが`zstd`を送っても、サーバーが`zstd`を選ぶとは限りません。このサイトはVercelで配信していますが、2026年11月に`curl`で`Accept-Encoding: gzip, deflate, br, zstd`を送ると`Content-Encoding: br`が返り、`zstd`だけを送ると圧縮されずに返りました。どの形式で返すかはサーバーやCDNが決めるので、`zstd`で配信したいときは、DevToolsのネットワークパネルで`Content-Encoding`を見て、配信側が対応しているかを確かめます。
 
 ### 圧縮辞書転送
 
