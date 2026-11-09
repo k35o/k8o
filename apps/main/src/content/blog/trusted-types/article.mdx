@@ -122,10 +122,10 @@ scriptEl.text = trustedTypes.emptyScript;
 `isHTML()`・`isScript()`・`isScriptURL()`は値が対応するTrusted Typeかどうかを判定します。
 
 ```js
-// TrustedTypeかどうかを判定するユーティリティ
-trustedTypes.isHTML(value); // true TrustedHTMLの場合
-trustedTypes.isScript(value); // false TrustedHTMLはScriptではない
-trustedTypes.isScriptURL(value); // true TrustedScriptURLの場合
+const html = escapePolicy.createHTML('<b>Hello</b>');
+trustedTypes.isHTML(html); // true
+trustedTypes.isScript(html); // false TrustedHTMLはTrustedScriptではない
+trustedTypes.isHTML('<b>Hello</b>'); // false 文字列はTrustedHTMLではない
 ```
 
 `getPropertyType()`・`getAttributeType()`は特定の要素のプロパティや属性にどのTrusted Typeが必要かを確認できます。
