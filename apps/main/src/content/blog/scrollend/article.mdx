@@ -13,11 +13,23 @@ featureIds:
 
 ## はじめに
 
-スクロールが終了したタイミングを検知したいケースがあります。例えば、スクロールが止まった位置をURLに反映したり、スクロール終了後にアニメーションを開始したりする場合です。
+`scrollend`イベントは、スクロールが止まったときに1回だけ発火するイベントです。指やホイール、キーボードでのスクロールでも、`scrollTo()`やscroll-snapによる移動でも、位置が動き終わった時点で届きます。
 
-しかし、今まではブラウザにスクロールが終了したことを検知するイベントがなく、`scroll`イベントを監視して擬似的に終了のタイミングを測ることしかできませんでした。
+スクロール中の位置に合わせて表示を変えるなら、これまでどおり`scroll`イベントで足ります。一方で、止まった位置をURLに反映するといった、止まったときに1回だけ行う処理には、終了を知らせるイベントがありませんでした。`scroll`イベントを監視して、擬似的に終了のタイミングを測るしかなかったのです。`scrollend`イベントは、Baseline 2025として主要ブラウザすべてで利用可能になりました。
 
-`scrollend`イベントは、この問題を解決するためにスクロール操作が完了したときに発火してくれるイベントです。Baseline 2025として主要ブラウザすべてで利用可能になりました。
+```html
+<div id="list" style="height: 120px; overflow: auto">
+  <div style="height: 1000px">スクロールしてください</div>
+</div>
+<script>
+  const list = document.getElementById('list');
+  list.addEventListener('scrollend', () => {
+    console.log('止まった位置', list.scrollTop);
+  });
+</script>
+```
+
+枠の中をスクロールして止めると、コンソールに止まった位置が1回だけ出ます。
 
 ## 従来の手法
 
@@ -65,6 +77,38 @@ element.addEventListener('scrollend', () => {
 一方で、スクロール位置が変化しなかった場合は発火しません。
 
 <PlaygroundEmbed demo="発火条件" headingLevel="h5" sectionId="scrollend" />
+
+Chrome 156、Safari 27.2、Firefox 159で、要素の`scrollTo({ top: 500, behavior: 'smooth' })`を呼ぶと、`scroll`イベントは何度も届き、`scrollend`イベントは止まったときに1回だけ届きました。最後の`scroll`イベントからの間は、Chrome 156で34ms、Safari 27.2とFirefox 159では1ms未満でした。`scrollTop`に続けて3回代入したときも、`scroll`と`scrollend`は1回ずつです。すでにその位置にいるときの`scrollTo()`では、どちらも発火しませんでした。
+
+要素の`scrollend`イベントはバブリングしません。3つのブラウザのどれでも、`document`に登録したリスナーには、要素のスクロールの`scrollend`イベントは届かず、ページ全体のスクロールのものだけが届きました。要素のスクロールを見るなら、その要素に登録します。
+
+### 止まった位置をURLに残す
+
+scroll-snapで1枚ずつ止まるカルーセルなら、`scrollend`イベントで何枚目に止まったかを求め、URLのハッシュに残せます。
+
+```css
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.carousel > * {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+}
+```
+
+```js
+const carousel = document.querySelector('.carousel');
+
+carousel.addEventListener('scrollend', () => {
+  const index = Math.round(carousel.scrollLeft / carousel.clientWidth);
+  history.replaceState(null, '', `#slide-${index + 1}`);
+});
+```
+
+幅200pxのカルーセルを`scrollTo({ left: 130 })`で途中の位置へ動かすと、3つのブラウザのどれでも、`scrollend`イベントはスナップし終えた200pxの位置で1回だけ届き、ハッシュは`#slide-2`になりました。
 
 ## おわりに
 
