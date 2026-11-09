@@ -1,6 +1,6 @@
 ---
-title: React19で変化したuseReducerの型から学ぶTypeScriptの型推論
-description: '@types/reactのバージョン19ではuseReducerの型の変更が行われました。これまではreducer関数から状態の型を推論していましたが、バージョン19からはreducer関数と初期値から状態の型を推論する形に変更されました。この記事では、この変更を元にTypeScriptにおける型の推論方法について提案します。'
+title: 'useReducerをTypeScriptで型付けする'
+description: 'React 19のuseReducerは、reducerと初期値から状態の型を推論します。TypeScriptでの型付けと型引数の渡し方を@types/react 18と比べ、この変更から分かる型推論の設計を紹介します。'
 createdAt: 2025-05-24 14:00:00.000000+00
 updatedAt: 2026-11-09
 ---
@@ -9,7 +9,7 @@ import '@repo/mdx-preset/katex.css';
 import inferencePattern from './_images/inference-pattern.avif';
 import react18vsreact19 from './_images/react18vsreact19.avif';
 
-# React19で変化したuseReducerの型から学ぶTypeScriptの型推論
+# useReducerをTypeScriptで型付けする
 
 ## はじめに
 
