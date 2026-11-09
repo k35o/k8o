@@ -43,7 +43,7 @@ panel.addEventListener('transitionrun', (event) => {
 });
 ```
 
-`transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。Chrome 156とFirefox 159で、3つのイベントの`event.animation`を`===`で比べると、どれも同じでした。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つことも可能です。
+`transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。Chrome 156とFirefox 159で、トランジションの3つのイベントの`event.animation`を`===`で比べると、どれも同じでした。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つことも可能です。
 
 ```html
 <div id="badge">●</div>
