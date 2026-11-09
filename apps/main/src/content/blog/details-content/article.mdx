@@ -1,6 +1,6 @@
 ---
 title: '::details-contentでdetailsの開閉アニメーション'
-description: '::details-contentは、details要素のsummary以外の中身を選ぶ擬似要素です。中身の枠や背景をCSSで装飾し、heightのtransitionと組み合わせて開閉をアニメーションさせる書き方を説明します。'
+description: '::details-contentは、details要素のsummary以外の中身を選ぶ擬似要素です。heightのtransitionで開閉をアニメーションさせる書き方と、中身の枠や背景をCSSで装飾する方法を説明します。'
 createdAt: 2025-10-26
 updatedAt: 2026-11-09
 featureIds:
@@ -96,6 +96,6 @@ details[open]::details-content {
 }
 ```
 
-`height: 0`から`height: auto`へのトランジションは、`interpolate-size: allow-keywords`があって初めて補間されます。高さ200pxの中身を入れた`details`を開いて100ms後の高さを測ると、Chrome 156では83pxと開いている途中でしたが、Safari 27.2とFirefox 159では開ききった224pxでした。2つのブラウザは`interpolate-size`に対応しておらず（`CSS.supports('interpolate-size: allow-keywords')`が`false`）、開閉は一瞬で切り替わります。開閉そのものはどのブラウザでも動くので、アニメーションは対応したブラウザだけで付く飾りとして扱います。
+`height: 0`から`height: auto`へのトランジションは、`interpolate-size: allow-keywords`があって初めて補間されます。高さ200pxの中身を入れた`details`を開いて、100ms後に`summary`を含む`details`全体の高さを測ると、Chrome 156では83pxと開いている途中でしたが、Safari 27.2とFirefox 159では開ききった224pxでした。SafariとFirefoxは`interpolate-size`に対応しておらず（`CSS.supports('interpolate-size: allow-keywords')`が`false`）、開閉は一瞬で切り替わります。開閉そのものはどのブラウザでも動くので、アニメーションは対応したブラウザだけで付く飾りとして扱います。
 
 `::details-content`擬似要素はBaseline 2025で導入され、主要なブラウザで利用できます。中身の装飾から試してみてください。

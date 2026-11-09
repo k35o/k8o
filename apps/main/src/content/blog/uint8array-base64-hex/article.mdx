@@ -1,13 +1,13 @@
 ---
-title: 'Uint8Arrayとbase64・hex文字列を相互に変換する'
-description: 'Uint8ArrayのfromBase64・toBase64・fromHex・toHexで、バイト列とbase64や16進数（hex）の文字列を相互に変換できます。btoaで自作していた変換を置き換える使い方とオプションを説明します。'
+title: 'Uint8Arrayとbase64・Hex文字列を相互に変換する'
+description: 'Uint8ArrayのfromBase64・toBase64・fromHex・toHexで、バイト列とbase64や16進数（Hex）の文字列を相互に変換できます。btoaで自作していた変換を置き換える使い方とオプションを説明します。'
 createdAt: 2025-09-21
 updatedAt: 2026-11-09
 featureIds:
   - uint8array-base64-hex
 ---
 
-# Uint8Arrayとbase64・hex文字列を相互に変換する
+# Uint8Arrayとbase64・Hex文字列を相互に変換する
 
 <BrowserSupportStatus featureId="uint8array-base64-hex" />
 
@@ -214,7 +214,7 @@ uint8Array.setFromBase64("SGVsbG1", {
 });
 ```
 
-`setFromBase64`は返り値に`read`と`written`をキーに持つオブジェクトを返します。`read`は読み取ったbase64文字列の長さ、`written`は書き込んだバイト数を示します。
+`setFromBase64`は、`read`と`written`をキーに持つオブジェクトを返します。`read`は読み取ったbase64文字列の長さ、`written`は書き込んだバイト数を示します。
 
 ### setFromHex
 
@@ -227,7 +227,7 @@ const hex = "48656c6c6f";
 uint8Array.setFromHex(hex); // uint8Array is now Uint8Array([72, 101, 108, 108, 111])
 ```
 
-オプションはもたず、返り値は`setFromBase64`と同様に`read`と`written`をキーに持つオブジェクトを返します。
+オプションはもたず、`setFromBase64`と同様に`read`と`written`をキーに持つオブジェクトを返します。
 
 ## おわりに
 Chrome 140以降で追加されたこれらの新しいメソッドにより、JavaScriptでのバイナリデータとテキスト形式の変換が大幅に簡素化されました。

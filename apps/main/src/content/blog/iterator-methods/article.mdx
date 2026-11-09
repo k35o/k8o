@@ -1,6 +1,6 @@
 ---
 title: 'Iterator Helpersで配列にせずmapやfilterを使う'
-description: 'Iterator Helpersで、MapやSetのvalues()などのイテレーターに、配列に変換せずmap・filter・take・reduceなどを直接使えます。遅延評価で必要な分だけ処理する動きと、各メソッドの使い方を説明します。'
+description: 'Iterator Helpersで、MapやSetのvalues()などのイテレータに、配列に変換せずmap・filter・take・reduceなどを直接使えます。遅延評価で必要な分だけ処理する動きと、各メソッドの使い方を説明します。'
 createdAt: 2025-04-21
 updatedAt: 2026-11-09
 featureIds:
@@ -27,7 +27,7 @@ Baseline 2025にIterator Helpersが追加されました。
 `next`という操作で次のステップで進み、戻り値は次のデータを表す`value`と後続のデータの有無を示す`done`のオブジェクトです。
 
 `Iterator`オブジェクトは、他の多くの組み込みイテレータの基盤となる存在です。
-`Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`の結果など、さまざまな反復処理は`Iterator`オブジェクトを継承しています。`Intl.Segmenter.prototype.segment`の結果や`NodeList`は、それ自身は`Iterator`を継承していませんが、`[Symbol.iterator]()`で取り出したイテレーターは継承しています。Chrome 156で試すと、`document.querySelectorAll('a') instanceof Iterator`は`false`、`document.querySelectorAll('a')[Symbol.iterator]() instanceof Iterator`は`true`でした。
+`Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`の結果は、どれも`Iterator`オブジェクトを継承しています。`Intl.Segmenter.prototype.segment`の結果や`NodeList`は、それ自身は`Iterator`を継承していませんが、`[Symbol.iterator]()`で取り出したイテレータは継承しています。Chrome 156で試すと、`document.querySelectorAll('a') instanceof Iterator`は`false`、`document.querySelectorAll('a')[Symbol.iterator]() instanceof Iterator`は`true`でした。
 
 ```js
 const iterator = [1, 2, 3][Symbol.iterator]();

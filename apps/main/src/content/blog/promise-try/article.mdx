@@ -96,7 +96,7 @@ const promiseTry = (callback, ...args) => {
 };
 ```
 
-`try`は予約語なので、関数の名前には使えません。`new Promise`に渡した関数の中で投げられた例外は拒否として扱われるので、`callback`が同期的に投げても`catch`で受け取れます。`callback`が`Promise`を返したときは、`resolve`がその結果を引き継ぎます。
+関数名を`promiseTry`にしたのは、`try`が予約語で使えないためです。`new Promise`に渡した関数の中で投げられた例外は拒否として扱われるので、`callback`が同期的に投げても`catch`で受け取れます。`callback`が`Promise`を返したときは、`resolve`がその結果を引き継ぎます。
 
 記述は複雑になってしまい、知らない人からすると何をしているかが読み取りづらいです。`Promise.try`があればこのような実装なしに簡単に利用できるのでとても便利です。
 
@@ -125,16 +125,16 @@ const readFileWithCache = (path) => {
 上記の`readFileWithCache`関数は`path`に存在するファイルを読み込む関数です。
 初回の読み込みは`readFile`を用いて非同期に値を取り出しますが、2回目以降は`cache`に保存された値を返します。
 
-この関数を実行してみると、1度目の読み込みは`Promise<string>`が返されますが、それ以降は`string`を返すようになっています。キャッシュしてくれるのは嬉しいですが、取り出した値を利用する視点ではとても不便です。
+この関数は、初回は`Promise<string>`を返しますが、2回目以降は`string`を返します。キャッシュしてくれるのは嬉しいですが、取り出した値を利用する視点ではとても不便です。
 
 ```js
-console.log(readFileWithCache('path/to/file')); // 1度目はPromise {<pending>}、2度目以降はファイルの中身の文字列
+console.log(readFileWithCache('path/to/file')); // 初回はPromise {<pending>}、2回目以降はファイルの中身の文字列
 ```
 
 このような関数は`Promise.try`を使うことで、初回と2回目以降の呼び出しで同じように`Promise<string>`を返すようにできます。
 
 ```js
-console.log(Promise.try(() => readFileWithCache('path/to/file'))); // 何度目でもPromise
+console.log(Promise.try(() => readFileWithCache('path/to/file'))); // 何回目でもPromise
 ```
 
 この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、Promise.tryを活用することで、同期・非同期を意識せず統一的に扱えるメリットがよく分かるのではないでしょうか。
