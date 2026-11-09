@@ -13,9 +13,11 @@ featureIds:
 
 ## はじめに
 
-ブラウザは画像を本来のサイズより大きく表示するとき、デフォルトでは色を補間（interpolation）して滑らかに見せようとします。写真ならこれで自然に拡大されますが、ドット絵やピクセルアート、QRコード、ピクセル単位で意味を持つ図版だと、ぼやけて元の絵柄が壊れてしまいます。
+`image-rendering`は、画像を拡大・縮小して表示するときのアルゴリズムを切り替えるCSSプロパティです。`crisp-edges`を指定すると、色を混ぜずにピクセルの境界をはっきり保ったまま拡大でき、ドット絵やQRコードがぼやけません。
 
-`image-rendering`プロパティはこの拡大時のアルゴリズムを切り替える指定で、`crisp-edges`は色を補間せず境界をはっきり保つ値です。Firefox / Safariは早くから対応していましたが、Chromiumが長く未実装で、`pixelated`を代用する場面が多くありました。Baseline 2026でChrome 148が対応し、3ブラウザで`crisp-edges`が揃いました。
+ブラウザは画像を本来のサイズより大きく表示するとき、デフォルトでは色を補間（interpolation）して滑らかに見せようとします。写真ならこれで自然に拡大されるので、指定は要りません。ドット絵やピクセルアート、QRコード、ピクセル単位で意味を持つ図版は、ぼやけて元の絵柄が壊れてしまうので、`crisp-edges`か`pixelated`を指定します。
+
+Firefox / Safariは早くから対応していましたが、Chromiumが長く未実装で、`pixelated`を代用する場面が多くありました。Baseline 2026でChrome 148が対応し、3ブラウザで`crisp-edges`が揃いました。
 
 ## image-renderingの値
 
@@ -32,6 +34,10 @@ featureIds:
 - `pixelated`はまず最近傍法で次に大きい整数倍まで拡大し、そのあと補間で目的サイズに仕上げる
 
 仕様の上では、画像のサイズが整数倍ぴったりでないときに`pixelated`の方が境界がやや滑らかになり得ます。ただしChrome 156で4×4の市松模様を102px（25.5倍）に拡大すると、`crisp-edges`と`pixelated`は1ピクセルも違わず、どちらも白と黒の2色だけで描かれました（`auto`は61色）。
+
+<PlaygroundEmbed demo="image-rendering値の比較" headingLevel="h4" sectionId="crisp-edges" />
+
+Selectで`auto`を選ぶと、16倍に拡大したドット絵の輪郭がぼやけます。`crisp-edges`か`pixelated`を選ぶと、ピクセルの境界がくっきりします。Chrome 156とSafari 27.2は`smooth`を受け付けないので、選んでも直前の値のまま見た目が変わりません。
 
 ## 使い方
 
@@ -54,8 +60,15 @@ img.pixel-art {
 }
 ```
 
-<PlaygroundEmbed demo="image-rendering値の比較" headingLevel="h4" sectionId="crisp-edges" />
+接頭辞の付いた値は、今は要りません。`-moz-crisp-edges`を受け付けるのはFirefox 159だけ（計算値は`crisp-edges`）で、Chrome 156とSafari 27.2は受け付けませんでした。接頭辞なしの`crisp-edges`は3つとも受け付けます。Chrome 147以前も対象にするなら、先に`pixelated`を書いておくと、`crisp-edges`を受け付けないブラウザでは`pixelated`が使われます。
+
+```css
+img.pixel-art {
+  image-rendering: pixelated; /* crisp-edgesを受け付けないChrome 147以前 */
+  image-rendering: crisp-edges;
+}
+```
 
 ## おわりに
 
-`crisp-edges`はChromiumに長く欠けていた値で、これまではほぼ同じ役目の`pixelated`で代替していた人が多いと思います。Baseline 2026で揃ったので、仕様の意図に近い`crisp-edges`をそのまま指定する選択肢が取れるようになりました。
+`crisp-edges`はChromiumに長く欠けていた値で、これまではほぼ同じ役目の`pixelated`で代替していた人が多いと思います。Baseline 2026で揃ったので、仕様の意図に近い`crisp-edges`をそのまま指定する選択肢が取れるようになりました。Chrome 147以前も対象にするあいだは、`pixelated`を先に書いておきます。
