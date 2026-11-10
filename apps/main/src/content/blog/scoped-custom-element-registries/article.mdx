@@ -82,7 +82,7 @@ customElements.define('scoped-panel', ScopedPanel);
 <scoped-panel></scoped-panel> <!-- 中の x-badge は BadgeV2 -->
 ```
 
-2つのJavaScriptを`<script>`に入れ、HTMLと一緒に1つのファイルに貼って開くと、v1とv2が並びます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`scoped-panel`の中の`x-badge`は`BadgeV2`のインスタンスになりました。
+開くと、v1とv2が並びます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`scoped-panel`の中の`x-badge`は`BadgeV2`のインスタンスになりました。
 
 `scoped-panel`のシャドウルートの中の要素は、定義を`registry`からだけ探し、`customElements`は見ません。そのため、中の`x-badge`は`BadgeV2`になり、ページの`BadgeV1`とは衝突しません。逆に`registry`に無い名前は、`customElements`に定義があっても未定義のまま残ります。シャドウルートの`innerHTML`や、シャドウルートの中の要素の`innerHTML`・`setHTMLUnsafe()`で書いたときも、パーサーはこのレジストリで要素を作ります。ただし、シャドウルートの`setHTMLUnsafe()`は、Chrome 156とSafari 27.2ではこのレジストリで要素を作りましたが、Firefox 159では`customElements`の定義で作りました。
 
