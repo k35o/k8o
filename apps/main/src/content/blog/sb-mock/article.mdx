@@ -202,12 +202,14 @@ export const getUser = fn(async (id: number) => {
 
 `node_modules`から呼び出すようなパッケージのモジュールをモックしたい場合は、プロジェクトのルートに`__mocks__`ディレクトリを作成し、その中にパッケージと同じ名前のファイルを作成します。`sb.mock`にはパッケージ名を渡します。
 
+たとえば`uuid`の`v4`は呼ぶたびに違うIDを返すので、IDを表示するストーリーは開くたびに見た目が変わります。固定のIDを返すモックに置き換えれば、スクリーンショットを比べるテストでも毎回同じ見た目になります。
+
 ```ts
 // .storybook/preview.ts
-sb.mock('nanoid');
+sb.mock('uuid');
 
-// __mocks__/nanoid.ts
-export const nanoid = () => 'mocked-id';
+// __mocks__/uuid.ts
+export const v4 = () => '00000000-0000-4000-8000-000000000000';
 ```
 
 `__mocks__`のファイルはパッケージをまるごと置き換えるので、使う関数はすべて書き出します。
