@@ -15,8 +15,6 @@ featureIds:
 
 `Promise.try`は、渡した関数をその場で呼び、結果を`Promise`に包んで返すメソッドです。関数が同期的に例外を投げても、返した`Promise`が拒否されても、`catch`で受け取れます。Firefox 134が対応して、Baseline 2025に入りました。
 
-<LinkCard href="https://github.com/tc39/proposal-promise-try" />
-
 `async`関数の中なら、`await fn()`を`try...catch`で囲めば、同期の例外も拒否も受け取れます。`Promise.try`が要るのは、`then`と`catch`をつなぐ書き方で、同期的に例外を投げるかもしれない関数を扱うときです。`Promise.resolve(fn())`では同期の例外が`catch`に届かず、`Promise.resolve().then(fn)`では`fn`の呼び出しが後回しになります。
 
 ```js
@@ -27,8 +25,6 @@ Promise.resolve(parse('{')).catch((error) => console.log('catchで受け取っ�
 ```
 
 `Promise.try`の行は`catchで受け取った SyntaxError`を出し、`Promise.resolve`の行は`catch`に届かずに`Uncaught SyntaxError`になります。
-
-この記事では`Promise.try`の使い方と、有効な場面について解説します。
 
 ## Promise.tryとは
 
