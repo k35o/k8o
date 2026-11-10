@@ -59,7 +59,7 @@ try {
 }
 ```
 
-ブラウザのコンソールか、Node.js 26の`.mjs`ファイルに貼って動かすと、`error code 42`と出ます。WebAssemblyが投げた例外が、JavaScriptの`catch`に`WebAssembly.Exception`として届き、タグで判定してペイロードの42を取り出しています。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で同じ結果でした。ここではバイト列を埋め込んでいますが、実際には`.wasm`ファイルを`WebAssembly.instantiateStreaming()`で読み込みます。
+ブラウザかNode.js 26で動かすと、`error code 42`と出ます。WebAssemblyが投げた例外が、JavaScriptの`catch`に`WebAssembly.Exception`として届き、タグで判定してペイロードの42を取り出しています。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で同じ結果でした。ここではバイト列を埋め込んでいますが、実際には`.wasm`ファイルを`WebAssembly.instantiateStreaming()`で読み込みます。
 
 WebAssembly側では、インポートしたタグを`throw`命令に渡して例外を投げます。上のバイト列は、次のWATを変換したものです。
 
