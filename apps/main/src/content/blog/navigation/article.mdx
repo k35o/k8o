@@ -244,10 +244,6 @@ navigation.updateCurrentEntry({
 
 ## おわりに
 
-Navigation APIは、History APIの根本的な設計上の課題を解決し、SPAのルーティングをブラウザネイティブの仕組みで実現するAPIです。
-単一の`navigate`イベントによるナビゲーションの一元管理と`intercept()`による宣言的なSPAルーティングを軸に、`entries()`による履歴の参照や`state`/`info`による状態の管理まで、SPAに必要な機能がそろっています。
+Navigation APIでは、素の`<a>`やフォーム、戻るボタンと進むボタンまでの遷移を`navigate`イベント1つで受け取り、`intercept()`でSPAの遷移にできます。`entries()`で履歴を読み、`state`と`info`で状態を渡せるので、SPAのルーティングに要るものがブラウザの機能でそろいます。
 
-History APIでは散在していたナビゲーション処理が`navigate`イベントに集約され、`<Link>`コンポーネントのような中間層も必須ではなくなります。この記事を読んだだけでも、SPAのルーティングライブラリを自作するための道筋がすこし見えてきたのではないでしょうか。
-
-実際にNavigation APIを使ったルーターの実装に興味がある方には、React向けに作られた[FunStack Router](https://github.com/uhyo/funstack-router)のコードがおすすめです。
-現時点ではルーティングに必要な最小限の機能に絞って実装されており、Navigation APIの各機能がどのようにルーターとして組み立てられているかをコードベースから読み取りやすいです。
+Navigation APIを使ったルーターの実装を読むなら、React向けに作られた[FunStack Router](https://github.com/uhyo/funstack-router)のコードがおすすめです。今はルーティングに要る最小限の機能に絞って作られているので、Navigation APIの各機能がルーターとしてどう組み立てられているかを読み取りやすいです。
