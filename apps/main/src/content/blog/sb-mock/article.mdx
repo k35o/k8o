@@ -1,6 +1,6 @@
 ---
 title: 'Storybookのsb.mockでモジュールをモックする'
-description: 'Storybookのsb.mockは、preview.tsに書くだけで、コンポーネントが読むモジュールをモック関数に置き換えます。mockedでの戻り値の制御やspy、__mocks__での差し替えをv10.6で確かめます。'
+description: 'Storybookのsb.mockは、preview.tsに書くだけで、コンポーネントが読むモジュールをモック関数に置き換えます。mockedで戻り値を変えたり、spyで元の処理を動かしたり、__mocks__で差し替えたりできます。'
 createdAt: 2025-08-04
 updatedAt: 2026-11-09
 ---
@@ -25,7 +25,7 @@ updatedAt: 2026-11-09
 import { sb } from 'storybook/test';
 ```
 
-v9.1.0で入ったときから10.6.5まで、公開されているのは`mock`メソッドだけです。
+`sb`で公開されているのは`mock`メソッドだけです。
 
 `mock`メソッドは第一引数にモックするモジュールのパス、第二引数にオプションをオブジェクトで指定します。パスは`.storybook/preview.ts`からの相対パスで、拡張子まで書きます。
 
@@ -38,9 +38,9 @@ sb.mock('../src/services/users.ts', {
 });
 ```
 
-Storybook 10.6.5で、拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、ビルドが`Cannot find module`で止まりました。
+拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、ビルドが`Cannot find module`で止まりました。
 
-オプションは10.6.5でも`spy`だけがサポートされています。
+オプションは`spy`だけがサポートされています。
 
 ### mockしてみる
 
@@ -55,7 +55,7 @@ sb.mock('../src/services/users.ts');
 
 この行を足すと、`src/services/users.ts`の`getUser`を呼ぶコンポーネントのストーリーでは、`getUser`の戻り値が`undefined`になります。戻り値の決め方は後で紹介します。
 
-`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。10.6.5でストーリーのファイルに`sb.mock`を書くと、エラーにはならず、モジュールもモックされませんでした。
+`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。ストーリーのファイルに`sb.mock`を書いても、エラーにはならず、モジュールもモックされませんでした。
 
 `import()`構文を用いてより確実にモジュールをモックすることも可能です。
 
@@ -83,7 +83,7 @@ export const getUser = async (id: number) => {
 
 上記のように定義されている場合、Storyに表示するコンポーネント内で`getUser`メソッドを呼び出しても、`users.ts`に定義された元の`getUser`は実行されません。`getUser`はモック関数に置き換わり、呼ぶと`undefined`を返します。元の`getUser`は`async`の関数ですが、モックはPromiseも返しません。
 
-ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。Chrome 156でストーリーを開くと、モックしていても開発者ツールのコンソールに`users.ts`の`console.log`が出ました。
+ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。ストーリーを開くと、モックしていても開発者ツールのコンソールに`users.ts`の`console.log`が出ました。
 
 #### モックしたモジュールのメソッドをspyする
 
