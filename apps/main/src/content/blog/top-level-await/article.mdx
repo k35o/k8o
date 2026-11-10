@@ -30,7 +30,7 @@ import { config } from './config.mjs';
 console.log('main:', config.apiBase);
 ```
 
-2つのファイルを同じディレクトリに置いて`node main.mjs`を実行すると、`config: 読み込み開始`のあと1秒おいて`config: 1秒待った`が出て、最後に`main: https://example.com`が出ます。Node.js 26.13.0で確かめました。
+Node.js 26.13.0で`main.mjs`を動かすと、`config: 読み込み開始`のあと1秒おいて`config: 1秒待った`が出て、最後に`main: https://example.com`が出ました。
 
 Top-level awaitはES2022の構文で、Chrome 89とFirefox 89が2021年に対応しました。Safariも15で実装しましたが、同じモジュールを複数の場所から同時に`import`したときの不具合が残っていました。Safari 27でこれが解消され、Baseline 2026に加わりました。
 
