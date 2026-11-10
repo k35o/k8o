@@ -1,123 +1,78 @@
 ---
-title: 'TanStack RouterでReactのルーティングを型安全に書く'
-description: 'TanStack RouterはReactのルーティングライブラリで、パスや検索パラメータに型が付き、存在しないパスへのリンクを型エラーにできます。ルートの作り方、Link、検索パラメータの検証、loaderをv1.170で紹介します。'
+title: Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ
+description: Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。
 createdAt: 2023-07-13
-updatedAt: 2026-11-09
+updatedAt: 2025-11-15
 ---
 
 import devTool from './_images/devtool.avif';
 import icon from './_images/icon.avif';
 
-# TanStack RouterでReactのルーティングを型安全に書く
+# Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ
+
+<Alert
+  tone="warning"
+  message="この記事の内容は2023年7月時点のTanStack Routerがbeta版であったときの内容です。現在の機能とは大きく異なっていることが考えられるので、最新の情報は公式ドキュメントを参照してください。"
+/>
 
 ## はじめに
 
-[TanStack Router](https://tanstack.com/router/latest)は、[TanStack Query](https://tanstack.com/query/latest)（React Query）と同じ[TanStack](https://tanstack.com/)が開発するReactのルーティングライブラリです。ルートの定義からパスや検索パラメータの型が推論され、存在しないパスへのリンクや渡し忘れたパラメータを型エラーとして見つけられます。
-
-[Next.js](https://nextjs.org/)のようなフレームワークを使うなら、そのフレームワークのルーティングで足ります。フレームワークを使わないSPAでも、パスを文字列のまま扱ってよければ[React Router](https://reactrouter.com/)で足ります。TanStack Routerが向くのは、パスと検索パラメータを型で縛り、検索パラメータをアプリの状態のように読み書きしたい場面です。
-
-この記事のコードは、`@tanstack/react-router` 1.170.46とTypeScript 7.0.2で型を確かめ、Chrome 156で動かしています。ReactのほかにSolidとVue向けのパッケージ（`@tanstack/solid-router`・`@tanstack/vue-router`）もありますが、この記事では扱いません。
+React で開発する時、どのようにルーティングを実装していますか？[Next.js](https://nextjs.org/)や[Remix](https://remix.run/)などのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利用しないときは[ReactRouter](https://reactrouter.com/en/main)を利用する方法がスタンダードだと思います。
+この記事では React におけるルーティング方法の新たな選択肢として[TanStack Router](https://tanstack.com/router/v1)を紹介します。名前から察する通り、これは[TanStack Query](https://tanstack.com/query/latest)(React Query)と同じ開発元の[TanStack](https://tanstack.com/)が開発したライブラリとなります。
+この記事では紹介しませんが React だけではなく、Preact・Solid・Svelte・Vue・Angular でも利用できます。
 
 ## 特徴
 
-TanStack Routerは後発のライブラリで、React Routerのようなルーティング専用のライブラリや、Next.jsのようなフレームワークのルーティングを参考に作られています。React RouterやNext.jsのルーティングとの比較は[公式の比較表](https://tanstack.com/router/latest/docs/comparison)にまとまっています。大きな特徴は次の3つです。
+TanStack Router は後発のライブラリということもあり、React Router のようなルーティング専用のライブラリや、Next.js のようなフレームワークに実装されたルーティングからインスピレーションを受けて構成されています。React Router や Next.js のルーティング機能と比較したい場合は[こちら](https://tanstack.com/router/v1/docs/comparison)を確認してください。
+そして、TanStack Router は大きく 3 つの特徴を持ちます。
 
 ### 型安全でシンプル
 
-既存のルーティングを参考にした設計なので、初めてでも使い始めやすくなっています。ルートは親のルートと`path`を渡して1つずつ作り、木に組み上げます。組み上げたルートの木から、パスやパスパラメータの型が推論されます。
-
-次のコードは、ページが2つあるだけの最小の例です。Viteで作ったReactとTypeScriptのプロジェクトに`@tanstack/react-router`を入れ、`src/main.tsx`をこのコードに置き換えると動きます。
-
-```tsx title="src/main.tsx"
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import {
-  createRootRoute,
-  createRoute,
-  createRouter,
-  Link,
-  Outlet,
-  RouterProvider,
-} from '@tanstack/react-router';
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <nav>
-        <Link to="/">Home</Link> <Link to="/about">About</Link>
-      </nav>
-      <Outlet />
-    </>
-  ),
-});
-
-const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/',
-  component: () => <h1>Home</h1>,
-});
-
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'about',
-  component: () => <h1>About</h1>,
-});
-
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute]);
-const router = createRouter({ routeTree });
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
-}
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-);
-```
-
-Aboutのリンクを押すと、ページを読み直さずにURLが`/about`に変わり、見出しがAboutに替わります。`to="/about"`を`to="/abuot"`と打ち間違えると、TypeScript 7.0.2では次の型エラーになり、正しいパスを提案されます。
-
-```txt
-Type '"/abuot"' is not assignable to type '"." | ".." | "/" | "/about"'. Did you mean '"/about"'?
-```
+先述の通り ReactRouter や Next.js などの既存のルーティングを基に構築されたライブラリなので初めて使う人でも使いやすい設計になっています。また、100%の型安全性を保っており、Next.js の Statically Typed Links(執筆時点ではbeta版の機能)のようなルーティングの型定義もされます。
 
 ### 優秀な検索パラメータ
 
-検索パラメータを型の付いたオブジェクトとして読み書きでき、ルートごとに値を検証できます。URLの`?page=2`は、読むときに数値の`2`に戻ります。検索パラメータを状態を持つストアのように扱えるので、ページ番号や絞り込みの条件をURLに置きやすくなります。
+検索パラメータを型安全にオブジェクトを扱うように変更や取得が可能でさらにバリデーションを行えます。検索パラメータを一種の状態管理を行うストアのように扱えるのでより直感的で安全に利用することが可能です。
 
 ### クライアント側のデータ取得
 
-ルートごとに`loader`でデータを取得でき、リンクにホバーした時点で遷移先のデータを先に読み込めます。TanStack QueryやSWRのような、stale-while-revalidateのキャッシュを持つデータ取得ライブラリと組み合わせやすい設計です。
+TanStack Query や SWR などの stale-while-revalidate キャッシュを活かしたデータ取得ライブラリと相性が良い設計がなされています。
 
 ## 導入
 
-パッケージをインストールすれば、TanStack Routerを使う準備は終わりです。
+パッケージをインストールするだけで TanStack Router を利用するための準備が完了します。
 
 ```sh
-npm install @tanstack/react-router
+pnpm i @tanstack/router@beta
 ```
-
-TanStack Routerには、ファイルの配置からルートの木を生成するファイルベースのルーティング（`@tanstack/router-plugin`）もあります。この記事では、ルートをコードで組み立てる書き方で紹介します。ルートに渡す`component`・`validateSearch`・`loader`といったオプションは、どちらの書き方でも同じです。
 
 ### 開発ツール
 
-TanStack Routerには専用の開発ツールがあり、ルーターの内部の状態を見られます。専用のパッケージを入れて、コードに埋め込んで使います。
+TanStack Router には専用の開発ツールが準備されており、TanStack Router の内部で行われている振る舞いを可視化してくれます。
+
+開発ツールは専用のパッケージをインストールして、コード内で埋め込むことで利用できます。
 
 ```sh
-npm install -D @tanstack/react-router-devtools
+npm i -D @tanstack/router-devtools@beta
 ```
 
-ふつうは、ルートの木の根になる`createRootRoute`の`component`に埋め込みます。
+開発環境でのみ動作するコンポーネントとして定義して、そのコンポーネントを埋め込んだ場所にツールが表示されます。
 
 ```tsx
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+const TanStackRouterDevtools = import.meta.env.DEV
+  ? // 遅延読み込みする
+    lazy(() =>
+      import('@tanstack/router-devtools').then((res) => ({
+        default: res.TanStackRouterDevtools,
+      })),
+    )
+  : () => null;
+```
 
-const rootRoute = createRootRoute({
+一般的には TanStack Router のルートである`RootRoute`クラスを定義する箇所に埋め込みます。
+
+```tsx
+const rootRoute = new RootRoute({
   component: () => (
     <>
       <Outlet />
@@ -127,112 +82,102 @@ const rootRoute = createRootRoute({
 });
 ```
 
-このように置くと、開発中は画面の左下に次のボタンが出ます。
+このように配置した場合は
 
 <Image
   src={icon}
-  alt="TanStackのロゴの横に緑色の文字でTanStack Routerと書かれた黒いボタン"
-  width={163}
-  height={46}
+  alt="大文字の黒色でTANSTACK、改行して大文字で緑色のグラデーションでROUTERと書かれたアイコン"
+  width={172}
+  height={100}
 />
-
-ボタンを押すと、開発ツールが開きます。
-
+上記のようなアイコンが左下に常に表示され、クリックすることで開発ツールが開かれます。
 <Image
   src={devTool}
-  alt="TanStack Routerの開発ツール。3つの列に分かれ、左にルーターの状態、中央に今のパスとルートの一覧、右に検索パラメータの値が表示されている"
-  width={1920}
-  height={792}
+  alt="TanStackRouterの開発ツール 3つの部分に分かれていて特定のメソッドの一覧やマッチしたルート、サーチパラメータなどが記述されている"
+  width={1698}
+  height={990}
 />
+ページごとの状況や動作を細かく確認できるのでとても便利です。
 
-ルーターの状態や、今のパスがどのルートに一致したか、検索パラメータの値を確かめられます。`position`でボタンの位置を、`initialIsOpen`で最初から開くかどうかを変えられます。
-
-`TanStackRouterDevtools`は開発中（`process.env.NODE_ENV`が`development`）にだけ描かれ、本番のビルドでは何も描きません。Vite 8.3.5で`vite build`すると、`TanStackRouterDevtools`を置いたビルドと置かないビルドのJavaScriptの差は0.04kBでした。遅延読み込みで包まなくても、開発ツールの本体は本番のファイルに入りません。
+そのほかにもオプションを props として渡すことでアイコンの配置場所やデフォルトの振る舞いを調整できます。
 
 ## 使い方
 
 ### ルーティングの作成
 
-`createRootRoute`でルーティングの入り口を作ります。
+`RootRoute`でルーティングの入り口を作ります。
 
 ```tsx
-const rootRoute = createRootRoute();
+const rootRoute = new RootRoute();
 ```
 
-そして`createRoute`で各ルートを作ります。
+そして`Route`で各ルートの設定を行います。
 
-```tsx
-const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+```ts
+const indexRoute = new Route({
+  getParentRoot: () => rootRoute,
   path: '/',
   component: () => <IndexContent />,
 });
 ```
 
-`getParentRoute`には親のルートを返す関数を、`path`には親からの相対パスを渡します。`/blog/create`にルートを作るなら、`path`を`/blog/create`にして親を`rootRoute`にするか、`path`を`create`にして親を`/blog`のルートにします。
+`getParentRoot`は作成するルートの親となるルートを指定します。そして、`path`には指定した親からの相対パスを渡します。`/blog/create`にルートを作るとします。
+`path`に`/blog/create`を渡した時は親に`rootRoute`を、`path`が`/create`であれば親に`/blog`にルートを作る`blogRoot`を指定します。`path`として指定した文字列の先頭と末尾のスラッシュはいい感じに解決してくれます。例えば`/blog/`という`path`を持つルートの子に`path`が`/create`となるルートを追加するとそのルートは`/blog//create`になりそうですが、`/blog/create`に調整されます。
+この 2 つが`getParentPath`と`path`が`Route`を定義するために必須のオプションです(厳密には`path`は代わりに`id`を入力しても良いです)。
 
-`path`の先頭のスラッシュはあってもなくても同じに扱われますが、末尾のスラッシュは付けません。1.170.46で`/docs/`という`path`を持つルートの子に`/create`のルートを作ると、子の`fullPath`は`/docs/create`になるのに、`/docs/create`を開くとNot Foundになりました。
+必須のオプション以外の任意のオプションでは`component`にそのルートにアクセスしたときに表示するコンポーネントを渡せます。その他にも表示するルートでエラーが発生した時に表示する`errorComponent`や、Promise の解決中に表示する`pendingComponent`や、検索パラメータをバリデーションする`validateSearch`など様々なものを渡せます。
 
-`getParentRoute`と`path`の2つが、`createRoute`でルートを作るのに必須のオプションです。厳密には`path`の代わりに`id`を渡してもよく、そのときはパスを持たないルートになります。
-
-ほかに、そのルートで表示するコンポーネントを`component`に渡せます。エラーが起きたときに表示する`errorComponent`、`loader`の完了を待つあいだに表示する`pendingComponent`、検索パラメータを検証する`validateSearch`なども渡せます。
-
-ルートを用意できたら、ルーティング全体を組み上げます。親のルートの`addChildren`に子のルートを渡します。子のルートは、親のコンポーネントの`Outlet`の位置に描かれます。
+使用するルートを準備できたら、改めてルーティング全体を組み上げていきます。親要素のルートに対して`addChildren`で子要素を配置するようにします。
 
 ```tsx
-const rootRoute = createRootRoute();
+const rootRoute = new RootRoute({});
 // /
-const indexRoute = createRoute({
+const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => <div>Index</div>,
+  component: () => <div>Index</div>
 });
 // /blog
-const blogRoute = createRoute({
+const blogRoute = new Route({
   getParentRoute: () => rootRoute,
   path: 'blog',
-  component: () => (
-    <div>
-      Blog
-      <Outlet />
-    </div>
-  ),
+  component: () => <div>Blog</div>
 });
 // /blog/:slug
-const postRoute = createRoute({
+const postRoute = new Route({
   getParentRoute: () => blogRoute,
   path: '$slug',
-  component: () => <div>Post</div>,
+  component: () => <div>Post</div>
 });
 // /accounts/:id
-const userRoute = createRoute({
+const userRoute = new Route({
   getParentRoute: () => rootRoute,
   path: 'accounts/$id',
-  // 遅延読み込みする。lazyRouteComponentはTanStack Routerが提供する関数
-  component: lazyRouteComponent(() => import('./account')),
-});
+  // 遅延読み込みする場合に使うlazyはTanStack Routerが提供する関数
+  component: () => lazy(() => import('/Account'))
+}).
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
   blogRoute.addChildren([postRoute]),
   userRoute,
-]);
+])
 ```
 
-`addChildren`と`getParentRoute`の両方でルーティングの木を作っているように見えます。重複した定義に感じますが、これによって型安全なルーティングになります。
-組み上げた`routeTree`は`createRouter`に渡してルーターを作り、[declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html)でプロジェクト全体にルーティングの型を共有します。
+`addChildren`と`getParentRoute`の両方でルーティングツリーを構成しているように見えます。重複した定義のように感じますが、これによって型安全なルーティングが構成されます。
+組み上げたルーティング`routerTree`はさらに`Router`インスタンスを用いてルータを作成し、[declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html)でプロジェクト全体にルーティングに関する型の情報を共有します。
 
 ```ts
-const router = createRouter({ routeTree });
+const router = new Router({ routeTree });
 
-declare module '@tanstack/react-router' {
+declare module '@tanstack/router' {
   interface Register {
     router: typeof router;
   }
 }
 ```
 
-ルーターは`RouterProvider`コンポーネントに渡して、Reactのツリーに反映します。
+ルーターは`RouterProvider`コンポーネントを Provider を埋め込んでを React のツリーに反映します。
 
 ```tsx
 const App: FC = () => {
@@ -242,34 +187,35 @@ const App: FC = () => {
 
 ### ページの遷移
 
-ページの遷移には、コンポーネントの`Link`と`Navigate`、フックの`useNavigate`、ルーターのメソッドの`router.navigate`があります。
+ページの遷移はコンポーネントとして`Link`と`Navigate`、hooks としては`useNavigate`、そして`router.navigate`が提供されています。
 
 #### Link
 
-`Link`コンポーネントは他のライブラリと同じく、SPAで遷移する`a`タグとして描かれます。`/blog`へ遷移するリンクは次のように書きます。
+`Link`コンポーネントは他のライブラリと同じで、SPA で遷移する`a`タグとしてレンダリングされます。
+`/blog`へ遷移するリンクを作りたい時は以下のように書きます。
 
 ```tsx
-import { Link } from '@tanstack/react-router';
+import { Link } from '@tanstack/router';
 
-const BlogLink: FC = () => {
+const Link: FC = () => {
   return <Link to="/blog">Blog</Link>;
 };
 ```
 
-このリンクは次のHTMLを出力し、クリックすると`/blog`にSPAで遷移します。
+このリンクは以下のような html を出力し、クリックなどのアクションで`/blog`に SPA で遷移します。
 
 ```html
 <a href="/blog">Blog</a>
 ```
 
-`to`には、作成したルーティングに存在するパスしか指定できません。これがTanStack Routerの型安全性の1つです。
+`to`には作成したルーティングに存在するパスしか指定できません。これが TanStack Router の持つ特徴の型安全性の一つです。
 
-`/blog/tanstack-router`のようなパスパラメータを含むルートへ遷移するときは、`to`にルートのパスをそのまま書き、値を`params`で渡します。`to`がルートのパスのままなので、パラメータを含むリンクも型で確かめられ、`params`を書き忘れると型エラーになります。
+`/blog/slug`のようなルートへ動的に遷移させたい場合は他のフレームワークと異なり動的な分離して定義します。これによって`to`の型は動的リンクで合っても厳密な指定を可能にしています。
 
 ```tsx
-import { Link } from '@tanstack/react-router';
+import { Link } from '@tanstack/router';
 
-const PostLink: FC = () => {
+const Link: FC = () => {
   return (
     <Link
       to="/blog/$slug"
@@ -283,17 +229,18 @@ const PostLink: FC = () => {
 };
 ```
 
-検索パラメータは`search`で、ハッシュは`hash`で渡せます。`/blog?filter=tanstack&sort=name#Search`へのリンクは次のように書きます。
+他にも検索パラメータが必要な場合は`search`で、ハッシュリンクを渡したいときは`hash`で指定することができます。
+例えば`/blog?search=tanstack&sort=name#Search`にリンクしたい場合は以下のように書きます。
 
 ```tsx
-import { Link } from '@tanstack/react-router';
+import { Link } from '@tanstack/router';
 
-const SearchLink: FC = () => {
+const Link: FC = () => {
   return (
     <Link
       to="/blog"
       search={{
-        filter: 'tanstack',
+        search: 'tanstack',
         sort: 'name',
       }}
       hash="Search"
@@ -304,13 +251,13 @@ const SearchLink: FC = () => {
 };
 ```
 
-`search`をオブジェクトで渡すので、遷移先のルートで登録した検証の型で確かめられます。検証については後で紹介します。
-さらに、`preload`を指定すると、リンクにホバーやタッチした時点から遷移先を読み込めます。
+このように書くことで　遷移先のルートで登録されたバリデーションを行える点などにメリットがあります。バリデーションについては後ほど記述します。
+さらに、`preload`でリンクにホバーやタッチしたタイミングから遷移先の読み込みを行うように指定できます。
 
 ```tsx
-import { Link } from '@tanstack/react-router';
+import { Link } from '@tanstack/router';
 
-const PreloadLink: FC = () => {
+const Link: FC = () => {
   return (
     <Link to="/blog" preload="intent">
       Blog
@@ -319,28 +266,33 @@ const PreloadLink: FC = () => {
 };
 ```
 
-ほかにも、`from`を起点にリンク先を書く相対リンクや、`Link`が今のページを指すときのpropsを決める`activeProps`を指定できます。Chrome 156で`/blog`を開くと、`/blog`を指す`Link`には、`activeProps`を書かなくても`class="active"`と`aria-current="page"`が付きました。
+他にも`from`を起源としてリンク先を記述する相対リンクや、`Link`の状態に応じた`style`を指定できる`activeProps`などを指定することができます。
 
 #### Navigate
 
-`Navigate`は、描かれた時点で遷移するコンポーネントです。アカウントの設定画面を開いたときに、ログインしていなければログイン画面へ移すような場面で使います。
+`Navigate`はコンポーネントがレンダリングされたら遷移を行うようコンポーネントです。使われる場面として考えられるのは、アカウントの設定画面に遷移したときにログインしていなければログイン画面へ遷移させるようなケースです。
 
 ```tsx
 const Setting: FC = () => {
   const user = useUser();
 
   if (!user) {
-    return <Navigate to="/login" search={{ redirect: '/accounts/setting' }} />;
+    return (
+      <Navigate
+        to="/login"
+        search={{ redirect = '/accounts/setting' }}
+      />
+    );
   }
   return <AccountSetting user={user} />;
 };
 ```
 
-ログインしていない状態で`/accounts/setting`を開くと、URLが`/login?redirect=%2Faccounts%2Fsetting`に変わりました。`Navigate`のpropsに渡せる値は、`Link`とほとんど同じです。
+このコンポーネントの Props として渡せる値は`Link`とほとんど同じです。
 
 #### useNavigate
 
-遷移する関数`navigate`を返すフックです。記事を作るページで、作成後に記事のページへ移すような場面で使います。
+`navigate`という遷移に関する機能を持つインターフェイスを返す hooks です。ブログを作成するページで作成後にブログの詳細ページへ飛ばす挙動を作成するときなどで使われる考えています。
 
 ```tsx
 const navigate = useNavigate();
@@ -354,134 +306,103 @@ const onSubmit = async (data: CreateDTO) => {
 };
 ```
 
-`navigate`には、`Link`のpropsとほぼ同じ値をオブジェクトで渡します。`from`は`useNavigate`の引数でも渡せます。
+`navigate`に渡す値はオブジェクト形式で、`Link`と同じような値を渡せます(`from`は`useNavigate`で渡せるなどの差異はあります)。
 
 #### router.navigate
 
-`router.navigate`は`createRouter`で作ったルーターのメソッドで、`useNavigate`が返す`navigate`と同じことができます。フックを使えないコンポーネントの外で遷移するときに使います。
+`router.navigate`は`Router`インスタンスが持つメソッドで、`useNavigate`が返す`navigate`と同じ能力を持ちます。hooks を用いたくないタイミングで有効的に活用できます。
 
 ```ts
-const router = createRouter({ routeTree });
-router.navigate({ to: '/blog/$slug', params: { slug: 'tanstack-router' } });
+const router = new Router({ routeTree });
+router.navigate({ to: '/blog/$slug', params: { slug: data.slug } });
 ```
 
 ## バリデーション
 
-TanStack Routerでは、`createRoute`の`validateSearch`で検索パラメータを検証し、型を付けられます。
+TanStack Router では`Route`で検索パラメータのバリデーションや型情報の付与が可能です。
 
 ```ts
-type BlogSearch = {
-  page: number;
-  filter: string;
-  sort: 'name' | 'date';
-};
-
-const blogRoute = createRoute({
+const blogRoute = new Route({
   getParentRoute: () => rootRoute,
   path: 'blog',
-  validateSearch: (search: Record<string, unknown>): BlogSearch => {
+  validateSearch: (search): BlogSearch => {
     return {
-      page: Number(search.page ?? 1),
-      filter: typeof search.filter === 'string' ? search.filter : '',
-      sort: search.sort === 'date' ? 'date' : 'name',
+      page: Number(search?.page ?? 1),
+      filter: search.filter || '',
+      sort: search.sort || 'name',
     };
+  },
+});
+
+// zodなどのライブラリを用いて検査する
+const blogRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: 'blog',
+  validateSearch: (search): BlogSearch => {
+    return blogSearchSchema.parse(search);
   },
 });
 ```
 
-Zod 4のように、Standard Schemaに対応したライブラリのスキーマは、そのまま`validateSearch`に渡せます。
+このようにして検索パラメータに型を付与しつつ、入力値の検査を行うことができます。
+`useSearch`によってコンポーネント内で取得した検索パラメータの値を取得できますが、その値の型は`BlogSearch`になります。他にも、このルート内で扱う検索パラメータの値の型は全て`BlogSearch`になります。
 
-```ts
-// zodなどのライブラリを用いて検査する
-const blogSearchSchema = z.object({
-  page: z.number().default(1).catch(1),
-  filter: z.string().default(''),
-  sort: z.enum(['name', 'date']).default('name').catch('name'),
-});
-
-const blogRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'blog',
-  validateSearch: blogSearchSchema,
-});
-```
-
-`.catch()`を付けたキーは、URLの値が型に合わないときに既定の値になります。`/blog?page=abc&sort=price`を開くと、`page`は`1`、`sort`は`name`として読めました。`.catch()`を付けないと、検証のエラーになって`errorComponent`が描かれます。
-
-コンポーネントでは`useSearch`で検索パラメータを読め、その型は`BlogSearch`（Zodならスキーマの出力の型）になります。このルートで扱う検索パラメータは、どこでも同じ型になります。
-
-このルートへの遷移を考えます。
+このルートに対する遷移を考えてみます。
 
 ```tsx
-<Link to="/blog" search={{ page: 1, filter: 'blog' }}>Blog</Link>
+<Link to="/blog" search={{ page: 1, filter: 'blog' }}>
 
-<Link to="/blog" search={{ page: false, filter: 'blog' }}>Blog</Link>
+<Link to="/blog" search={{ page: false, filter: symbol(5) }}>
 ```
 
-Zodのスキーマで検証したルートでは、後者の`Link`は`page`の型が合わずに型エラーになります。`.default()`を付けたキーは`Link`で省けるので、前者は`sort`が無くてもエラーになりません。
-関数で検証したルートでは、`Link`の`search`に`BlogSearch`のすべてのキーが要ります。前者も`sort`が無いので型エラーになります。
+上記のように定義した 2 つの`Link`のうち後者は検索パラメータの型が不一致のためエラーが発生します。
 
 ## データの取得
 
-TanStack Routerでは、ルーティングに沿ってデータを取得できます。`loader`で取得したデータはルーターがキャッシュし、`useLoaderData`で読めます。TanStack QueryやSWRのようなデータ取得ライブラリと組み合わせて、キャッシュをそちらに任せることもできます。ここではTanStack Query 5.105と組み合わせます。
-
-データの取得はルートごとに、`createRoute`の`loader`に書きます。`loader`は、ルートへの移動や更新、preloadのたびに実行されます。
+TanStack Router ではルーティングに沿ったデータの取り扱いが可能です。Nextjs や remix が持つデータの保持やキャッシュ戦略はデータ取得ライブラリに任せて、取得のタイミングの調整のみを行います。
+データの取得やキャッシュのために開発された TanStack Loader と組み合わせて使ったり、他にも TanStack Query や SWR、Recoil や apollo のような様々なライブラリと組み合わせて使えます。
+TanStack Loader についてはサンプルで使われる程度の情報量しかなく情報を正確に取得できなかったので、この記事では TanStack Query を用いて紹介します。
+ルーティングに合わせたデータ取得なのでルートごとに定義します。`Route`の引数`loader`でデータの取得についてのロジックを記述します。`loader`に記述した関数はルートの移動や更新、`preload`のたびに実行されます。
 
 ```tsx
-const blogQueryOptions = (slug: string) =>
-  queryOptions({
-    queryKey: ['blog', slug],
-    queryFn: () => fetchBlog(slug),
-  });
-
-const postRoute = createRoute({
+const postRoute = new Route({
   getParentRoute: () => blogRoute,
   path: '$slug',
-  loader: ({ params }) =>
-    queryClient.query({
-      ...blogQueryOptions(params.slug),
-      staleTime: 'static',
-    }),
-  component: function Post() {
-    const { slug } = postRoute.useParams();
-    const { data: blog } = useSuspenseQuery(blogQueryOptions(slug));
+  loader: ({ params, search }) => {
+    return queryClient.ensureQueryData({
+      queryKey: ['blog', params.slug],
+      queryFn: () => fetchBlog(params.slug, search),
+    });
+  },
+  validateSearch: (search): BlogSearch => {
+    return blogSearchSchema.parse(search);
+  },
+  component: () => {
+    const { slug } = useParams({ from: '/blog/$slug' });
+    const search = useSearch({ from: '/blog/$slug' });
+    const blog = useQuery(['blog', slug], () =>
+      fetchPostById(slug, search),
+    );
     return <Blog blog={blog} />;
   },
 });
 ```
 
-この例では、`component`を描く前の移動や更新、preloadの時点でAPIを呼び、TanStack Queryのキャッシュに入れます。`component`の`useSuspenseQuery`はキャッシュから読むので、ページを描いてからデータを待たずに済みます。TanStack Query 5.105では`ensureQueryData`が非推奨になり、`queryClient.query`に`staleTime: 'static'`を付けて同じことをします。
-
-`loader`には検索パラメータが渡りません。検索パラメータによって取得するデータを変えるときは、`loaderDeps`で使う値を選び、`loader`では`deps`として受け取ります。
-
-```tsx
-const blogRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'blog',
-  validateSearch: blogSearchSchema,
-  loaderDeps: ({ search }) => ({ page: search.page }),
-  loader: ({ deps }) =>
-    queryClient.query({
-      ...blogListQueryOptions(deps.page),
-      staleTime: 'static',
-    }),
-});
-```
-
-preloadを有効にするには、`Link`の`preload`に`intent`を渡すか、`createRouter`の`defaultPreload`でルーター全体の既定にします。
+この例では`component`がレンダリングされる前にルートの移動、更新、`preload`の時点で api を呼び出してキャッシュを更新しています。これによってページの読み込み後の非同期なデータをより早く解決することが可能になります。
+`preload`を有効にするには遷移のタイミングで`preload`に`intent`を付与するか、`Router`を作成するタイミングでルーター全体のデフォルト設定にする必要があります。
 
 ```tsx
-<Link to="/blog" preload="intent">Blog</Link>;
+<Link to="/blog" preload="intent" />;
 
-const router = createRouter({
+new Router({
   routeTree,
-  defaultPreload: 'intent',
+  defaultProps: 'intent',
 });
 ```
 
-これで、`Link`にホバーやタッチした時点から、遷移先のデータを先に読み込めます。Chrome 156で試すと、`preload="intent"`の`Link`にホバーしてから50msほど（`defaultPreloadDelay`の既定値）で`loader`が呼ばれ、そのあとクリックしても`loader`は呼ばれ直しませんでした。preloadで読んだ結果は、既定で30秒（`defaultPreloadStaleTime`）のあいだ使い回されます。`preload`を付けない`Link`では、ホバーしても`loader`は呼ばれません。
+これによって`Link`にホバーやタッチしたタイミングから先行してデータの読み込みを実行できます。
 
 ## おわりに
 
-TanStack Routerの基本的な機能を紹介しました。これまで使ってきたライブラリの使い心地を保ったまま、パスや検索パラメータに型が付く使いやすいルーティングライブラリだと感じました。特に、検索パラメータを型安全な状態のように扱える点が新鮮で、そこに惹かれています。
-フレームワークを使わないReactのアプリケーションを作るときは、TanStack Routerを使ってみてはいかがでしょうか。
+TanStack Router の基本的な機能を紹介しました。これまで利用してきたライブラリの使用感を保ったまま新たな機能が追加された使いやすいルーティングライブラリに感じました。特に、検索パラメータを簡単に型安全で状態のように扱える点が新鮮でそこに惹かれています。
+フレームワークを利用しないアプリケーションを作るときは beta 版ではありますが、TanStack Router を使ってみてはいかがでしょうか。
