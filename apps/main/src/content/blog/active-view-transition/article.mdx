@@ -55,7 +55,7 @@ featureIds:
 </script>
 ```
 
-貼って進むを押すと、数字の増えた新しい画面が右から滑り込みます。戻るを押すと、数字の減った画面が左から入ってきます。Chrome 156、Safari 27.2、Firefox 159のどれでも、進むと`::view-transition-new(root)`に`from-right`が、戻ると`from-left`が当たりました。
+進むを押すと、数字の増えた新しい画面が右から滑り込みます。戻るを押すと、数字の減った画面が左から入ってきます。Chrome 156、Safari 27.2、Firefox 159のどれでも、進むと`::view-transition-new(root)`に`from-right`が、戻ると`from-left`が当たりました。
 
 当たるのはルート要素だけです。Chrome 156、Safari 27.2、Firefox 159で、遷移の間に`.card:active-view-transition-type(forwards)`と`:active-view-transition-type(forwards) .card`の2つの書き方を試すと、どれでもスタイルが当たったのは後者だけでした。ルートの外の要素を切り替えるときは、`html:active-view-transition-type(forwards) .card`のように子孫セレクタで書きます。
 
