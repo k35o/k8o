@@ -30,7 +30,7 @@ Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 
 `Reporting-Endpoints`ヘッダーで定義したエンドポイント名を`report-to`の引数として渡すことで、CSP違反のレポートがそのエンドポイントに送信されます。エンドポイントのURLはHTTPSにします。手元で試すときは、`http://localhost`のURLにも届きます。
 
-次のコードを`server.mjs`として保存し、`node server.mjs`で起動すると試せます。ページは別のオリジンの画像を読もうとし、`img-src 'self'`に違反します。
+次のコードのページは、別のオリジンの画像を読もうとし、`img-src 'self'`に違反します。
 
 ```js title="server.mjs"
 import { createServer } from 'node:http';
