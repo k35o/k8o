@@ -22,7 +22,7 @@ JavaScriptの例外なら、`window.onerror`で拾って`fetch`で送れば足�
 - `Reporting-Endpoints`ヘッダー: レポートをサーバーのエンドポイントに自動送信する
 - `ReportingObserver`: JavaScriptでレポートをクライアントサイドで検知する
 
-次のコードを`server.mjs`として保存し、`node server.mjs`で起動すると、両方を試せます。ページは別のオリジンの画像を読もうとし、CSPの`img-src 'self'`に違反します。
+次のコードは、両方を使う例です。ページは別のオリジンの画像を読もうとし、CSPの`img-src 'self'`に違反します。
 
 ```js title="server.mjs"
 import { createServer } from 'node:http';
