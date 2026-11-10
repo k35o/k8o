@@ -38,7 +38,7 @@ sb.mock('../src/services/users.ts', {
 });
 ```
 
-拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、ビルドが`Cannot find module`で止まりました。
+拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、`Cannot find module`のエラーでビルドが失敗しました。
 
 オプションは`spy`だけがサポートされています。
 
