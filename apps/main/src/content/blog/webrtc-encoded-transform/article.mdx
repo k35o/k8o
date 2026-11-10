@@ -106,7 +106,7 @@ new RTCRtpScriptTransform(worker, options, transfer);
 videoSender.transform = new RTCRtpScriptTransform(worker);
 ```
 
-Workerでは、`rtctransform`イベントの`event.transformer`の`readable`からフレームを読み、`writable`に書き戻します。映像のフレームは`RTCEncodedVideoFrame`で、`data`（`ArrayBuffer`）と`type`（`key`か`delta`）を持ちます。`getMetadata()`を呼ぶと、コーデック（Chrome 156の既定では`video/VP8`）や幅と高さが分かります。
+Workerでは、`rtctransform`イベントの`event.transformer`の`readable`からフレームを読み、`writable`に書き戻します。映像のフレームは`RTCEncodedVideoFrame`で、`data`（`ArrayBuffer`）と`type`（`key`か`delta`）を持ちます。`getMetadata()`を呼ぶと、コーデック（既定ではChrome 156が`video/VP8`、Safari 27.2が`video/H264`）や幅と高さが分かります。
 
 ## 使用例
 
@@ -191,7 +191,18 @@ function concat(...parts) {
 
 VP8では、フレームの先頭（キーフレームは10バイト、それ以外は3バイト）を暗号化せずに残し、受信側のブラウザがフレームの種類を見分けられるようにします。Chrome 156でフレーム全体を暗号化すると、映像は映りましたが、受信側に届いた130のフレームのうち57が`type`を`key`としていました（送ったキーフレームは4つ）。
 
-Chrome 156で試すと、受信側に復号のTransformを置かないときは、映像は一度も映りませんでした。違う鍵で復号すると`decrypt()`が失敗してフレームを捨てるので、やはり映りません。Safari 27.2では、このE2EEのコードで映像が映りませんでした（フレームをそのまま通す最初の例は映りました）。
+Chrome 156で試すと、受信側に復号のTransformを置かないときは、映像は一度も映りませんでした。違う鍵で復号すると`decrypt()`が失敗してフレームを捨てるので、やはり映りません。Safari 27.2では既定のコーデックがH.264で、このE2EEのコードでは映像が映りませんでした（フレームをそのまま通す最初の例は映りました）。送信側は28のフレームを暗号化して送りましたが、受信側には1つも届いていませんでした。Workerで暗号化せずに残す先頭のバイト数はVP8に合わせたものなので、Safariでは`addTrack()`の後でVP8を先頭に並べます。
+
+```js
+const [transceiver] = pc1.getTransceivers();
+const { codecs } = RTCRtpSender.getCapabilities('video');
+transceiver.setCodecPreferences([
+  ...codecs.filter((c) => c.mimeType === 'video/VP8'),
+  ...codecs.filter((c) => c.mimeType !== 'video/VP8'),
+]);
+```
+
+Safari 27.2でこう並べると、送った47のフレームがすべて復号されて映りました。
 
 ```txt
 // これまで
