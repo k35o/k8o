@@ -30,7 +30,7 @@ featureIds:
 </style>
 ```
 
-貼ると、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
+開くと、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
 
 Chrome 156、Safari 27.2、Firefox 159で、`linear-gradient(red)`と`linear-gradient(red, red)`は同じ赤一色に描かれ、半透明の黒を1色と2色で重ねた結果も画素の値が同じでした。計算値を読むと、`linear-gradient(red)`は`linear-gradient(rgb(255, 0, 0))`のままです。以前から受け付けられていた`linear-gradient(red 0 100%)`は、3つとも`linear-gradient(rgb(255, 0, 0) 0px, rgb(255, 0, 0) 100%)`と2つの色に分けて返されました。
 
