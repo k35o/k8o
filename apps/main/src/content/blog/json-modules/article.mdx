@@ -37,7 +37,7 @@ const { default: sameData } = await import('./data.json', { with: { type: 'json'
 console.log(sameData === data); // true
 ```
 
-2つのファイルを同じフォルダに置き、`node main.mjs`を実行すると`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。Node.js 26.13.0では、`with { type: 'json' }`を外すと`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーになりました。
+Node.js 26で動かすと`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。Node.js 26.13.0では、`with { type: 'json' }`を外すと`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーになりました。
 
 `with`キーワードを使って、モジュールの形式を指定します。
 
