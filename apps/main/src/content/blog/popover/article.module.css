@@ -1,0 +1,7 @@
+/* better-css-modules-disable usage/unused-module -- article.mdx から import する。check は .mdx を読まない */
+/* リセットの CSS が消した、ポップオーバーの既定の位置と枠を当て直す */
+.popover {
+  margin: auto;
+  border: 1px solid var(--color-border-base);
+  padding: calc(var(--spacing) * 4);
+}

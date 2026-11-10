@@ -9,6 +9,8 @@ featureIds:
 
 import { Button } from '@k8ordo/ui';
 
+import styles from './article.module.css';
+
 # Popover APIでツールチップやドロップダウンをJSなしで作る
 
 <BrowserSupportStatus featureId="popover"></BrowserSupportStatus>
@@ -24,7 +26,16 @@ Popover APIは、`popover`属性を付けた要素を、`popovertarget`属性を
 <div id="hello" popover>外側をクリックするかESCキーで閉じます</div>
 ```
 
+<Playground headingLevel="h4" title="ボタンで開くポップオーバー">
+  <Button popoverTarget="hello">開く</Button>
+  <div className={styles.popover} id="hello" popover="auto">
+    外側をクリックするかESCキーで閉じます
+  </div>
+</Playground>
+
 ボタンを押すと、画面の中央に枠の付いた箱が出ます。外側をクリックするか、ESCキーを押すか、もう一度ボタンを押すと閉じます。
+
+画面の中央に枠付きで出るのは、ブラウザがポップオーバーに当てる既定のスタイル（`margin: auto`と枠）によるものです。すべての要素の`margin`や`border`を0にするリセットのCSSを当てたページでは、左上に枠の無い箱で出ます。上の例では、このページのリセットを打ち消すために`margin: auto`と枠を当て直しています。
 
 ## Popover APIの全体像
 
