@@ -1,11 +1,10 @@
 ---
 title: 'zstd（Zstandard）でHTTPのレスポンスを圧縮する'
-description: 'zstd（Zstandard）はMetaが開発した可逆圧縮アルゴリズムで、Brotliと同程度まで小さく圧縮でき、より速く展開できます。Content-Encoding: zstdでレスポンスを圧縮する仕組みと、圧縮辞書転送を説明します。'
+description: 'zstd（Zstandard）はMetaが開発した可逆圧縮アルゴリズムで、Brotliと同程度まで小さく圧縮でき、より速く展開できます。Content-Encoding: zstdで圧縮する仕組みと、Node.jsで返す方法を説明します。'
 createdAt: 2026-03-02
 updatedAt: 2026-11-09
 featureIds:
   - zstd
-  - compression-dictionary-transport
 ---
 
 # zstd（Zstandard）でHTTPのレスポンスを圧縮する
@@ -106,25 +105,6 @@ createServer((req, res) => {
 Chrome 156かFirefox 159で`http://localhost:3000`を開くと、ターミナルに`gzip, deflate, br, zstd`と出て、`zstd`で圧縮した見出しが表示されます。Safari 27.2では`gzip, deflate`とだけ出て、圧縮していない見出しが表示されます。Safari 27.2は`zstd`で返したレスポンスも展開できますが、`http`の`localhost`へのリクエストには`zstd`を付けませんでした。`https`で開いたページでは、ページの読み込みにも`fetch()`にも`gzip, deflate, br, zstd`を付けました。
 
 ただし、ブラウザが`zstd`を送っても、サーバーが`zstd`を選ぶとは限りません。このサイトはVercelで配信していますが、2026年11月に`curl`で`Accept-Encoding: gzip, deflate, br, zstd`を送ると`Content-Encoding: br`が返り、`zstd`だけを送ると圧縮されずに返りました。どの形式で返すかはサーバーやCDNが決めるので、`zstd`で配信したいときは、DevToolsのネットワークパネルで`Content-Encoding`を見て、配信側が対応しているかを確かめます。
-
-### 圧縮辞書転送
-
-<BrowserSupportStatus featureId="compression-dictionary-transport" />
-
-`zstd`はさらに、圧縮辞書を用いた圧縮辞書転送（[RFC 9842](https://www.rfc-editor.org/rfc/rfc9842)）にも対応しています。
-通常の圧縮はレスポンス内の冗長性を検出して圧縮しますが、圧縮辞書転送ではあらかじめ用意した辞書を参照することで、さらに効率的な圧縮が可能です。
-
-たとえば、ライブラリの旧バージョンを辞書として使うと、新バージョンとの差分だけを圧縮して転送できるため、転送サイズを大幅に削減できます。
-辞書圧縮が利用可能な場合は`Accept-Encoding`に`dcz`（dictionary-compressed Zstandard）が追加されます。
-
-```http
-Accept-Encoding: gzip, deflate, br, zstd, dcb, dcz
-Available-Dictionary: :pZGm1Av0IEBKARczz7exkNYsZb8LzaMrV7J32a2fFG4=:
-```
-
-`Available-Dictionary`は保持している辞書の識別子を伝えます。`dcz`の他に`dcb`（dictionary-compressed Brotli）もあります。
-
-辞書にするレスポンスには、`Use-As-Dictionary: match="/data*"`のように、その辞書を使うURLのパターンを付けます。手元で試すと、Chrome 156はこのレスポンスを受け取ったあと、`/data`で始まるURLへのリクエストに`dcb, dcz`と`Available-Dictionary`を付けました。Safari 27.2と、既定の設定のFirefox 159は付けませんでした。圧縮辞書転送は、まだBaselineに達していません。
 
 ## おわりに
 
