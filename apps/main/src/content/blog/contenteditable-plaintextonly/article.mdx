@@ -19,8 +19,6 @@ import sample from './_images/sample.avif';
 
 フォームに文字を入力させるだけなら、`textarea`や`input`で足ります。`contenteditable`が要るのは、見出しや段落のようなページの中の要素を、その見た目のまま編集させたいときです。`contenteditable="true"`では貼り付けた書式も入るため、テキストだけに限るには`paste`イベントで書式を落とす処理を書いていました。`plaintext-only`なら、属性だけでテキストに限れます。
 
-<LinkCard href="https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable" />
-
 ## contenteditable
 
 値を`true`にすると、要素の中身を書式ごと自由に編集できます。
