@@ -34,7 +34,7 @@ for await (const chunk of stream) console.log(chunk);
 console.log('読み終わった');
 ```
 
-`<script type="module">`に書いて開くと、コンソールに`1回目`・`2回目`・`3回目`が1秒おきに出て、`close()`の後に`読み終わった`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。
+ブラウザで動かすと、コンソールに`1回目`・`2回目`・`3回目`が1秒おきに出て、`close()`の後に`読み終わった`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。
 
 ## リーダーのループを置き換える
 
