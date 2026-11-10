@@ -49,7 +49,7 @@ const run = WebAssembly.promising(instance.exports.run);
 console.log(await run()); // 1秒後に42
 ```
 
-このコードをブラウザのコンソールか、Node.js 26の`.mjs`ファイルに貼って動かすと、まず`1`が出て、1秒後に`42`が出ます。JSPIなしでは非同期関数の返したPromiseが`0`になり、JSPIありでは41を待ってから足しています。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で同じ結果でした。
+ブラウザかNode.js 26で動かすと、まず`1`が出て、1秒後に`42`が出ます。JSPIなしでは非同期関数の返したPromiseが`0`になり、JSPIありでは41を待ってから足しています。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で同じ結果でした。
 
 JSPIは、この食い違いをブラウザのエンジン側で埋める仕組みです。Chrome 137で先行して使えており、Firefox 153とSafari 27が対応したことでBaseline 2026に加わりました。
 
