@@ -18,7 +18,7 @@ export const WebkitDirectoryInputExample = () => (
         className={styles.input}
         id={id}
         type="file"
-        webkitdirectory
+        webkitdirectory=""
       />
     )}
   />
