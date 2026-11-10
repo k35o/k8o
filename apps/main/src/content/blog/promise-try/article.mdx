@@ -20,11 +20,15 @@ featureIds:
 ```js
 const parse = (text) => JSON.parse(text);
 
-Promise.try(parse, '{').catch((error) => console.log('catchで受け取った', error.name));
-Promise.resolve(parse('{')).catch((error) => console.log('catchで受け取った', error.name));
+Promise.try(parse, '{').catch((error) =>
+  console.log('catchで受け取った', error.name),
+);
+Promise.resolve(parse('{')).catch((error) =>
+  console.log('catchで受け取った', error.name),
+);
 ```
 
-`Promise.try`の行は`catchで受け取った SyntaxError`を出し、`Promise.resolve`の行は`catch`に届かずに`Uncaught SyntaxError`になります。
+`Promise.try`のほうは`catchで受け取った SyntaxError`を出し、`Promise.resolve`のほうは`catch`に届かずに`Uncaught SyntaxError`になります。
 
 ## Promise.tryとは
 
@@ -90,7 +94,10 @@ Promise.try(() => fn(1, 2)).then(console.log); // 3
 TypeScriptでは`Promise.try`の型が次のように定義されていて、どちらの書き方でも引数の型が確かめられます。
 
 ```ts
-try<T, U extends unknown[]>(callbackFn: (...args: U) => T | PromiseLike<T>, ...args: U): Promise<Awaited<T>>;
+try<T, U extends unknown[]>(
+  callbackFn: (...args: U) => T | PromiseLike<T>,
+  ...args: U
+): Promise<Awaited<T>>;
 ```
 
 この型は、`lib`に`es2025`か`esnext`を指定すると使えます。`es2024`のままでは、`Property 'try' does not exist on type 'PromiseConstructor'`のエラーになります。
