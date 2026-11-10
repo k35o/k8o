@@ -14,7 +14,7 @@ featureIds:
 
 ## はじめに
 
-Navigation APIは、リンクのクリックやフォーム送信、ブラウザの戻る・進むといったページの遷移を、`navigation`オブジェクトの`navigate`イベント1つで受け取れるAPIです。イベントの`intercept()`を呼ぶと、ページを読み込み直す代わりに、JavaScriptで画面を書き換えるSPAの遷移になります。
+Navigation APIは、リンクのクリックやフォーム送信、ブラウザの戻る・進むといったページの遷移を、`navigation`オブジェクトの`navigate`イベント1つで受け取れるAPIです。イベントの`intercept()`を呼ぶと、ページを読み込み直す代わりに、JavaScriptで画面を書き換えるSPAの遷移になります。Firefox 147が対応して、Baseline 2026に入りました。
 
 遷移のたびにページを読み込み直すサイトなら、どちらのAPIも要りません。SPAでも、ルーターのライブラリが用意する`<Link>`のような部品でリンクを書くなら、ライブラリの内側のHistory APIで足ります。素の`<a>`やフォーム、戻る・進むまでを1か所で受け取り、遷移の途中でデータを取りに行く処理を挟めるのは、Navigation APIだけです。
 
@@ -34,6 +34,8 @@ Navigation APIは、リンクのクリックやフォーム送信、ブラウザ
 ```
 
 リンクを押すと、ページを読み込み直さずにURLが`/about`に変わり、段落に`/about`と出ます。ブラウザの戻るボタンを押すと、URLと段落が`/`に戻ります。Chrome 156、Safari 27.2、Firefox 159で、リンクのクリックと`history.back()`をスクリプトから行うと、どちらでも段落が書き換わり、ページの読み込みは起きませんでした。
+
+## History APIでのルーティングの課題
 
 SPAでクライアントサイドルーティングを実現するために、これまではHistory API（`pushState`/`popstate`）を使うのが一般的でした。
 しかしHistory APIはSPAが普及する前に設計されたものであり、ルーティングライブラリは多くの課題を回避しながら実装する必要がありました。
@@ -63,8 +65,6 @@ window.addEventListener('popstate', () => {
 
 実際のルーティングライブラリでは、通常の`<a>`タグの代わりに`<Link>`コンポーネントを提供することでこの複雑さを隠蔽しています。
 たとえばTanStack Routerでは、[`<Link>`コンポーネントのクリックハンドラ](https://github.com/TanStack/router/blob/1acc8eaf3a07cbe1c19ffcf2d4dcecdef34ffc1f/packages/react-router/src/link.tsx#L605-L642)で修飾キーやボタン種別を判定して`preventDefault()`を呼び出し、[Historyモジュール](https://github.com/TanStack/router/blob/1acc8eaf3a07cbe1c19ffcf2d4dcecdef34ffc1f/packages/history/src/index.ts)では`popstate`リスナーの登録に加えて`pushState`/`replaceState`をネイティブの関数ごと上書きして呼び出しを検知しています。
-
-Baseline 2026で追加されたNavigation APIは、これらの課題を根本から解決します。この記事では、Navigation APIの主要な機能を紹介します。
 
 ## Navigation APIの基本
 
