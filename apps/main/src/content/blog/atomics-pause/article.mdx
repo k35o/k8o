@@ -35,7 +35,7 @@ if (isMainThread) {
 }
 ```
 
-`node race.mjs`で実行すると、`Atomics.add`で足した`int32[1]`は必ず2000000になり、`++`で足した`int32[0]`は1544495や1816934のように毎回足りなくなりました（Node.js 26.13.0）。同じことをブラウザのWorkerで試しても、Chrome 156、Safari 27.2、Firefox 159のどれでも`++`の方はどの回も2000000に届きませんでした。
+Node.js 26.13.0で動かすと、`Atomics.add`で足した`int32[1]`は必ず2000000になり、`++`で足した`int32[0]`は1544495や1816934のように毎回足りなくなりました。同じことをブラウザのWorkerで試しても、Chrome 156、Safari 27.2、Firefox 159のどれでも`++`の方はどの回も2000000に届きませんでした。
 
 ブラウザで`SharedArrayBuffer`を使うには、ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`crossOriginIsolated`を`true`にします。ヘッダーの無いページでは、3つのブラウザのどれでも`SharedArrayBuffer`自体が定義されていませんでした。
 
