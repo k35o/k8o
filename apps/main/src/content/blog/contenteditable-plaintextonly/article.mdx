@@ -78,9 +78,9 @@ import sample from './_images/sample.avif';
 
 上と同じように題をコピーして貼り付けると、文字だけが入り、背景色と太字は入りません。テキストしか入らないので、`true`のときより、実装で考えるケースが減ります。
 
-書式を付けるコマンドも効きません。選んだ文字に`document.execCommand('bold')`を実行すると、`true`では`<b>`で囲まれますが、`plaintext-only`では`false`が返って何も変わりません。`insertHTML`のコマンドで`<b>太字</b>`を入れても、`plaintext-only`ではタグが落ちて文字だけが入ります。
+`document.execCommand('bold')`のような書式のコマンドも、`plaintext-only`では効かずに`false`を返し、`insertHTML`で入れたタグも落ちて文字だけが入ります。
 
-編集した値は、`textContent`ではなく`innerText`で読みます。`plaintext-only`の要素でも、改行のコマンドによっては`<br>`や`<div>`の要素が入るからです。改行を入れる`insertLineBreak`のコマンドを実行すると、Chromeでは`\n`の文字が、SafariとFirefoxでは`<br>`が入ります。`<br>`が入ると`textContent`からは改行が消えますが、`innerText`ならどのブラウザでも改行を`\n`で取れます。
+編集した値は、`textContent`ではなく`innerText`で読みます。`plaintext-only`でも、SafariとFirefoxでは改行が`<br>`などの要素で入り、`textContent`ではその改行が消えるからです。
 
 ```html
 <h1 contenteditable="plaintext-only" id="title">記事のタイトル</h1>
