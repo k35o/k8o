@@ -76,7 +76,7 @@ Accept-Encoding: gzip, deflate, br, zstd
 Content-Encoding: zstd
 ```
 
-Node.js 26.13.0では、`node:zlib`の`zstdCompressSync`で圧縮して返せます。次のコードを`server.mjs`として保存し、`node server.mjs`で起動します。
+Node.js 26.13.0では、`node:zlib`の`zstdCompressSync`で圧縮して返せます。
 
 ```js title="server.mjs"
 import { createServer } from 'node:http';
