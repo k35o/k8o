@@ -98,7 +98,7 @@ Cross-Origin-Embedder-Policy: require-corp; report-to="coep-endpoint"
 Cross-Origin-Opener-Policy: same-origin; report-to="coop-endpoint"
 ```
 
-CSPの`report-to`はスペースで区切って名前を書きますが、COEPとCOOPは`report-to="coep-endpoint"`のように`=`とダブルクォートで書きます。Chrome 156で`Cross-Origin-Embedder-Policy: require-corp; report-to coep-endpoint`と書くと、ヘッダー全体が無視され、別のオリジンの画像がそのまま読み込まれました。
+CSPの`report-to`はスペースで区切って名前を書きますが、COEPとCOOPは`report-to="coep-endpoint"`のように`=`とダブルクォートで書きます。Chrome 156で`Cross-Origin-Embedder-Policy: require-corp; report-to coep-endpoint`と書くと、ヘッダー全体が無視され、別のオリジンの画像がそのまま読み込まれました。COOPとCOEPのどちらをスペース区切りで書いても、Chrome 156、Safari 27.2、Firefox 159のどれでも`crossOriginIsolated`が`false`になり、ヘッダーが効いていませんでした。
 
 `default`という名前のエンドポイントは特別な役割を持ちます。非推奨機能の使用、ブラウザの介入、クラッシュといった特定のヘッダーに紐づかないレポートは、`default`エンドポイントに自動で送信されます。
 
