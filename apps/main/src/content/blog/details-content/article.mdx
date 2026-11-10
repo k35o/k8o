@@ -1,6 +1,6 @@
 ---
 title: '::details-contentでdetailsの開閉アニメーション'
-description: '::details-contentは、details要素のsummary以外の中身を選ぶ擬似要素です。heightのtransitionで開閉をアニメーションさせる書き方と、中身の枠や背景をCSSで装飾する方法を説明します。'
+description: '::details-contentは、details要素のsummary以外の中身を選ぶ擬似要素です。opacityのtransitionで開閉をアニメーションさせる書き方と、中身の枠や背景をCSSで装飾する方法を説明します。'
 createdAt: 2025-10-26
 updatedAt: 2026-11-09
 featureIds:
@@ -83,26 +83,9 @@ details[open]::details-content {
 また、`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
 
 `details`要素が持つ`[open]`という状態は、即座に変化するため、アニメーションを適用するのは困難でした。
-しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`に引っ張られずにそれ自身の大きさ等をトリガーにアニメーションを適用できます。
+しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`の切り替えに合わせて、中身の見た目にトランジションを付けられます。
 
 <PlaygroundEmbed demo="アニメーション実装パターン" headingLevel="h3" sectionId="details-content" />
-
-```css
-details::details-content {
-  interpolate-size: allow-keywords;
-  transition: height 0.5s ease, content-visibility 0.5s ease allow-discrete;
-  height: 0;
-  overflow: clip;
-}
-
-details[open]::details-content {
-  height: auto;
-}
-```
-
-`height: 0`から`height: auto`へのトランジションは、`interpolate-size: allow-keywords`があって初めて補間されます。高さ200pxの中身を入れた`details`を開いて、100ms後に`summary`を含む`details`全体の高さを測ると、Chrome 156では83pxと開いている途中でしたが、Safari 27.2とFirefox 159では開ききった224pxでした。閉じるときも、Chrome 156では100ms後に165pxと閉じている途中でした。SafariとFirefoxは`interpolate-size`に対応しておらず（`CSS.supports('interpolate-size: allow-keywords')`が`false`）、開閉は一瞬で切り替わります。開閉そのものはどのブラウザでも動くので、アニメーションは対応したブラウザだけで付く飾りとして扱います。
-
-高さを補間できないSafariとFirefoxでも、`opacity`なら開くときと閉じるときの両方にトランジションが付きます。
 
 ```css
 details::details-content {
@@ -115,28 +98,30 @@ details[open]::details-content {
 }
 ```
 
-`content-visibility`にも`allow-discrete`でトランジションを付けると、閉じるときに中身が消えるのを`opacity`が0になるまで待ちます。付けないと、閉じた直後に中身が消えました。Chrome 156とSafari 27.2では、開いて100ms後の`opacity`が0.3、閉じて100ms後が0.7でした。Firefox 159は`getComputedStyle`が終わりの値を返しましたが、画面を撮ると開くときも閉じるときも途中の濃さを通っていました。
+どのブラウザでも、開くときは中身が少しずつ現れ、閉じるときは少しずつ消えていきました。なめらかに変わるのは中身の`opacity`だけで、`details`の高さは一度に切り替わります。
+
+`content-visibility`にも`allow-discrete`でトランジションを付けると、閉じるときに中身が消えるのを`opacity`が0になるまで待ちます。付けないと、閉じた直後に中身が消えます。
 
 デモの注記のとおり、この例は動きを減らす設定（`prefers-reduced-motion`）に対応していません。対応するには、`transition`だけをメディアクエリの中に移します。
 
 ```css
 details::details-content {
-  interpolate-size: allow-keywords;
-  height: 0;
-  overflow: clip;
+  opacity: 0;
 }
 
 details[open]::details-content {
-  height: auto;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   details::details-content {
-    transition: height 0.5s ease, content-visibility 0.5s ease allow-discrete;
+    transition: opacity 0.5s, content-visibility 0.5s allow-discrete;
   }
 }
 ```
 
-Chrome 156で動きを減らす設定をエミュレートすると、開いて100ms後にはもう224pxで、開閉は一瞬で切り替わりました。設定が無いときは、上と同じく途中の高さを通ります。
+動きを減らす設定にすると、開閉は一瞬で切り替わります。設定が無いときは、上と同じようにアニメーションします。
 
-`::details-content`擬似要素はBaseline 2025で導入され、主要なブラウザで利用できます。中身の装飾から試してみてください。
+## おわりに
+
+`::details-content`擬似要素はBaseline 2025で導入され、主要なブラウザで利用できます。中身の装飾や開閉のアニメーションに使ってみてください。

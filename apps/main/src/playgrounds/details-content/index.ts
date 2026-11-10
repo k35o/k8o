@@ -21,7 +21,7 @@ export const detailsContentSection: PlaygroundSection = {
       component: DetailsAnimationDemo,
       title: 'アニメーション実装パターン',
       description:
-        'interpolate-sizeとheightのtransitionを::details-contentに指定し、JSなしで開閉をなめらかに動かします。',
+        'opacityとcontent-visibilityのtransitionを::details-contentに指定し、JSなしで開閉をなめらかに動かします。',
     },
   ],
 };

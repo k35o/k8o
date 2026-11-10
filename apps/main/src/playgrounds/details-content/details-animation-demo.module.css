@@ -5,17 +5,15 @@
 }
 
 .detailsAnimation::details-content {
-  interpolate-size: allow-keywords;
-  /* better-css-modules-disable-next-line tokens/duration, tokens/easing -- 記事に載せた CSS と同じ値で動かす */
+  opacity: 0;
+  /* better-css-modules-disable-next-line tokens/duration -- 記事に載せた CSS と同じ値で動かす */
   transition:
-    height 0.5s ease,
-    content-visibility 0.5s ease allow-discrete;
-  height: 0;
-  overflow: clip;
+    opacity 0.5s,
+    content-visibility 0.5s allow-discrete;
 }
 
 .detailsAnimation[open]::details-content {
-  height: auto;
+  opacity: 1;
 }
 
 .summary {
