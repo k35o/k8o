@@ -66,7 +66,7 @@ macOSで2つの値を指定したテキストを描くと、Chrome 156はスペ�
 }
 ```
 
-Chrome 156で、`a speling error`の`speling`だけをRangeで選んで`my-spellcheck`に登録すると、その7文字の下にだけスペルミスと同じ赤い点線が引かれました。
+Chrome 156で、`a speling error`の`speling`だけをRangeで選んで`my-spellcheck`に登録すると、その7文字の下にだけスペルミスと同じ赤い点線が引かれました。Firefox 159では、同じ指定で何も引かれませんでした。`::highlight()`に`underline`を指定すると線が引かれ、要素に`spelling-error`を指定すると赤い点線が引かれたので、`::highlight()`と`spelling-error`の組み合わせだけが描かれません。
 
 なお、この装飾は色と線だけの視覚的な表現です。実際の校正UIで使うときは、指摘の内容をテキストや支援技術にも伝わる形で併記する必要があります。
 
