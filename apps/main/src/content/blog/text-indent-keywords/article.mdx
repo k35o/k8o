@@ -8,6 +8,12 @@ featureIds:
   - text-indent-hanging
 ---
 
+import {
+  EachLineExample,
+  HangingEachLineExample,
+  HangingExample,
+} from './_components/text-indent-examples';
+
 # text-indentのhangingで2行目以降をインデントする
 
 ## はじめに
@@ -22,15 +28,7 @@ Chrome 146が対応して、`each-line`と`hanging`はどちらもBaseline 2026�
 
 <BrowserSupportStatus featureId="text-indent-each-line"></BrowserSupportStatus>
 
-`each-line`を付けると、1行目に加えて`<br>`で改行した後の行も下がりますが、幅に収まらずに折り返した行は下がりません。
-
-```css
-p {
-  text-indent: 2em each-line;
-}
-```
-
-`<br>`のほかに、`white-space: pre-line`で残した改行文字の後の行も下がるので、フォームに入力された改行入りの文章をそのまま表示するときも、段落ごとに字下げできます。
+`each-line`を付けると、1行目に加えて、`<br>`や`white-space: pre-line`で残した改行文字の後の行も下がりますが、幅に収まらずに折り返した行は下がりません。フォームに入力された改行入りの文章をそのまま表示するときに、段落ごとに字下げできます。
 
 ```css
 .comment {
@@ -39,21 +37,17 @@ p {
 }
 ```
 
+<EachLineExample />
+
+改行で区切った段落ごとに1行目が1文字下がり、折り返した行は左端から始まります。
+
 ## hangingキーワード
 
 <BrowserSupportStatus featureId="text-indent-hanging"></BrowserSupportStatus>
 
-`hanging`を付けると、1行目は左端のままで、2行目以降のすべての行が下がります。
+`hanging`を付けると、1行目は左端のままで、2行目以降のすべての行が下がります。ぶら下げインデントと呼ばれる組み方で、参考文献や用語集、注記のように1行目の頭を目立たせたいときに使います。
 
-```css
-p {
-  text-indent: 2em hanging;
-}
-```
-
-ぶら下げインデントと呼ばれる組み方で、参考文献や用語集のように1行目を目立たせたいときに使います。これまでの`padding-left: 2em; text-indent: -2em;`から置き換えても、行の位置は変わりません。
-
-`※`で始まる注記なら、`※`の幅の1emだけ下げると、2行目以降が`※`の後ろの文字と揃います。
+`※`で始まる注記なら、`※`の幅の1emだけ下げます。
 
 ```css
 .note {
@@ -61,20 +55,27 @@ p {
 }
 ```
 
+<HangingExample />
+
+2行目以降の頭が`※`の次の文字と揃い、これまでの`padding-left: 1em; text-indent: -1em;`で書いたときと同じ位置に並びます。
+
 ただし、`※`が1emの幅になるのは日本語のフォントで描いたときです。`lang="ja"`の無いページでは、ブラウザの言語の設定によって`※`が日本語ではないフォントで半分ほどの幅に描かれ、2行目以降の頭とずれます。`<html lang="ja">`を書いておけば、日本語のフォントで描かれて揃います。
 
 ## キーワードの組み合わせ
 
-`each-line`と`hanging`を組み合わせると、1行目と`<br>`で改行した直後の行が左端に出て、それ以外の行が下がります。
+`each-line`と`hanging`を組み合わせると、1行目と改行した直後の行が左端に出て、それ以外の行が下がります。改行で区切って入力された注記を、1つずつぶら下げて表示できます。
 
 ```css
 /* [!og] */
-p {
-  text-indent: 2em hanging each-line;
+.notes {
+  white-space: pre-line;
+  text-indent: 1em hanging each-line;
 }
 ```
 
-キーワードと長さは順番を問わず、`2em each-line hanging`や`hanging 2em`とも書けます。
+<HangingEachLineExample />
+
+注記ごとに`※`が左端に出て、折り返した行は`※`の次の文字と揃います。キーワードと長さは順番を問わず、`each-line 1em hanging`や`hanging 1em`とも書けます。
 
 ## おわりに
 
