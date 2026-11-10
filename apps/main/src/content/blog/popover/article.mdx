@@ -53,8 +53,6 @@ Popover APIで使うのは、HTMLの`popover`と`popovertarget`、`popovertarget
 
 値を書かないときは`auto`になります。値を`manual`にすると、ESCキーや外側のクリックでは閉じなくなるので、主にJavaScriptで開閉するときに使います。
 
-ReactのJSXで`<div popover>`と書くと、真偽値を渡したことへの警告が出て、`popover`属性が出力されません。JSXでは`popover="auto"`のように値を書きます。
-
 ポップオーバーを開閉するボタンには`popovertarget`属性を付け、値にポップオーバーの要素の`id`を書きます。
 
 ```html
