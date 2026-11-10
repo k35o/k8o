@@ -69,7 +69,7 @@ export const cacheName = 'app-v1';
 export const precacheFiles = ['/', '/cache-config.js'];
 ```
 
-3つのファイルを同じフォルダに置き、`npx serve`などで配って`http://localhost`から開きます。Service Workerは`https`か`localhost`でしか登録できませんが、`localhost`なら`http`でも登録できます。開くとコンソールに`app-v1`が出て、DevToolsでService Workerが動いていることと、キャッシュ`app-v1`に2つのファイルが入ったことが見えます。Chrome 156とSafari 27.2で、2回目に開いたページがService Workerの制御下に入ることも確かめました。
+3つのファイルを同じフォルダに置き、`npx serve`などで配って`http://localhost`から開きます。Service Workerは`https`か`localhost`でしか登録できませんが、`localhost`なら`http`でも登録できます。開くとコンソールに`app-v1`が出て、DevToolsでService Workerが動いていることと、キャッシュ`app-v1`に2つのファイルが入ったことが見えます。Chrome 156、Safari 27.2、Firefox 159のどれでも、キャッシュに2つのファイルが入り、2回目に開いたページがService Workerの制御下に入りました。
 
 ES Modulesを使う最大のメリットは、ウェブアプリとService Workerで同じコードを共有できることです。
 `importScripts()`では難しかったコードの再利用が、`import`文によって自然に行えるようになります。
