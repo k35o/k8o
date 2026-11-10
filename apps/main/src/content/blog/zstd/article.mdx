@@ -105,7 +105,7 @@ createServer((req, res) => {
 }).listen(3000);
 ```
 
-Chrome 156かFirefox 159で`http://localhost:3000`を開くと、ターミナルに`gzip, deflate, br, zstd`と出て、`zstd`で圧縮した見出しが表示されます。Safari 27.2では`gzip, deflate`とだけ出て、圧縮していない見出しが表示されます。Safari 27.2は`zstd`で返したレスポンスも展開できますが、`http`の`localhost`へのリクエストには`zstd`を付けませんでした。
+Chrome 156かFirefox 159で`http://localhost:3000`を開くと、ターミナルに`gzip, deflate, br, zstd`と出て、`zstd`で圧縮した見出しが表示されます。Safari 27.2では`gzip, deflate`とだけ出て、圧縮していない見出しが表示されます。Safari 27.2は`zstd`で返したレスポンスも展開できますが、`http`の`localhost`へのリクエストには`zstd`を付けませんでした。`https`で開いたページでは、ページの読み込みにも`fetch()`にも`gzip, deflate, br, zstd`を付けました。
 
 ただし、ブラウザが`zstd`を送っても、サーバーが`zstd`を選ぶとは限りません。このサイトはVercelで配信していますが、2026年11月に`curl`で`Accept-Encoding: gzip, deflate, br, zstd`を送ると`Content-Encoding: br`が返り、`zstd`だけを送ると圧縮されずに返りました。どの形式で返すかはサーバーやCDNが決めるので、`zstd`で配信したいときは、DevToolsのネットワークパネルで`Content-Encoding`を見て、配信側が対応しているかを確かめます。
 
