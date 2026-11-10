@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`Promise.try`は、渡した関数をその場で呼び、結果を`Promise`に包んで返すメソッドです。関数が同期的に例外を投げても、返した`Promise`が拒否されても、`catch`で受け取れます。2025年にBaselineに入りました。
+`Promise.try`は、渡した関数をその場で呼び、結果を`Promise`に包んで返すメソッドです。関数が同期的に例外を投げても、返した`Promise`が拒否されても、`catch`で受け取れます。Firefox 134が対応して、Baseline 2025に入りました。
 
 <LinkCard href="https://github.com/tc39/proposal-promise-try" />
 
@@ -26,7 +26,7 @@ Promise.try(parse, '{').catch((error) => console.log('catchで受け取った', 
 Promise.resolve(parse('{')).catch((error) => console.log('catchで受け取った', error.name));
 ```
 
-コンソールに貼ると、`Promise.try`の行は`catchで受け取った SyntaxError`を出し、`Promise.resolve`の行は`catch`に届かずに`Uncaught SyntaxError`になります。Chrome 156、Safari 27.2、Firefox 159のどれでも同じでした。
+`Promise.try`の行は`catchで受け取った SyntaxError`を出し、`Promise.resolve`の行は`catch`に届かずに`Uncaught SyntaxError`になります。
 
 この記事では`Promise.try`の使い方と、有効な場面について解説します。
 
@@ -97,7 +97,7 @@ TypeScriptでは`Promise.try`の型が以下の様に定義されているので
 try<T, U extends unknown[]>(callbackFn: (...args: U) => T | PromiseLike<T>, ...args: U): Promise<Awaited<T>>;
 ```
 
-TypeScript 7.0.2では、`lib`に`es2025`か`esnext`を指定するとこの型が使えます。`es2024`のままでは、`Property 'try' does not exist on type 'PromiseConstructor'`のエラーになりました。
+この型は、`lib`に`es2025`か`esnext`を指定すると使えます。`es2024`のままでは、`Property 'try' does not exist on type 'PromiseConstructor'`のエラーになります。
 
 ## Promise.tryが使えない場合
 
