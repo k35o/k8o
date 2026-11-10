@@ -149,7 +149,7 @@ console.log(readFileWithCache('path/to/file')); // 初回はPromise {<pending>}�
 console.log(Promise.try(() => readFileWithCache('path/to/file'))); // 何回目でもPromise
 ```
 
-この例は関数の中を直しても使いやすくできますが、`Promise.try`で包めば、関数の中に手を入れずに同期と非同期を同じように扱えます。
+この例は、`readFileWithCache`がキャッシュした値も`Promise.resolve`で包んで返すように直せば、戻り値を`Promise`にそろえられます。しかし、`Promise.try`なら、`readFileWithCache`に手を入れずに、呼ぶ側で包むだけで同期と非同期を同じように扱えます。
 
 ## おわりに
 
