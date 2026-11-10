@@ -30,8 +30,6 @@ Popover APIを使うと、重ねて出すことと閉じることを、HTMLの�
 
 ボタンを押すと、画面の中央に枠の付いた箱が出ます。外側をクリックするか、ESCキーを押すか、もう一度ボタンを押すと閉じます。Chrome 156、Safari 27.2、Firefox 159のどれでも、箱は画面のちょうど中央に3pxの実線の枠で出ました。
 
-この記事ではPopover APIの基本的な使い方と、ツールチップやドロップダウンメニューのようにボタンのそばに出す書き方を紹介します。
-
 ## Popover APIの全体像
 
 Popover APIによって作られたポップオーバーは
@@ -154,59 +152,8 @@ Popover APIを使った簡単な例を紹介します。3つのボタンがあ�
 }
 ```
 
-### ボタンのそばに表示する
-
-サンプルでは画面の中央にポップオーバーを表示しましたが、ツールチップやドロップダウンメニューのようにボタンのそばに出すときは、[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)を組み合わせます。`popovertarget`で開いたポップオーバーは、そのボタンを暗黙のアンカーとして持つので、`anchor-name`を書かずに`position-area`だけで置き場所を決められます。
-
-```html
-<button popovertarget="tooltip">ヘルプ</button>
-<div id="tooltip" popover>入力した内容は自動で保存されます</div>
-```
-
-```css
-#tooltip {
-  position-area: bottom;
-}
-```
-
-Chrome 156、Safari 27.2、Firefox 159で試すと、どれもボタンの真下に、ボタンと中央を揃えてポップオーバーが表示されました。画面の左端に近いボタンでは、ポップオーバーが画面からはみ出さないよう画面の左端に寄せて表示されます。
-
-ドロップダウンメニューは、ボタンの左端に揃えて下に出します。`position-area`を`bottom span-right`にすると、ボタンの下の段のうち、ボタンの列から右へ広がる場所に置かれます。
-
-```html
-<button popovertarget="menu">メニュー</button>
-<nav id="menu" popover>
-  <a href="/blog">ブログ</a>
-  <a href="/talks">トーク</a>
-  <button popovertarget="menu" popovertargetaction="hide">閉じる</button>
-</nav>
-```
-
-```css
-#menu {
-  position-area: bottom span-right;
-}
-
-#menu a {
-  display: block;
-}
-```
-
-Chrome 156、Safari 27.2、Firefox 159のどれでも、メニューはボタンの左端に揃ってボタンのすぐ下に出ました。ポップオーバーの既定の`margin: auto`を打ち消さなくても、位置はずれません。メニューを2つ並べると、片方を開いたまま別のボタンを押したときに、先に開いていたメニューは閉じます。メニューの中のボタンに`popovertargetaction="hide"`を付けると、そのボタンで閉じられます。ただし、同じページの`#`へのリンクを押しても、メニューは開いたままでした。ページの中の目次のようなメニューでは、閉じる処理が別に要ります。
-
-ツールチップをホバーで開くには、`popovertarget`の代わりに`interestfor`属性を使い、ポップオーバーを`popover="hint"`にします。CSSは上のツールチップと同じです。
-
-```html
-<button interestfor="tooltip">ヘルプ</button>
-<div id="tooltip" popover="hint">入力した内容は自動で保存されます</div>
-```
-
-Chrome 156ではホバーで開きました。Safari 27.2とFirefox 159の`HTMLButtonElement`には`interestForElement`が無く、`interestfor`に対応していません。Safari 27.2は`popover="hint"`も知らず、`popover`のプロパティは前に紹介した`manual`を返しました。3つのブラウザで同じように動かすなら、ツールチップもクリックで開きます。
-
 ## おわりに
 この記事ではPopover APIの基本的な使い方を紹介しました。
 
 Popover APIは表示するポップオーバーを`popover`属性で表し、その表示を管理する要素に`popovertarget`属性を渡すことで利用できます。
 従来はJavaScriptで実装する必要があった、クリックで開くツールチップやドロップダウンメニューの表示非表示を、HTMLとCSSだけで簡単に実装できるようになったのは大きな進歩でした。
-
-ツールチップやドロップダウンメニューの置き場所も、`position-area`を足すだけでボタンのそばに決められます。
