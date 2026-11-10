@@ -13,9 +13,13 @@ import detailsSlot from './_images/details-slot.avif';
 
 <BrowserSupportStatus featureId="details-content" />
 
+## はじめに
+
 `::details-content`は、`details`要素のうち`summary`以外の中身、つまり開閉する部分を選ぶCSSの擬似要素です。中身全体に枠や背景を付けたり、開閉にアニメーションを付けたりできます。
 
 中身の子要素を1つずつ装飾するだけなら、`details > :not(summary)`のようなセレクターで足ります。開くときのアニメーションも、子要素に`@keyframes`を当てれば付けられます。子要素に手を入れずに中身全体を1つの箱として装飾することと、閉じるときのアニメーションをCSSだけで付けることは、`::details-content`でしかできません。Chrome 156、Safari 27.2、Firefox 159で試すと、子要素に当てた`@keyframes`は開くときには動きましたが、閉じるときは中身がすぐに消えました。
+
+## 中身全体を装飾する
 
 `details`要素は、アコーディオンのように折りたたみ可能なコンテンツを作成するためのHTML要素です。
 `summary`要素と組み合わせて使用され、ユーザーのアクションに合わせてコンテンツが開閉するUIを提供します。
@@ -29,7 +33,7 @@ import detailsSlot from './_images/details-slot.avif';
 
 上記のhtmlは、以下のように表示されます。
 
-<Playground headingLevel="h3" title="details要素とsummary要素を使った例">
+<Playground headingLevel="h4" title="details要素とsummary要素を使った例">
   <details>
     <summary>詳細を見る</summary>
     <p>ここに詳細が記述されます。</p>
@@ -47,7 +51,7 @@ import detailsSlot from './_images/details-slot.avif';
 
 `::details-content`擬似要素は、この`slot`要素に対してスタイルを付与できます。
 
-<PlaygroundEmbed demo="スタイリング例" headingLevel="h3" sectionId="details-content" />
+<PlaygroundEmbed demo="スタイリング例" headingLevel="h4" sectionId="details-content" />
 
 上記の例は`details`の子要素（`summary`要素を除いたもの）に対してスタイルを適用した場合（前者）と、`::details-content`擬似要素に対してスタイルを適用した場合（後者）の違いを示しています。
 
@@ -80,12 +84,14 @@ details[open]::details-content {
 
 こう書くと、閉じた`details`の高さは装飾を付けないときと同じになりました。
 
-また、`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
+## 開閉にアニメーションを付ける
+
+`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
 
 `details`要素が持つ`[open]`という状態は、即座に変化するため、アニメーションを適用するのは困難でした。
 しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`の切り替えに合わせて、中身の見た目にトランジションを付けられます。
 
-<PlaygroundEmbed demo="アニメーション実装パターン" headingLevel="h3" sectionId="details-content" />
+<PlaygroundEmbed demo="アニメーション実装パターン" headingLevel="h4" sectionId="details-content" />
 
 ```css
 details::details-content {
@@ -101,6 +107,8 @@ details[open]::details-content {
 どのブラウザでも、開くときは中身が少しずつ現れ、閉じるときは少しずつ消えていきました。なめらかに変わるのは中身の`opacity`だけで、`details`の高さは一度に切り替わります。
 
 `content-visibility`にも`allow-discrete`でトランジションを付けると、閉じるときに中身が消えるのを`opacity`が0になるまで待ちます。付けないと、閉じた直後に中身が消えます。
+
+### 動きを減らす設定に合わせる
 
 デモの注記のとおり、この例は動きを減らす設定（`prefers-reduced-motion`）に対応していません。対応するには、`transition`だけをメディアクエリの中に移します。
 
