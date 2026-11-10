@@ -33,7 +33,7 @@ Firefox / Safariは早くから対応していましたが、Chromiumが長く�
 - `crisp-edges`は色を混ぜず境界をぼかさないアルゴリズムを使うとだけ規定されていて、具体的な手法はUAに任されている
 - `pixelated`はまず最近傍法で次に大きい整数倍まで拡大し、そのあと補間で目的サイズに仕上げる
 
-仕様の上では、画像のサイズが整数倍ぴったりでないときに`pixelated`の方が境界がやや滑らかになり得ます。ただしChrome 156で4×4の市松模様を102px（25.5倍）に拡大すると、`crisp-edges`と`pixelated`は1ピクセルも違わず、どちらも白と黒の2色だけで描かれました（`auto`は61色）。
+仕様の上では、画像のサイズが整数倍ぴったりでないときに`pixelated`の方が境界がやや滑らかになり得ます。ただしChrome 156とFirefox 159で4×4の市松模様を102px（25.5倍）に拡大すると、`crisp-edges`と`pixelated`は1ピクセルも違わず、どちらも白と黒の2色だけで描かれました（`auto`は61色）。
 
 <PlaygroundEmbed demo="image-rendering値の比較" headingLevel="h4" sectionId="crisp-edges" />
 
