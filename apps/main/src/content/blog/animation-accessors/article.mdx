@@ -43,7 +43,7 @@ panel.addEventListener('transitionrun', (event) => {
 });
 ```
 
-`transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。Chrome 156とFirefox 159で、トランジションの3つのイベントの`event.animation`を`===`で比べると、どれも同じでした。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つことも可能です。
+`transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。Chrome 156、Safari 27.2、Firefox 159で、トランジションの3つのイベントの`event.animation`を`===`で比べると、どれも同じでした。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つことも可能です。
 
 ```html
 <div id="badge">●</div>
@@ -74,9 +74,9 @@ HTMLファイルに貼って開くと、●が2回点滅したあと、表示さ
 
 `getAnimations()`から名前で探す方法には、うまくいかない場面が2つありました。
 
-1つ目は、同じ名前のアニメーションを2本指定したときです。`animation: fade 0.1s, fade 0.2s`のように書くと`animationstart`は2回発火しますが、`event.animationName`は2回とも`fade`なので、どちらのアニメーションのイベントかを名前では区別できません。この問題は、[CSSWGでこのプロパティを決めたときの動機](https://github.com/w3c/csswg-drafts/issues/9010)の1つでもあります。`event.animation`には別々の`CSSAnimation`が入り、`event.animation.effect.getTiming().duration`を読むと100と200が返ります。Chrome 156とFirefox 159で試すと、はじめにのコードのように名前で探した`find()`は、2回ともdurationが100の1本目を返しました。
+1つ目は、同じ名前のアニメーションを2本指定したときです。`animation: fade 0.1s, fade 0.2s`のように書くと`animationstart`は2回発火しますが、`event.animationName`は2回とも`fade`なので、どちらのアニメーションのイベントかを名前では区別できません。この問題は、[CSSWGでこのプロパティを決めたときの動機](https://github.com/w3c/csswg-drafts/issues/9010)の1つでもあります。`event.animation`には別々の`CSSAnimation`が入り、`event.animation.effect.getTiming().duration`を読むと100と200が返ります。Chrome 156、Safari 27.2、Firefox 159で試すと、はじめにのコードのように名前で探した`find()`は、2回ともdurationが100の1本目を返しました。
 
-2つ目は、`animationend`で受け取るときです。`animation-fill-mode`が`none`だと、`animationend`の中で`getAnimations()`を呼んでも、いま終わったアニメーションは見つかりません。`getAnimations()`が返すのは仕様で[relevant](https://drafts.csswg.org/web-animations-1/#relevant-animations-section)と定義されたアニメーション、つまり効果がこれから始まるか進行中か、まだ残っているものだけです。`none`の場合、終わった時点でこの条件から外れます。`event.animation`なら、終わった後でも`playState`が`finished`の`CSSAnimation`として読めます。Chrome 156とFirefox 159では、`animation-fill-mode`を`forwards`にすると、`animationend`の中の`getAnimations()`にも終わったアニメーションが残っていました。
+2つ目は、`animationend`で受け取るときです。`animation-fill-mode`が`none`だと、`animationend`の中で`getAnimations()`を呼んでも、いま終わったアニメーションは見つかりません。`getAnimations()`が返すのは仕様で[relevant](https://drafts.csswg.org/web-animations-1/#relevant-animations-section)と定義されたアニメーション、つまり効果がこれから始まるか進行中か、まだ残っているものだけです。`none`の場合、終わった時点でこの条件から外れます。`event.animation`なら、終わった後でも`playState`が`finished`の`CSSAnimation`として読めます。Chrome 156、Safari 27.2、Firefox 159では、`animation-fill-mode`を`forwards`にすると、`animationend`の中の`getAnimations()`にも終わったアニメーションが残っていました。
 
 <PlaygroundEmbed
   demo="同じ名前の2本のアニメーションをevent.animationで区別する"
@@ -90,7 +90,7 @@ HTMLファイルに貼って開くと、●が2回点滅したあと、表示さ
 
 `::before`などの疑似要素に指定したアニメーションのイベントは、元の要素で発火します。`event.target`は元の要素を指し、`event.pseudoElement`が`::before`になります。
 
-`element.getAnimations()`で疑似要素のアニメーションまで探すには、[`getAnimations({ subtree: true })`](https://drafts.csswg.org/web-animations-1/#dom-getanimationsoptions-subtree)のようにオプションが要ります。既定では要素自身のアニメーションしか返さないためです。`event.animation`なら探す必要はなく、`event.animation.effect`の[`pseudoElement`](https://drafts.csswg.org/web-animations-1/#dom-keyframeeffect-pseudoelement)が`::before`、`target`が元の要素になっています。Chrome 156とFirefox 159の`animationstart`の中では、`getAnimations()`は空の配列を返し、`getAnimations({ subtree: true })`には`event.animation`と同じものが入っていました。
+`element.getAnimations()`で疑似要素のアニメーションまで探すには、[`getAnimations({ subtree: true })`](https://drafts.csswg.org/web-animations-1/#dom-getanimationsoptions-subtree)のようにオプションが要ります。既定では要素自身のアニメーションしか返さないためです。`event.animation`なら探す必要はなく、`event.animation.effect`の[`pseudoElement`](https://drafts.csswg.org/web-animations-1/#dom-keyframeeffect-pseudoelement)が`::before`、`target`が元の要素になっています。Chrome 156、Safari 27.2、Firefox 159の`animationstart`の中では、`getAnimations()`は空の配列を返し、`getAnimations({ subtree: true })`には`event.animation`と同じものが入っていました。
 
 ## 使うときの注意
 
@@ -103,7 +103,7 @@ HTMLファイルに貼って開くと、●が2回点滅したあと、表示さ
 const event = new AnimationEvent('animationend', { animationName: 'fade' });
 ```
 
-2つ目は、`event.animation`からアニメーションを操作すると、CSS側の指定が効かなくなる点です。たとえば`animation-play-state`は、CSSアニメーションを`running`で再生し、`paused`で止めるプロパティです。`:hover`のときだけ`paused`にして、ホバー中は止めるといった使い方をします。ところが`event.animation`で`pause()`や`play()`を一度呼ぶと、そのアニメーションは以後`animation-play-state`の変更に従わなくなります。[CSS Animations Level 2](https://drafts.csswg.org/css-animations-2/#animations)が、APIでの操作をCSSより優先すると定めているためです。`effect.updateTiming()`で指定した項目も同じで、対応する`animation-*`プロパティの変更は反映されません。Chrome 156とFirefox 159で、`pause()`と`play()`を続けて呼んだあとに`animation-play-state`を`paused`にしても、`playState`は`running`のままでした。`updateTiming()`で`duration`を2000にしたあとに`animation-duration`を0.5sにしても、2000のままです。CSS側で制御し続けたいアニメーションでは、`event.animation`は読むだけにとどめます。
+2つ目は、`event.animation`からアニメーションを操作すると、CSS側の指定が効かなくなる点です。たとえば`animation-play-state`は、CSSアニメーションを`running`で再生し、`paused`で止めるプロパティです。`:hover`のときだけ`paused`にして、ホバー中は止めるといった使い方をします。ところが`event.animation`で`pause()`や`play()`を一度呼ぶと、そのアニメーションは以後`animation-play-state`の変更に従わなくなります。[CSS Animations Level 2](https://drafts.csswg.org/css-animations-2/#animations)が、APIでの操作をCSSより優先すると定めているためです。`effect.updateTiming()`で指定した項目も同じで、対応する`animation-*`プロパティの変更は反映されません。Chrome 156、Safari 27.2、Firefox 159で、`pause()`と`play()`を続けて呼んだあとに`animation-play-state`を`paused`にしても、`playState`は`running`のままでした。`updateTiming()`で`duration`を2000にしたあとに`animation-duration`を0.5sにしても、2000のままです。CSS側で制御し続けたいアニメーションでは、`event.animation`は読むだけにとどめます。
 
 3つ目は、TypeScriptの型です。TypeScript 7.0.2のDOMの型には、`AnimationEvent`と`TransitionEvent`の`animation`がまだありません。`event.animation`と書くとTS2339のエラーになるので、上のデモでは`'animation' in event`で確かめてから、`instanceof CSSAnimation`で絞り込んでいます。
 
