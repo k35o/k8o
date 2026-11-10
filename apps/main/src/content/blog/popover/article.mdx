@@ -17,11 +17,7 @@ import { Button } from '@k8ordo/ui';
 
 Popover APIは、`popover`属性を付けた要素を、`popovertarget`属性を付けたボタンで開閉するHTMLの仕組みです。開いた要素はほかの要素より手前に出て、外側のクリックやESCキーで閉じます。2025年にBaselineに入りました。
 
-ページの流れの中で中身を開閉するだけなら、`details`要素で足ります。ツールチップやドロップダウンメニューのように、ほかの要素の上に重ねて出し、外側のクリックで閉じるUIは、これまでJavaScriptやライブラリで作っていました。下のデモは、Popover APIを使わずに作ったツールチップとドロップダウンメニューです。
-
-<PlaygroundEmbed demo="ツールチップ・ドロップダウン" headingLevel="h4" sectionId="popover" />
-
-Popover APIを使うと、重ねて出すことと閉じることを、HTMLの属性だけで書けます。
+ページの流れの中で中身を開閉するだけなら、`details`要素で足ります。ツールチップやドロップダウンメニューのように、ほかの要素の上に重ねて出し、外側のクリックで閉じるUIは、これまでJavaScriptやライブラリで作っていました。Popover APIを使うと、重ねて出すことと閉じることを、HTMLの属性だけで書けます。
 
 ```html
 <button popovertarget="hello">開く</button>
