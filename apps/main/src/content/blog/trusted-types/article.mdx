@@ -47,7 +47,7 @@ Content-Security-Policy: trusted-types myPolicy
 Content-Security-Policy: require-trusted-types-for 'script'; trusted-types myPolicy
 ```
 
-この設定が有効な状態でシンクに生の文字列を渡すと、`TypeError`がスローされます。CSPは`<meta>`で書いても効くので、次のHTMLをファイルに保存してブラウザで開けば試せます。
+この設定が有効な状態でシンクに生の文字列を渡すと、`TypeError`がスローされます。CSPは`<meta>`で書いても効きます。
 
 ```html
 <!doctype html>
