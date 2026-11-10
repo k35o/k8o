@@ -31,7 +31,7 @@ import sample from './_images/sample.avif';
 
 <Playground
   headingLevel="h4"
-  title={'div要素にcontenteditable="true"を付与したサンプル'}
+  title={'div要素にcontenteditable="true"を付けた例'}
 >
   <div contentEditable="true" suppressContentEditableWarning>
     ここを編集できます
@@ -44,9 +44,9 @@ import sample from './_images/sample.avif';
 
 <Image
   src={sample}
-  alt="contenteditable-plaintextonlyのbaseline-statusをコピーして要素に貼り付けた結果"
-  width={1656}
-  height={550}
+  alt="contenteditable-plaintextonlyのBaselineの表示をコピーして、contenteditableがtrueの例に貼り付けた結果"
+  width={1776}
+  height={640}
 />
 
 要素が編集できる状態かは、`HTMLElement.isContentEditable`で分かります。子要素を持てない`img`や`input`に付けても`true`を返すので、要素が編集に向くかどうかの判定には使えません。
@@ -65,7 +65,7 @@ import sample from './_images/sample.avif';
 <Playground
   headingLevel="h4"
   title={
-    'div要素にcontenteditable="plaintext-only"を付与したサンプル'
+    'div要素にcontenteditable="plaintext-only"を付けた例'
   }
 >
   <div
