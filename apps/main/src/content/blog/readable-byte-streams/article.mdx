@@ -25,7 +25,7 @@ const { value } = await reader.read(new Uint8Array(15));
 console.log(new TextDecoder().decode(value));
 ```
 
-`<script type="module">`に書いて開くと、そのページのHTMLの先頭15バイトを受け取り、`<!doctype html>`で始まるページなら`<!doctype html>`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。1回の`read()`では`view`の一部しか埋まらないこともあり、`read(view, { min: 15 })`と書くと15バイト揃うまで待ちます。`min`も3つのブラウザで使えました。
+ブラウザで動かすと、そのページのHTMLの先頭15バイトを受け取り、`<!doctype html>`で始まるページなら`<!doctype html>`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。1回の`read()`では`view`の一部しか埋まらないこともあり、`read(view, { min: 15 })`と書くと15バイト揃うまで待ちます。`min`も3つのブラウザで使えました。
 
 `new ReadableStream()`のコンストラクタにデータの供給方法を定義すれば、ストリームを自分で作ることもできます。この記事ではデータを供給する側をデータソース側、リーダーで読む側を読み取り側と呼びます。
 
