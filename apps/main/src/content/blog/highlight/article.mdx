@@ -25,13 +25,6 @@ featureIds:
 
 デモでは、文の後半の6文字（これ知るなり）だけに背景色が付きます。ハイライトしても`<p>`の子はテキストノード1つのままで、要素は増えません。
 
-### 特徴
-
-- DOMを書き換えずに、任意のテキストの範囲をハイライトできる
-- JavaScriptから、ハイライトを足したり、変えたり、消したりできる
-- 重なったハイライトの優先度を決められる
-- 支援技術に、ハイライトの意味（スペルミスなど）を伝えられる
-
 ## 利用方法
 
 まず、`Range`オブジェクトで、ハイライトしたいテキストの範囲を決めます。
@@ -70,7 +63,7 @@ CSS.highlights.set('my-highlight', highlight);
 }
 ```
 
-これで、指定した範囲に背景色と文字色が付きます。
+これで、指定した範囲に背景色と文字色が付きます。`::highlight()`で使えるプロパティは、`color`と`background-color`、`text-decoration`、`text-shadow`などに限られます。`-webkit-`から始まる一部のプロパティも使えます。
 
 ### 検索語をすべてハイライトする
 
@@ -112,15 +105,7 @@ highlightAll(document.body, 'highlight');
 
 `Highlight`オブジェクトは、同じ見た目でハイライトする`Range`をまとめます。
 
-#### オブジェクトの作成
-
-`new Highlight()`に`Range`を渡して作ります。複数の`Range`を渡すと、1つのハイライトで複数の範囲を装飾できます。
-
-```ts
-const highlight = new Highlight(range1, range2, range3);
-```
-
-#### オブジェクト作成後の操作
+#### Rangeの追加と削除
 
 作ったあとも、`Range`を足したり消したりできます。持っている`Range`の数は、`size`プロパティで分かります。
 
@@ -135,27 +120,11 @@ highlight.clear(); // すべてのRangeを消す
 
 #### 優先度の設定
 
-ハイライトが重なったときにどれを上に描くかは、`priority`プロパティで決めます。
-
-```ts
-const highPriorityHighlight = new Highlight(range1);
-highPriorityHighlight.priority = 10;
-
-const lowPriorityHighlight = new Highlight(range1);
-lowPriorityHighlight.priority = 1;
-
-const defaultPriorityHighlight = new Highlight(range1);
-
-console.log(highPriorityHighlight.priority); // 10
-console.log(lowPriorityHighlight.priority); // 1
-console.log(defaultPriorityHighlight.priority); // 0
-```
-
-`priority`の既定は0で、上の例では`highPriorityHighlight`、`lowPriorityHighlight`、`defaultPriorityHighlight`の順に優先されます。
+ハイライトが重なったときは、`highlight.priority = 1`のように設定した`priority`の値が大きいほうが上に描かれます。既定は0で、同じ値のときは`CSS.highlights`に後から登録したほうが優先されます。
 
 <PlaygroundEmbed demo="優先度ベースハイライト" headingLevel="h6" sectionId="highlight" />
 
-上の例では、`Imagination`に優先度1の青と黄、優先度0の赤の3つのハイライトを、この順に登録しています。優先度が同じときは`CSS.highlights`に後から登録したほうが優先されるので、黄色で表示されます。
+上の例では、`Imagination`に優先度1の青と黄、優先度0の赤の3つのハイライトを、この順に登録しています。優先度の大きい青と黄のうち、後から登録した黄が表示されます。
 
 #### ハイライトの意味を指定
 
@@ -172,36 +141,7 @@ spellErrorHighlight.type = 'spelling-error';
 
 ### HighlightRegistry
 
-`HighlightRegistry`は、名前を付けた`Highlight`をまとめるオブジェクトで、`CSS.highlights`から使います。`Highlight`が`Set`のように振る舞うのに対して、`HighlightRegistry`は、ハイライトの名前をキー、`Highlight`を値にした`Map`のように振る舞います。
-
-```ts
-CSS.highlights.set('my-highlight', highlight); // Highlightオブジェクトを登録
-CSS.highlights.get('my-highlight'); // Highlightオブジェクトを取得
-CSS.highlights.has('my-highlight'); // Highlightオブジェクトが存在するか確認
-CSS.highlights.delete('my-highlight'); // Highlightオブジェクトを削除
-CSS.highlights.clear(); // すべてのHighlightオブジェクトを削除
-```
-
-`set`メソッドは`HighlightRegistry`自体を返すので、続けて呼べます。
-
-```ts
-CSS.highlights
-  .set('my-highlight', highlight1)
-  .set('another-highlight', highlight2);
-```
-
-### ::highlight擬似要素
-
-`::highlight()`擬似要素は、`HighlightRegistry`に登録した名前のハイライトにスタイルを当てます。
-
-```css
-::highlight(my-highlight) {
-  background-color: yellow;
-  color: black;
-}
-```
-
-使えるプロパティは、`color`と`background-color`、`text-decoration`、`text-shadow`などに限られます。`-webkit-`から始まる一部のプロパティも使えます。
+`HighlightRegistry`は、名前を付けた`Highlight`をまとめるオブジェクトで、`CSS.highlights`から使います。`Highlight`が`Set`のように振る舞うのに対して、`HighlightRegistry`は、ハイライトの名前をキー、`Highlight`を値にした`Map`のように振る舞います。`set`や`get`、`delete`のような`Map`のメソッドが使え、`set`は`HighlightRegistry`自体を返すので続けて呼べます。
 
 ## おわりに
 
