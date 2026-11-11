@@ -19,7 +19,7 @@ WebTransportは、QUIC（HTTP/3）の上で、ブラウザとサーバーがデ�
 
 ## 使い方
 
-WebTransportは、HTTPSで配ったページのようなSecure Contextでだけ使え、Web Workerからも使えます。渡すURLは`https`で始めます。`http`のURLや`#`の付いたURLを渡すと、コンストラクタが`SyntaxError`を投げます。ポート番号を省くと、`https`の既定の443番につなぎます。
+WebTransportは、HTTPSで配ったページのようなSecure Contextでだけ使え、Web Workerからも使えます。渡すURLは`https`で始めます。`http`のURLや、`#chat`のようなフラグメントの付いたURLを渡すと、コンストラクタが`SyntaxError`を投げます。ポート番号を省くと、`https`の既定の443番につなぎます。
 
 ### コネクションを開く
 
