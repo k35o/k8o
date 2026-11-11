@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`scrollbar-color`は、スクロールバーのつまみ（thumb）とトラック（track）の色を、2つの色で指定するCSSプロパティです。Safari 26.2が対応し、Baseline 2025で主要なブラウザすべてで使えるようになりました。
+`scrollbar-color`は、スクロールバーのつまみ（thumb）とトラック（track）の色を、2つの色で指定するCSSプロパティです。Safari 26.2が対応して、Baseline 2025に入りました。
 
 これまでSafariは`scrollbar-color`に対応しておらず、スクロールバーの色を変えるには`::-webkit-scrollbar`擬似要素も書く必要がありました。Firefoxは`::-webkit-scrollbar`に対応していません。幅や角の丸みまで変えたいなら、今もChromeとSafari向けの`::-webkit-scrollbar`を使います。色を変えるだけなら、`scrollbar-color`の1行で主要なブラウザすべてに効きます。
 
@@ -37,11 +37,11 @@ featureIds:
 }
 ```
 
-最初の値がつまみの色、2番目の値がトラックの色です。色を1つだけ書いた`scrollbar-color: red`は無効で、Chrome 156、Safari 27.2、Firefox 159のどれでも`CSS.supports`が`false`を返しました。
+最初の値がつまみの色、2番目の値がトラックの色です。色を1つだけ書いた`scrollbar-color: red`は無効です。
 
 <PlaygroundEmbed demo="scrollbar-colorプロパティ" headingLevel="h4" sectionId="scrollbar-color" />
 
-デモのカラーピッカーでつまみとトラックの色を選ぶと、その下の枠のスクロールバーにすぐ反映されます。macOSのスクロールしたときだけスクロールバーを出す設定では、枠をスクロールすると色が見えます。このときChrome 156では、つまみにだけ色が付き、トラックの色は描かれませんでした。
+デモのカラーピッカーでつまみとトラックの色を選ぶと、その下の枠のスクロールバーにすぐ反映されます。macOSのスクロールしたときだけスクロールバーを出す設定では、枠をスクロールすると色が見えます。このときChromeでは、つまみにだけ色が付き、トラックの色は描かれません。
 
 `scrollbar-color`は継承されるので、`:root`に書くとページの中のスクロールする要素すべてに効きます。ダークモードに合わせるなら、`light-dark()`でテーマごとの色を書きます。
 
@@ -52,9 +52,9 @@ featureIds:
 }
 ```
 
-`light-dark()`の色は`:root`の`color-scheme`で決まってから子に継承されます。途中の要素で`color-scheme: dark`にしても、その中のスクロールバーの色は変わりませんでした（Chrome 156、Safari 27.2、Firefox 159で確認）。
+`light-dark()`の色は`:root`の`color-scheme`で決まってから子に継承されます。途中の要素で`color-scheme: dark`にしても、その中のスクロールバーの色は変わりません。
 
-`::-webkit-scrollbar`と一緒には使えません。`::-webkit-scrollbar { width: 30px; }`だけを書いた要素には、Chrome 156とSafari 27.2で幅30pxのスクロールバーが出ました。同じ要素に`scrollbar-color`を足すと`::-webkit-scrollbar`の指定は使われず、スクロールしたときだけ出る既定のスクロールバーに戻りました。既存の`::-webkit-scrollbar`で形を変えているページに足すと、形の指定が消えます。
+`::-webkit-scrollbar`と一緒には使えません。`::-webkit-scrollbar { width: 30px; }`だけを書いた要素には、ChromeとSafariで幅30pxのスクロールバーが出ます。同じ要素に`scrollbar-color`を足すと`::-webkit-scrollbar`の指定は使われず、既定のスクロールバーに戻ります。既存の`::-webkit-scrollbar`で形を変えているページに足すと、形の指定が消えます。
 
 スクロールバーの色を変更する際は、アクセシビリティを考慮してつまみとトラックで十分なコントラストを確保しましょう。
 
