@@ -118,13 +118,11 @@ highlightAll(document.body, 'highlight');
 
 #### オブジェクトの作成
 
-`Highlight`オブジェクトは、1つ以上の`Range`オブジェクトを追加して作成されます。
+`new Highlight()`に`Range`を渡して作ります。複数の`Range`を渡すと、1つのハイライトで複数の範囲を装飾できます。
 
 ```ts
 const highlight = new Highlight(range1, range2, range3);
 ```
-
-複数の`Range`オブジェクトを渡すことで、1つのハイライトに複数のテキスト範囲を指定できます。
 
 #### オブジェクト作成後の操作
 
