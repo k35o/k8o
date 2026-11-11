@@ -15,13 +15,11 @@ featureIds:
 
 `CSS Custom Highlight API`は、JavaScriptの`Range`で指定した文字列の範囲に、CSSの`::highlight()`で色を付けるAPIです。DOMに要素を足さずに、ページ内の検索語やスペルミスをハイライトできます。Firefox 149が対応して、Baseline 2026に入りました。
 
-決まった文字列を強調するだけなら、HTMLに`<mark>`を書けば足ります。ユーザーが選んだ範囲は`::selection`で装飾できます。検索語のように実行時に決まる範囲を`<mark>`で囲むには、テキストノードを分けてDOMを書き換える必要があります。`<b>`などの要素をまたぐ範囲は、1つの`<mark>`では囲めません。DOMに手を触れずに任意の範囲を装飾できるのは、このAPIだけです。
+決まった文字列を強調するだけなら、HTMLに`<mark>`を書けば足り、ユーザーが選んだ範囲は`::selection`で装飾できます。しかし、検索語のように実行時に決まる範囲を`<mark>`で囲むには、テキストノードを分けてDOMを書き換える必要があり、`<b>`などの要素をまたぐ範囲は1つの`<mark>`では囲めません。DOMに手を触れずに任意の範囲を装飾できるのは、このAPIだけです。
 
 ## CSS Custom Highlight APIとは
 
-`CSS Custom Highlight API`では、ハイライトする範囲を`Range`で表し、範囲のまとまりを`Highlight`にして、`CSS.highlights`に名前を付けて登録します。登録した名前を`::highlight()`に渡すと、その範囲を装飾できます。
-
-このAPIは`::selection`・`::target-text`のような擬似要素を拡張したようなもので、`::highlight`擬似要素を利用します。
+`CSS Custom Highlight API`では、ハイライトする範囲を`Range`で表し、範囲のまとまりを`Highlight`にして、`CSS.highlights`に名前を付けて登録します。登録した名前を`::highlight()`に渡すと、その範囲を装飾できます。`::selection`や`::target-text`のように、ブラウザが決めた範囲を装飾する擬似要素を、JavaScriptで決めた範囲にも使えるようにしたものです。
 
 <PlaygroundEmbed demo="基本的なハイライト" headingLevel="h4" sectionId="highlight" />
 
@@ -29,14 +27,14 @@ featureIds:
 
 ### 特徴
 
-1. DOMに影響を与えることなく、任意のテキスト範囲に対してハイライト可能
-2. JavaScriptから動的にハイライトの追加、変更、削除が可能
-3. ハイライトの優先順位を設定可能
-4. 支援技術に対してハイライトの意味的情報を提供可能
+- DOMを書き換えずに、任意のテキストの範囲をハイライトできる
+- JavaScriptから、ハイライトを足したり、変えたり、消したりできる
+- 重なったハイライトの優先度を決められる
+- 支援技術に、ハイライトの意味（スペルミスなど）を伝えられる
 
 ## 利用方法
 
-まず初めに、`Range`オブジェクトを使用して、ハイライトしたいテキストの範囲を定義します。
+まず、`Range`オブジェクトで、ハイライトしたいテキストの範囲を決めます。
 
 ```ts
 // ハイライトするテキストを持つ要素の、中のテキストノードを取得
@@ -50,11 +48,9 @@ range.setStart(textNode, 0);
 range.setEnd(textNode, 2);
 ```
 
-`setStart`と`setEnd`に要素を渡すと、位置は文字ではなく子ノードの番号として数えられます。子がテキストノード1つだけの要素に`setEnd(要素, 2)`を渡すと、`IndexSizeError`になります。文字の位置で指定するには、テキストノードを渡します。
+`setStart`と`setEnd`に要素を渡すと、位置は文字ではなく子ノードの番号として数えられるので、子がテキストノード1つだけの要素に`setEnd(要素, 2)`を渡すと`IndexSizeError`になります。文字の位置で指定するには、テキストノードを渡します。
 
-次に、`Range`オブジェクトを使用して`Highlight`オブジェクトを作成し、それを`HighlightRegistry`に登録します。
-
-`HighlightRegistry`には`CSS.highlights`からアクセスします。
+次に、`Range`から`Highlight`オブジェクトを作り、`CSS.highlights`（`HighlightRegistry`）に名前を付けて登録します。
 
 ```ts
 // Highlightオブジェクトを作成
@@ -64,7 +60,7 @@ const highlight = new Highlight(range);
 CSS.highlights.set('my-highlight', highlight);
 ```
 
-最後に、`::highlight`擬似要素を用いて`my-highlight`で登録した箇所のスタイルを定義します。
+最後に、`::highlight(my-highlight)`で、登録した範囲のスタイルを書きます。
 
 ```css
 /* [!og] */
@@ -74,7 +70,7 @@ CSS.highlights.set('my-highlight', highlight);
 }
 ```
 
-これで完了です。指定したテキスト範囲がハイライトされ、スタイルが適用されます。
+これで、指定した範囲に背景色と文字色が付きます。
 
 ### 検索語をすべてハイライトする
 
@@ -108,13 +104,13 @@ highlightAll(document.body, 'highlight');
 }
 ```
 
-2000段落にある4000か所で試すと、この関数で登録してから次の描画まではChromeで約30ms、Safariで約60ms、Firefoxで約33msでした。同じ箇所を`<mark>`で囲む処理はそれぞれ約330ms・約550ms・約820msかかり、要素が4000個増えました。
+2000段落にある4000か所をこの関数で登録すると、次の描画まではChromeで約30ms、Safariで約60ms、Firefoxで約33msでした。同じ箇所を`<mark>`で囲むと、それぞれ約330msと約550ms、約820msかかり、要素が4000個増えました。
 
 ## APIへの理解を深める
 
 ### Highlightオブジェクト
 
-`Highlight`オブジェクトは、一連の`Range`オブジェクトを同じハイライトを行うグループとして管理するためのものです。
+`Highlight`オブジェクトは、同じ見た目でハイライトする`Range`をまとめます。
 
 #### オブジェクトの作成
 
@@ -126,39 +122,20 @@ const highlight = new Highlight(range1, range2, range3);
 
 #### オブジェクト作成後の操作
 
-`Highlight`オブジェクトの作成後も、それが持つ`Range`オブジェクトを操作できます。
-
-`Highlight`オブジェクトが持つ`Range`オブジェクトは`size`プロパティで確認できます。
+作ったあとも、`Range`を足したり消したりできます。持っている`Range`の数は、`size`プロパティで分かります。
 
 ```ts
-console.log(highlight.size);
+console.log(highlight.size); // 持っているRangeの数
+highlight.add(newRange); // Rangeを足す
+highlight.delete(range1); // 特定のRangeを消す
+highlight.clear(); // すべてのRangeを消す
 ```
 
-`add`メソッドは新たな`Range`オブジェクトを追加するために使用されます。
-
-```ts
-highlight.add(newRange);
-```
-
-`clear`メソッドは、すべての`Range`オブジェクトを削除します。
-
-```ts
-highlight.clear();
-```
-
-`delete`メソッドは、特定の`Range`オブジェクトを削除します。
-
-```ts
-highlight.delete(range1);
-```
-
-この他にも、`Set`オブジェクトが持つような`entries`・`forEach`・`keys`・`values`・`has`メソッドも利用可能です。
-
-つまり、`Highlight`オブジェクトは`Range`だけを持つ`Set`オブジェクトのような振る舞いをします。
+`Highlight`は`Range`だけを持つ`Set`のように振る舞い、`has`や`forEach`、`entries`のような`Set`のメソッドも使えます。
 
 #### 優先度の設定
 
-複数のハイライトが重複する場合、`Highlight`オブジェクトの`priority`プロパティを参照して、どのハイライトが優先されるかを決定します。
+ハイライトが重なったときにどれを上に描くかは、`priority`プロパティで決めます。
 
 ```ts
 const highPriorityHighlight = new Highlight(range1);
@@ -174,38 +151,28 @@ console.log(lowPriorityHighlight.priority); // 1
 console.log(defaultPriorityHighlight.priority); // 0
 ```
 
-`priority`のデフォルトは0です。上記の例では、`highPriorityHighlight`が最も優先され、次に`lowPriorityHighlight`、最後に`defaultPriorityHighlight`が適用されます。
+`priority`の既定は0で、上の例では`highPriorityHighlight`、`lowPriorityHighlight`、`defaultPriorityHighlight`の順に優先されます。
 
 <PlaygroundEmbed demo="優先度ベースハイライト" headingLevel="h6" sectionId="highlight" />
 
-上記の例では、`Imagination`の部分に3つのハイライトを定義しています。一つは優先度1で青色、もう一つは優先度1で黄色、最後は優先度0で赤色です。
-
-優先度が同じ場合は`CSS.highlights`に後から登録されたハイライトが優先されます。
-
-今回は青色と黄色が同じ優先度、登録順は青色->黄色->赤色の順ですので、黄色が優先されて表示されています。
+上の例では、`Imagination`に優先度1の青と黄、優先度0の赤の3つのハイライトを、この順に登録しています。優先度が同じときは`CSS.highlights`に後から登録したほうが優先されるので、黄色で表示されます。
 
 #### ハイライトの意味を指定
 
-`type`プロパティはハイライトの意味を指定できます。これにより、支援技術がハイライトの内容を理解しやすくなります。
+`type`プロパティには、ハイライトの意味を指定します。スクリーンリーダーのような支援技術は、この意味をハイライトと一緒にユーザーへ伝えられます。
 
 ```ts
 const spellErrorHighlight = new Highlight(errorRange);
 spellErrorHighlight.type = 'spelling-error';
 ```
 
-`type`にはデフォルトの`highlight`の他に、`spelling-error`や`grammar-error`などの値を指定できます。
-
-`highlight`には特別な意味がありません。`spelling-error`はスペルミス、`grammar-error`は文法エラーを意味します。
+値は、特別な意味の無い既定の`highlight`と、スペルミスを表す`spelling-error`、文法の誤りを表す`grammar-error`の3つです。
 
 <PlaygroundEmbed demo="スペリング・文法エラーハイライト" headingLevel="h6" sectionId="highlight" />
 
 ### HighlightRegistry
 
-`HighlightRegistry`は、複数の`Highlight`オブジェクトを管理するためのオブジェクトで`CSS`オブジェクトに静的に組み込まれています。
-
-`Highlight`オブジェクトが`Set`オブジェクトのような振る舞いをするのに対して、`HighlightRegistry`は`Map`オブジェクトのような振る舞いをします。
-
-`key`はハイライトの名前で、`value`は`Highlight`オブジェクトです。
+`HighlightRegistry`は、名前を付けた`Highlight`をまとめるオブジェクトで、`CSS.highlights`から使います。`Highlight`が`Set`のように振る舞うのに対して、`HighlightRegistry`は、ハイライトの名前をキー、`Highlight`を値にした`Map`のように振る舞います。
 
 ```ts
 CSS.highlights.set('my-highlight', highlight); // Highlightオブジェクトを登録
@@ -215,7 +182,7 @@ CSS.highlights.delete('my-highlight'); // Highlightオブジェクトを削除
 CSS.highlights.clear(); // すべてのHighlightオブジェクトを削除
 ```
 
-`set`メソッドは`HighlightRegistry`オブジェクト自体を返すので連鎖的に記述することも可能です。
+`set`メソッドは`HighlightRegistry`自体を返すので、続けて呼べます。
 
 ```ts
 CSS.highlights
@@ -225,7 +192,7 @@ CSS.highlights
 
 ### ::highlight擬似要素
 
-`::highlight`擬似要素は、`HighlightRegistry`に登録されたハイライトをCSSでスタイリングするために使用します。
+`::highlight()`擬似要素は、`HighlightRegistry`に登録した名前のハイライトにスタイルを当てます。
 
 ```css
 ::highlight(my-highlight) {
@@ -234,10 +201,8 @@ CSS.highlights
 }
 ```
 
-この中では`color`と`background-color`、`text-decoration`、`text-shadow`しか、利用できないことに注意してください（`-webkit`から始まる一部のプロパティも利用可能です）。
+使えるプロパティは、`color`と`background-color`、`text-decoration`、`text-shadow`などに限られます。`-webkit-`から始まる一部のプロパティも使えます。
 
 ## おわりに
 
-`CSS Custom Highlight API`は、2026年にBaselineに入りました。
-
-検索語やスペルミスのように実行時に決まる範囲を、DOMを書き換えずに装飾できます。`<mark>`で囲む方法より速く、消すときにDOMを元に戻す処理も要らないので、ページ内検索のハイライトから使ってみてください。
+`CSS Custom Highlight API`を使うと、検索語やスペルミスのように実行時に決まる範囲を、DOMを書き換えずに装飾できます。`<mark>`で囲む方法より速く、消すときにDOMを元に戻す処理も要らないので、ページ内検索のハイライトから使ってみてください。
