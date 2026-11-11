@@ -1,71 +1,16 @@
 'use client';
 
 import { Button, FormControl, TextField } from '@k8ordo/ui';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FC } from 'react';
 
 import styles from './clipboard-text-demo.module.css';
 
-type ClipboardPermissionName = 'clipboard-read' | 'clipboard-write';
-
-const subscribePermission = (
-  name: ClipboardPermissionName,
-  onChange: (state: PermissionState) => void,
-  signal: AbortSignal,
-): void => {
-  navigator.permissions
-    .query({ name: name as PermissionName })
-    .then((permission) => {
-      if (signal.aborted) return undefined;
-      onChange(permission.state);
-      permission.addEventListener(
-        'change',
-        () => {
-          onChange(permission.state);
-        },
-        { signal },
-      );
-      return undefined;
-    })
-    .catch(() => {
-      console.warn(
-        'ClipboardについてのPermission APIをサポートしていないブラウザです。',
-      );
-    });
-};
-
 export const ClipboardTextDemo: FC = () => {
   const [text, setText] = useState('');
-  const [readPermissions, setReadPermissions] = useState<PermissionState>();
-  const [writePermissions, setWritePermissions] = useState<PermissionState>();
-
-  useEffect(() => {
-    const controller = new AbortController();
-    subscribePermission(
-      'clipboard-read',
-      setReadPermissions,
-      controller.signal,
-    );
-    subscribePermission(
-      'clipboard-write',
-      setWritePermissions,
-      controller.signal,
-    );
-    return () => {
-      controller.abort();
-    };
-  }, []);
 
   return (
     <div className={styles.root}>
-      <div>
-        <p>
-          クリップボードの読み取り: {readPermissions ?? '読み込めませんでした'}
-        </p>
-        <p>
-          クリップボードの書き込み: {writePermissions ?? '読み込めませんでした'}
-        </p>
-      </div>
       <FormControl
         disabled={false}
         invalid={false}
