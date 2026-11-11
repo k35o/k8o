@@ -18,8 +18,6 @@ Clipboard APIは、`navigator.clipboard`からクリップボードを読み書�
 
 ユーザーがキーボードやメニューでコピー・貼り付けしたときの中身を差し替えるだけなら、`copy`・`paste`イベントの`clipboardData`で足ります。ボタンを押したときにコピーする、ボタンからクリップボードを読むといった、ユーザーのコピー操作を待たない読み書きはClipboard APIで書きます。ボタンからのコピーには以前`document.execCommand('copy')`を使っていましたが、非推奨です。読み取りの`document.execCommand('paste')`は、`false`を返して何も貼り付けません。
 
-この記事では、Clipboard APIの使い方を最初に確認してから、Baseline 2025に追加された`ClipboardItem.supports()`について紹介します。
-
 ## Clipboard API
 
 Clipboard APIは`Clipboard`インターフェースにより実装されており、`navigator.clipboard`を通じてアクセスできます。
@@ -121,8 +119,6 @@ item.getType('text/html').catch((err) => {
 `ClipboardItem.supports`はClipboard APIとして、特定のMIMEタイプがサポートされていることを確認するためのものです。Safari 18.4が対応して、Baseline 2025に入りました。
 
 `text/plain`、`text/html`、`image/png`は常にサポートされていますが、`text/uri-list`、`image/svg+xml`と`web `で始めるカスタムMIMEタイプは、ブラウザやOSによって結果が異なります。
-
-<LinkCard href="https://w3c.github.io/clipboard-apis/#dom-clipboarditem-supports" />
 
 サポートされていれば`true`、サポートされていなければ`false`を返します。
 
