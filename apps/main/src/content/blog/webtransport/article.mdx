@@ -13,11 +13,9 @@ featureIds:
 
 ## はじめに
 
-WebTransportは、QUIC（HTTP/3）の上で、ブラウザとサーバーがデータを双方向にやり取りするAPIです。1本の接続に独立したストリームをいくつも開け、届かなくても再送しないデータグラムも送れます。
+WebTransportは、QUIC（HTTP/3）の上で、ブラウザとサーバーがデータを双方向にやり取りするAPIです。1本の接続に独立したストリームをいくつも開け、届かなくても再送しないデータグラムも送れます。Safari 26.4が対応して、Baseline 2026に入りました。
 
 チャットや通知のように少量のテキストをやり取りするだけなら、これまでどおりWebSocketで足ります。WebSocketはTCPの上で1本のメッセージ列しか持てないので、一部のデータが遅れると後のデータまで待たされます。遅れたデータを待たずにほかの流れを進めたい通信や、ゲームの座標のように古い値を捨ててよい通信は、WebTransportで書けます。
-
-Baseline 2026で主要ブラウザすべてで利用可能になりました。
 
 ## WebTransportとは
 
@@ -77,14 +75,14 @@ const transport = new WebTransport('https://localhost:4433/chat', {
 
 `certHash`は、`openssl x509 -in cert.pem -outform der | openssl dgst -sha256 -binary`で出る32バイトを`Uint8Array`にしたものです。仕様では、ハッシュで許す証明書はECDSAの鍵で、有効期間が2週間以内のものに限られます。
 
-手元では、Deno 2.9.8の`Deno.upgradeWebTransport`で立てたエコーのサーバーに、P-256の鍵で有効期間10日の証明書を使ってつなぎました。Chrome 156、Safari 27.2、Firefox 159のどれでもこの方法でつながり、データグラムと双方向ストリームが往復しました。`serverCertificateHashes`を渡さないと、どれも`ready`が`WebTransportError`で拒否されました。
+`serverCertificateHashes`を渡さないと、`ready`が`WebTransportError`で拒否されます。
 
 ### データグラムの送受信
 
 データグラムは順序保証も再送もない、もっとも軽量な送受信方法です。
 最悪届かなくても最新の値で上書きすればよい、チャットの入力状態やキャラクターの座標のようなデータの送受信に向いています。
 
-データグラムは`transport.datagrams`の`readable`で受け取り、`createWritable()`で作った書き込み用のストリームで送ります。Chrome 156は`createWritable()`を持たず、`writable`だけを持ちます。Safari 27.2は逆に`writable`を持たないので、`transport.datagrams.writable.getWriter()`と書くと`TypeError`になりました（Firefox 159は両方を持つ）。どちらも標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+データグラムは`transport.datagrams`の`readable`で受け取り、`createWritable()`で作った書き込み用のストリームで送ります。Chromeは`createWritable()`を持たず、`writable`だけを持ちます。Safariは逆に`writable`を持たないので、`transport.datagrams.writable.getWriter()`と書くと`TypeError`になります（Firefoxは両方を持つ）。どちらも標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
 
 ```js
 // 送信
@@ -103,7 +101,7 @@ while (true) {
 }
 ```
 
-1つのデータグラムで送れる大きさは`transport.datagrams.maxDatagramSize`で分かります。手元のサーバーにつなぐと、Chrome 156は1211、Firefox 159は1024、Safari 27.2は65535を返しました。
+1つのデータグラムで送れる大きさは`transport.datagrams.maxDatagramSize`で分かります。値はブラウザによって大きく違い、Chromeは1211、Firefoxは1024、Safariは65535を返します。
 
 ### 単方向ストリーム
 
