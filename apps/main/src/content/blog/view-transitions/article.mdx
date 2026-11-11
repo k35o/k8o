@@ -146,6 +146,12 @@ li {
 - `::view-transition-image-pair()`：前と後の画像を重ねる入れ物
 - `::view-transition-old()`と`::view-transition-new()`：前の画面と後の画面の画像。既定では、前の画像が消えながら後の画像が現れる
 
+<PlaygroundEmbed demo="擬似要素を1つずつ見る" headingLevel="h5" sectionId="view-transitions" />
+
+デモでは、遷移を1秒にしています。`::view-transition-group()`に枠を付けると、枠が小さい箱の位置と大きさから大きい箱の位置と大きさへ動きます。
+
+`::view-transition-new()`を隠すと、前の画像だけが、枠に合わせて大きくなりながら消えていきます。反対に`::view-transition-old()`を隠すと、後の画像だけが、透明に近い状態から現れます。
+
 ## おわりに
 View Transition APIを使うと、`startViewTransition`でDOMを書き換えるだけで、画面の変化にアニメーションが付きます。動かす要素は`view-transition-name`で選び、動き方は`::view-transition-group()`などの擬似要素で変えられます。
 
