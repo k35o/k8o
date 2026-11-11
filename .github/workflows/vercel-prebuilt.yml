@@ -7,6 +7,7 @@ name: Vercel Prebuilt Deploy
 # production（main への push）の両方をこの workflow が担う。
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
   push:
     branches:
       - main
@@ -27,7 +28,7 @@ permissions: {}
 jobs:
   detect:
     # fork PR は VERCEL_TOKEN を取得できず、renovate ブランチは preview 不要のため除外する
-    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.head.repo.fork != true && !startsWith(github.head_ref, 'renovate/')) }}
+    if: ${{ github.event_name != 'pull_request' || (github.event.action != 'closed' && github.event.pull_request.head.repo.fork != true && !startsWith(github.head_ref, 'renovate/')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -266,3 +267,24 @@ jobs:
           else
             gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="$body" > /dev/null
           fi
+
+  # preview の deploy は承認しないまま PR を閉じると、30 日後に承認待ちの時間切れで失敗する。
+  # 閉じたときに承認待ちの run を取り消し、失敗として残さない
+  cancel-waiting-preview:
+    if: ${{ github.event.action == 'closed' && github.event.pull_request.head.repo.fork != true && !startsWith(github.head_ref, 'renovate/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel preview deploys waiting for approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow vercel-prebuilt.yml \
+            --event pull_request --branch "$HEAD_REF" --status waiting \
+            --json databaseId --jq '.[].databaseId' |
+            while read -r id; do
+              gh run cancel "$id" --repo "$GITHUB_REPOSITORY"
+            done
