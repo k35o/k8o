@@ -14,7 +14,7 @@ featureIds:
 
 ## はじめに
 
-Clipboard APIは、`navigator.clipboard`からクリップボードを読み書きするJavaScriptのAPIです。テキストは`writeText()`と`readText()`で、PNG画像は`ClipboardItem`に包んで`write()`と`read()`でコピーと貼り付けをします。Firefox 127が対応して、Baseline 2024に入りました。
+Clipboard APIは、`navigator.clipboard`からクリップボードを読み書きするJavaScriptのAPIです。テキストは`writeText()`と`readText()`で、画像は`ClipboardItem`に包んで`write()`と`read()`でコピーと貼り付けをします。画像で、どのブラウザでも書き込めるのはPNGだけです。Firefox 127が対応して、Baseline 2024に入りました。
 
 ユーザーがキーボードやメニューでコピーや貼り付けをしたときの中身を差し替えるだけなら、`copy`と`paste`イベントの`clipboardData`で足ります。しかし、ボタンを押したときのコピーや、ボタンからのクリップボードの読み取りのように、ユーザーのコピー操作を待たない読み書きはClipboard APIで書きます。ボタンからのコピーには以前`document.execCommand('copy')`を使っていましたが、非推奨です。読み取りの`document.execCommand('paste')`は、`false`を返して何も貼り付けません。
 
@@ -109,7 +109,7 @@ ClipboardItem.supports('application/json'); // false
 
 結果が分かれる3つは、Chromeでは`image/svg+xml`と`web `で始まるタイプが`true`、`text/uri-list`が`false`です。Safariでは`text/uri-list`だけが`true`で、Firefoxでは3つとも`false`です。
 
-`image/jpeg`は、どのブラウザでも`false`です。JPEGの画像は、次の節のようにcanvasでPNGにしてから書き込みます。
+画像のMIMEタイプで、どのブラウザでも`true`になるのは`image/png`だけです。JPEGやWebPの画像は、次の節のようにcanvasでPNGにしてから書き込みます。
 
 ### PNG画像のコピーと貼り付け
 
