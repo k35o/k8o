@@ -8,14 +8,11 @@ featureIds:
   - view-transition-class
 ---
 
-import styles from './article.module.css';
-
 # View Transitions APIでページ遷移をアニメーション
 
-<div className={styles.supportStatuses}>
-  <BrowserSupportStatus featureId="view-transitions" />
-  <BrowserSupportStatus featureId="view-transition-class" />
-</div>
+<BrowserSupportStatus featureId="view-transitions" />
+
+<BrowserSupportStatus featureId="view-transition-class" />
 
 ## はじめに
 View Transition API（View Transitions API）は、DOMを書き換える前の画面から後の画面へ、アニメーションで切り替えるAPIです。並び替えやSPAのページ遷移のように、DOMを書き換えて画面が変わる場面で使えます。Firefox 144が対応して、Baseline 2025に入りました。
