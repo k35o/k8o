@@ -146,27 +146,6 @@ li {
 - `::view-transition-image-pair()`：前と後の画像を重ねる入れ物
 - `::view-transition-old()`と`::view-transition-new()`：前の画面と後の画面の画像。既定では、前の画像が消えながら後の画像が現れる
 
-## 例
-`startViewTransition`でカードを並び替えるデモです。
-
-<PlaygroundEmbed demo="View Transition基本デモ" headingLevel="h4" sectionId="view-transitions" />
-
-シャッフルを押すと、カードが元の位置から新しい位置へ1秒かけて動きます。View TransitionをOFFにすると、カードは一瞬で入れ替わります。アイテム1から4には、順に`::view-transition-group`と`::view-transition-image-pair`、`::view-transition-old`、`::view-transition-new`で背景色を付けています。どの擬似要素がどこに描かれるかを、色で見分けられます。
-
-デモはReactで書いています。Reactの状態の更新は`startViewTransition`に渡した関数が終わってから画面に反映されるので、そのままでは更新後の画面を撮れません。`flushSync`で包み、渡した関数の中でDOMを書き換えます。
-
-```tsx
-import { flushSync } from 'react-dom';
-
-document.startViewTransition(() => {
-  flushSync(() => {
-    setItems(nextItems);
-  });
-});
-```
-
-Reactでは、`react`の`<ViewTransition>`コンポーネントでも遷移アニメーションを付けられます。
-
 ## おわりに
 View Transition APIを使うと、`startViewTransition`でDOMを書き換えるだけで、画面の変化にアニメーションが付きます。動かす要素は`view-transition-name`で選び、動き方は`::view-transition-group()`などの擬似要素で変えられます。
 
