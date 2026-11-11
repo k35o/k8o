@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`CSS Custom Highlight API`は、JavaScriptの`Range`で指定した文字列の範囲に、CSSの`::highlight()`で色を付けるAPIです。DOMに要素を足さずに、ページ内の検索語やスペルミスをハイライトできます。2026年にBaselineに入り、主要なブラウザで使えます。
+`CSS Custom Highlight API`は、JavaScriptの`Range`で指定した文字列の範囲に、CSSの`::highlight()`で色を付けるAPIです。DOMに要素を足さずに、ページ内の検索語やスペルミスをハイライトできます。Firefox 149が対応して、Baseline 2026に入りました。
 
 決まった文字列を強調するだけなら、HTMLに`<mark>`を書けば足ります。ユーザーが選んだ範囲は`::selection`で装飾できます。検索語のように実行時に決まる範囲を`<mark>`で囲むには、テキストノードを分けてDOMを書き換える必要があります。`<b>`などの要素をまたぐ範囲は、1つの`<mark>`では囲めません。DOMに手を触れずに任意の範囲を装飾できるのは、このAPIだけです。
 
@@ -25,7 +25,7 @@ featureIds:
 
 <PlaygroundEmbed demo="基本的なハイライト" headingLevel="h4" sectionId="highlight" />
 
-デモでは、文の後半の6文字（これ知るなり）だけに背景色が付きます。ハイライトしても`<p>`の子はテキストノード1つのままで、要素は増えません（Chrome 156、Safari 27.2、Firefox 159で確認）。
+デモでは、文の後半の6文字（これ知るなり）だけに背景色が付きます。ハイライトしても`<p>`の子はテキストノード1つのままで、要素は増えません。
 
 ### 特徴
 
@@ -50,7 +50,7 @@ range.setStart(textNode, 0);
 range.setEnd(textNode, 2);
 ```
 
-`setStart`と`setEnd`に要素を渡すと、位置は文字ではなく子ノードの番号として数えられます。子がテキストノード1つだけの要素に`setEnd(要素, 2)`を渡すと、Chrome 156、Safari 27.2、Firefox 159のどれでも`IndexSizeError`になりました。文字の位置で指定するには、テキストノードを渡します。
+`setStart`と`setEnd`に要素を渡すと、位置は文字ではなく子ノードの番号として数えられます。子がテキストノード1つだけの要素に`setEnd(要素, 2)`を渡すと、`IndexSizeError`になります。文字の位置で指定するには、テキストノードを渡します。
 
 次に、`Range`オブジェクトを使用して`Highlight`オブジェクトを作成し、それを`HighlightRegistry`に登録します。
 
@@ -108,7 +108,7 @@ highlightAll(document.body, 'highlight');
 }
 ```
 
-2000段落にある4000か所で試すと、この関数で登録してから次の描画まではChrome 156で約30ms、Safari 27.2で約60ms、Firefox 159で約33msでした。同じ箇所を`<mark>`で囲む処理はそれぞれ約330ms・約550ms・約820msかかり、要素が4000個増えました。
+2000段落にある4000か所で試すと、この関数で登録してから次の描画まではChromeで約30ms、Safariで約60ms、Firefoxで約33msでした。同じ箇所を`<mark>`で囲む処理はそれぞれ約330ms・約550ms・約820msかかり、要素が4000個増えました。
 
 ## APIへの理解を深める
 
