@@ -134,4 +134,4 @@ const ParentComponent: FC<Props> = ({ renderItem }) => {
 
 この記事では、`children`にpropsを渡す方法として`cloneElement`とrender propパターンを紹介しました。
 
-`cloneElement`はレガシーAPIのため、直接使用するのではなく`@radix-ui/react-slot`の`Slot`で隠蔽することをおすすめします。また、型安全で明示的なrender propパターンも検討してみてください。
+`cloneElement`はレガシーAPIのため、新しく実装するなら、型安全で明示的なrender propパターンをおすすめします。`children`を受け取る形を保ちたいときは、`cloneElement`を直接使用せずに`@radix-ui/react-slot`の`Slot`で隠蔽してください。
