@@ -1,6 +1,6 @@
 ---
 title: 'WebTransportでQUIC（HTTP/3）の双方向通信をする'
-description: 'WebTransportは、QUIC（HTTP/3）の上でブラウザとサーバーが双方向にやり取りするAPIです。WebSocketと違い、独立したストリームを複数開け、再送しないデータグラムも送れます。手元でのつなぎ方も説明します。'
+description: 'WebTransportは、QUIC（HTTP/3）の上でブラウザとサーバーが双方向にやり取りするAPIです。WebSocketと違い、独立したストリームを複数開け、再送しないデータグラムも送れます。自己署名の証明書でのつなぎ方も説明します。'
 createdAt: 2026-04-07
 updatedAt: 2026-11-09
 featureIds:
@@ -23,7 +23,7 @@ WebTransportは、HTTPSで配ったページのようなSecure Contextでだけ�
 
 ### コネクションを開く
 
-`WebTransport`コンストラクタにURLを渡し、`ready`プロミスを待つことで接続が確立します。
+`WebTransport`のコンストラクタにURLを渡し、`ready`の`Promise`が解決すると、接続ができます。
 
 ```ts
 const transport = new WebTransport('https://example.com:4433/chat');
@@ -39,7 +39,7 @@ transport.closed
 
 切断したいときは`transport.close()`を呼びます。
 
-手元のサーバーに開発用の自己署名の証明書でつなぐときは、`serverCertificateHashes`に証明書のSHA-256のハッシュを渡します。
+手元のサーバーに開発用の自己署名の証明書でつなぐときは、`serverCertificateHashes`に証明書のSHA-256のハッシュを渡します。渡さないと、`ready`が`WebTransportError`で拒否されます。
 
 ```ts
 const transport = new WebTransport('https://localhost:4433/chat', {
@@ -49,14 +49,13 @@ const transport = new WebTransport('https://localhost:4433/chat', {
 
 `certHash`は、`openssl x509 -in cert.pem -outform der | openssl dgst -sha256 -binary`で出る32バイトを`Uint8Array`にしたものです。仕様では、ハッシュで許す証明書はECDSAの鍵で、有効期間が2週間以内のものに限られます。
 
-`serverCertificateHashes`を渡さないと、`ready`が`WebTransportError`で拒否されます。
-
 ### データグラムの送受信
 
-データグラムは順序保証も再送もない、もっとも軽量な送受信方法です。
-最悪届かなくても最新の値で上書きすればよい、チャットの入力状態やキャラクターの座標のようなデータの送受信に向いています。
+データグラムは、順序も再送も無い、もっとも軽い送受信の方法です。届かなくても次の値で上書きすればよい、入力中の表示やキャラクターの座標のようなデータに向いています。
 
-データグラムは`transport.datagrams`の`readable`で受け取り、`createWritable()`で作った書き込み用のストリームで送ります。Chromeは`createWritable()`を持たず、`writable`だけを持ちます。Safariは逆に`writable`を持たないので、`transport.datagrams.writable.getWriter()`と書くと`TypeError`になります（Firefoxは両方を持つ）。どちらも標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+データグラムは`transport.datagrams`の`readable`で受け取り、`createWritable()`で作った書き込み用のストリームで送ります。どちらも標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+
+ただし、Chromeは`createWritable()`を持たず、`writable`だけを持ちます。Safariは逆に`writable`を持たないので、`transport.datagrams.writable.getWriter()`と書くと`TypeError`になります。Firefoxは両方を持ちます。そこで、`createWritable()`が無いときだけ`writable`を使います。
 
 ```js
 // 送信
@@ -75,12 +74,11 @@ while (true) {
 }
 ```
 
-1つのデータグラムで送れる大きさは`transport.datagrams.maxDatagramSize`で分かります。値はブラウザによって大きく違い、Chromeは1211、Firefoxは1024、Safariは65535を返します。
+1つのデータグラムで送れる大きさは、`transport.datagrams.maxDatagramSize`で分かります。値はブラウザによって大きく違い、Chromeは1211、Firefoxは1024、Safariは65535を返します。
 
 ### 単方向ストリーム
 
-ストリームはデータグラムと違い、順序が保証され、欠損した場合は再送されます。
-クライアントから一方向にデータを送るだけでよい場合は単方向ストリームが便利です（Unidirectionalは単方向という意味）。
+ストリームはデータグラムと違い、順序が保たれ、欠けたデータは再送されます。一方向に送るだけでよいときは、単方向（Unidirectional）のストリームを使います。
 
 ```ts
 const stream = await transport.createUnidirectionalStream();
@@ -89,7 +87,7 @@ await writer.write(new Uint8Array([10, 20, 30]));
 await writer.close();
 ```
 
-サーバー側から送られてくる単方向ストリームは`transport.incomingUnidirectionalStreams`から受け取れます。
+サーバーから開かれた単方向のストリームは、`transport.incomingUnidirectionalStreams`から受け取ります。
 
 ```ts
 const reader = transport.incomingUnidirectionalStreams.getReader();
@@ -104,10 +102,9 @@ while (true) {
 
 ### 双方向ストリーム
 
-リクエスト・レスポンスのように、両方向にデータをやり取りしたいときは双方向ストリームを使います（Bidirectionalは双方向という意味）。
-1つの`WebTransportBidirectionalStream`が`readable`と`writable`の両方を持っています。
+リクエストとレスポンスのように両方向にやり取りするときは、双方向（Bidirectional）のストリームを使います。1つの`WebTransportBidirectionalStream`が、`readable`と`writable`の両方を持ちます。
 
-送信と受信は独立しているので、次のように並行して動かせます。送信の完了を待たずに受信ループを回せるので、サーバーから届くデータをリアルタイムに処理できます。
+送信と受信は独立しているので、送信の完了を待たずに受信のループを回せます。
 
 ```ts
 // [!og]
@@ -131,13 +128,8 @@ await writer.close();
 await receiveTask;
 ```
 
-複数のストリームを並行して開けるので、たとえばファイル転送と制御メッセージを別々のストリームで流す、といった設計が自然に書けます。
+ストリームはいくつも並行して開けるので、ファイルの転送と制御のメッセージを別々のストリームで流すような設計も書けます。
 
 ## おわりに
 
-WebTransportを簡単に紹介しました。
-
-HTTP/3の特徴をそのままWebに持ち込んだAPIで、複数ストリームの並行処理やデータグラムによる軽量な送信、ネットワーク切り替え時にも維持しやすい接続といった、WebSocketでは難しかった通信が実現できます。
-とはいえWebSocketの手軽さや成熟したエコシステムには今も大きな魅力があるので、用途に応じて使い分けるのが現実的です。
-
-Baseline 2026で主要ブラウザすべてで使えるようになったので、ピッタリな状況があればぜひ使ってみてください。
+WebTransportを使うと、1本の接続に独立したストリームをいくつも開き、再送しないデータグラムも送れます。少量のテキストのやり取りならWebSocketで足りるので、遅れを待たせたくない通信や、古い値を捨ててよい通信のときに選びます。
