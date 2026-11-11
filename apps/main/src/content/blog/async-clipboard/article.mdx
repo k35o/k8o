@@ -14,9 +14,9 @@ featureIds:
 
 ## はじめに
 
-Clipboard APIは、`navigator.clipboard`からクリップボードを読み書きするJavaScriptのAPIです。テキストは`writeText()`と`readText()`で、PNG画像は`ClipboardItem`に包んで`write()`と`read()`でコピー・ペーストします。
+Clipboard APIは、`navigator.clipboard`からクリップボードを読み書きするJavaScriptのAPIです。テキストは`writeText()`と`readText()`で、PNG画像は`ClipboardItem`に包んで`write()`と`read()`でコピー・ペーストします。Firefox 127が対応して、Baseline 2024に入りました。
 
-ユーザーがキーボードやメニューでコピー・貼り付けしたときの中身を差し替えるだけなら、`copy`・`paste`イベントの`clipboardData`で足ります。ボタンを押したときにコピーする、ボタンからクリップボードを読むといった、ユーザーのコピー操作を待たない読み書きはClipboard APIで書きます。ボタンからのコピーには以前`document.execCommand('copy')`を使っていましたが、非推奨です。読み取りの`document.execCommand('paste')`は、Chrome 156、Safari 27.2、Firefox 159のどれでも`false`を返し、何も貼り付けませんでした。
+ユーザーがキーボードやメニューでコピー・貼り付けしたときの中身を差し替えるだけなら、`copy`・`paste`イベントの`clipboardData`で足ります。ボタンを押したときにコピーする、ボタンからクリップボードを読むといった、ユーザーのコピー操作を待たない読み書きはClipboard APIで書きます。ボタンからのコピーには以前`document.execCommand('copy')`を使っていましたが、非推奨です。読み取りの`document.execCommand('paste')`は、`false`を返して何も貼り付けません。
 
 この記事では、Clipboard APIの使い方を最初に確認してから、Baseline 2025に追加された`ClipboardItem.supports()`について紹介します。
 
@@ -67,9 +67,9 @@ writePermission.state === 'prompt'; // ユーザーに許可を求める
 writePermission.state === 'denied'; // クリップボードの書き込みが拒否されている
 ```
 
-これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。Safari 27.2とFirefox 159では、`navigator.permissions.query()`に`clipboard-read`や`clipboard-write`を渡すと`TypeError`で失敗します。
+これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。SafariとFirefoxでは、`navigator.permissions.query()`に`clipboard-read`や`clipboard-write`を渡すと`TypeError`で失敗します。
 
-ユーザーの操作を挟まずに`readText()`を呼ぶと、Safari 27.2とFirefox 159はどちらも`NotAllowedError`で拒否しました。
+ユーザーの操作を挟まずに`readText()`を呼ぶと、SafariとFirefoxはどちらも`NotAllowedError`で拒否します。
 
 > Safariで発生するエラー: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
 
@@ -138,7 +138,7 @@ new ClipboardItem(
 );
 ```
 
-Chrome 156の`ClipboardItem`には`presentationStyle`のプロパティが無く、渡した値を読むと`undefined`でした。Safari 27.2とFirefox 159では、渡した値がそのまま返ります。
+Chromeの`ClipboardItem`には`presentationStyle`のプロパティが無く、渡した値を読むと`undefined`です。SafariとFirefoxでは、渡した値がそのまま返ります。
 
 作成された`ClipboardItem`インスタンスは、`types`プロパティ、`getType()`メソッドを持ちます（Baselineで対応しているものだけを紹介しています）。
 `types`は利用可能なMIMEタイプを配列で返し、`getType()`は第一引数に渡したMIMEタイプをもとにPromiseで解決したBlobを返します。
@@ -169,7 +169,7 @@ item.getType('text/html').catch((err) => {
 
 <BrowserSupportStatus featureId="clipboard-supports"></BrowserSupportStatus>
 
-`ClipboardItem.supports`はClipboard APIとして、特定のMIMEタイプがサポートされていることを確認するためのものです。
+`ClipboardItem.supports`はClipboard APIとして、特定のMIMEタイプがサポートされていることを確認するためのものです。Safari 18.4が対応して、Baseline 2025に入りました。
 
 `text/plain`、`text/html`、`image/png`は常にサポートされていますが、`text/uri-list`、`image/svg+xml`と`web `で始めるカスタムMIMEタイプは、ブラウザやOSによって結果が異なります。
 
@@ -190,13 +190,13 @@ ClipboardItem.supports('web image/png'); // true or false
 ClipboardItem.supports('application/json'); // false
 ```
 
-手元で試すと、ブラウザによって結果が分かれるMIMEタイプは次のようになりました。
+ブラウザによって結果が分かれるMIMEタイプは、次のようになります。
 
-- Chrome 156: `image/svg+xml`と`web `で始まるタイプが`true`、`text/uri-list`が`false`
-- Safari 27.2: `text/uri-list`が`true`、`image/svg+xml`と`web `で始まるタイプが`false`
-- Firefox 159: 3つとも`false`
+- Chrome：`image/svg+xml`と`web `で始まるタイプが`true`、`text/uri-list`が`false`
+- Safari：`text/uri-list`が`true`、`image/svg+xml`と`web `で始まるタイプが`false`
+- Firefox：3つとも`false`
 
-`image/jpeg`は、どのブラウザでも`false`でした。JPEGの画像は、次の節のようにcanvasでPNGにしてから書き込みます。
+`image/jpeg`は、どのブラウザでも`false`です。JPEGの画像は、次の節のようにcanvasでPNGにしてから書き込みます。
 
 ### PNG画像のコピーと貼り付け
 
@@ -248,7 +248,7 @@ const pasteImage = async () => {
 };
 ```
 
-`canvas.toBlob()`のコールバックの中で`throw`しても、Promiseは拒否されません。幅と高さが0のcanvasでは、コールバックに`null`が渡ります。これで試すと、Chrome 156、Safari 27.2、Firefox 159のどれでもPromiseは待ち続け、エラーは`window`の`error`イベントに出ました。コールバックの中では`reject`を呼びます。
+幅と高さが0のcanvasでは、`toBlob()`のコールバックに`null`が渡ります。このときコールバックの中で`throw`すると、Promiseは拒否されずに待ち続け、エラーは`window`の`error`イベントに出ます。そのため、コールバックの中では`reject`を呼びます。
 
 ## おわりに
 
