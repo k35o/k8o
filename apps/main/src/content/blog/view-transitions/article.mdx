@@ -1,6 +1,6 @@
 ---
 title: 'View Transitions APIでページ遷移をアニメーション'
-description: 'View Transition APIは、DOMの更新やページ移動の前後をアニメーションでつなぐAPIです。startViewTransitionとview-transition-nameの書き方と、擬似要素での調整を説明します。'
+description: 'View Transition APIは、DOMを書き換える前の画面から後の画面へアニメーションで切り替えるAPIです。startViewTransitionとview-transition-nameの書き方と、擬似要素での調整を説明します。'
 createdAt: 2025-11-08
 updatedAt: 2026-11-09
 featureIds:
@@ -18,9 +18,9 @@ import styles from './article.module.css';
 </div>
 
 ## はじめに
-View Transition API（View Transitions API）は、DOMを書き換える前と後の画面をブラウザが撮り、その間をアニメーションでつなぐAPIです。同じページの中のDOMの更新にも、同じオリジンのページへの移動にも使えます。同じページの中の遷移は、Firefox 144が対応して、Baseline 2025に入りました。
+View Transition API（View Transitions API）は、DOMを書き換える前の画面から後の画面へ、アニメーションで切り替えるAPIです。並び替えやSPAのページ遷移のように、DOMを書き換えて画面が変わる場面で使えます。Firefox 144が対応して、Baseline 2025に入りました。
 
-1つの要素の色や大きさを変えるだけなら、CSSの`transition`で足ります。並び替えで要素の位置が変わる、要素を足したり消したりする、別のページへ移るといった、前と後で要素が入れ替わる変化は`transition`では動かせません。前と後の画面をつないで動かせるのが、View Transition APIです。
+1つの要素の色や大きさを変えるだけなら、CSSの`transition`で足ります。しかし、並び替えで要素の位置が変わったり、要素を足したり消したりする変化は、`transition`では動かせません。View Transition APIなら、こうした変化もアニメーションにできます。
 
 ```html
 <button id="reverse">並びを逆にする</button>
@@ -42,22 +42,6 @@ View Transition API（View Transitions API）は、DOMを書き換える前と�
 ボタンを押すと、AとCが互いの位置へ0.25秒かけて滑るように動きます。
 
 この記事では、View Transition APIによって発生するアニメーションのことを遷移アニメーションと呼びます。
-
-## 異なるDocument間の遷移アニメーション
-異なる`Document`間の遷移アニメーションは同一のオリジン間でのみ適用できます。
-さらに、両者がそれぞれ読み込むCSSでView Transitionを`@view-transition`を用いて有効にする必要があります。
-
-```css
-@view-transition {
-  navigation: auto;
-}
-```
-
-同じオリジンの2つのページにこのCSSを書き、片方からもう片方へ移ると、既定では画面全体がクロスフェードで切り替わります。
-
-`view-transition-name`に同一の値を付与することで、遷移前の古いページと遷移後の新しいページの要素が対応付けられ、アニメーションが適用されます。
-
-デフォルトでは、`:root`に`view-transition-name: root;`が付与されており、特別な指定がない場合は画面全体に対してアニメーションが適用されます。
 
 ## 同一Document内の遷移アニメーション
 同一`Document`内のDOM更新に対して遷移アニメーションを適用する時は`startViewTransition`を使用します。
@@ -317,7 +301,7 @@ document.startViewTransition(() => {
 ## おわりに
 View Transition APIは、Webアプリケーションに滑らかで自然な遷移アニメーションを簡単に実装できる強力なAPIです。
 
-このAPIによるアニメーションは同一`Document`内のDOM更新だけではなく、異なる`Document`間の遷移にも対応しているため、幅広いユースケースで活用できます。
+`@view-transition`による別のページへ移るときの遷移がBaselineに入れば、複数のページからなるサイトでも同じアニメーションを付けられるようになります。その日が来るのを楽しみにしています。
 
 CSSの`view-transition-name`や`view-transition-class`を使った要素の対応付け、`::view-transition`などの疑似要素による細かなスタイル制御など、柔軟なカスタマイズが可能な点も魅力です。
 
