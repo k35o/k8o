@@ -94,6 +94,8 @@ featureIds:
 
 <PlaygroundEmbed demo="ドーナツスコープ" headingLevel="h4" sectionId="scope" />
 
+ボタンで`@scope`をOFFにして`.article img`に切り替えると、`.nested-content`の中の画像にもボーダーが付きます。
+
 ## :scope疑似クラス
 
 `@scope`の中でスコープルート自身にスタイルを当てるときは、`:scope`疑似クラスを使います。
@@ -151,6 +153,8 @@ featureIds:
 
 <PlaygroundEmbed demo=":scopeを使ったスコープリミット" headingLevel="h4" sectionId="scope" />
 
+ボタンを押して下限を`to (.nested-content)`に切り替えると、孫の`.nested-content`の中の画像からもボーダーが消えます。
+
 ## スコープの近接性
 
 `@scope`で、カスケードにスコープの近接性という基準が加わりました。詳細度が同じスタイルがぶつかったときは、要素からスコープルートまでの階層が少ないほうのスタイルが勝ちます。
@@ -186,6 +190,8 @@ featureIds:
 いちばん内側の`.message`は、`.warning-box`より`.info-box`のほうが近いので、`.info-box`のスタイルになります。`@scope`を使わずに`.info-box .message`と`.warning-box .message`で書くと、詳細度が同じなので、後に書いた`.warning-box`のスタイルになります。
 
 <PlaygroundEmbed demo="スコープの近接性" headingLevel="h4" sectionId="scope" />
+
+ボタンで`@scope`をOFFにすると、いちばん内側のメッセージが警告の色に変わります。
 
 近接性が効くのは、詳細度が同じときだけです。`@scope`の中の`h2`の詳細度は`h2`の分だけで、スコープルートの`.card`は足されません。
 
