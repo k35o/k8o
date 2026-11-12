@@ -7,6 +7,8 @@ featureIds:
   - print-color-adjust
 ---
 
+import { PrintColorAdjustExample } from './_components/print-color-adjust-example';
+
 # print-color-adjustで背景色をそのまま印刷する
 
 <BrowserSupportStatus featureId="print-color-adjust"></BrowserSupportStatus>
@@ -24,7 +26,9 @@ featureIds:
 <div style="background-color: navy; color: white; print-color-adjust: exact;">exact</div>
 ```
 
-Chromeで背景のグラフィックを切って印刷プレビューを開くと、上のdivは背景が消えて白い文字が灰色になり、下のdivは紺の背景に白い文字のまま印刷されます。
+<PrintColorAdjustExample />
+
+上の2つのdivは、このコードをそのまま置いたものです。Chromeでこのページの印刷プレビューを開き、背景のグラフィックを切ると、指定なしのdivは背景が消えて白い文字が灰色になり、exactのdivは紺の背景に白い文字のまま印刷されます。
 
 ## print-color-adjustプロパティ
 
