@@ -24,7 +24,6 @@ Firefox / Safariは早くから対応していましたが、Chromiumが長く�
 `image-rendering`は`<img>`、`<canvas>`、`background-image`などラスタ画像をスケールして描画するすべての要素に適用できます。Baseline 2026時点の主な値は以下です。
 
 - `auto`（既定値） - UAに任せる。多くのブラウザは双線形補間など滑らかな拡大を選ぶ
-- `smooth` - 色を補間して滑らかに見せる。Firefoxだけが受け付け、Chrome 156とSafari 27.2では無効な値として無視される
 - `crisp-edges` - 色の補間やぼかしを避け、境界とコントラストを保つ。最近傍法（nearest neighbor）または同等のアルゴリズムが使われる
 - `pixelated` - 整数倍までは最近傍法で拡大し、端数分だけ補間する
 
@@ -37,7 +36,7 @@ Firefox / Safariは早くから対応していましたが、Chromiumが長く�
 
 <PlaygroundEmbed demo="image-rendering値の比較" headingLevel="h4" sectionId="crisp-edges" />
 
-Selectで`auto`を選ぶと、16倍に拡大したドット絵の輪郭がぼやけます。`crisp-edges`か`pixelated`を選ぶと、ピクセルの境界がくっきりします。Chrome 156とSafari 27.2は`smooth`を受け付けないので、選んでも直前の値のまま見た目が変わりません。
+Selectで`auto`を選ぶと、16倍に拡大したドット絵の輪郭がぼやけます。`crisp-edges`か`pixelated`を選ぶと、ピクセルの境界がくっきりします。
 
 ## 使い方
 
