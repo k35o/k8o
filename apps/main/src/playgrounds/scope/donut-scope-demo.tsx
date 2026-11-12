@@ -70,7 +70,7 @@ export function DonutScopeDemo() {
 
         <div className={cn('demo-nested-content', styles.nested)}>
           <p className={styles.caption}>
-            .nested-content内の画像（除外される）
+            .nested-content内の画像（@scopeがONなら除外）
           </p>
           <div className={styles.nestedImages}>
             <img
