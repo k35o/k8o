@@ -63,8 +63,6 @@ createServer((req, res) => {
 
 いつ送るかはブラウザに委ねられていて、配信も保証されません。Firefoxは数秒のうちに複数のレポートを1つの配列にまとめて送り、Safariは違反のたびに1件ずつすぐ送ります。
 
-送信形式の全体像は[Reporting APIでCSP違反などのレポートをサーバーに集める](/blog/reporting)を参照してください。
-
 ## securitypolicyviolationイベント
 
 JavaScriptからCSP違反を検知するには、`securitypolicyviolation`イベントを使います。サーバー側のエンドポイントを持たない場合や、違反発生時にクライアント側で何かしらの処理を行いたい場合に便利です。
@@ -98,7 +96,7 @@ document.addEventListener('securitypolicyviolation', (event) => {
 
 ## Report-Onlyモードによる段階的な導入
 
-新しいCSPを本番に投入する際、いきなり強制モードで動かすと、想定外の場所でリソースの読み込みやスクリプトの実行が止まってしまう恐れがあります。`Content-Security-Policy-Report-Only`ヘッダーを使うと、ポリシーを強制せずにレポートだけ収集できます。
+`Content-Security-Policy-Report-Only`ヘッダーを使うと、ポリシーを強制せずにレポートだけ収集できます。
 
 ```http
 Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports"
