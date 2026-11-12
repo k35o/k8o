@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-Invoker Commands APIは、`<button>`に`commandfor`属性と`command`属性を書くだけで、ほかの要素を操作できるAPIです。`<dialog>`をモーダルで開く・閉じる、ポップオーバーを開閉するといった操作を、JavaScriptなしで実行できます。
+Invoker Commands APIは、`<button>`に`commandfor`属性と`command`属性を書くだけで、ほかの要素を操作できるAPIです。`<dialog>`をモーダルで開く・閉じる、ポップオーバーを開閉するといった操作を、JavaScriptなしで実行できます。Safari 26.2が対応して、Baseline 2025に入りました。
 
 ポップオーバーの開閉だけなら、これまでの`popovertarget`属性で足ります。一方で、Dialogをモーダルで開くには、JavaScriptで`<dialog>`要素の`showModal()`メソッドを呼び出す必要がありました。
 
@@ -23,7 +23,7 @@ openButton.addEventListener('click', () => {
 });
 ```
 
-Baseline 2025で揃ったInvoker Commands APIを使えば、これをHTMLの属性だけで書けます。
+Invoker Commands APIを使えば、これをHTMLの属性だけで書けます。
 
 ```html
 <button commandfor="my-dialog" command="show-modal">開く</button>
@@ -54,9 +54,9 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 
 <PlaygroundEmbed demo="Dialogの操作" headingLevel="h5" sectionId="invoker-commands" />
 
-組み込みのコマンドでも、操作の前に`commandfor`で指定した要素へ`command`イベントが届きます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`event.command`は`show-modal`、`event.source`は押したボタンで、`preventDefault()`を呼ぶとDialogは開きませんでした。`close`のボタンに`value`属性を書くと、その値が閉じたあとの`returnValue`になります。
+組み込みのコマンドでも、操作の前に`commandfor`で指定した要素へ`command`イベントが届きます。`event.command`は`show-modal`、`event.source`は押したボタンで、`preventDefault()`を呼ぶとDialogは開きません。`close`のボタンに`value`属性を書くと、その値が閉じたあとの`returnValue`になります。
 
-`<form>`の中に置くボタンには`type="button"`を書きます。3つのブラウザのどれでも、`type`を書かずに`commandfor`と`command`を付けたボタンは、押してもフォームを送信せず、コマンドも実行しませんでした。`type="submit"`ではフォームを送信するだけで、コマンドは実行されません。`<form method="dialog">`の中のキャンセルボタンも同じです。
+`<form>`の中に置くボタンには`type="button"`を書きます。`type`を書かずに`commandfor`と`command`を付けたボタンは、押してもフォームを送信せず、コマンドも実行しません。`type="submit"`ではフォームを送信するだけで、コマンドは実行されません。`<form method="dialog">`の中のキャンセルボタンも同じです。
 
 ```html
 <dialog id="edit-dialog">
@@ -121,7 +121,7 @@ image.addEventListener('command', (event) => {
 });
 ```
 
-`command`に応じた自由な動作を実装できます。`--`で始まらない名前は、組み込みのコマンドでなければ無視され、`command`イベントも発火しません。Chrome 156、Safari 27.2、Firefox 159のどれでも、`command="zoom-in"`のボタンを押すと`command`イベントは届かず、ボタンの`command`プロパティは空文字列を返しました。
+`command`に応じた自由な動作を実装できます。`--`で始まらない名前は、組み込みのコマンドでなければ無視され、`command`イベントも発火しません。`command="zoom-in"`のボタンを押すと`command`イベントは届かず、ボタンの`command`プロパティは空文字列を返します。
 
 <PlaygroundEmbed demo="カスタムコマンド" headingLevel="h4" sectionId="invoker-commands" />
 
