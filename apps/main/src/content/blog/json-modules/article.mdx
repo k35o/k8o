@@ -19,20 +19,21 @@ JSONモジュールは、`import`に`with { type: 'json' }`を付けて、JSON�
 
 ## Import Attributesの書き方
 
-```json title="data.json"
-{ "name": "k8o", "tags": ["css", "js"] }
-```
-
 ```js title="main.mjs"
 // [!og]
 import data from './data.json' with { type: 'json' };
+console.log(data); // { name: 'k8o', tags: [ 'css', 'js' ] }
 console.log(data.name); // k8o
 
 const { default: sameData } = await import('./data.json', { with: { type: 'json' } });
 console.log(sameData === data); // true
 ```
 
-Node.jsで動かすと、`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。2回目に読み込んでも、最初に読んだのと同じオブジェクトが返ります。
+```json title="data.json"
+{ "name": "k8o", "tags": ["css", "js"] }
+```
+
+Node.jsで動かすと、コメントのとおりに出ます。`data`は、data.jsonの中身をそのまま持つオブジェクトです。動的な`import()`では、第2引数の`with`に同じ属性を書きます。2回目に読み込んでも、最初に読んだのと同じオブジェクトが返ります。
 
 `with { type: 'json' }`を外すと、ブラウザでもNode.jsでも読み込みは失敗します。Node.jsは`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーを出します。ブラウザはJavaScriptのモジュールとして読み込もうとするので、Chromeのコンソールには`Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/json"`と出ます。
 
