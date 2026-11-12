@@ -17,10 +17,10 @@ Reporting APIは、CSP違反のようにブラウザが検知した問題を、�
 
 JavaScriptの例外なら、`window.onerror`で拾って`fetch`で送れば足ります。CSPの違反は、ブラウザが検知してもページの例外にならないので、Reporting APIで受け取ります。ユーザーのブラウザで起きた、開発環境では気づきにくい問題を集められます。
 
-レポートの収集には2つのアプローチがあります。
+レポートを受け取る方法は2つあります。
 
-- `Reporting-Endpoints`ヘッダー: レポートをサーバーのエンドポイントに自動送信する
-- `ReportingObserver`: JavaScriptでレポートをクライアントサイドで検知する
+- `Reporting-Endpoints`ヘッダー：サーバーのエンドポイントに、ブラウザが自動で送る
+- `ReportingObserver`：ページのJavaScriptで受け取る
 
 次のコードは、両方を使う例です。ページは別のオリジンの画像を読もうとし、CSPの`img-src 'self'`に違反します。
 
@@ -78,7 +78,7 @@ Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 
 ### レポートの送信形式
 
-ブラウザはレポートをJSON形式でエンドポイントにPOSTします。`Content-Type`は`application/reports+json`で、bodyはレポートの配列です。
+ブラウザはレポートをJSONでエンドポイントにPOSTします。`Content-Type`は`application/reports+json`で、bodyはレポートの配列です。
 
 ```json
 [
@@ -104,28 +104,26 @@ Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 ]
 ```
 
-`age`フィールドはレポート生成からの経過ミリ秒数です。絶対時刻を含めるとブラウザの内部時計のズレからユーザーを特定するフィンガープリントに悪用される恐れがあるため、相対時間が使われています。
+`age`は、レポートを作ってからの経過ミリ秒です。絶対時刻を入れると、ブラウザの時計のずれからユーザーを見分けるフィンガープリントに使われる恐れがあるので、相対的な時間になっています。
 
-上の`server.mjs`で試すと、Firefoxはこの形の配列を送ります。Safariは`Content-Type`が`application/csp-report`で、`type`・`url`・`body`だけを持つオブジェクトを1件ずつ送り、`age`と`user_agent`はありません。受け取るサーバーは両方の形を扱えるようにしておきます。
+上の`server.mjs`で試すと、Firefoxはこの形の配列を送ります。Safariは`Content-Type`が`application/csp-report`で、`type`と`url`、`body`だけを持つオブジェクトを1件ずつ送り、`age`と`user_agent`はありません。受け取るサーバーは、両方の形を扱えるようにしておきます。
 
-いつ送るかはブラウザに委ねられていて、配信は保証されません。Firefoxは数秒のうちに複数のレポートを1つの配列にまとめて送り、Safariは違反のたびにすぐ送ります。
+いつ送るかはブラウザに任されていて、届くことも保証されません。Firefoxは数秒のうちに複数のレポートを1つの配列にまとめて送り、Safariは違反のたびにすぐ送ります。
 
 ### Report-Onlyモード
 
-セキュリティヘッダーには、ポリシーを強制せずにレポートのみ収集するReport-Onlyモードがあります。
+`Content-Security-Policy-Report-Only`ヘッダーを使うと、ポリシーを強制せずにレポートだけを集められます。
 
 ```http
 Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports"
 Content-Security-Policy-Report-Only: default-src 'self'; report-to csp-endpoint
 ```
 
-Report-Onlyモードで送信されるレポートの`disposition`フィールドは`"report"`になります（通常のモードは`"enforce"`になります）。
-
-新しいポリシーを導入する際は、まずReport-Onlyモードで違反箇所を可視化してから強制モードに切り替えると安全です。
+Report-Onlyで送られるレポートの`disposition`は`"report"`になり、強制しているときの`"enforce"`と見分けられます。新しいポリシーを入れるときは、まずReport-Onlyで違反を洗い出してから強制に切り替えます。
 
 ## ReportingObserver
 
-`ReportingObserver`はJavaScript上でレポートを検知するAPIです。サーバーへの送信が不要な場合や、クライアントサイドでレポートに基づいた処理を行いたい場合に便利です。
+`ReportingObserver`は、ページのJavaScriptでレポートを受け取るAPIです。サーバーに送らなくてよいときや、レポートに応じてページで何かしたいときに使います。
 
 ```js
 // [!og]
@@ -140,19 +138,11 @@ const observer = new ReportingObserver((reports) => {
 observer.observe();
 ```
 
-`ReportingObserver`がCSPの違反を受け取るかは、ブラウザで違いました。`report-to`を書いたCSPの違反は、どのブラウザでも届きます。`report-to`の無いCSP（`<meta>`で書いたものを含む）の違反は、Chromeにだけ届きます。ページ内で受け取るだけのときも、ヘッダーのCSPに`report-to`を書いておきます。
+`ReportingObserver`がCSPの違反を受け取るかは、ブラウザで違います。`report-to`を書いたCSPの違反は、どのブラウザでも届きます。`report-to`の無いCSP（`<meta>`で書いたものを含む）の違反は、Chromeにだけ届きます。ページの中で受け取るだけのときも、ヘッダーのCSPに`report-to`を書いておきます。
 
 ### コンストラクタ
 
-`ReportingObserver`のコンストラクタは第1引数にコールバック関数、第2引数にオプションを受け取ります。
-
-```js
-new ReportingObserver(callback, options);
-```
-
-コールバック関数にはレポートの配列と`ReportingObserver`インスタンス自身が渡されます。
-
-オプションには`types`と`buffered`を指定できます。
+`ReportingObserver`のコンストラクタは、第1引数にコールバック関数、第2引数にオプションを受け取ります。コールバック関数には、レポートの配列と`ReportingObserver`自身が渡されます。
 
 ```js
 const observer = new ReportingObserver(
@@ -160,49 +150,35 @@ const observer = new ReportingObserver(
     // レポートの処理
   },
   {
-    // 収集するレポートの種類を絞り込む
+    // 受け取るレポートの種類を絞り込む
     types: ['csp-violation'],
-    // observe()呼び出し前に生成されたレポートも含める
+    // observe()を呼ぶ前にできたレポートも受け取る
     buffered: true,
   },
 );
 ```
 
-`types`を指定しない場合は、すべての種類のレポートが収集されます。`buffered`を`true`にすると、`observe()`の呼び出し前にバッファされたレポートも取得でき、ページ読み込み時に発生したレポートを後から確認できます。
+`types`を指定しないと、すべての種類のレポートを受け取ります。`buffered`を`true`にすると、`observe()`を呼ぶ前にたまっていたレポートも受け取れるので、ページを読み込んだときに起きた違反も後から確かめられます。
 
 ### メソッド
 
 `ReportingObserver`には3つのメソッドがあります。
 
-`observe()`でレポートの収集を開始します。
-
 ```js
-observer.observe();
-```
-
-`takeRecords()`で収集済みのレポートを配列として取得し、キューを空にします。
-
-```js
-const records = observer.takeRecords();
-```
-
-`disconnect()`でレポートの収集を停止します。
-
-```js
-observer.disconnect();
+observer.observe(); // 受け取りを始める
+const records = observer.takeRecords(); // たまっているレポートを配列で取り出し、キューを空にする
+observer.disconnect(); // 受け取りをやめる
 ```
 
 ### Reportオブジェクト
 
-コールバックに渡されるレポートは以下のプロパティを持ちます。
+コールバックに渡されるレポートは、次のプロパティを持ちます。
 
-- `type`: レポートの種類（`"csp-violation"`など）
-- `url`: レポートが生成されたドキュメントのURL
-- `body`: レポートの種類に応じた詳細情報（`ReportBody | null`）
+- `type`：レポートの種類（`"csp-violation"`など）
+- `url`：レポートが作られたドキュメントのURL
+- `body`：レポートの種類ごとの詳細（`ReportBody | null`）
 
-`body`の内容はレポートの種類によって異なります。
-
-CSP違反レポート（`type: "csp-violation"`）の場合は以下のプロパティを持ちます。
+CSPの違反のレポート（`type: "csp-violation"`）の`body`は、次のプロパティを持ちます。
 
 ```js
 report.body.blockedURL; // ブロックされたリソースのURL
@@ -220,6 +196,4 @@ report.body.statusCode; // HTTPステータスコード
 
 ## おわりに
 
-Reporting APIは、ブラウザが検知する問題を体系的に収集する仕組みを提供します。`Reporting-Endpoints`ヘッダーによるサーバーへの自動送信と`ReportingObserver`によるクライアントサイドでの検知を組み合わせることで、CSP違反のような問題を可視化できます。
-
-まずはReport-Onlyモードで既存のセキュリティポリシーの違反状況を把握するところから始めてみましょう。
+`Reporting-Endpoints`ヘッダーとCSPの`report-to`を書けば、ユーザーのブラウザで起きたCSPの違反をサーバーに集められます。ページの中で受け取るときは`ReportingObserver`を使い、ヘッダーのCSPにも`report-to`を書いておきます。
