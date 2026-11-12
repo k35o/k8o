@@ -15,7 +15,7 @@ featureIds:
 
 `requestClose`メソッドは、`<dialog>`要素を閉じる前に`cancel`イベントを発火させるメソッドです。`cancel`イベントで`preventDefault`メソッドを呼ぶと、閉じるのを止められます。Firefox 139が対応して、Baseline 2025に入りました。
 
-閉じるだけなら、`close`メソッドや`<form method="dialog">`の送信で足ります。ただ、`close`メソッドは`cancel`イベントを出さずにすぐ閉じるので、入力中なら閉じないといった確認を挟めません。`Escape`キーで閉じるときと同じく`cancel`イベントを経て閉じるには、`requestClose`メソッドを使います。
+閉じるだけなら、`close`メソッドや`<form method="dialog">`の送信で足ります。ただ、`close`メソッドは`cancel`イベントを出さずにすぐ閉じるので、入力中なら閉じないといった確認を挟めません。
 
 ```html
 <dialog id="dialog">
@@ -41,20 +41,13 @@ featureIds:
 
 ## HTMLDialogElement.requestClose
 
-`HTMLDialogElement.close`メソッドは`<dialog>`要素を閉じます。
-それに対し、`HTMLDialogElement.requestClose`メソッドは`<dialog>`要素を閉じるように要求します。
+`cancel`イベントは`requestClose`メソッドの中で発火します。止めなければ、呼び出しから戻った時点でダイアログは閉じていて、`close`イベントはその後に届きます。
 
-要求と書いたのは、即座にダイアログを閉じるのではなく、`cancel`イベントを介して`close`イベントを発火させるからです（既存の`close`メソッドは`close`イベントを呼ぶだけです）。`cancel`イベントは`requestClose`メソッドの中で発火し、止めなければ呼び出しから戻った時点でダイアログは閉じています。`close`イベントはその後に届きます。
-
-`<dialog>`要素を開いた状態で`Escape`キーを押した時も、`requestClose`メソッドを実行した時と同じように`cancel`イベントを経て閉じます。Invoker Commands APIの`command="request-close"`を付けたボタンからも呼べます。このボタンを押すと`cancel`イベントを経て閉じ、ボタンの`value`属性が`returnValue`になります。
-
-`cancel`イベントを`close`イベントに挟むことで、ダイアログを閉じる前に何らかの処理を行うことができます。
-
-たとえば、`cancel`イベント中で`preventDefault`メソッドを呼ぶことで、ダイアログを閉じるのをキャンセルすることも可能です。
+`<dialog>`要素を開いた状態で`Escape`キーを押したときも、`requestClose`メソッドを呼んだときと同じく`cancel`イベントを経て閉じます。Invoker Commands APIの`command="request-close"`を付けたボタンからも呼べます。このボタンを押すと`cancel`イベントを経て閉じ、ボタンの`value`属性が`returnValue`になります。
 
 ### 使用例
 
-下の例は、ダイアログ内のフォームに入力中のテキストがあれば、閉じるボタンや`Escape`キーでダイアログを閉じられないように実装しています。
+次のデモでは、名前の入力欄に文字があるあいだ、閉じるボタンでも`Escape`キーでもダイアログを閉じられません。
 
 <PlaygroundEmbed
   demo="ダイアログの閉じる動作検知"
@@ -62,14 +55,13 @@ featureIds:
   sectionId="requestclose"
 />
 
-名前を入れて閉じるを押すと、ログにダイアログがキャンセルされましたと出て、ダイアログは開いたままです。名前を消してから押すと、キャンセルされましたと閉じられましたの両方が出て閉じます。
+名前を入れたまま閉じるを押すと、ログには`cancel`イベントの1行だけが増え、ダイアログは開いたままです。名前を消してから押すと、`cancel`イベントと`close`イベントの2行が増えて閉じます。
 
 `Escape`キーで閉じるときは、いつでも止められるわけではありません。Chromeでは、名前を入れたまま`Escape`キーを押すと、1回目は止まりますが、続けて押した2回目には`cancelable`が`false`の`cancel`イベントが届いて閉じます。途中で文字を打ち足しても、2回目で閉じます。ページが`Escape`キーで閉じるのを止め続けると、ユーザーがダイアログから抜け出せなくなるためです。閉じるボタンから呼んだ`requestClose`メソッドの`cancel`イベントは、何度押しても止められます。
 
 ### returnValue
 
-`close`メソッド同様に、`requestClose`メソッドの引数に文字列を渡せます。
-`<dialog>`要素のプロパティ`returnValue`を更新します。
+`close`メソッドと同じく、`requestClose`メソッドにも文字列を渡せます。渡した文字列は、閉じたあとの`returnValue`になります。
 
 ```js
 // [!og]
