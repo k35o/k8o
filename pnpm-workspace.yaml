@@ -47,7 +47,7 @@ catalog:
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.2
-  vite: 8.3.5
+  vite: 8.3.6
   vitest: 5.1.0
   wrangler: 4.157.0
   zod: 4.6.7
