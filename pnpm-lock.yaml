@@ -345,8 +345,8 @@ importers:
         specifier: 4.0.167
         version: 4.0.167(react@19.3.1)(zod@4.6.7)
       '@json-render/core':
-        specifier: 0.21.4
-        version: 0.21.4(zod@4.6.7)
+        specifier: 0.22.0
+        version: 0.22.0(zod@4.6.7)
       '@json-render/react':
         specifier: 0.22.0
         version: 0.22.0(react@19.3.1)(zod@4.6.7)
@@ -355,7 +355,7 @@ importers:
         version: 2.3.1(typescript@7.0.2)
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 2.3.1(@json-render/core@0.21.4(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@2.3.1(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.160(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+        version: 2.3.1(@json-render/core@0.22.0(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@2.3.1(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.160(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@repo/ai-database':
         specifier: workspace:*
         version: link:../../packages/ai-database
@@ -7075,6 +7075,7 @@ snapshots:
   '@json-render/core@0.21.4(zod@4.6.7)':
     dependencies:
       zod: 4.6.7
+    optional: true
 
   '@json-render/core@0.22.0(zod@4.6.7)':
     dependencies:
@@ -7172,7 +7173,7 @@ snapshots:
       typescript: 7.0.2
       zod: 4.6.7
 
-  '@k8ordo/ui@2.3.1(@json-render/core@0.21.4(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@2.3.1(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.160(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@k8ordo/ui@2.3.1(@json-render/core@0.22.0(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@2.3.1(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.160(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@k8ordo/i18n': 2.3.1(typescript@7.0.2)
       clsx: 2.1.1
@@ -7182,7 +7183,7 @@ snapshots:
       server-only: 0.0.1
       shiki: 4.5.0
     optionalDependencies:
-      '@json-render/core': 0.21.4(zod@4.6.7)
+      '@json-render/core': 0.22.0(zod@4.6.7)
       '@json-render/react': 0.22.0(react@19.3.1)(zod@4.6.7)
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
