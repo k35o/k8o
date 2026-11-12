@@ -95,21 +95,27 @@ export function DonutScopeDemo() {
         </div>
       </div>
 
-      <pre className={styles.code}>
-        <code>
-          {showDonutScope
-            ? `@scope (.article) to (.nested-content) {
+      {/* 行数の違う2つのコードを同じマスに重ね、切り替えてもデモの高さを変えない */}
+      <div className={styles.codes}>
+        <pre className={styles.code} data-active={showDonutScope}>
+          <code>
+            {`@scope (.article) to (.nested-content) {
   img {
     border: 3px solid var(--cyan-500);
     border-radius: var(--radius-md);
   }
-}`
-            : `.article img {
+}`}
+          </code>
+        </pre>
+        <pre className={styles.code} data-active={!showDonutScope}>
+          <code>
+            {`.article img {
   border: 3px solid var(--cyan-500);
   border-radius: var(--radius-md);
 }`}
-        </code>
-      </pre>
+          </code>
+        </pre>
+      </div>
     </div>
   );
 }

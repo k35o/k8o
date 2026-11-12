@@ -84,16 +84,21 @@ export function ScopeProximityDemo() {
         </li>
       </ul>
 
-      <pre className={styles.code}>
-        <code>
-          {showProximity
-            ? `@scope (.info-box) {
+      {/* 行数の違う2つのコードを同じマスに重ね、切り替えてもデモの高さを変えない */}
+      <div className={styles.codes}>
+        <pre className={styles.code} data-active={showProximity}>
+          <code>
+            {`@scope (.info-box) {
   .message { color: var(--color-fg-info); background: var(--color-bg-info); }
 }
 @scope (.warning-box) {
   .message { color: var(--color-fg-warning); background: var(--color-bg-warning); }
-}`
-            : `.info-box .message {
+}`}
+          </code>
+        </pre>
+        <pre className={styles.code} data-active={!showProximity}>
+          <code>
+            {`.info-box .message {
   color: var(--color-fg-info);
   background: var(--color-bg-info);
 }
@@ -101,8 +106,9 @@ export function ScopeProximityDemo() {
   color: var(--color-fg-warning);
   background: var(--color-bg-warning);
 }`}
-        </code>
-      </pre>
+          </code>
+        </pre>
+      </div>
     </div>
   );
 }
