@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-CSP violation reportsは、Content Security Policy（CSP）に違反したリソースの読み込みやスクリプトの実行を、ブラウザがレポートとして知らせる仕組みです。`report-to`ディレクティブでサーバーに送らせるか、`securitypolicyviolation`イベントでページ内から受け取ります。
+CSP violation reportsは、Content Security Policy（CSP）に違反したリソースの読み込みやスクリプトの実行を、ブラウザがレポートとして知らせる仕組みです。`report-to`ディレクティブでサーバーに送らせるか、`securitypolicyviolation`イベントでページ内から受け取ります。Firefox 149が対応して、Baseline 2026に入りました。
 
 自分のブラウザで違反を確かめるだけなら、DevToolsのコンソールに出るエラーで足ります。ユーザーのブラウザで起きた違反を集めるには、この仕組みが要ります。いきなり厳しいポリシーを本番に入れると、サードパーティのスクリプトや古いコードが思わぬ場所で止まることがあります。違反を集めれば、ポリシーの過不足を本番の違反から確かめながら締めていけます。
 
@@ -54,14 +54,14 @@ createServer((req, res) => {
 }).listen(3000);
 ```
 
-`http://localhost:3000`を開くと画像は表示されず、ターミナルに`effectiveDirective`が`img-src`のレポートが出ます。Firefox 159とSafari 27.2で開くと、届いたものの形が違いました。
+`http://localhost:3000`を開くと画像は表示されず、ターミナルに`effectiveDirective`が`img-src`のレポートが出ます。FirefoxとSafariでは、届くものの形が違います。
 
-- Firefox 159: `Content-Type`は`application/reports+json`で、`age`・`type`・`url`・`user_agent`・`body`を持つレポートの配列
-- Safari 27.2: `Content-Type`は`application/csp-report`で、`type`・`url`・`body`だけを持つレポートが1件ずつ。`blockedURL`は`https://example.com:443/a.png`のようにポート番号が付く
+- Firefox: `Content-Type`は`application/reports+json`で、`age`・`type`・`url`・`user_agent`・`body`を持つレポートの配列
+- Safari: `Content-Type`は`application/csp-report`で、`type`・`url`・`body`だけを持つレポートが1件ずつ。`blockedURL`は`https://example.com:443/a.png`のようにポート番号が付く
 
 どちらも`type`は`csp-violation`で、`body`には違反したリソースのURLやディレクティブ、ポリシー文字列などが入ります。受け取るサーバーは、配列と1件のオブジェクトの両方を扱えるようにしておきます。
 
-いつ送るかはブラウザに委ねられていて、配信も保証されません。手元で試すと、Firefox 159は数秒のうちに複数のレポートを1つの配列にまとめて送り、Safari 27.2は違反のたびに1件ずつすぐ送りました。
+いつ送るかはブラウザに委ねられていて、配信も保証されません。Firefoxは数秒のうちに複数のレポートを1つの配列にまとめて送り、Safariは違反のたびに1件ずつすぐ送ります。
 
 送信形式の全体像は[Reporting APIでCSP違反などのレポートをサーバーに集める](/blog/reporting)を参照してください。
 
@@ -105,7 +105,7 @@ Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports"
 Content-Security-Policy-Report-Only: default-src 'self'; report-to csp-endpoint
 ```
 
-Report-Onlyモードのレポートは`disposition`が`"report"`になります。Chrome 156、Safari 27.2、Firefox 159のどれでも、Report-Onlyで違反した`eval()`はそのまま実行され、`securitypolicyviolation`イベントの`disposition`は`"report"`でした。強制モードのレポートと混在させず、ポリシーの開発段階で違反箇所を可視化するために使います。
+Report-Onlyモードのレポートは`disposition`が`"report"`になります。Report-Onlyで違反した`eval()`はそのまま実行され、`securitypolicyviolation`イベントの`disposition`は`"report"`になります。強制モードのレポートと混在させず、ポリシーの開発段階で違反箇所を可視化するために使います。
 
 実運用では、以下の流れで段階的にポリシーを厳しくしていくのが安全です。
 
