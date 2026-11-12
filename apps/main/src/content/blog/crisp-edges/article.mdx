@@ -7,6 +7,8 @@ featureIds:
   - crisp-edges
 ---
 
+import { CheckerboardComparison } from './_components/checkerboard-comparison';
+
 # image-renderingでドット絵をぼかさずに拡大する
 
 <BrowserSupportStatus featureId="crisp-edges" />
@@ -30,7 +32,11 @@ featureIds:
 - `crisp-edges`は色を混ぜず境界をぼかさないアルゴリズムを使うとだけ規定されていて、具体的な手法はUAに任されている
 - `pixelated`はまず最近傍法で次に大きい整数倍まで拡大し、そのあと補間で目的サイズに仕上げる
 
-仕様の上では、画像のサイズが整数倍ぴったりでないときに`pixelated`の方が境界がやや滑らかになり得ます。ただしChrome 156とFirefox 159で4×4の市松模様を102px（25.5倍）に拡大すると、`crisp-edges`と`pixelated`は1ピクセルも違わず、どちらも白と黒の2色だけで描かれました（`auto`は61色）。
+仕様の上では、整数倍でない大きさに拡大したとき、`pixelated`だけが境界を少し補間します。ただ、ブラウザはどちらの値でも色を混ぜずに描くので、見た目はほとんど変わりません。次の3つは、4×4の白黒の市松模様を102pxに拡大したものです。
+
+<CheckerboardComparison />
+
+`auto`は境界がぼやけて灰色が混ざり、`crisp-edges`と`pixelated`は白と黒の2色だけで描かれます。
 
 <PlaygroundEmbed demo="image-rendering値の比較" headingLevel="h4" sectionId="crisp-edges" />
 
