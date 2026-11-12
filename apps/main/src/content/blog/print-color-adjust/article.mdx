@@ -15,28 +15,30 @@ featureIds:
 
 `print-color-adjust`は、印刷するときにブラウザが色を変えてよいかを指定するCSSプロパティです。`exact`を指定すると、印刷で省かれる背景色や、変えられる文字色をそのまま印刷できます。Chrome 136が接頭辞なしの名前に対応して、Baseline 2025に入りました。
 
-ブラウザは印刷するとき、インクを節約し文字を読みやすくするために、背景色を省いたり文字色を変えたりします。ページ全体の背景を印刷するかは、ユーザーが印刷の設定（Chromeなら背景のグラフィック）で選べます。印刷のときだけ別の色にするなら、`@media print`で足ります。ページの側から、特定の要素の色を変えずに印刷するよう指示できるのは`print-color-adjust: exact`だけです。
+ブラウザは印刷するとき、インクを節約し文字を読みやすくするために、背景色を省いたり文字色を変えたりします。ページ全体の背景を印刷するかは、ユーザーが印刷の設定（Chromeなら背景のグラフィック）で選べます。印刷のときだけ別の色にするなら、`@media print`で足ります。しかし、ページの側から、特定の要素の色を変えずに印刷するよう指示できるのは`print-color-adjust: exact`だけです。
+
+紺の背景に白い文字のdivを2つ用意し、下のdivにだけ`print-color-adjust: exact`を指定します。
 
 ```html
-<div style="background-color: navy; color: white;">economy（初期値）</div>
+<div style="background-color: navy; color: white;">指定なし</div>
 <div style="background-color: navy; color: white; print-color-adjust: exact;">exact</div>
 ```
 
 Chromeで背景のグラフィックを切って印刷プレビューを開くと、上のdivは背景が消えて白い文字が灰色になり、下のdivは紺の背景に白い文字のまま印刷されます。
 
-## print-color-adjustプロパティの基本的な仕様
+## print-color-adjustプロパティ
 
-値は`economy`（初期値）と`exact`の2つがあります。`print-color-adjust`プロパティの値は親要素から子要素へ継承されます。
+値は`economy`（初期値）と`exact`の2つで、親要素から子要素へ継承されます。
 
 接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。ChromeとSafariは`-webkit-print-color-adjust`も受け付けますが、Firefoxは受け付けません。`-moz-print-color-adjust`はどれも受け付けず、古い名前の`color-adjust`はSafariとFirefoxだけが受け付けます。接頭辞なしの`print-color-adjust`はどれも受け付けるので、今はこれだけを書けば足ります。
 
-### economy（初期値）
+### economy
 
-ユーザーエージェントが出力デバイスに応じて、スタイリングを調整することを許可します。
+`economy`は、出力する機器に合わせて、ブラウザが色やスタイルを変えることを許します。
 
 ```css
 .content {
-  print-color-adjust: economy; /* デフォルト値 */
+  print-color-adjust: economy; /* 初期値 */
 }
 ```
 
@@ -44,7 +46,7 @@ Chromeで背景のグラフィックを切ってPDFに印刷すると、`economy
 
 ### exact
 
-色とスタイリングをユーザーから指示があった時を除いて変更しないように指示します。
+`exact`は、ユーザーが指示したとき以外は、色やスタイルを変えないようブラウザに求めます。
 
 ```css
 .preserve-design {
@@ -52,13 +54,13 @@ Chromeで背景のグラフィックを切ってPDFに印刷すると、`economy
 }
 ```
 
-各ブラウザがユーザーに提供する設定が優先されることには注意が必要です。
+ハイコントラストのような、ブラウザがユーザーに用意している設定は、`exact`より優先されます。
 
-## 実用的な使用例
+## 使う場面
 
-### 1. W3Cの例：地図サイトでの方向案内
+### 道順の地図
 
-[仕様書](https://drafts.csswg.org/css-color-adjust/#print-color-adjust)では、`exact`が有効な例として道案内中の地図を印刷する状況を紹介しています。
+[仕様](https://drafts.csswg.org/css-color-adjust/#print-color-adjust)は、`exact`が要る例として、道順の地図を印刷する場面を挙げています。
 
 ```css
 .directions {
@@ -74,25 +76,25 @@ Chromeで背景のグラフィックを切ってPDFに印刷すると、`economy
 }
 ```
 
-上記のように、経路を白とライトグレーを交互に表示することで表現している場合、デフォルトでは白だけで印刷されてしまうため道順が読みにくくなります。
+道順の手順を白とライトグレーの背景で交互に分けていると、`economy`では背景が省かれてすべて白で印刷され、手順の区切りが分かりにくくなります。
 
-### 2. ブランドカラーの保持
+### ブランドの色
 
-そのサイト、サービス、企業の代表的な色を印刷時にも保持したい場合です（`svg`などはデフォルトでも保持されることが多いです）。
+ロゴやボタンを、サイトや会社を表す色で印刷したいときです。インラインのSVGの塗りは`economy`のままでも印刷されるので、背景色で塗った要素に指定します。
 
 ```css
 /* [!og] */
 .logo,
 .brand-element {
-  background-color: var(--color-primary); /* ブランドカラー */
+  background-color: var(--color-primary); /* ブランドの色 */
   color: white;
   print-color-adjust: exact;
 }
 ```
 
-### 3. データ可視化での色分け保持
+### グラフの色分け
 
-チャートやグラフで色による区別が重要な場合です。同じ色に印刷されてしまうと、情報が失われてしまいます。
+グラフの系列を背景色で塗り分けているときです。同じ色で印刷されると、どの系列か分からなくなります。
 
 ```css
 .chart {
@@ -100,23 +102,18 @@ Chromeで背景のグラフィックを切ってPDFに印刷すると、`economy
 }
 
 .chart .series-1 {
-  background-color: var(--color-blue-700); /* 青色 */
+  background-color: var(--color-blue-700); /* 青 */
 }
 .chart .series-2 {
-  background-color: var(--color-red-700); /* 赤色 */
+  background-color: var(--color-red-700); /* 赤 */
 }
 .chart .series-3 {
-  background-color: var(--color-green-700); /* 緑色 */
+  background-color: var(--color-green-700); /* 緑 */
 }
 ```
 
-このケースに該当して`print-color-adjust`を利用する場合は、先に色以外の方法で区別できるかを検討しましょう。
-
-[W3Cで紹介されるWebアクセシビリティのテクニックG111](https://www.w3.org/TR/WCAG20-TECHS/G111.html)で詳しく紹介されています。
+このように色で区別するときも、先に模様やラベルのような色以外の方法で区別できるかを考えます。WCAGの達成方法の[G111](https://www.w3.org/TR/WCAG20-TECHS/G111.html)が、色と模様を合わせて使う方法を説明しています。
 
 ## おわりに
 
-`print-color-adjust`プロパティは、印刷時の色調整に対してユーザーエージェントにヒントを提供する有用な機能です。
-
-適切に使用することで、印刷時でもデザインの意図を保ちながら、ユーザーフレンドリーな印刷体験を提供できます。
-ただし、これはあくまでヒントであり、最終的な表示はユーザーの設定とブラウザの実装に依存することに注意が必要です。
+`print-color-adjust: exact`を使うと、地図やグラフ、ブランドの色のように、印刷でも変えたくない色をそのまま印刷できます。ユーザーの設定が優先されることもあるので、色が変わっても読めるようにしておきます。
