@@ -7,8 +7,6 @@ featureIds:
   - json-modules
 ---
 
-import styles from './article.module.css';
-
 # Import AttributesでJSONをimportする
 
 <BrowserSupportStatus featureId="json-modules"></BrowserSupportStatus>
@@ -54,17 +52,6 @@ JSONと伝えた状態で、JSON以外のファイルをインポートしたと
 - 読み込めるのは`default`だけで、`import { name } from './data.json' with { type: 'json' }`は`SyntaxError`になる
 - 返るオブジェクトは凍結されておらず、書き換えると、同じJSONをインポートしたほかの場所からも書き換えた値が見える
 - 以前の書き方の`assert { type: 'json' }`は`SyntaxError`になる
-
-<iframe
-  height="300"
-  className={styles.embed}
-  title="JSON Import Attribute"
-  src="https://codepen.io/kokisakano/embed/dPPBMxz?default-tab=result"
-  loading="lazy"
-/>
-
-上記の例では、取得ボタンを押すと、入力欄の値をJSON Import Attribute付きでインポートします。
-デフォルトの入力はJSONを返すので問題なくインポートできますが、他の形式を入力するように変えるとコンソールにエラーが発生します。
 
 ## おわりに
 JSON Import Attributeを紹介しました。この機能を利用することで、ESMモジュールのインポート時に、その対象がJSONであることをランタイムに伝えられるような機能でした。
