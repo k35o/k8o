@@ -47,8 +47,6 @@ Node.js 26で動かすと`k8o`と`true`が出ます。動的な`import()`では�
 - 末尾のコンマが許可されるため編集が簡単
 - 複数行に分割するときに終わりを明確にするため
 
-Baselineに入っているモジュール形式は`json`だけです。`type: 'css'`でCSSを`CSSStyleSheet`として読み込む形式もあり、Chrome 156とFirefox 159では読み込めましたが、Safari 27.2では`Import attribute type "css" is not valid`のエラーになりました。Node.js 26.13.0も`css`には対応していません。
-
 ## JSON Import Attribute
 
 `with: { type: 'json' }`を付けて、インポートされたデータをJSONとして解釈するように伝えることができます。
