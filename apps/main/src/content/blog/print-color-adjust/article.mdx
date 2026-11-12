@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`print-color-adjust`は、印刷するときにブラウザが色を変えてよいかを指定するCSSプロパティです。`exact`を指定すると、印刷で省かれる背景色や、変えられる文字色をそのまま印刷できます。
+`print-color-adjust`は、印刷するときにブラウザが色を変えてよいかを指定するCSSプロパティです。`exact`を指定すると、印刷で省かれる背景色や、変えられる文字色をそのまま印刷できます。Chrome 136が接頭辞なしの名前に対応して、Baseline 2025に入りました。
 
 ブラウザは印刷するとき、インクを節約し文字を読みやすくするために、背景色を省いたり文字色を変えたりします。ページ全体の背景を印刷するかは、ユーザーが印刷の設定（Chromeなら背景のグラフィック）で選べます。印刷のときだけ別の色にするなら、`@media print`で足ります。ページの側から、特定の要素の色を変えずに印刷するよう指示できるのは`print-color-adjust: exact`だけです。
 
@@ -22,7 +22,7 @@ featureIds:
 <div style="background-color: navy; color: white; print-color-adjust: exact;">exact</div>
 ```
 
-印刷プレビューを開くと、Chrome 156では上のdivの背景が消えて白い文字が灰色になり、下のdivは紺の背景に白い文字のまま印刷されました（背景のグラフィックを切った状態のPDFで確認）。
+Chromeで背景のグラフィックを切って印刷プレビューを開くと、上のdivは背景が消えて白い文字が灰色になり、下のdivは紺の背景に白い文字のまま印刷されます。
 
 <PlaygroundEmbed demo="印刷時の色調整デモ" headingLevel="h4" sectionId="print-color-adjust" />
 
@@ -32,7 +32,7 @@ featureIds:
 
 値は`economy`（初期値）と`exact`の2つがあります。`print-color-adjust`プロパティの値は親要素から子要素へ継承されます。
 
-接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。Chrome 156とSafari 27.2は`-webkit-print-color-adjust`も受け付け、Firefox 159は受け付けません。`-moz-print-color-adjust`は3つのどれも受け付けず、古い名前の`color-adjust`はSafari 27.2とFirefox 159だけが受け付けました。接頭辞なしの`print-color-adjust`はどれも受け付けるので、今はこれだけを書けば足ります。Chromeが接頭辞なしに対応したのは136なので、それより前の版も対象にするなら`-webkit-print-color-adjust`を並べます。
+接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。ChromeとSafariは`-webkit-print-color-adjust`も受け付けますが、Firefoxは受け付けません。`-moz-print-color-adjust`はどれも受け付けず、古い名前の`color-adjust`はSafariとFirefoxだけが受け付けます。接頭辞なしの`print-color-adjust`はどれも受け付けるので、今はこれだけを書けば足ります。Chromeが接頭辞なしに対応したのは136なので、それより前の版も対象にするなら`-webkit-print-color-adjust`を並べます。
 
 ```css
 .preserve-design {
@@ -54,7 +54,7 @@ featureIds:
 CSSのプロパティに付与する値としては珍しい名前ですね。
 ブラウザが自動的に調整することを許可する、つまり印刷コストの削減を優先する値なので`economy`と名付けられているのでしょう。
 
-Chrome 156で背景のグラフィックを切ってPDFに印刷すると、`economy`の要素は背景色と背景画像が省かれ、白や黄色の文字は濃い色に変えられました。インラインのSVGの塗りと枠線の色は、`economy`のままでも印刷されました。
+Chromeで背景のグラフィックを切ってPDFに印刷すると、`economy`の要素は背景色と背景画像が省かれ、白や黄色の文字は濃い色に変わります。インラインのSVGの塗りと枠線の色は、`economy`のままでも印刷されます。
 
 ### exact
 
