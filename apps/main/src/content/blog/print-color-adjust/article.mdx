@@ -32,14 +32,7 @@ Chromeで背景のグラフィックを切って印刷プレビューを開く�
 
 値は`economy`（初期値）と`exact`の2つがあります。`print-color-adjust`プロパティの値は親要素から子要素へ継承されます。
 
-接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。ChromeとSafariは`-webkit-print-color-adjust`も受け付けますが、Firefoxは受け付けません。`-moz-print-color-adjust`はどれも受け付けず、古い名前の`color-adjust`はSafariとFirefoxだけが受け付けます。接頭辞なしの`print-color-adjust`はどれも受け付けるので、今はこれだけを書けば足ります。Chromeが接頭辞なしに対応したのは136なので、それより前の版も対象にするなら`-webkit-print-color-adjust`を並べます。
-
-```css
-.preserve-design {
-  -webkit-print-color-adjust: exact; /* Chrome 135以前 */
-  print-color-adjust: exact;
-}
-```
+接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。ChromeとSafariは`-webkit-print-color-adjust`も受け付けますが、Firefoxは受け付けません。`-moz-print-color-adjust`はどれも受け付けず、古い名前の`color-adjust`はSafariとFirefoxだけが受け付けます。接頭辞なしの`print-color-adjust`はどれも受け付けるので、今はこれだけを書けば足ります。
 
 ### economy（初期値）
 
