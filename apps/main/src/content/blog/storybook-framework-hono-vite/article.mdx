@@ -79,7 +79,7 @@ export const Default: StoryObj<typeof meta> = {
 };
 ```
 
-`useState`で数を持ち、押すと1増えるボタンを`Counter`にして、この設定とstoryを`storybook build`し、Chrome 156で開きました。play関数がボタンを1回押し、表示が0から1に変わります。続けて手で押すと2になり、イベントハンドラもHono JSXのランタイムで動いています。
+`useState`で数を持ち、押すと1増えるボタンを`Counter`にして、この設定とstoryを`storybook build`し、ブラウザで開きました。play関数がボタンを1回押し、表示が0から1に変わります。続けて手で押すと2になり、イベントハンドラもHono JSXのランタイムで動いています。
 
 decoratorもそのまま使えます。`Decorator`型を`storybook-framework-hono-vite`からimportし、Hono JSXで包みたい要素を返す関数を定義して、metaやpreviewの`decorators`に渡します。
 
@@ -129,9 +129,9 @@ export default defineConfig({
 });
 ```
 
-Vitest 5.0.5では、`instances`の要素に`context`を書くと型エラーになり、実行しても使われません。手元でplay関数から`matchMedia('(prefers-reduced-motion: reduce)').matches`を出すと、`instances`の`context`に書いたときは`false`、`contextOptions`に書いたときは`true`でした。
+`instances`の要素に`context`を書くと型エラーになり、実行しても使われません。play関数から`matchMedia('(prefers-reduced-motion: reduce)').matches`を出すと、`instances`の`context`に書いたときは`false`、`contextOptions`に書いたときは`true`になります。
 
-a11yの違反は、そのままではテストを落としません。Vitest 5.0.5で、名前の無いボタンだけを描くstoryを流すと通りました。違反でテストを落とすには、`.storybook/preview.ts`で`a11y.test`を`'error'`にします。
+a11yの違反は、そのままではテストを落としません。名前の無いボタンだけを描くstoryを流しても、テストは通ります。違反でテストを落とすには、`.storybook/preview.ts`で`a11y.test`を`'error'`にします。
 
 ```ts
 import type { Preview } from 'storybook-framework-hono-vite';
@@ -145,7 +145,7 @@ const preview: Preview = {
 export default preview;
 ```
 
-この設定で同じstoryを流すと、`Buttons must have discernible text (button-name)`で落ちました。
+この設定で同じstoryを流すと、`Buttons must have discernible text (button-name)`で落ちます。
 
 これで、Hono JSXで書いたコンポーネントを`@storybook/react-vite`と同じ感覚でStorybookで確認・テストできます。`useState`を含むインタラクティブな挙動もそのまま動き、interaction testとa11yチェックをVitest経由で回せます。
 
