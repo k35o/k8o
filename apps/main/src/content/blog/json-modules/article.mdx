@@ -18,8 +18,6 @@ JSONモジュールは、`import`に`with { type: 'json' }`を付けて、JSON�
 
 読むたびにサーバーから最新の内容を取り直すなら、これまでどおり`fetch()`と`response.json()`で足ります。JSONモジュールは、同じURLを何度インポートしても最初に読んだオブジェクトを返します。設定や辞書のように、コードと一緒に読み込んで`await`なしで使いたいJSONを、ブラウザでもNode.jsでも同じ`import`文で読めるのがJSONモジュールです。
 
-この記事では、機能の元となるImport Attributeの概要と、JSON Import Attributeの使い方について解説します。
-
 ## Import Attribute
 
 Import Attributeは、ESMモジュールのインポート時に、モジュールの形式に関する情報をランタイムに伝えるための属性です。
@@ -38,14 +36,6 @@ console.log(sameData === data); // true
 ```
 
 Node.jsで動かすと、`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。Node.jsでは、`with { type: 'json' }`を外すと`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーになります。
-
-`with`キーワードを使って、モジュールの形式を指定します。
-
-構文に中括弧`{}`が使われているのは、以下のような理由があります。
-
-- 多くのユーザーがオブジェクトの構文に慣れている
-- 末尾のコンマが許可されるため編集が簡単
-- 複数行に分割するときに終わりを明確にするため
 
 ## JSON Import Attribute
 
