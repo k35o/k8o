@@ -12,13 +12,12 @@ featureIds:
 <BrowserSupportStatus featureId="json-modules"></BrowserSupportStatus>
 
 ## はじめに
+
 JSONモジュールは、`import`に`with { type: 'json' }`を付けて、JSONファイルをJavaScriptのオブジェクトとして読み込む仕組みです。`with`以降をImport Attributesと呼びます。Firefox 138が対応して、Baseline 2025に入りました。
 
 読むたびにサーバーから最新の内容を取り直すなら、これまでどおり`fetch()`と`response.json()`で足ります。JSONモジュールは、同じURLを何度インポートしても最初に読んだオブジェクトを返します。設定や辞書のように、コードと一緒に読み込んで`await`なしで使いたいJSONを、ブラウザでもNode.jsでも同じ`import`文で読めるのがJSONモジュールです。
 
-## Import Attribute
-
-Import Attributeは、ESMモジュールのインポート時に、モジュールの形式に関する情報をランタイムに伝えるための属性です。
+## Import Attributesの書き方
 
 ```json title="data.json"
 { "name": "k8o", "tags": ["css", "js"] }
@@ -33,27 +32,20 @@ const { default: sameData } = await import('./data.json', { with: { type: 'json'
 console.log(sameData === data); // true
 ```
 
-Node.jsで動かすと、`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。Node.jsでは、`with { type: 'json' }`を外すと`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーになります。
+Node.jsで動かすと、`k8o`と`true`が出ます。動的な`import()`では、第2引数の`with`に同じ属性を書きます。2回目に読み込んでも、最初に読んだのと同じオブジェクトが返ります。
 
-## JSON Import Attribute
+`with { type: 'json' }`を外すと、ブラウザでもNode.jsでも読み込みは失敗します。Node.jsは`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーを出します。ブラウザはJavaScriptのモジュールとして読み込もうとするので、Chromeのコンソールには`Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/json"`と出ます。
 
-`with { type: 'json' }`を付けて、インポートされたデータをJSONとして解釈するように伝えることができます。
+読み込めるのは`default`だけで、`import { name } from './data.json' with { type: 'json' }`のように名前を指定すると`SyntaxError`になります。返るオブジェクトは凍結されていないので、書き換えると、同じJSONをインポートしたほかの場所からも書き換えた値が見えます。以前の書き方の`assert { type: 'json' }`は、今は`SyntaxError`になります。
 
-JSONと伝えた状態で、JSON以外のファイルをインポートしたときに下記のようなエラーが発生します（下の引用は、Chromeで`text/html`を返すURLをインポートしたときのコンソール）。
+## JSON以外が返ったとき
+
+`with { type: 'json' }`を付けると、ブラウザはレスポンスのMIMEタイプがJSONのものかを確かめます。Chromeで`text/html`を返すURLを読み込むと、コンソールに次のエラーが出ます。
 
 > Failed to load module script: Expected a JSON module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
 
-ブラウザは、レスポンスのMIMEタイプがJSONのものかを確かめます。`text/javascript`を返すURLを`with { type: 'json' }`で読み込むと、どのブラウザでも読み込みは失敗し、中のコードは実行されません。属性を付けずに読み込めば、返ってきたJavaScriptはモジュールとして実行されます。JSONを返すはずのURLがJavaScriptを返しても、属性があればページで動かずに済みます。
-
-逆に、属性を付けずにJSONファイルをインポートすると、JavaScriptのモジュールとして読み込もうとして失敗します。Chromeのコンソールには`Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/json"`と出ます。
-
-ほかにも、次のことはどのブラウザでもNode.jsでも同じです。
-
-- 読み込めるのは`default`だけで、`import { name } from './data.json' with { type: 'json' }`は`SyntaxError`になる
-- 返るオブジェクトは凍結されておらず、書き換えると、同じJSONをインポートしたほかの場所からも書き換えた値が見える
-- 以前の書き方の`assert { type: 'json' }`は`SyntaxError`になる
+`text/javascript`を返すURLを読み込んでも、どのブラウザでも読み込みは失敗し、中のコードは実行されません。属性を付けずに読み込めば、返ってきたJavaScriptはモジュールとして実行されます。JSONを返すはずのURLがJavaScriptを返しても、属性があればページで動かずに済みます。
 
 ## おわりに
-JSON Import Attributeを紹介しました。この機能を利用することで、ESMモジュールのインポート時に、その対象がJSONであることをランタイムに伝えられるような機能でした。
 
-JSONを読み込むときは、Import Attributeで対象がJSONであることを伝え、JavaScriptが返ってきても実行されないようにしましょう。
+設定や辞書のように取り直す必要の無いJSONは、`with { type: 'json' }`を付けた`import`で読み込めます。ブラウザでもNode.jsでも同じ書き方ができ、JSON以外が返っても実行されません。
