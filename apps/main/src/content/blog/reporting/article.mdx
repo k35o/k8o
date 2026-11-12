@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-Reporting APIは、CSP違反のようにブラウザが検知した問題を、レポートとしてサーバーに送らせたり、JavaScriptで受け取ったりする仕組みです。レポートの種類は仕様ごとに決まっていて、Baselineに入っているのはCSPの違反（`csp-violation`）のレポートです。
+Reporting APIは、CSP違反のようにブラウザが検知した問題を、レポートとしてサーバーに送らせたり、JavaScriptで受け取ったりする仕組みです。Firefox 149が対応して、Baseline 2026に入りました。レポートの種類は仕様ごとに決まっていて、Baselineに入っているのはCSPの違反（`csp-violation`）のレポートです。
 
 JavaScriptの例外なら、`window.onerror`で拾って`fetch`で送れば足ります。CSPの違反は、ブラウザが検知してもページの例外にならないので、Reporting APIで受け取ります。ユーザーのブラウザで起きた、開発環境では気づきにくい問題を集められます。
 
@@ -53,7 +53,7 @@ createServer((req, res) => {
 }).listen(3000);
 ```
 
-`http://localhost:3000`を開くと、DevToolsのコンソールに`ReportingObserver`が受け取った`csp-violation https://example.com/a.png`が出ます。Chrome 156、Safari 27.2、Firefox 159のどれでも出ました（Safari 27.2のURLは`https://example.com:443/a.png`）。Firefox 159とSafari 27.2では、数秒のうちにターミナルにも同じ違反のレポートが出ました。
+`http://localhost:3000`を開くと、DevToolsのコンソールに`ReportingObserver`が受け取った`csp-violation https://example.com/a.png`が出ます（SafariのURLは`https://example.com:443/a.png`）。FirefoxとSafariでは、数秒のうちにターミナルにも同じ違反のレポートが出ます。
 
 ## Reporting-Endpointsヘッダー
 
@@ -106,9 +106,9 @@ Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 
 `age`フィールドはレポート生成からの経過ミリ秒数です。絶対時刻を含めるとブラウザの内部時計のズレからユーザーを特定するフィンガープリントに悪用される恐れがあるため、相対時間が使われています。
 
-上の`server.mjs`で試すと、Firefox 159はこの形の配列を送りました。Safari 27.2は`Content-Type`が`application/csp-report`で、`type`・`url`・`body`だけを持つオブジェクトを1件ずつ送り、`age`と`user_agent`はありませんでした。受け取るサーバーは両方の形を扱えるようにしておきます。
+上の`server.mjs`で試すと、Firefoxはこの形の配列を送ります。Safariは`Content-Type`が`application/csp-report`で、`type`・`url`・`body`だけを持つオブジェクトを1件ずつ送り、`age`と`user_agent`はありません。受け取るサーバーは両方の形を扱えるようにしておきます。
 
-いつ送るかはブラウザに委ねられていて、配信は保証されません。Firefox 159は数秒のうちに複数のレポートを1つの配列にまとめて送り、Safari 27.2は違反のたびにすぐ送りました。
+いつ送るかはブラウザに委ねられていて、配信は保証されません。Firefoxは数秒のうちに複数のレポートを1つの配列にまとめて送り、Safariは違反のたびにすぐ送ります。
 
 ### Report-Onlyモード
 
@@ -140,7 +140,7 @@ const observer = new ReportingObserver((reports) => {
 observer.observe();
 ```
 
-`ReportingObserver`がCSPの違反を受け取るかは、ブラウザで違いました。`report-to`を書いたCSPの違反は、Chrome 156、Safari 27.2、Firefox 159のどれでも届きました。`report-to`の無いCSP（`<meta>`で書いたものを含む）の違反は、Chrome 156にだけ届きました。ページ内で受け取るだけのときも、ヘッダーのCSPに`report-to`を書いておきます。
+`ReportingObserver`がCSPの違反を受け取るかは、ブラウザで違いました。`report-to`を書いたCSPの違反は、どのブラウザでも届きます。`report-to`の無いCSP（`<meta>`で書いたものを含む）の違反は、Chromeにだけ届きます。ページ内で受け取るだけのときも、ヘッダーのCSPに`report-to`を書いておきます。
 
 ### コンストラクタ
 
