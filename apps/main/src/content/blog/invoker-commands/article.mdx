@@ -1,6 +1,6 @@
 ---
 title: 'Invoker Commands APIでモーダルをJSなしで開く'
-description: 'Invoker Commands APIは、commandfor属性とcommand属性だけで、ボタンからdialogを開く・閉じる操作を書けるAPIです。JavaScriptは要りません。popoverの開閉と独自のコマンドも説明します。'
+description: 'Invoker Commands APIは、commandfor属性とcommand属性だけで、ボタンからdialogを開いたり閉じたりする操作を書けるAPIです。JavaScriptは要りません。popoverの開閉と独自のコマンドも説明します。'
 createdAt: 2026-01-13
 updatedAt: 2026-11-09
 featureIds:
@@ -13,9 +13,9 @@ featureIds:
 
 ## はじめに
 
-Invoker Commands APIは、`<button>`に`commandfor`属性と`command`属性を書くだけで、ほかの要素を操作できるAPIです。`<dialog>`をモーダルで開く・閉じる、ポップオーバーを開閉するといった操作を、JavaScriptなしで実行できます。Safari 26.2が対応して、Baseline 2025に入りました。
+Invoker Commands APIは、`<button>`に`commandfor`属性と`command`属性を書くだけで、ほかの要素を操作できるAPIです。Dialogをモーダルで開いたり閉じたり、Popoverを開閉したりする操作を、JavaScriptなしで書けます。Safari 26.2が対応して、Baseline 2025に入りました。
 
-ポップオーバーの開閉だけなら、これまでの`popovertarget`属性で足ります。一方で、Dialogをモーダルで開くには、JavaScriptで`<dialog>`要素の`showModal()`メソッドを呼び出す必要がありました。
+Popoverの開閉だけなら、これまでの`popovertarget`属性で足ります。一方で、Dialogをモーダルで開くには、JavaScriptで`<dialog>`要素の`showModal()`メソッドを呼び出す必要がありました。
 
 ```js
 openButton.addEventListener('click', () => {
@@ -31,15 +31,18 @@ Invoker Commands APIを使えば、これをHTMLの属性だけで書けます�
 <dialog id="my-dialog">Dialogの内容</dialog>
 ```
 
-開くを押すと、`showModal()`を呼んだときと同じく、Dialogがモーダルで開きます。Popover APIの`popovertarget`属性と`popovertargetaction`属性と同じ考え方を、Dialogなどにも広げたものです。
+開くを押すと、`showModal()`を呼んだときと同じく、Dialogがモーダルで開きます。Popover APIの`popovertarget`属性と`popovertargetaction`属性の考え方を、Dialogなどにも広げたものです。
 
 ## 基本的な使い方
 
-Invoker Commands APIは`commandfor`と`command`の2つの属性で構成されます。`commandfor`は操作対象の要素の`id`を指定、`command`は実行するアクションを指定します。
+`commandfor`には操作する要素の`id`を、`command`には実行するコマンドを書きます。組み込みのコマンドは次の6つで、押すとそれぞれのメソッドを呼んだのと同じ動作をします。
 
-`command`は現在カスタム値を除いて、Dialogの`show-modal`・`close`・`request-close`、Popoverの`show-popover`・`hide-popover`・`toggle-popover`が使えます。
-
-ボタンをクリックすると、`commandfor`で指定した要素に対してJavaScriptの`showModal()`・`close()`・`requestClose()`、`showPopover()`・`hidePopover()`・`togglePopover()`メソッド相当の動作が実行されます。
+- `show-modal`：Dialogの`showModal()`
+- `close`：Dialogの`close()`
+- `request-close`：Dialogの`requestClose()`
+- `show-popover`：Popoverの`showPopover()`
+- `hide-popover`：Popoverの`hidePopover()`
+- `toggle-popover`：Popoverの`togglePopover()`
 
 ### Dialogの操作
 
@@ -54,7 +57,7 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 
 <PlaygroundEmbed demo="Dialogの操作" headingLevel="h5" sectionId="invoker-commands" />
 
-組み込みのコマンドでも、操作の前に`commandfor`で指定した要素へ`command`イベントが届きます。`event.command`は`show-modal`、`event.source`は押したボタンで、`preventDefault()`を呼ぶとDialogは開きません。`close`のボタンに`value`属性を書くと、その値が閉じたあとの`returnValue`になります。
+組み込みのコマンドでも、操作の前に`commandfor`で指定した要素へ`command`イベントが届きます。`event.command`は`show-modal`のようなコマンドの名前、`event.source`は押したボタンで、`preventDefault()`を呼ぶとDialogは開きません。`close`のボタンに`value`属性を書くと、その値が閉じたあとの`returnValue`になります。
 
 `<form>`の中に置くボタンには`type="button"`を書きます。`type`を書かずに`commandfor`と`command`を付けたボタンは、押してもフォームを送信せず、コマンドも実行しません。`type="submit"`ではフォームを送信するだけで、コマンドは実行されません。`<form method="dialog">`の中のキャンセルボタンも同じです。
 
@@ -78,7 +81,7 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 </div>
 ```
 
-ポップオーバーの場合、従来の`popovertarget`と`popovertargetaction`属性でも同じことができます。
+Popoverなら、これまでの`popovertarget`属性と`popovertargetaction`属性でも同じことができます。
 
 ```html
 <button popovertarget="popover" popovertargetaction="toggle">メニュー</button>
@@ -92,8 +95,7 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 
 ## カスタムコマンド
 
-`show-modal`や`toggle-popover`のような組み込みコマンドだけでなく、独自のコマンドを定義することもできます(これにはJavaScriptが必要です)。
-カスタムコマンドは`--`で始まる名前で定義します。
+組み込みのコマンドのほかに、`--`で始まる名前で独自のコマンドを作れます。動作はJavaScriptで書きます。
 
 ```html
 <button commandfor="my-image" command="--zoom-in">拡大</button>
@@ -102,7 +104,7 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 <img id="my-image" src="photo.jpg" alt="写真" />
 ```
 
-カスタムコマンドは`command`イベントで処理します。
+ボタンを押すと`commandfor`の要素に`command`イベントが届くので、`event.command`で分けて処理します。
 
 ```javascript
 // [!og]
@@ -121,16 +123,10 @@ image.addEventListener('command', (event) => {
 });
 ```
 
-`command`に応じた自由な動作を実装できます。`--`で始まらない名前は、組み込みのコマンドでなければ無視され、`command`イベントも発火しません。`command="zoom-in"`のボタンを押すと`command`イベントは届かず、ボタンの`command`プロパティは空文字列を返します。
+`--`で始まらない名前は、組み込みのコマンドでなければ無視されます。`command="zoom-in"`のボタンを押しても`command`イベントは届かず、ボタンの`command`プロパティは空文字列を返します。
 
 <PlaygroundEmbed demo="カスタムコマンド" headingLevel="h4" sectionId="invoker-commands" />
 
 ## おわりに
 
-Invoker Commands APIを紹介しました。
-
-`commandfor`と`command`属性を使うことで、JavaScriptを書かずにDialogやPopoverを宣言的に操作できます。Popover APIの`popovertarget`属性と同じ考え方が、Dialogにも適用できるようになったのは嬉しいですね。`<form>`の中のボタンには`type="button"`を書いてください。
-
-また、`--`で始まるカスタムコマンドと`command`イベントを組み合わせれば、組み込みコマンドでカバーできない独自の操作も実装できます。
-
-Baseline 2025で全ブラウザ対応となったので、ぜひ活用してみてください。
+`commandfor`と`command`を使うと、JavaScriptを書かずにDialogをモーダルで開いたり、Popoverを開閉したりできます。`--`で始まるカスタムコマンドと`command`イベントを組み合わせれば、組み込みのコマンドに無い操作も、同じボタンの書き方で呼べます。
