@@ -13,9 +13,9 @@ featureIds:
 
 ## はじめに
 
-`requestClose`メソッドは、`<dialog>`要素を閉じる前に`cancel`イベントを発火させるメソッドです。`cancel`イベントで`preventDefault`メソッドを呼ぶと、閉じるのを止められます。
+`requestClose`メソッドは、`<dialog>`要素を閉じる前に`cancel`イベントを発火させるメソッドです。`cancel`イベントで`preventDefault`メソッドを呼ぶと、閉じるのを止められます。Firefox 139が対応して、Baseline 2025に入りました。
 
-閉じるだけなら、`close`メソッドや`<form method="dialog">`の送信で足ります。ただ、`close`メソッドは`cancel`イベントを出さずにすぐ閉じるので、入力中なら閉じないといった確認を挟めません。`Escape`キーで閉じるときと同じく`cancel`イベントを経て閉じるには、`requestClose`メソッドを使います。Firefox 139で実装され、Baseline 2025に入りました。
+閉じるだけなら、`close`メソッドや`<form method="dialog">`の送信で足ります。ただ、`close`メソッドは`cancel`イベントを出さずにすぐ閉じるので、入力中なら閉じないといった確認を挟めません。`Escape`キーで閉じるときと同じく`cancel`イベントを経て閉じるには、`requestClose`メソッドを使います。
 
 ```html
 <dialog id="dialog">
@@ -46,7 +46,7 @@ featureIds:
 
 要求と書いたのは、即座にダイアログを閉じるのではなく、`cancel`イベントを介して`close`イベントを発火させるからです（既存の`close`メソッドは`close`イベントを呼ぶだけです）。`cancel`イベントは`requestClose`メソッドの中で発火し、止めなければ呼び出しから戻った時点でダイアログは閉じています。`close`イベントはその後に届きます。
 
-`<dialog>`要素を開いた状態で`Escape`キーを押した時も、`requestClose`メソッドを実行した時と同じように`cancel`イベントを経て閉じます。Invoker Commands APIの`command="request-close"`を付けたボタンからも呼べます。Chrome 156、Safari 27.2、Firefox 159のどれでも、このボタンを押すと`cancel`イベントを経て閉じ、ボタンの`value`属性が`returnValue`になりました。
+`<dialog>`要素を開いた状態で`Escape`キーを押した時も、`requestClose`メソッドを実行した時と同じように`cancel`イベントを経て閉じます。Invoker Commands APIの`command="request-close"`を付けたボタンからも呼べます。このボタンを押すと`cancel`イベントを経て閉じ、ボタンの`value`属性が`returnValue`になります。
 
 `cancel`イベントを`close`イベントに挟むことで、ダイアログを閉じる前に何らかの処理を行うことができます。
 
@@ -88,7 +88,7 @@ dialogElement.addEventListener('close', () => {
 });
 ```
 
-Chrome 156、Safari 27.2、Firefox 159のどれでも、`cancel`イベントの中の`returnValue`は前の値（初めは空文字列）のままで、`close`イベントで`some value`になりました。`cancel`イベントで`preventDefault`メソッドを呼んで止めたときと、引数を渡さずに呼んだときは、`returnValue`は前の値のままです。
+`cancel`イベントの中の`returnValue`は前の値（初めは空文字列）のままで、`close`イベントで`some value`になります。`cancel`イベントで`preventDefault`メソッドを呼んで止めたときと、引数を渡さずに呼んだときは、`returnValue`は前の値のままです。
 
 ## おわりに
 
