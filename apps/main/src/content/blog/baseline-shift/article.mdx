@@ -68,16 +68,11 @@ CSSプロパティとして書くことで、SVGの`baseline-shift`属性を直�
 
 `baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただしHTMLのインライン要素に指定してずれるのはFirefoxだけで、ChromeとSafariでは位置が変わりません。実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
 
-<LinkCard href="https://drafts.csswg.org/css-inline-3/#baseline-shift-property" />
-
 - `<length-percentage>` - 任意の長さや割合でずらす。`em` / `px` / `%`などが使える。正の値で上、負の値で下に動く
 - `sub` - 親フォントに定義されている下付き位置までずらす
 - `super` - 親フォントに定義されている上付き位置までずらす
-- `top` - 行ボックスの上端にベースラインを揃える
-- `center` - 行ボックスの上下中央にベースラインを揃える
-- `bottom` - 行ボックスの下端にベースラインを揃える
 
-`sub`と`super`でずれる量はブラウザで違い、特に`sub`は、ChromeとSafariの方がFirefoxより大きく下がります。ブラウザの間で揃えたいときは、`0.3em`のような長さで指定します。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
+`sub`と`super`でずれる量はブラウザで違い、特に`sub`は、ChromeとSafariの方がFirefoxより大きく下がります。ブラウザの間で揃えたいときは、`0.3em`のような長さで指定します。
 
 ## vertical-alignとの関係
 
@@ -95,10 +90,8 @@ text .note {
 }
 ```
 
-なお3つのロングハンドのうち、`alignment-baseline`はFirefox 149で入り、Chrome 156、Safari 27.2、Firefox 159のいずれでも`CSS.supports('alignment-baseline', 'middle')`が`true`を返します。`baseline-source`はSafariが未対応で、Safari 27.2では`CSS.supports('baseline-source', 'last')`が`false`でした。`vertical-align`をショートハンドとして使うには、ロングハンドが揃うことに加えて、ChromeとSafariが`vertical-align`をショートハンドとして扱う必要があります。
-
 ## おわりに
 
 `baseline-shift`はSVGテキストのベースラインをずらすCSSプロパティです。化学式・数式・図中ラベルなど、SVGの`<text>`に細かい上付き・下付きを入れたい場面で素直に書ける選択肢です。
 
-ただ、HTMLのインライン要素への適用や`top`・`center`・`bottom`の値、`vertical-align`をショートハンドとして扱うことは、今のところFirefoxだけが対応しています。SVGのテキストをずらす用途なら今すぐ使えますが、HTMLの文章で`vertical-align`の代わりに使えるのはもう少し先になりそうです。
+ただ、HTMLのインライン要素への適用や、`vertical-align`をショートハンドとして扱うことは、今のところFirefoxだけが対応しています。SVGのテキストをずらす用途なら今すぐ使えますが、HTMLの文章で`vertical-align`の代わりに使えるのはもう少し先になりそうです。
