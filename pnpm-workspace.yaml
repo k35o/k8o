@@ -8,7 +8,7 @@ allowBuilds:
   workerd: false
 
 catalog:
-  '@ai-sdk/anthropic': 4.0.94
+  '@ai-sdk/anthropic': 4.0.98
   '@better-css-modules/cli': 0.4.1
   '@better-css-modules/core': 0.4.1
   '@better-css-modules/turbopack': 0.4.1
