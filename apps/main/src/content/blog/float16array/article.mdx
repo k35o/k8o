@@ -7,14 +7,13 @@ featureIds:
   - float16array
 ---
 
-
 # Float16Arrayで16bit浮動小数点数を扱うときの範囲と精度
 
 <BrowserSupportStatus featureId="float16array"></BrowserSupportStatus>
 
 ## Float16Array
 
-`Float16Array`は、16bit（半精度）の浮動小数点数を1要素2バイトで並べる`TypedArray`です。`Float32Array`や`Float64Array`の16bit版にあたり、Baseline 2025に追加されました。
+`Float16Array`は、16bit（半精度）の浮動小数点数を1要素2バイトで並べる`TypedArray`です。`Float32Array`や`Float64Array`の16bit版にあたります。Chrome 135が対応して、Baseline 2025に入りました。
 
 JavaScriptの中で計算するだけなら、`Float32Array`や`Float64Array`、普通の配列で足ります。WebGPUのシェーダーや機械学習のモデルが16bitの浮動小数点数で受け渡すデータを、ビットを自分で組み立てずに読み書きできるのが`Float16Array`です。
 
@@ -34,7 +33,7 @@ console.log(float16.length); // 3
 console.log(float16.BYTES_PER_ELEMENT); // 2
 ```
 
-コンソールに貼ると、範囲を超えた`100000`は`Infinity`として出ます。Chrome 156、Safari 27.2、Firefox 159で境目を試すと、`65519`は`65504`に丸められ、`65520`は`Infinity`になりました。整数をそのまま表せるのは2048までで、`2049`を入れると`2048`になります。
+コンソールに貼ると、範囲を超えた`100000`は`Infinity`として出ます。境目では、`65519`は`65504`に丸められ、`65520`は`Infinity`になります。整数をそのまま表せるのは2048までで、`2049`を入れると`2048`になります。
 
 ### 嬉しいこと
 
@@ -67,9 +66,9 @@ enable f16;
 @group(0) @binding(0) var<storage, read> src: array<f16>;
 ```
 
-この`buffer`を`array<f16>`として読むコンピュートシェーダーで値を`f32`に写して読み戻すと、Chrome 156、Safari 27.2、Firefox 159のどれでも`[0.5, 1.5, -2, 65504]`が返りました。
+この`buffer`を`array<f16>`として読むコンピュートシェーダーで値を`f32`に写して読み戻すと、`[0.5, 1.5, -2, 65504]`が返ります。
 
-WebGL 2のテクスチャに`HALF_FLOAT`で渡すときは、`Float16Array`をそのまま渡せません。`texImage2D()`に渡すと、3つのブラウザのどれでも`INVALID_OPERATION`になりました。Chrome 156のコンソールには`type HALF_FLOAT_OES but ArrayBufferView is not NULL and not Uint16Array`と出ます。同じバッファを`Uint16Array`で包み直せば受け付けられ、読み戻すと入れた値のままでした。
+WebGL 2のテクスチャに`HALF_FLOAT`で渡すときは、`Float16Array`をそのまま渡せません。`texImage2D()`に渡すと`INVALID_OPERATION`になり、Chromeのコンソールには`type HALF_FLOAT_OES but ArrayBufferView is not NULL and not Uint16Array`と出ます。同じバッファを`Uint16Array`で包み直せば受け付けられ、読み戻すと入れた値のままです。
 
 ```js
 const gl = document.createElement('canvas').getContext('webgl2');
@@ -108,7 +107,7 @@ console.log(typeof value); // 'number'
 
 `Float16Array`に格納されている間だけが、16bit浮動小数点数として安全な状態です。`Float16Array`は型ではなく格納形式でしかないという点を意識しておくと安心です。
 
-最後に、読み書きの速さはブラウザによって分かれます。Apple M4のMacで、乱数を入れた500万要素の配列を`for`で読んで足すと、Chrome 156では`Float16Array`が約3msで`Float32Array`の約6msより速く、Safari 27.2でも約3msと約8msでした。Firefox 159では約7msと約5msで、`Float16Array`の方が遅くなりました。
+最後に、読み書きの速さはブラウザによって分かれます。乱数を入れた500万要素の配列を`for`で読んで足すと、ChromeとSafariでは`Float16Array`の方が`Float32Array`より速く、Firefoxでは遅くなります。
 JavaScriptの中で計算するために、メモリの節約だけを目当てに`Float16Array`を選ぶと、精度を落としたうえに遅くなることもあります。
 
 ## おわりに
