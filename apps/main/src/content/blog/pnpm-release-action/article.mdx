@@ -63,7 +63,7 @@ gitに書き込まないのは、実装が追いついていないからでは�
 
 <LinkCard href="https://github.com/pnpm/rfcs/blob/main/text/0006-monorepo-versioning.md" />
 
-この2つは、RFCの未解決の論点に残っています。11.13で出荷された`pnpm version -r`はgitに書き込まない実装で、公式のGitHub Actionもありません（pnpm公式にあるのは、インストール用の`pnpm/action-setup`だけです）。当面この層をどう組むかは、ユーザーの手に委ねられています。
+この2つは、RFCの未解決の論点に残っています。11.13で出荷された`pnpm version -r`はgitに書き込まない実装で、公式のGitHub Actionもありません（pnpm公式にあるのは、`pnpm/action-setup`や`pnpm/setup`のような、インストール用のアクションだけです）。当面この層をどう組むかは、ユーザーの手に委ねられています。
 
 `pnpm-release-action`は、この委ねられた層を引き受けるアクションです。
 
