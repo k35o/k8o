@@ -15,7 +15,7 @@ featureIds:
 
 `scrollend`イベントは、スクロールが止まったときに1回だけ発火するイベントです。指やホイール、キーボードでのスクロールでも、`scrollTo()`やscroll-snapによる移動でも、位置が動き終わった時点で届きます。Safari 26.2が対応して、Baseline 2025に入りました。
 
-スクロール中の位置に合わせて表示を変えるなら、これまでどおり`scroll`イベントで足ります。一方で、止まった位置をURLに反映するといった、止まったときに1回だけ行う処理には、終了を知らせるイベントがありませんでした。`scroll`イベントを監視して、擬似的に終了のタイミングを測るしかなかったのです。
+スクロール中の位置に合わせて表示を変えるなら、これまでどおり`scroll`イベントで足ります。一方で、止まった位置をURLに反映するといった、止まったときに1回だけ行う処理には、終了を知らせるイベントがありませんでした。`scroll`イベントから、止まったころあいを推し量るしかありませんでした。
 
 ```html
 <div id="list" style="height: 120px; overflow: auto">
@@ -31,9 +31,9 @@ featureIds:
 
 枠の中をスクロールして止めると、止まったところでコンソールに位置が出ます。
 
-## 従来の手法
+## setTimeoutで推し量る書き方
 
-従来はスクロール終了を検知するために、`scroll`イベントと`setTimeout`を組み合わせる方法が一般的でした。
+これまでは、`scroll`イベントと`setTimeout`を組み合わせて、スクロールの終わりを推し量っていました。
 
 ```ts
 let scrollTimeout;
@@ -49,15 +49,11 @@ element.addEventListener('scroll', () => {
 });
 ```
 
-しかし、この方法ではタイムアウト値の調整が難しいという課題があります。
-値が短すぎるとスクロール中に誤検知し、長すぎると反応が遅くなります。
-
-また、タッチデバイスとマウスホイールではスクロールの特性が異なるため、デバイスによって最適な値が変わってきます。
-指で押さえたまま動きを止めると、`scroll`イベントが途切れてタイマーが切れ、まだ指を離していないのに終わったと判定します。
+待つ時間を短くすると、スクロールの途中で終わったと判定し、長くすると反応が遅れます。指とホイールではスクロールの動き方が違うので、ちょうどよい時間は入力の仕方でも変わります。指で押さえたまま動きを止めると、`scroll`イベントが途切れてタイマーが切れ、まだ指を離していないのに終わったと判定します。
 
 ## scrollendイベント
 
-`scrollend`イベントを使うと、ブラウザがスクロールの終了を正確に検知してくれます。
+`scrollend`イベントなら、スクロールが終わったかをブラウザが判定します。指で操作しているときは、指を離して慣性のスクロールも止まってから届きます。
 
 ```javascript
 // [!og]
@@ -66,15 +62,13 @@ element.addEventListener('scrollend', () => {
 });
 ```
 
-タイムアウト値を気にする必要がなく、シンプルに記述できます。
+待つ時間を決める必要はありません。
 
 <PlaygroundEmbed demo="scrollendイベント" headingLevel="h4" sectionId="scrollend" />
 
 ### 発火条件
 
-`scrollend`イベントは、ユーザーのスクロール操作（タッチ、マウスホイール、キーボード）が完了したときに発火します。また、`scrollTo()`や`scrollBy()`などのAPIによるスクロールや、`scroll-snap`によるスナップ位置への移動が完了したときにも発火します。
-
-一方で、スクロール位置が変化しなかった場合は発火しません。
+`scrollend`イベントは、指やホイール、キーボードでのスクロールが終わったときに発火します。`scrollTo()`や`scrollBy()`による移動や、scroll-snapでスナップ位置へ動き終わったときにも発火します。スクロール位置が変わらなかったときは発火しません。
 
 <PlaygroundEmbed demo="発火条件" headingLevel="h5" sectionId="scrollend" />
 
@@ -85,6 +79,15 @@ element.addEventListener('scrollend', () => {
 ### 止まった位置をURLに残す
 
 scroll-snapで1枚ずつ止まるカルーセルなら、`scrollend`イベントで何枚目に止まったかを求め、URLのハッシュに残せます。
+
+```js
+const carousel = document.querySelector('.carousel');
+
+carousel.addEventListener('scrollend', () => {
+  const index = Math.round(carousel.scrollLeft / carousel.clientWidth);
+  history.replaceState(null, '', `#slide-${index + 1}`);
+});
+```
 
 ```css
 .carousel {
@@ -99,19 +102,8 @@ scroll-snapで1枚ずつ止まるカルーセルなら、`scrollend`イベント
 }
 ```
 
-```js
-const carousel = document.querySelector('.carousel');
-
-carousel.addEventListener('scrollend', () => {
-  const index = Math.round(carousel.scrollLeft / carousel.clientWidth);
-  history.replaceState(null, '', `#slide-${index + 1}`);
-});
-```
-
 幅200pxのカルーセルを`scrollTo({ left: 130 })`で途中の位置へ動かすと、`scrollend`イベントはスナップし終えた200pxの位置で1回だけ届き、ハッシュは`#slide-2`になります。
 
 ## おわりに
 
-`scrollend`イベントを紹介しました。
-
-従来の`setTimeout`を使った方法では、適切なタイムアウト値の設定が難しく、デバイスごとの挙動の違いに悩まされることがありました。`scrollend`イベントにより、ブラウザが正確なタイミングでスクロール終了を通知してくれるようになりました。
+`scrollend`イベントを使うと、`setTimeout`で待つ時間を決めずに、スクロールが止まったときに1回だけ処理を走らせられます。要素のスクロールを見るときは、`document`ではなくその要素にリスナーを登録します。
