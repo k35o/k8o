@@ -15,7 +15,7 @@ import { ShapeCommandDemo } from './_components/shape-command-demo';
 
 ## はじめに
 
-`shape()`は、`clip-path`で要素を切り抜く図形を、直線・ベジェ曲線・円弧のコマンドを並べて描くCSS関数です。座標に`%`や`calc()`、CSS変数を使えるので、要素の大きさに合わせて伸び縮みする図形を作れます。
+`shape()`は、`clip-path`で要素を切り抜く図形を、直線・ベジェ曲線・円弧のコマンドを並べて描くCSS関数です。座標に`%`や`calc()`、CSS変数を使えるので、要素の大きさに合わせて伸び縮みする図形を作れます。Firefox 148が対応して、Baseline 2026に入りました。
 
 円や楕円、直線だけの多角形なら、今までどおり`circle()`・`ellipse()`・`polygon()`で足ります。曲線を含む図形は`path()`でも描けますが、SVGのパス構文を使うため単位なしのピクセル値しか指定できず、`%`や`calc()`が使えません。要素のサイズに応じて図形を変化させるには、SVGに頼る必要がありました。
 
@@ -42,9 +42,9 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-`class="triangle"`の要素に当てると、幅200px・高さ100pxの箱が、上辺の中央を頂点とする三角形に切り抜かれます。`width`を400pxにしても、三角形のまま横に伸びます。切り抜いた外側の左上と右上の隅で`document.elementFromPoint()`を呼ぶと、Chrome 156、Safari 27.2、Firefox 159のいずれでも、切り抜いた要素ではなく下にある要素が返りました。
+`class="triangle"`の要素に当てると、幅200px・高さ100pxの箱が、上辺の中央を頂点とする三角形に切り抜かれます。`width`を400pxにしても、三角形のまま横に伸びます。切り抜いた外側の左上と右上の隅で`document.elementFromPoint()`を呼ぶと、切り抜いた要素ではなく下にある要素が返ります。
 
-`<fill-rule>`（`nonzero`か`evenodd`）も指定できますが、`polygon()`や`path()`と違い、後ろにカンマを置きません。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`shape(evenodd, from 0 0, ...)`は無効な値になり、`shape(evenodd from 0 0, ...)`なら有効でした。
+`<fill-rule>`（`nonzero`か`evenodd`）も指定できますが、`polygon()`や`path()`と違い、後ろにカンマを置きません。`shape(evenodd, from 0 0, ...)`は無効な値になり、`shape(evenodd from 0 0, ...)`なら有効です。
 `from`で開始点を指定し、カンマ区切りで描画コマンドを並べます。
 座標は参照ボックス（`clip-path`のデフォルトは`border-box`）の左上隅を原点とし、`<length-percentage>`（`<length>`または`<percentage>`）で指定します。
 
