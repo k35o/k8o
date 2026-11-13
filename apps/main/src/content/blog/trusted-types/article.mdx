@@ -35,7 +35,7 @@ Trusted Typesは、`Content-Security-Policy`で有効にします。
 Content-Security-Policy: trusted-types myPolicy
 ```
 
-`trusted-types`ディレクティブは、作れるポリシーの名前を決めます。この例では、`myPolicy`以外の名前で`trustedTypes.createPolicy()`を呼ぶとエラーになり、サードパーティのスクリプトが勝手にポリシーを作るのを防げます。
+`trusted-types`ディレクティブは、作れるポリシーの名前を決めます。この例では、`myPolicy`以外の名前で`trustedTypes.createPolicy()`を呼ぶとエラーになり、サードパーティのスクリプトが勝手にポリシーを作るのを防げます。Trusted Typesに対応したライブラリは自分の名前でポリシーを作るので、使うときはその名前も`trusted-types`に書き足します。
 
 `trusted-types`だけでは、シンクに生の文字列を渡すことは止められません。止めるには、`require-trusted-types-for 'script'`を足します。
 
@@ -97,7 +97,7 @@ el.innerHTML = escapePolicy.createHTML(userInput);
 
 ### デフォルトポリシー
 
-`default`という名前のポリシーは、ほかと役割が違います。シンクに生の文字列が渡されると、ブラウザがこのポリシーのコールバックを呼び、その戻り値を代入します。
+`default`という名前のポリシーは、ほかと役割が違います。シンクに生の文字列が渡されると、ブラウザがこのポリシーのコールバックを呼び、その戻り値を代入します。サードパーティのスクリプトはこちらのポリシーを使えないので、`innerHTML`に生の文字列を代入します。その代入も、デフォルトポリシーを通ります。
 
 ```js
 // [!og]
@@ -111,6 +111,12 @@ el.innerHTML = '<b>Hello</b><script>alert(1)</script>';
 ```
 
 作成したデフォルトポリシーは`trustedTypes.defaultPolicy`から参照できます。
+
+CSPの`trusted-types`でポリシーの名前を決めているときは、`default`も書き足します。書かないと、`createPolicy('default', ...)`が`TypeError`になります。
+
+```http
+Content-Security-Policy: require-trusted-types-for 'script'; trusted-types myPolicy default
+```
 
 デフォルトポリシーのコールバックは、第2引数に求められた型の名前、第3引数にシンクの名前を受け取ります。上の代入では、`'TrustedHTML'`と`'Element innerHTML'`が渡ります。移行の途中で、どのシンクに文字列が渡っているかをログに残すのに使えます。
 
