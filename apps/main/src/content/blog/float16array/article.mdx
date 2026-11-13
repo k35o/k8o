@@ -94,9 +94,36 @@ const f16 = new Float16Array([1 / 3]);
 const value = f16[0];
 console.log(value); // 0.333251953125（16bitで丸められた値）
 console.log(typeof value); // 'number'
+console.log(value * 3); // 0.999755859375
 ```
 
 取り出したあとの計算は、ほかの`number`と同じく64bitで行われます。16bitに丸められるのは、`Float16Array`に入れたときだけです。
+
+## Math.f16roundとDataView
+
+同じ機能で、`Math.f16round()`と、`DataView`の`getFloat16()`と`setFloat16()`も入りました。
+
+`Math.f16round()`は、配列を作らずに、数を16bitの浮動小数点数で表せる一番近い値に丸めます。`Float16Array`に入れたときにどの値になるかを、先に確かめられます。
+
+```js
+console.log(Math.f16round(0.3333)); // 0.333251953125
+console.log(Math.f16round(65520)); // Infinity
+```
+
+`Float16Array`は、バッファの2の倍数のバイト位置からしか作れません。ファイルや通信で受け取ったバイト列の、奇数の位置にある16bitの浮動小数点数は、`DataView`で読みます。
+
+ファイルや通信のバイト列では、2バイト以上の数を並べる順番が形式ごとに決まっています。上位のバイトを先に置くのがビッグエンディアン、下位のバイトを先に置くのがリトルエンディアンで、`1.5`（16bitで`0x3E00`）はそれぞれ`3E 00`と`00 3E`の順に並びます。順番を取り違えると、別の数として読んでしまいます。`DataView`は第3引数を省くとビッグエンディアンで読むので、リトルエンディアンの形式を読むときは`true`を渡します。
+
+```js
+const view = new DataView(new ArrayBuffer(5));
+view.setFloat16(1, 1.5, true); // リトルエンディアンで00 3Eと書く
+console.log(view.getFloat16(1, true)); // 1.5
+console.log(view.getFloat16(1)); // 0.0000036954879760742188（ビッグエンディアンとして読んだ）
+// RangeError（1は2の倍数ではない）
+new Float16Array(view.buffer, 1);
+```
+
+`Float16Array`は、動いている環境の順番で読みます。多くの環境はリトルエンディアンなので、ビッグエンディアンの形式は、位置が2の倍数でも`DataView`で読みます。
 
 ## 読み書きの速さ
 
