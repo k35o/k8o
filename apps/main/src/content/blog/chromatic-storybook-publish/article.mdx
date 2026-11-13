@@ -28,7 +28,7 @@ import compositionSidebar from './_images/composition-sidebar.avif';
 }
 ```
 
-エージェントから`docs-list`を呼ぶと、ボタンやフォームなど84個のコンポーネントの一覧が返ります。`docs-show`に`components-buttons-button`を渡すと、Buttonのストーリーのコードと、`size`や`variant`などのpropsの型が返ります（2026年11月9日に確認）。
+エージェントから`docs-list`を呼ぶと、ボタンやフォームなどのコンポーネントの一覧が返ります。`docs-show`に`components-buttons-button`を渡すと、Buttonのストーリーのコードと、`size`や`variant`などのpropsの型が返ります。
 
 この記事では、Chromaticの機能のうちStorybookのPublishに絞り、MCPサーバーとStorybook Compositionで何ができるかを、このサイトの[公開しているStorybook](https://main--647acebb9da23d6c605c4afd.chromatic.com)を例に紹介します。UI TestsやUI Reviewといったテスト・レビュー機能には触れません。
 
@@ -99,7 +99,7 @@ ChromaticにPublishするだけでリモートMCPサーバーが手に入るの�
 
 Storybook MCPサーバーはDocs、Development、Testingの3つの[ツールセット](https://storybook.js.org/docs/ai/mcp/overview#toolsets)を提供していますが、ChromaticにPublishしたリモートMCPサーバーで利用できるのはDocsツールセットのみです。DevelopmentやTestingはローカルのStorybook開発サーバーでのみ利用できます。
 
-Docsツールセットには以下のツールが含まれます。名前は、Storybook 10.6.5でビルドして公開したMCPサーバーのものです。
+Docsツールセットには以下のツールが含まれます。
 
 - `docs-list`: 利用可能なコンポーネントとドキュメントの一覧を取得する
 - `docs-show`: 個別のコンポーネントの詳細（Props情報、ストーリー、使用例など）を参照する
