@@ -12,15 +12,34 @@ featureIds:
 <BrowserSupportStatus featureId="uint8array-base64-hex" />
 
 ## はじめに
-`Uint8Array.fromBase64()`・`toBase64()`・`fromHex()`・`toHex()`は、バイト列の`Uint8Array`と、base64や16進数（Hex）の文字列を相互に変換するメソッドです。Chrome 140が対応して、Baseline 2025に入りました。
 
-英数字だけの文字列をbase64にするなら、これまでどおり`btoa()`と`atob()`で足ります。日本語を含む文字列やハッシュ値は、`btoa()`がLatin-1の範囲の文字しか受け取らないので、バイト列を`String.fromCharCode()`で1バイト1文字の文字列にしてから渡すことになり、大きなバイト列ではそこで失敗します。base64urlや16進数への変換は、自分で書くしかありませんでした。
+`Uint8Array.fromBase64()`と`toBase64()`、`fromHex()`、`toHex()`は、バイト列の`Uint8Array`とbase64や16進数（Hex）の文字列を相互に変換するメソッドです。Chrome 140が対応して、Baseline 2025に入りました。
 
-## 変遷
-これまでは、変換処理を自前で組み込む必要がありました。
+英数字だけの文字列をbase64にするなら、これまでどおり`btoa()`と`atob()`で足ります。ただ、`btoa()`はLatin-1の範囲の文字しか受け取りません。日本語を含む文字列やハッシュ値は、バイト列を`String.fromCharCode()`で1バイト1文字の文字列にしてから渡すので、大きなバイト列ではそこで失敗します。base64urlや16進数への変換は、自分で書くしかありませんでした。
 
-以下に示すのは簡易的な実装であり、すべてのケースで正確に動作するとは限りません（これらのメソッド相当の実装は
-[polyfill](https://github.com/tc39/proposal-arraybuffer-base64/blob/main/playground/polyfill-core.mjs)が参考になります）。
+`Uint8Array`のメソッドなら、どれも1回の呼び出しで変換できます。
+
+```ts
+const bytes = new Uint8Array([72, 101, 108, 108, 111]);
+
+// Uint8Array → base64
+console.log(bytes.toBase64()); // "SGVsbG8="
+
+// base64 → Uint8Array
+console.log(Uint8Array.fromBase64("SGVsbG8=")); // Uint8Array([72, 101, 108, 108, 111])
+
+// Uint8Array → Hex
+console.log(bytes.toHex()); // "48656c6c6f"
+
+// Hex → Uint8Array
+console.log(Uint8Array.fromHex("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
+```
+
+文字列から`Uint8Array`を作るときは静的メソッドの`fromBase64()`と`fromHex()`を、`Uint8Array`を文字列にするときはインスタンスメソッドの`toBase64()`と`toHex()`を呼びます。
+
+## 自作の変換との違い
+
+これまでは、次のような関数を自分で書いていました。
 
 ```ts
 // Uint8Array → base64
@@ -45,41 +64,23 @@ console.log(uint8ArrayToHex(new Uint8Array([72, 101, 108, 108, 111]))); // "4865
 function hexToUint8Array(hex: string): Uint8Array {
   const bytes = [];
   for (let i = 0; i < hex.length; i += 2) {
-    bytes.push(parseInt(hex.substr(i, 2), 16));
+    bytes.push(parseInt(hex.slice(i, i + 2), 16));
   }
   return new Uint8Array(bytes);
 }
 console.log(hexToUint8Array("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
 ```
 
-上の関数を試すと、次の問題がありました。
+この関数には、次の問題があります。
 
-- `uint8ArrayToBase64`はバイト列を引数に展開するので、大きなバイト列で`RangeError`になります。展開できる引数の数はブラウザによって違い、1MBのバイト列はどのブラウザでも変換できません
-- `hexToUint8Array`は、`"abc"`のような奇数の長さや`"zz"`のような16進数でない文字列も、エラーにせず`[171, 12]`や`[0]`を返します
+- `uint8ArrayToBase64`はバイト列を引数に展開するので、大きなバイト列では`RangeError`になります。展開できる引数の数はブラウザによって違い、1MBのバイト列はどのブラウザでも変換できません。
+- `hexToUint8Array`は、`"abc"`のような奇数の長さや`"zz"`のような16進数でない文字列も、エラーにせず`[171, 12]`や`[0]`を返します。
 
-`Uint8Array`のメソッドなら、それぞれ1回の呼び出しで変換できます。
+`Uint8Array`のメソッドなら、`toBase64()`は10MBのバイト列も変換でき、`fromHex()`は`"abc"`も`"zz"`も`SyntaxError`にします。
 
-```ts
-const bytes = new Uint8Array([72, 101, 108, 108, 111]);
+## 日本語の文字列とハッシュ値を変換する
 
-// Uint8Array → base64
-console.log(bytes.toBase64()); // "SGVsbG8="
-
-// base64 → Uint8Array
-console.log(Uint8Array.fromBase64("SGVsbG8=")); // Uint8Array([72, 101, 108, 108, 111])
-
-// Uint8Array → Hex
-console.log(bytes.toHex()); // "48656c6c6f"
-
-// Hex → Uint8Array
-console.log(Uint8Array.fromHex("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
-```
-
-コンソールに貼ると、コメントの値が順に出ます。`toBase64()`は10MBのバイト列も変換でき、`fromHex()`は`"abc"`も`"zz"`も`SyntaxError`にします。
-
-`Uint8Array`を生成するときは、静的メソッドである`fromBase64`や`fromHex`で変換し、`Uint8Array`から変換するときはインスタンスメソッドである`toBase64`や`toHex`を使用するだけで変換できるようになりました。
-
-日本語を含む文字列は`TextEncoder`でUTF-8のバイト列にしてから、ハッシュ値は`crypto.subtle.digest()`の結果を`Uint8Array`にしてから変換します。
+`btoa()`に`"あいう"`をそのまま渡すと、`InvalidCharacterError`になります。日本語を含む文字列は、`TextEncoder`でUTF-8のバイト列にしてから変換します。ハッシュ値は、`crypto.subtle.digest()`が返す`ArrayBuffer`を`Uint8Array`にしてから変換します。
 
 ```ts
 // 日本語を含む文字列をUTF-8のbase64にする
@@ -90,22 +91,13 @@ const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("h
 console.log(new Uint8Array(digest).toHex()); // "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
 ```
 
-`btoa("あいう")`は`InvalidCharacterError`になります。
+## メソッドごとの使い方
 
-## 追加された機能
-先ほど紹介した`fromBase64`・`fromHex`・`toBase64`・`toHex`に加えて、既存の`Uint8Array`に対してデータを設定するための`setFromBase64`と`setFromHex`も追加されました。
-
-それぞれの機能について以下で詳しく説明します。
+`fromBase64()`と`toBase64()`、`fromHex()`、`toHex()`のほかに、既存の`Uint8Array`に書き込む`setFromBase64()`と`setFromHex()`もあります。
 
 ### fromBase64
-`fromBase64`は、base64エンコードされた文字列を受け取り、それをデコードして新しい`Uint8Array`を生成します。
 
-```ts
-const base64 = "SGVsbG8=";
-const uint8Array = Uint8Array.fromBase64(base64); // Uint8Array([72, 101, 108, 108, 111])
-```
-
-第1引数にはbase64エンコードされた文字列を指定します。第2引数にはオプションで、`alphabet`と`lastChunkHandling`を指定できます。
+`fromBase64()`は、base64の文字列をデコードして新しい`Uint8Array`を返します。第2引数のオプションで、`alphabet`と`lastChunkHandling`を指定できます。
 
 ```ts
 // [!og]
@@ -116,21 +108,21 @@ const uint8Array = Uint8Array.fromBase64(base64, {
 });
 ```
 
-`alphabet`にはbase64のアルファベットを指定します。デフォルト`"base64"`で標準のbase64アルファベットを受け入れますが、`"base64url"`を指定するとURLセーフなbase64アルファベットを受け入れるようになります。
+`alphabet`は、受け付けるbase64の文字の種類です。既定の`"base64"`は`+`と`/`を使う標準のbase64を受け付け、`"base64url"`にすると、代わりに`-`と`_`を使うURLセーフなbase64urlを受け付けます。
 
 ```ts
 const base64url = "SGV-sbG8";
 // SyntaxError
 const uint8Array1 = Uint8Array.fromBase64(base64url);
-// URLセーフなエンコードされたbase64も受け入れる
+// Uint8Array([72, 101, 126, 177, 177, 188])
 const uint8Array2 = Uint8Array.fromBase64(base64url, {
   alphabet: "base64url",
 });
 ```
 
-`lastChunkHandling`はbase64文字列の最後のチャンクの処理方法を指定します。
+base64は、4文字ずつ3バイトに戻します。`lastChunkHandling`は、最後の4文字のまとまりが欠けているときの扱いを決めます。
 
-デフォルトは`"loose"`で最も柔軟です。最後のチャンクが2、3文字の不完全な状態でも可能な限りデコードします。
+既定の`"loose"`は、最後のまとまりが`=`を省いた2文字や3文字でもデコードします。
 
 ```ts
 const loose1 = Uint8Array.fromBase64("SGVsbG8=", { lastChunkHandling: "loose" });
@@ -139,7 +131,7 @@ console.log(loose1); // Uint8Array([72, 101, 108, 108, 111])
 console.log(loose2); // Uint8Array([72, 101, 108, 108, 111])
 ```
 
-`"strict"`は最も厳格です。最後のチャンクが`=`で埋めた4文字になっていないときや、余ったビットが0でないときにエラーをスローします。
+`"strict"`は、最後のまとまりが`=`で埋めた4文字になっていないときや、余ったビットが0でないときに`SyntaxError`を投げます。
 
 ```ts
 const strict = Uint8Array.fromBase64("SGVsbG8=", { lastChunkHandling: "strict" });
@@ -150,7 +142,7 @@ Uint8Array.fromBase64("SGVsbG8", { lastChunkHandling: "strict" });
 Uint8Array.fromBase64("SGVsbG1=", { lastChunkHandling: "strict" });
 ```
 
-`"stop-before-partial"`を指定すると、不完全なチャンクがあればその前でデコードを停止します。
+`"stop-before-partial"`は、最後のまとまりが欠けていれば、その手前でデコードをやめます。`"SGVsbG1"`の最後の`bG1`は3文字しかないので、手前の`SGVs`だけをデコードします。
 
 ```ts
 const loose = Uint8Array.fromBase64("SGVsbG1", { lastChunkHandling: "loose" });
@@ -159,29 +151,9 @@ const stopBeforePartial = Uint8Array.fromBase64("SGVsbG1", { lastChunkHandling: 
 console.log(stopBeforePartial); // Uint8Array([72, 101, 108])
 ```
 
-`atob`は、デコードした結果を1文字が1バイトを表す文字列で返すので、バイト列として扱うには変換が要ります。`fromBase64`は`Uint8Array`を直接返します。
-
-### fromHex
-
-`fromHex`は、Hexエンコードされた文字列を受け取り、それをデコードして新しい`Uint8Array`を生成します。
-
-```ts
-const hex = "48656c6c6f";
-const uint8Array = Uint8Array.fromHex(hex); // Uint8Array([72, 101, 108, 108, 111])
-```
-
-`fromHex`にはオプションはありません。
-
 ### toBase64
-`toBase64`は、`Uint8Array`のインスタンスメソッドであり、その内容をbase64エンコードされた文字列に変換します。
 
-```ts
-const uint8Array = new Uint8Array([72, 101, 108, 108, 111]);
-const base64 = uint8Array.toBase64(); // "SGVsbG8="
-```
-
-引数にはオプションとして`alphabet`と`omitPadding`を付与できます。
-`alphabet`は`fromBase64`と同様に、base64のアルファベットを指定します。デフォルトは`"base64"`です。
+`toBase64()`は、`Uint8Array`の中身をbase64の文字列にします。オプションで`alphabet`と`omitPadding`を指定できます。`alphabet`は`fromBase64()`と同じで、既定は`"base64"`です。
 
 ```ts
 const uint8Array = new Uint8Array([72, 101, 126, 177, 177, 188]);
@@ -189,7 +161,7 @@ const base64 = uint8Array.toBase64(); // "SGV+sbG8"
 const base64Url = uint8Array.toBase64({ alphabet: "base64url" }); // "SGV-sbG8"
 ```
 
-`omitPadding`は、エンコードされたbase64文字列の末尾の`=`パディングを省略するかどうかを指定します。デフォルトは`false`でパディングを含みます。
+`omitPadding`を`true`にすると、末尾の`=`を付けません。既定は`false`です。
 
 ```ts
 const uint8Array = new Uint8Array([72, 101, 108, 108, 111]);
@@ -197,55 +169,27 @@ const base64 = uint8Array.toBase64(); // "SGVsbG8="
 const base64WithoutPadding = uint8Array.toBase64({ omitPadding: true }); // "SGVsbG8"
 ```
 
-### toHex
-`toHex`は、`Uint8Array`のインスタンスメソッドであり、その内容をHexエンコードされた文字列に変換します。
+### fromHexとtoHex
+
+`fromHex()`は16進数の文字列から`Uint8Array`を作り、`toHex()`は`Uint8Array`を16進数の文字列にします。どちらもオプションはありません。
 
 ```ts
-const uint8Array = new Uint8Array([72, 101, 108, 108, 111]);
-const hex = uint8Array.toHex(); // "48656c6c6f"
+console.log(Uint8Array.fromHex("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
+console.log(new Uint8Array([72, 101, 108, 108, 111]).toHex()); // "48656c6c6f"
 ```
 
-`fromHex`と同様に、オプションはありません。
+### setFromBase64とsetFromHex
 
-### setFromBase64
-`setFromBase64`は、`Uint8Array`のインスタンスメソッドであり、base64エンコードされた文字列をデコードして、その内容を既存の`Uint8Array`に設定します。
+`setFromBase64()`と`setFromHex()`は、文字列をデコードして、既存の`Uint8Array`に先頭から書き込みます。どちらも、読んだ文字数の`read`と、書き込んだバイト数の`written`を持つオブジェクトを返します。`setFromBase64()`には、`fromBase64()`と同じ`alphabet`と`lastChunkHandling`を指定できます。
 
 ```ts
-const uint8Array = new Uint8Array(5);
-const base64 = "SGVsbG8=";
-uint8Array.setFromBase64(base64); // uint8Array is now Uint8Array([72, 101, 108, 108, 111])
+const bytes = new Uint8Array(5);
+console.log(bytes.setFromBase64("SGVsbG8=")); // { read: 8, written: 5 }
+console.log(bytes); // Uint8Array([72, 101, 108, 108, 111])
+console.log(bytes.setFromHex("4869")); // { read: 4, written: 2 }
+console.log(bytes); // Uint8Array([72, 105, 108, 108, 111])
 ```
-オプションは`fromBase64`と同様に、`alphabet`と`lastChunkHandling`を指定できます。
-
-```ts
-const uint8Array = new Uint8Array(5);
-// {read: 8, written: 5}
-uint8Array.setFromBase64("SGVsbG8=", {
-  alphabet: "base64url",
-  lastChunkHandling: "strict"
-});
-
-// {read: 4, written: 3}
-uint8Array.setFromBase64("SGVsbG1", {
-  lastChunkHandling: "stop-before-partial"
-});
-```
-
-`setFromBase64`は、`read`と`written`をキーに持つオブジェクトを返します。`read`は読み取ったbase64文字列の長さ、`written`は書き込んだバイト数を示します。
-
-### setFromHex
-
-`setFromHex`は、`Uint8Array`のインスタンスメソッドであり、Hexエンコードされた文字列をデコードして、その内容を既存の`Uint8Array`に設定します。
-
-```ts
-const uint8Array = new Uint8Array(5);
-const hex = "48656c6c6f";
-// { read: 10, written: 5 }
-uint8Array.setFromHex(hex); // uint8Array is now Uint8Array([72, 101, 108, 108, 111])
-```
-
-オプションはもたず、`setFromBase64`と同様に`read`と`written`をキーに持つオブジェクトを返します。
 
 ## おわりに
-Chrome 140以降で追加されたこれらの新しいメソッドにより、JavaScriptでのバイナリデータとテキスト形式の変換が大幅に簡素化されました。
-従来は変換処理を自作する必要があり、大きなバイト列や不正な入力で失敗していましたが、標準のメソッドで安全かつ簡潔に処理できるようになりました。
+
+`Uint8Array`の`fromBase64()`と`toBase64()`、`fromHex()`、`toHex()`を使えば、`btoa()`で自作していた変換を1回の呼び出しで書けます。日本語の文字列は`TextEncoder`でバイト列にしてから渡し、base64urlや`=`の有無はオプションで切り替えます。
