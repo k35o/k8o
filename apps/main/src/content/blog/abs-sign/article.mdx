@@ -7,6 +7,8 @@ featureIds:
   - abs-sign
 ---
 
+import { ChangeExamples } from './_components/change-examples';
+
 # abs()とsign()でCSSの値の絶対値と符号を求める
 
 <BrowserSupportStatus featureId="abs-sign"></BrowserSupportStatus>
@@ -88,17 +90,21 @@ featureIds:
 
 ```css
 .change {
+  /* sign()が-1、0、1のとき、色相は0、60、120 */
   color: hsl(calc(sign(var(--delta)) * 60 + 60) 70% 40%);
 }
 
 .change::before {
   content: '▲';
   display: inline-block;
+  /* sign()が-1、0、1のとき、180deg、90deg、0deg */
   rotate: calc((1 - sign(var(--delta))) * 90deg);
 }
 ```
 
-`--delta`が-2.5・0・1.2のとき、文字色の色相はそれぞれ0・60・120、矢印の`rotate`は180deg・90deg・0degになります。
+`--delta`を-2.5、0、1.2にすると、次のように表示されます。
+
+<ChangeExamples />
 
 ## 例
 
