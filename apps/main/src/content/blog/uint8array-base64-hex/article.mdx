@@ -80,11 +80,14 @@ console.log(hexToUint8Array("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 11
 
 ## 日本語の文字列とハッシュ値を変換する
 
-`btoa()`に`"あいう"`をそのまま渡すと、`InvalidCharacterError`になります。日本語を含む文字列は、`TextEncoder`でUTF-8のバイト列にしてから変換します。ハッシュ値は、`crypto.subtle.digest()`が返す`ArrayBuffer`を`Uint8Array`にしてから変換します。
+`btoa()`に`"あいう"`をそのまま渡すと、`InvalidCharacterError`になります。日本語を含む文字列は、`TextEncoder`でUTF-8のバイト列にしてから変換し、戻すときは`TextDecoder`で文字列にします。ハッシュ値は、`crypto.subtle.digest()`が返す`ArrayBuffer`を`Uint8Array`にしてから変換します。
 
 ```ts
 // 日本語を含む文字列をUTF-8のbase64にする
 console.log(new TextEncoder().encode("あいう").toBase64()); // "44GC44GE44GG"
+
+// UTF-8のbase64を文字列に戻す
+console.log(new TextDecoder().decode(Uint8Array.fromBase64("44GC44GE44GG"))); // "あいう"
 
 // SHA-256のハッシュ値を16進数の文字列にする
 const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("hello"));
@@ -161,21 +164,22 @@ const base64 = uint8Array.toBase64(); // "SGV+sbG8"
 const base64Url = uint8Array.toBase64({ alphabet: "base64url" }); // "SGV-sbG8"
 ```
 
-`omitPadding`を`true`にすると、末尾の`=`を付けません。既定は`false`です。
+`omitPadding`を`true`にすると、末尾の`=`を付けません。既定は`false`です。JWTのように、base64urlで`=`を付けない形式にするときは、`alphabet: "base64url"`と`omitPadding: true`を一緒に指定します。
 
 ```ts
-const uint8Array = new Uint8Array([72, 101, 108, 108, 111]);
-const base64 = uint8Array.toBase64(); // "SGVsbG8="
-const base64WithoutPadding = uint8Array.toBase64({ omitPadding: true }); // "SGVsbG8"
+const uint8Array = new Uint8Array([251, 255]);
+console.log(uint8Array.toBase64()); // "+/8="
+console.log(uint8Array.toBase64({ omitPadding: true })); // "+/8"
+console.log(uint8Array.toBase64({ alphabet: "base64url", omitPadding: true })); // "-_8"
 ```
 
 ### fromHexとtoHex
 
-`fromHex()`は16進数の文字列から`Uint8Array`を作り、`toHex()`は`Uint8Array`を16進数の文字列にします。どちらもオプションはありません。
+`fromHex()`は16進数の文字列から`Uint8Array`を作り、`toHex()`は`Uint8Array`を16進数の文字列にします。どちらもオプションはありません。`fromHex()`は大文字と小文字のどちらも受け付け、`toHex()`は小文字で返します。
 
 ```ts
-console.log(Uint8Array.fromHex("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
-console.log(new Uint8Array([72, 101, 108, 108, 111]).toHex()); // "48656c6c6f"
+console.log(Uint8Array.fromHex("4F6B")); // Uint8Array([79, 107])
+console.log(new Uint8Array([79, 107]).toHex()); // "4f6b"
 ```
 
 ### setFromBase64とsetFromHex
@@ -189,6 +193,8 @@ console.log(bytes); // Uint8Array([72, 101, 108, 108, 111])
 console.log(bytes.setFromHex("4869")); // { read: 4, written: 2 }
 console.log(bytes); // Uint8Array([72, 105, 108, 108, 111])
 ```
+
+書き込み先が足りないときは、例外にならず、入るところまで書いて止まります。`setFromBase64()`は4文字のまとまりごとに書くので、`new Uint8Array(4)`に`"SGVsbG8="`を書き込むと`{ read: 4, written: 3 }`が返り、最後の1バイトは0のままです。
 
 ## おわりに
 
