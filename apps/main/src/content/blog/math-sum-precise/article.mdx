@@ -45,8 +45,6 @@ console.log(sum); // 0
 
 `Math.sumPrecise()`は数値の`iterable`を受け取り、中間の丸め誤差を避けて合計を返します。仕様は特定のアルゴリズムを指定しておらず、各値を任意精度で厳密に加算した結果を最後に一度だけ64bit浮動小数点数として表現可能な最も近い値へ丸めたときと同じ結果になることだけを要求しています。TC39 proposalのREADMEでは実装候補としてShewchukのアルゴリズム（Pythonの`math.fsum`と同系統）とNealのsuperaccumulator（xsum）が挙げられており、proposalのpolyfillではShewchukのアルゴリズムが採用されています。
 
-<LinkCard href="https://github.com/tc39/proposal-math-sum/tree/main/polyfill" />
-
 ```js
 console.log(Math.sumPrecise([1e20, 0.1, -1e20])); // 0.1
 console.log(Math.sumPrecise([1, 2, 3])); // 6
@@ -162,7 +160,7 @@ console.log(Math.sumPrecise([1, 2, 3, 4, 5])); // 15
 10進数での厳密さが必要な場面では、これまでと同様の対応が必要です。
 
 - 金額を扱う場合は、整数で扱って最後に桁を戻す
-- 任意精度の10進数が必要な場合は、[decimal.js](https://github.com/MikeMcl/decimal.js)のような10進数ライブラリや、将来的に標準化が議論されている[Decimal](https://github.com/tc39/proposal-decimal)を使う
+- 任意精度の10進数が必要な場合は、[decimal.js](https://github.com/MikeMcl/decimal.js)のような10進数ライブラリを使う
 
 ## おわりに
 
