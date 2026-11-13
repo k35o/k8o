@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`Math.sumPrecise()`は、数値の配列などを受け取り、その合計を返す静的メソッドです。`+`のように足すたびに丸めるのではなく、すべての値を正確に足した結果を最後に1回だけ丸めるので、足す順序で結果が変わりません。Baseline 2026で使えるようになりました。
+`Math.sumPrecise()`は、数値の配列などを受け取り、その合計を返す静的メソッドです。`+`のように足すたびに丸めるのではなく、すべての値を正確に足した結果を最後に1回だけ丸めるので、足す順序で結果が変わりません。Chrome 147が対応して、Baseline 2026に入りました。
 
 JavaScriptの数値はIEEE 754の倍精度浮動小数点数（64bit、仮数部フィールドは52bit、隠れビットを含めて有効精度は53bit相当）で表現されるため、表現できる精度には限りがあります。`a + b`の結果も64bitに収めるために最も近い表現可能な値へ丸められるため、足し算を繰り返すと中間結果の丸め誤差が積み重なります。特に桁の大きく異なる数値が混ざると、本来0ではない合計が0になるなど、結果が大きくずれることがあります。
 
@@ -25,7 +25,7 @@ console.log(numbers.reduce((sum, n) => sum + n, 0)); // 0.9999999999999999
 console.log(Math.sumPrecise(numbers)); // 1
 ```
 
-コンソールに貼ると、`reduce`は`0.9999999999999999`を、`Math.sumPrecise()`は`1`を出します。Chrome 156、Safari 27.2、Firefox 159のどれでも同じでした。
+コンソールに貼ると、`reduce`は`0.9999999999999999`を、`Math.sumPrecise()`は`1`を出します。
 
 ## これまでの方法の問題点
 
@@ -54,7 +54,7 @@ console.log(Math.sumPrecise([1, 2, 3])); // 6
 
 先ほど`reduce`で`0`になった式も、`Math.sumPrecise()`を使えば期待通りの`0.1`を返します。
 
-Node.js 26.13.0では、`Math.sumPrecise`は既定で使えず、`TypeError: Math.sumPrecise is not a function`になりました。V8のフラグを付けて`node --js-sum-precise`で起動すると使えます。TypeScript 7.0.2も、`lib`を`esnext`にしても型が無く、`Property 'sumPrecise' does not exist on type 'Math'`のエラーになります。型は、グローバルの`.d.ts`に足せば使えます。
+Node.js 26では、`Math.sumPrecise`は既定で使えず、`TypeError: Math.sumPrecise is not a function`になります。V8のフラグを付けて`node --js-sum-precise`で起動すると使えます。TypeScript 7も、`lib`を`esnext`にしても型が無く、`Property 'sumPrecise' does not exist on type 'Math'`のエラーになります。型は、グローバルの`.d.ts`に足せば使えます。
 
 ```ts title="math-sum-precise.d.ts"
 interface Math {
@@ -87,7 +87,7 @@ console.log(Math.sumPrecise(range(1, 101))); // 5050
 
 単に`Math.sum`だと素朴な加算をするメソッドだと誤解されかねないため、素朴な加算とは異なる（精度を優先するぶん遅い）アルゴリズムが使われていることを名前から伝えるために`sumPrecise`が採用された、ということです。
 
-手元で100万個の乱数を合計して比べると、Safari 27.2は`reduce`の約1msに対して約3ms、Firefox 159は約3msに対して約4msで、`Math.sumPrecise()`の方が遅くなりました。Chrome 156は逆に、`reduce`の約5msに対して約1.8msで速くなりました。どれも100万個で数ミリ秒です。
+100万個の乱数を合計して比べると、SafariとFirefoxでは`Math.sumPrecise()`の方が`reduce`より遅く、Chromeでは逆に速くなります。
 
 ## 引数の挙動
 
@@ -133,8 +133,6 @@ console.log([1e308, 1e308, -1e308].reduce((sum, n) => sum + n, 0)); // Infinity
 console.log(Math.sumPrecise([1e308, 1e308, -1e308])); // 1e+308
 ```
 
-Chrome 156、Safari 27.2、Firefox 159のどれでも、`reduce`は`Infinity`を、`Math.sumPrecise()`は`1e+308`を返しました。
-
 ## 解消できない精度の限界
 
 `Math.sumPrecise()`が取り除くのは合計時の丸め誤差だけで、入力値そのものが持つ表現誤差までは解消できません。有名な`0.1 + 0.2`の例でも、結果は`0.3`にはなりません。
@@ -170,4 +168,4 @@ console.log(Math.sumPrecise([1, 2, 3, 4, 5])); // 15
 
 `Math.sumPrecise()`は、合計の途中で生まれる丸め誤差を抑え、入力の順序に依存しない結果を返してくれるメソッドです。
 
-`reduce`や`for`での合計はコードの見た目こそ簡潔ですが、入力の順序や桁の差で結果が変わってしまう不安が残ります。これからは、数値の合計を取る場面では`Math.sumPrecise()`を第一候補として選べば、合計過程の精度と意図の明確さの両方を得られるようになりました。Node.js 26.13.0とTypeScript 7.0.2ではまだ既定で使えないので、フラグや型の宣言を足して使います。
+`reduce`や`for`での合計はコードの見た目こそ簡潔ですが、入力の順序や桁の差で結果が変わってしまう不安が残ります。これからは、数値の合計を取る場面では`Math.sumPrecise()`を第一候補として選べば、合計過程の精度と意図の明確さの両方を得られるようになりました。Node.js 26とTypeScript 7ではまだ既定で使えないので、フラグや型の宣言を足して使います。
