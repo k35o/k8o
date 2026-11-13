@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`Intl.DurationFormat`は、`{ hours: 1, minutes: 5 }`のような時間の長さを、言語に合わせた文字列にするオブジェクトです。Firefox 136のリリースでBaseline 2025に追加されました。
+`Intl.DurationFormat`は、`{ hours: 1, minutes: 5 }`のような時間の長さを、言語に合わせた文字列にするオブジェクトです。Firefox 136が対応して、Baseline 2025に入りました。
 
 単位が1つだけなら、`Intl.NumberFormat`の`style: 'unit'`で`3 時間`のように書けます。時間と分のように複数の単位を並べると、言語ごとに区切り方が変わるので、`Intl.DurationFormat`が要ります。英語は`1 hour, 5 minutes, 6 seconds`、ドイツ語は`1 Stunde, 5 Minuten und 6 Sekunden`のように、接続詞の有無まで変わります。
 
@@ -33,7 +33,7 @@ console.log(new Intl.DurationFormat('ja').format(duration));
 // 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒
 ```
 
-コンソールに貼ると、7つの単位が日本語で並びます。Chrome 156とFirefox 159では数字と単位の間に空白が入り、Safari 27.2では`1年 2か月 3週間 3日 4時間 5分 6秒`と、単位の区切りにだけ空白が入りました。
+コンソールに貼ると、7つの単位が日本語で並びます。ChromeとFirefoxでは数字と単位の間に空白が入り、Safariでは`1年 2か月 3週間 3日 4時間 5分 6秒`と、単位の区切りにだけ空白が入ります。
 
 <LinkCard href="https://github.com/tc39/proposal-intl-duration-format" />
 
@@ -65,9 +65,9 @@ new Intl.DurationFormat('ja-JP', {
 // digital 1 年 2 か月 3 週間 3 日 4:05:06.007008009
 ```
 
-上の表示はChrome 156とFirefox 159のものです。Safari 27.2は`long`でも数字と単位の間に空白を入れず、`narrow`は`1y2m3w3日4時間5分6秒7ms8μs9ns`と、日から秒までが日本語になりました。
+上の表示はChromeとFirefoxのものです。Safariは`long`でも数字と単位の間に空白を入れず、`narrow`は`1y2m3w3日4時間5分6秒7ms8μs9ns`と、日から秒までが日本語になります。
 
-TypeScriptでは、6.0.2と7.0.2で`lib`に`es2025`以降を含めると型が付きます。`es2024`までだと`Property 'DurationFormat' does not exist on type 'typeof Intl'`（TS2550）になり、5.9.3には型がありませんでした。
+TypeScriptでは、TypeScript 6以降で`lib`に`es2025`以降を含めると型が付きます。`es2024`までだと`Property 'DurationFormat' does not exist on type 'typeof Intl'`（TS2550）になります。
 
 ## format
 
@@ -90,7 +90,7 @@ new Intl.DurationFormat('ja').format(duration);
 
 期間は`years`・`months`・`weeks`・`days`・`hours`・`minutes`・`seconds`・`milliseconds`・`microseconds`・`nanoseconds`の10個の単位に対応しています。これらを`format`に渡すオブジェクトのキーとして利用できます。
 
-`format`は単位を繰り上げません。`{ seconds: 3725 }`は`1 時間 2 分 5 秒`ではなく`3,725 秒`になります。Chrome 156、Safari 27.2、Firefox 159のどれでも繰り上がりませんでした。値は整数でなければならず、`{ seconds: 1.5 }`は3つのブラウザで`RangeError`になりました。経過時間をミリ秒で持っているときは、自分で時・分・秒に分けてから渡します。
+`format`は単位を繰り上げません。`{ seconds: 3725 }`は`1 時間 2 分 5 秒`ではなく`3,725 秒`になります。値は整数でなければならず、`{ seconds: 1.5 }`は`RangeError`になります。経過時間をミリ秒で持っているときは、自分で時・分・秒に分けてから渡します。
 
 ```js
 const toDuration = (ms) => {
@@ -199,7 +199,7 @@ new Intl.DurationFormat('ja').formatToParts(duration);
 // ]
 ```
 
-上の配列はChrome 156とFirefox 159のものです。Safari 27.2は数字と単位の間の`literal`を返さず、11個の要素になりました。
+上の配列はChromeとFirefoxのものです。Safariは数字と単位の間の`literal`を返さず、11個の要素になります。
 
 期間を元に自分なりの表示を作成する場合はこちらが便利です。
 日本語で`format`した場合スペースが気になるときは、`literal`を除いてつなぐと、どのブラウザでも空白の無い表示になります。
@@ -213,7 +213,7 @@ console.log(parts.filter((part) => part.type !== 'literal').map((part) => part.v
 単位の区切りも消えるので、英語のように単位の間に区切りが要る言語には使えません。
 
 ## おわりに
-Baseline 2025に追加された`Intl.DurationFormat`を紹介しました。
+`Intl.DurationFormat`を紹介しました。
 
 `locale`に基づいた期間の表現は、かなり実装が大変で、ライブラリを利用した場合でも満足が得られる結果を簡単に得ることはできませんでした。
 そのため、`Intl.DurationFormat`によって、これらの表現を簡単にできるようになったことはとても嬉しいです。
