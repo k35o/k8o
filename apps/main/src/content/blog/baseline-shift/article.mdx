@@ -13,11 +13,11 @@ featureIds:
 
 ## はじめに
 
-`baseline-shift`は、文字が並ぶ基準の線（ベースライン）を、親の文字に対して上下にずらすCSSプロパティです。SVGの`<text>`の中の`<tspan>`に指定すると、化学式や単位の数字のように、その部分だけを上付き・下付きにできます。
+`baseline-shift`は、文字が並ぶ基準の線（ベースライン）を、親の文字に対して上下にずらすCSSプロパティです。SVGの`<text>`の中の`<tspan>`に指定すると、化学式や単位の数字のように、その部分だけを上付き・下付きにできます。Firefox 149が対応して、Baseline 2026に入りました。
 
-HTMLの文章なら、今までどおり`<sub>`・`<sup>`や`vertical-align`で足ります。SVGの`<text>`の中では、Chrome 156とSafari 27.2で`vertical-align`が効きません。`<tspan>`の`dy`属性でもずらせますが、後ろの文字まで一緒にずれるので、戻すための`dy`がもう1つ要ります。ずらした部分の後ろを元の高さに残したまま上付き・下付きにできるのは`baseline-shift`です。
+HTMLの文章なら、今までどおり`<sub>`・`<sup>`や`vertical-align`で足ります。SVGの`<text>`の中では、ChromeとSafariで`vertical-align`が効きません。`<tspan>`の`dy`属性でもずらせますが、後ろの文字まで一緒にずれるので、戻すための`dy`がもう1つ要ります。ずらした部分の後ろを元の高さに残したまま上付き・下付きにできるのは`baseline-shift`です。
 
-SVGには古くから`baseline-shift`という属性があり、`<text>`や`<tspan>`の属性として書けばずらせました。この属性は同じ名前のCSSプロパティの値を決めるプレゼンテーション属性で、CSSから`baseline-shift`を指定しても同じようにずれます。`baseline-shift`プロパティはCSS Inline 3でも定義され、Firefox 149が対応したことでBaseline 2026に入りました。
+SVGには古くから`baseline-shift`という属性があり、`<text>`や`<tspan>`の属性として書けばずらせました。この属性は同じ名前のCSSプロパティの値を決めるプレゼンテーション属性で、CSSから`baseline-shift`を指定しても同じようにずれます。
 
 ## 基本の使い方
 
@@ -66,7 +66,7 @@ CSSプロパティとして書くことで、SVGの`baseline-shift`属性を直�
 
 ## プロパティの値
 
-`baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただしHTMLのインライン要素に指定してずれるのはFirefox 159だけで、Chrome 156とSafari 27.2では位置が変わりませんでした。実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
+`baseline-shift`はインラインレベルボックスとSVGテキスト要素（`<tspan>`や`<textPath>`）に適用されるプロパティで、対象要素のドミナントベースラインを親のベースラインから相対的に動かします。ただしHTMLのインライン要素に指定してずれるのはFirefoxだけで、ChromeとSafariでは位置が変わりません。実用上はSVGテキストでの利用が中心になります。CSS Inline Layout Module Level 3で定義されている値は次の通りです。初期値は`0`（ずらさない）です。
 
 <LinkCard href="https://drafts.csswg.org/css-inline-3/#baseline-shift-property" />
 
@@ -77,14 +77,14 @@ CSSプロパティとして書くことで、SVGの`baseline-shift`属性を直�
 - `center` - 行ボックスの上下中央にベースラインを揃える
 - `bottom` - 行ボックスの下端にベースラインを揃える
 
-`sub`と`super`でずれる量はブラウザで違います。基本の使い方のコード（親が28pxのsans-serif、`<tspan>`が0.8em）で数字の位置を比べると、Chrome 156とSafari 27.2では`sub`で12px下がり、`super`で11px上がりました。Firefox 159では`sub`で6px、`super`で10pxでした。ブラウザ間で揃えたいときは`0.3em`のような長さで指定します（3つとも6〜7px上がりました）。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
+`sub`と`super`でずれる量はブラウザで違い、特に`sub`は、ChromeとSafariの方がFirefoxより大きく下がります。ブラウザの間で揃えたいときは、`0.3em`のような長さで指定します。`top` / `center` / `bottom`は行ボックス（その1行ぶんのテキストを上下方向に収める箱）の端や中央に揃えるための値です。なお`top` / `center` / `bottom`は現状Firefoxのみの対応で、Chrome / Edge / Safariは未対応のため、跨いで使えるのは`<length-percentage>` / `sub` / `super`までです。
 
 ## vertical-alignとの関係
 
-CSS Inline Layout 3では、`vertical-align`は`baseline-source`、`alignment-baseline`、`baseline-shift`の3つを束ねるショートハンドとして定義されています。SVG 2の草案も、新しく書くなら`vertical-align`を使うよう勧めています。ただ、今`vertical-align`をショートハンドとして扱うのはFirefox 159だけです。Chrome 156とSafari 27.2では、`<tspan>`に`vertical-align: 0.3em`や`vertical-align: super`を指定しても位置が変わらず、`baseline-shift`の計算値もそのままでした。SVGのテキストをずらすなら、今は`baseline-shift`を書きます。
+CSS Inline Layout 3では、`vertical-align`は`baseline-source`、`alignment-baseline`、`baseline-shift`の3つを束ねるショートハンドとして定義されています。SVG 2の草案も、新しく書くなら`vertical-align`を使うよう勧めています。ただ、今`vertical-align`をショートハンドとして扱うのはFirefoxだけです。ChromeとSafariでは、`<tspan>`に`vertical-align: 0.3em`や`vertical-align: super`を指定しても位置が変わらず、`baseline-shift`の計算値もそのままです。SVGのテキストをずらすなら、今は`baseline-shift`を書きます。
 
 ```css
-/* ショートハンド。Chrome 156とSafari 27.2のtspanでは効かない */
+/* ショートハンド。ChromeとSafariのtspanでは効かない */
 text .note {
   vertical-align: 0.3em;
 }
@@ -99,6 +99,6 @@ text .note {
 
 ## おわりに
 
-`baseline-shift`はSVGテキストのベースラインをずらすCSSプロパティで、Firefox 149の対応でBaseline 2026に揃いました。化学式・数式・図中ラベルなど、SVGの`<text>`に細かい上付き・下付きを入れたい場面で素直に書ける選択肢です。
+`baseline-shift`はSVGテキストのベースラインをずらすCSSプロパティです。化学式・数式・図中ラベルなど、SVGの`<text>`に細かい上付き・下付きを入れたい場面で素直に書ける選択肢です。
 
 ただ、HTMLのインライン要素への適用や`top`・`center`・`bottom`の値、`vertical-align`をショートハンドとして扱うことは、今のところFirefoxだけが対応しています。SVGのテキストをずらす用途なら今すぐ使えますが、HTMLの文章で`vertical-align`の代わりに使えるのはもう少し先になりそうです。
