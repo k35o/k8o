@@ -5,7 +5,7 @@ runs:
   using: 'composite'
   steps:
     - name: Setup mise
-      uses: jdx/mise-action@v5.2.6 # zizmor: ignore[unpinned-uses] $/ で呼ぶワークフローの actions.lock がコミットを固定する
+      uses: jdx/mise-action@v5.2.7 # zizmor: ignore[unpinned-uses] $/ で呼ぶワークフローの actions.lock がコミットを固定する
       with:
         cache: true
 
