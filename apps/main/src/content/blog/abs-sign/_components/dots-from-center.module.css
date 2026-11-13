@@ -1,0 +1,31 @@
+@keyframes pop {
+  from {
+    scale: 0;
+  }
+}
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 6);
+}
+
+.dots {
+  display: flex;
+  gap: calc(var(--spacing) * 3);
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.dot {
+  inline-size: calc(var(--spacing) * 6);
+  block-size: calc(var(--spacing) * 6);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-bg);
+  /* better-css-modules-disable-next-line tokens/duration -- 記事のコード例と同じ0.4sで動かす */
+  animation: pop 0.4s both;
+  /* better-css-modules-disable-next-line tokens/duration -- 記事のコード例と同じ式で、真ん中からの距離に50msを掛けて遅らせる */
+  animation-delay: calc(abs(var(--i) - 3) * 50ms);
+}

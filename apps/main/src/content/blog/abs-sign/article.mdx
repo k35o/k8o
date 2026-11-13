@@ -8,6 +8,7 @@ featureIds:
 ---
 
 import { ChangeExamples } from './_components/change-examples';
+import { DotsFromCenter } from './_components/dots-from-center';
 
 # abs()とsign()でCSSの値の絶対値と符号を求める
 
@@ -63,6 +64,8 @@ import { ChangeExamples } from './_components/change-examples';
   animation-delay: calc(abs(var(--i) - 3) * 50ms);
 }
 ```
+
+<DotsFromCenter />
 
 `animation-delay`は端から順に0.15s・0.1s・0.05s・0s・0.05s・0.1s・0.15sになります。
 
