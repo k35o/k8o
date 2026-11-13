@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-Iterator Helpersは、`map`・`filter`・`take`などのメソッドを`Iterator`オブジェクトに足す機能です。`Map`や`Set`の`values()`、ジェネレータが返すイテレータを、配列にせずにそのまま加工できます。Baseline 2025で使えるようになりました。
+Iterator Helpersは、`map`・`filter`・`take`などのメソッドを`Iterator`オブジェクトに足す機能です。`Map`や`Set`の`values()`、ジェネレータが返すイテレータを、配列にせずにそのまま加工できます。Safari 18.4が対応して、Baseline 2025に入りました。
 
 <LinkCard href="https://github.com/tc39/proposal-iterator-helpers" />
 
@@ -28,7 +28,7 @@ function* naturals() {
 console.log(naturals().filter((n) => n % 3 === 0).map((n) => n * n).take(4).toArray()); // [0, 9, 36, 81]
 ```
 
-コンソールに貼ると`[0, 9, 36, 81]`が出ます。`naturals()`は0から1ずつ増える値を終わりなく返しますが、`take(4)`で4つ取った時点で止まります。Chrome 156、Safari 27.2、Firefox 159のどれでも同じ結果でした。
+コンソールに貼ると`[0, 9, 36, 81]`が出ます。`naturals()`は0から1ずつ増える値を終わりなく返しますが、`take(4)`で4つ取った時点で止まります。
 
 Iterator Helpersで使えるのは、`map`・`filter`・`take`・`drop`・`flatMap`・`reduce`・`toArray`・`forEach`・`some`・`every`・`find`という操作と、静的メソッドの`from`です。
 
@@ -40,7 +40,7 @@ Iterator Helpersで使えるのは、`map`・`filter`・`take`・`drop`・`flatM
 `next`という操作で次のステップで進み、戻り値は次のデータを表す`value`と後続のデータの有無を示す`done`のオブジェクトです。
 
 `Iterator`オブジェクトは、他の多くの組み込みイテレータの基盤となる存在です。
-`Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`の結果は、どれも`Iterator`オブジェクトを継承しています。`Intl.Segmenter.prototype.segment`の結果や`NodeList`は、それ自身は`Iterator`を継承していませんが、`[Symbol.iterator]()`で取り出したイテレータは継承しています。Chrome 156、Safari 27.2、Firefox 159のどれで試しても、`document.querySelectorAll('a') instanceof Iterator`は`false`、`document.querySelectorAll('a')[Symbol.iterator]() instanceof Iterator`は`true`でした。
+`Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`の結果は、どれも`Iterator`オブジェクトを継承しています。`Intl.Segmenter.prototype.segment`の結果や`NodeList`は、それ自身は`Iterator`を継承していませんが、`[Symbol.iterator]()`で取り出したイテレータは継承しています。`document.querySelectorAll('a') instanceof Iterator`は`false`、`document.querySelectorAll('a')[Symbol.iterator]() instanceof Iterator`は`true`です。
 
 ```js
 const iterator = [1, 2, 3][Symbol.iterator]();
@@ -77,7 +77,7 @@ Array.from(nodeList).forEach((x) => console.log(x.innerText)); // '...', '...'
 上記のコードでは`[...set.values()]`のように`Iterator`オブジェクトを配列に変換するような中間処理が挟まれるので非効率です。
 また、配列に変換するタイミングで全てのデータを取り出すので、`Iterator`オブジェクトが持つ呼び出されたタイミングにデータを取り出すという性質を生かせません。
 
-Baseline 2025で追加された`Iterator`オブジェクトに対する便利な操作（Iterator Helpers）を使えば、これらの問題を解決できます。
+Iterator Helpersを使えば、配列にせずにそのまま呼べます。
 
 ```js
 const set = new Set([1, 2, 3]);
@@ -106,7 +106,7 @@ const set = new Set(Array.from({ length: 1_000_000 }, (_, i) => i));
 set.values().map((i) => i * 2).filter((i) => i % 3 === 0).take(10).toArray();
 ```
 
-配列にする書き方はChrome 156で約11ms、Safari 27.2で約7ms、Firefox 159で約14msかかり、Iterator Helpersはどれも1ms未満でした。一方で、`take(10)`を外して全部の要素を取り出すと、Iterator Helpersの方が遅く、配列の約1.6〜2.3倍の時間がかかりました。全部の要素を使うなら、配列にしてから配列のメソッドを使う方が速いです。
+先頭の10個だけを取り出すときは、どのブラウザでもIterator Helpersの方がはっきり速くなります。一方で、`take(10)`を外して全部の要素を取り出すと、Iterator Helpersの方が遅くなります。全部の要素を使うなら、配列にしてから配列のメソッドを使う方が速いです。
 
 ### 使い方
 
