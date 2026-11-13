@@ -12,7 +12,7 @@ featureIds:
 <BrowserSupportStatus featureId="uint8array-base64-hex" />
 
 ## はじめに
-`Uint8Array.fromBase64()`・`toBase64()`・`fromHex()`・`toHex()`は、バイト列の`Uint8Array`と、base64や16進数（Hex）の文字列を相互に変換するメソッドです。Chrome 140のリリースで、Baseline 2025に入りました。
+`Uint8Array.fromBase64()`・`toBase64()`・`fromHex()`・`toHex()`は、バイト列の`Uint8Array`と、base64や16進数（Hex）の文字列を相互に変換するメソッドです。Chrome 140が対応して、Baseline 2025に入りました。
 
 英数字だけの文字列をbase64にするなら、これまでどおり`btoa()`と`atob()`で足ります。日本語を含む文字列やハッシュ値は、`btoa()`がLatin-1の範囲の文字しか受け取らないので、バイト列を`String.fromCharCode()`で1バイト1文字の文字列にしてから渡すことになり、大きなバイト列ではそこで失敗します。base64urlや16進数への変換は、自分で書くしかありませんでした。
 
@@ -54,7 +54,7 @@ console.log(hexToUint8Array("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 11
 
 上の関数を試すと、次の問題がありました。
 
-- `uint8ArrayToBase64`はバイト列を引数に展開するので、大きなバイト列で`RangeError`になります。Chrome 156では約12万バイト、Firefox 159では約50万バイト、Safari 27.2では約64万バイトを超えると失敗し、1MBのバイト列はどれでも変換できませんでした
+- `uint8ArrayToBase64`はバイト列を引数に展開するので、大きなバイト列で`RangeError`になります。展開できる引数の数はブラウザによって違い、1MBのバイト列はどのブラウザでも変換できません
 - `hexToUint8Array`は、`"abc"`のような奇数の長さや`"zz"`のような16進数でない文字列も、エラーにせず`[171, 12]`や`[0]`を返します
 
 `Uint8Array`のメソッドなら、それぞれ1回の呼び出しで変換できます。
@@ -75,7 +75,7 @@ console.log(bytes.toHex()); // "48656c6c6f"
 console.log(Uint8Array.fromHex("48656c6c6f")); // Uint8Array([72, 101, 108, 108, 111])
 ```
 
-コンソールに貼ると、コメントの値が順に出ます。Chrome 156、Safari 27.2、Firefox 159で試すと、`toBase64()`は10MBのバイト列も変換でき、`fromHex()`は`"abc"`も`"zz"`も`SyntaxError`にしました。
+コンソールに貼ると、コメントの値が順に出ます。`toBase64()`は10MBのバイト列も変換でき、`fromHex()`は`"abc"`も`"zz"`も`SyntaxError`にします。
 
 `Uint8Array`を生成するときは、静的メソッドである`fromBase64`や`fromHex`で変換し、`Uint8Array`から変換するときはインスタンスメソッドである`toBase64`や`toHex`を使用するだけで変換できるようになりました。
 
@@ -90,7 +90,7 @@ const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("h
 console.log(new Uint8Array(digest).toHex()); // "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
 ```
 
-`btoa("あいう")`は、Chrome 156、Safari 27.2、Firefox 159のどれでも`InvalidCharacterError`になりました。
+`btoa("あいう")`は`InvalidCharacterError`になります。
 
 ## 追加された機能
 先ほど紹介した`fromBase64`・`fromHex`・`toBase64`・`toHex`に加えて、既存の`Uint8Array`に対してデータを設定するための`setFromBase64`と`setFromHex`も追加されました。
@@ -120,7 +120,7 @@ const uint8Array = Uint8Array.fromBase64(base64, {
 
 ```ts
 const base64url = "SGV-sbG8";
-// Uncaught SyntaxError: Found a character that cannot be part of a valid base64 string.
+// SyntaxError
 const uint8Array1 = Uint8Array.fromBase64(base64url);
 // URLセーフなエンコードされたbase64も受け入れる
 const uint8Array2 = Uint8Array.fromBase64(base64url, {
@@ -144,13 +144,11 @@ console.log(loose2); // Uint8Array([72, 101, 108, 108, 111])
 ```ts
 const strict = Uint8Array.fromBase64("SGVsbG8=", { lastChunkHandling: "strict" });
 console.log(strict); // Uint8Array([72, 101, 108, 108, 111])
-// Uncaught SyntaxError: The base64 input terminates with a single character, excluding padding (=).
+// SyntaxError（=で埋めていない）
 Uint8Array.fromBase64("SGVsbG8", { lastChunkHandling: "strict" });
-// Uncaught SyntaxError: The base64 input terminates with non-zero padding bits.
+// SyntaxError（余ったビットが0でない）
 Uint8Array.fromBase64("SGVsbG1=", { lastChunkHandling: "strict" });
 ```
-
-例外のメッセージはChrome 156のものです。Safari 27.2ではどれも`Uint8Array.fromBase64 requires a valid base64 string`、Firefox 159では`unexpected incomplete base64 chunk`のように、ブラウザごとに文言が違いました。
 
 `"stop-before-partial"`を指定すると、不完全なチャンクがあればその前でデコードを停止します。
 
