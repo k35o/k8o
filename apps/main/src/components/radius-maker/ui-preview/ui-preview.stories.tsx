@@ -1,4 +1,4 @@
-import { PaletteIcon } from '@k8ordo/ui';
+import { PaletteIcon } from '@k8ordo/ui/icons';
 import { expect } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';

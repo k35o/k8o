@@ -1,4 +1,4 @@
-import { PaletteIcon, SparklesIcon } from '@k8ordo/ui';
+import { PaletteIcon, SparklesIcon } from '@k8ordo/ui/icons';
 import { expect, fireEvent, waitFor, within } from 'storybook/test';
 
 import { BrowserSupportStatusLive } from '@/components/site/browser-support-status/browser-support-status-live';

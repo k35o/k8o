@@ -1,7 +1,8 @@
 'use client';
 
-import { Alert, AssistantIcon, Avatar } from '@k8ordo/ui';
+import { Alert, Avatar } from '@k8ordo/ui';
 import { Message, Reasoning, ToolInvocation } from '@k8ordo/ui/ai';
+import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { isStaticToolUIPart } from 'ai';
 import type { FC, Ref } from 'react';
 
@@ -240,7 +241,7 @@ export const AgentMessage: FC<AgentMessageProps> = ({
   return (
     <Message.Root
       avatar={
-        <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
+        <Avatar color="primary" icon={<BotMessageIcon />} name="AI" size="sm" />
       }
       from="assistant"
     >

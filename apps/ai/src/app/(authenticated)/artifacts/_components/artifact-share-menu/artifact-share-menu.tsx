@@ -5,13 +5,12 @@ import {
   Dialog,
   DropdownMenu,
   IconButton,
-  LockIcon,
-  LockOpenIcon,
   Modal,
   Popover,
   Spinner,
   useToast,
 } from '@k8ordo/ui';
+import { LockIcon, LockOpenIcon } from '@k8ordo/ui/icons';
 import { useId, useState, useTransition } from 'react';
 import type { FC } from 'react';
 

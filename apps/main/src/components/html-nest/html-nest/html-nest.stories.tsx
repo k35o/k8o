@@ -1,4 +1,4 @@
-import { ListIcon } from '@k8ordo/ui';
+import { ListIcon } from '@k8ordo/ui/icons';
 import { expect, waitFor, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';

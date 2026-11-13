@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronIcon, IconButton } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { ChevronIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 type Props = {

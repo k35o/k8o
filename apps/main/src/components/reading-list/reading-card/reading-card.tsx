@@ -1,4 +1,5 @@
-import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8ordo/ui';
+import { Card } from '@k8ordo/ui';
+import { CalendarIcon, ExternalLinkIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import { isHttpUrl } from '@repo/helpers/url/is-http-url';
 import { memo } from 'react';
@@ -55,7 +56,7 @@ export const ReadingCard: FC<ReadingCardProps> = memo(function ReadingCard({
             </div>
             <div className={styles.meta}>
               <div className={styles.metaItem}>
-                <PublishDateIcon size="sm" />
+                <CalendarIcon size="sm" />
                 <span>{formatDate(new Date(publishedAt), 'yyyy年M月d日')}</span>
               </div>
               <div className={styles.metaItem}>

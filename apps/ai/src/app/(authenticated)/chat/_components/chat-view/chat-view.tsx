@@ -1,8 +1,9 @@
 'use client';
 
-import { Alert, AssistantIcon, Avatar, RadioCard, Spinner } from '@k8ordo/ui';
+import { Alert, Avatar, RadioCard, Spinner } from '@k8ordo/ui';
 import { Conversation, Message, PromptInput } from '@k8ordo/ui/ai';
 import type { ChatStatus } from '@k8ordo/ui/ai';
+import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { useId } from 'react';
 import type { FC, Ref } from 'react';
 
@@ -28,7 +29,7 @@ const MODEL_OPTIONS = GENERATION_MODELS.map((model) => ({
 const PendingReply: FC<{ label: string }> = ({ label }) => (
   <Message.Root
     avatar={
-      <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
+      <Avatar color="primary" icon={<BotMessageIcon />} name="AI" size="sm" />
     }
     from="assistant"
   >

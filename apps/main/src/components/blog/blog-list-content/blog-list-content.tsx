@@ -1,7 +1,8 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { BlogIcon, EmptyState, Stack, TextField } from '@k8ordo/ui';
+import { EmptyState, Stack, TextField } from '@k8ordo/ui';
+import { BookTextIcon } from '@k8ordo/ui/icons';
 import { useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
@@ -56,7 +57,7 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
       {filteredCount === 0 ? (
         <EmptyState
           description="検索条件を変更してみてください"
-          icon={<BlogIcon size="lg" />}
+          icon={<BookTextIcon size="lg" />}
           title="条件に一致する記事がありません"
         />
       ) : (

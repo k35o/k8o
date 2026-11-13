@@ -1,6 +1,7 @@
-import { Logo } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC, ReactNode } from 'react';
+
+import { Logo } from '@/app/_components/brand-icons/logo';
 
 import styles from './stage.module.css';
 

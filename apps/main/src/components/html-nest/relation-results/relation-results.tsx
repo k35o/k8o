@@ -1,5 +1,6 @@
 import type { RelatedElement } from '@k8o/html-nest';
-import { AlertIcon, CheckIcon, Stack } from '@k8ordo/ui';
+import { Stack } from '@k8ordo/ui';
+import { AlertIcon, CheckIcon } from '@k8ordo/ui/icons';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 

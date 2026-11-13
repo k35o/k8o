@@ -1,7 +1,8 @@
 'use client';
 
 import { href } from '@k8ordo/framework';
-import { CloseIcon, IconButton } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { XIcon } from '@k8ordo/ui/icons';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
@@ -93,7 +94,7 @@ export const DeckViewer: FC<{
                 </a>
               )}
             >
-              <CloseIcon />
+              <XIcon />
             </IconButton>
             <p className={styles.title}>{title}</p>
           </div>
@@ -140,7 +141,7 @@ export const DeckViewer: FC<{
                 setIsPresenting(false);
               }}
             >
-              <CloseIcon />
+              <XIcon />
             </IconButton>
           </div>
         </div>

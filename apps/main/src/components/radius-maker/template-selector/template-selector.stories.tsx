@@ -1,4 +1,4 @@
-import { SparklesIcon } from '@k8ordo/ui';
+import { SparklesIcon } from '@k8ordo/ui/icons';
 import { expect, fn, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';

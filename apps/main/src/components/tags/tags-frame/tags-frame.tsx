@@ -1,5 +1,6 @@
 import { href } from '@k8ordo/framework';
-import { Heading, Stack, TagIcon } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
+import { TagIcon } from '@k8ordo/ui/icons';
 import type { FC, ReactNode } from 'react';
 
 import styles from './tags-frame.module.css';

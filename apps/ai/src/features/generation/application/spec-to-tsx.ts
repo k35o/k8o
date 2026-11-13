@@ -1,65 +1,24 @@
 import type { Spec, UIElement } from '@json-render/core';
+import { catalog } from '@k8ordo/ui/json-render';
 
 // spec を @k8ordo/ui の実 API に沿った TSX へ機械変換する。壁打ちの成果物を
 // 実プロジェクトへ持ち出すためのスキャフォールドで、対応表は
 // @k8ordo/ui/json-render/registry の描画実装（renderers）を正とする。
 // フォーム値の state 配線・動的値（$state 等）は移植先で行う前提。
 
-// catalog の Icon.name → 実コンポーネント名（registry の iconMap と同じ対応）。
-// catalog との1対1対応は spec-to-tsx.test.ts のドリフト検知テストが照合する。
-export const ICON_COMPONENTS: Record<string, string> = {
-  plus: 'PlusIcon',
-  minus: 'MinusIcon',
-  check: 'CheckIcon',
-  close: 'CloseIcon',
-  copy: 'CopyIcon',
-  send: 'SendIcon',
-  mail: 'MailIcon',
-  subscribe: 'SubscribeIcon',
-  rss: 'RSSIcon',
-  history: 'HistoryIcon',
-  'update-date': 'UpdateDateIcon',
-  'publish-date': 'PublishDateIcon',
-  link: 'LinkIcon',
-  'external-link': 'ExternalLinkIcon',
-  location: 'LocationIcon',
-  'navigation-menu': 'NavigationMenuIcon',
-  list: 'ListIcon',
-  table: 'TableIcon',
-  form: 'FormIcon',
-  view: 'ViewIcon',
-  'view-off': 'ViewOffIcon',
-  'light-mode': 'LightModeIcon',
-  'dark-mode': 'DarkModeIcon',
-  palette: 'PaletteIcon',
-  'color-contrast': 'ColorContrastIcon',
-  'color-info': 'ColorInfoIcon',
-  'mixed-color': 'MixedColorIcon',
-  'horizontal-writing': 'HorizontalWritingIcon',
-  'vertical-writing': 'VerticalWritingIcon',
-  tag: 'TagIcon',
-  blog: 'BlogIcon',
-  news: 'NewsIcon',
-  slide: 'SlideIcon',
-  sparkles: 'SparklesIcon',
-  ai: 'AIIcon',
-  atom: 'AtomIcon',
-  accessibility: 'AccessibilityIcon',
-  'shield-check': 'ShieldCheckIcon',
-  prepare: 'PrepareIcon',
-  informative: 'InformativeIcon',
-  good: 'GoodIcon',
-  bad: 'BadIcon',
-  easy: 'EasyIcon',
-  difficult: 'DifficultIcon',
-  interesting: 'InterestingIcon',
-  boring: 'BoringIcon',
-  shallow: 'ShallowIcon',
-  logo: 'LogoIcon',
-  github: 'GitHubIcon',
-  twitter: 'TwitterIcon',
-  qiita: 'QiitaIcon',
-};
+const ICON_NAMES: ReadonlySet<string> = new Set(
+  catalog.data.components.Icon.props.shape.name.options,
+);
+
+// catalog の Icon.name → @k8ordo/ui/icons のコンポーネント名。名前は kebab-case から
+// 機械的に決まる（eye-closed は EyeClosedIcon）。catalog に無い名前には返さない
+export const iconComponentOf = (name: string): string | undefined =>
+  ICON_NAMES.has(name)
+    ? `${name
+        .split('-')
+        .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+        .join('')}Icon`
+    : undefined;
 
 // Card の size → 内側パディングの --spacing 倍率（registry の CARD_PADDING_CLASS と同じ対応）。
 export const CARD_PADDING: Record<string, number> = {
@@ -144,6 +103,7 @@ export const CONVERTED_PROPS = {
   Code: [],
   Icon: ['size'],
   ChevronIcon: ['direction', 'size'],
+  StatusIcon: ['status', 'size'],
   IconButton: ['label', 'color', 'size'],
   FormControl: [...FORM_CONTROL_FIELD_PROPS, ...FORM_CONTROL_INPUT_PROPS],
   TextField: [...TEXT_INPUT_PROPS, 'readOnly'],
@@ -190,7 +150,7 @@ export const EXCLUDED_PROPS = {
   Heading: ['label'],
   Anchor: ['label'],
   Code: ['code'],
-  // アイコンコンポーネント名へ（ICON_COMPONENTS）
+  // アイコンコンポーネント名へ（iconComponentOf）
   Icon: ['name'],
   IconButton: ['icon'],
   // renderInput に置く入力コンポーネントの選択へ
@@ -210,6 +170,7 @@ export const EXCLUDED_PROPS = {
 type Ctx = {
   spec: Spec;
   imports: Set<string>;
+  iconImports: Set<string>;
   notes: Set<string>;
 };
 
@@ -447,28 +408,32 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     }
     case 'Icon': {
       const name = textProp(el, 'name', ctx);
-      const component = ICON_COMPONENTS[name];
+      const component = iconComponentOf(name);
       if (component === undefined) {
         ctx.notes.add(`未知のアイコン名: ${name}`);
         return [`{/* TODO: Icon(${name}) */}`];
       }
-      ctx.imports.add(component);
+      ctx.iconImports.add(component);
       return [`<${component}${attrs(el, CONVERTED_PROPS.Icon, ctx)} />`];
     }
     case 'ChevronIcon': {
-      ctx.imports.add('ChevronIcon');
+      ctx.iconImports.add('ChevronIcon');
       return [`<ChevronIcon${attrs(el, CONVERTED_PROPS.ChevronIcon, ctx)} />`];
+    }
+    case 'StatusIcon': {
+      ctx.iconImports.add('AlertIcon');
+      return [`<AlertIcon${attrs(el, CONVERTED_PROPS.StatusIcon, ctx)} />`];
     }
     case 'IconButton': {
       const icon = textProp(el, 'icon', ctx);
-      const component = ICON_COMPONENTS[icon];
+      const component = iconComponentOf(icon);
       ctx.imports.add('IconButton');
       const iconJsx =
         component === undefined
           ? `{/* TODO: Icon(${icon}) */}`
           : `<${component} size="md" />`;
       if (component !== undefined) {
-        ctx.imports.add(component);
+        ctx.iconImports.add(component);
       }
       return wrap(
         `<IconButton${attrs(el, CONVERTED_PROPS.IconButton, ctx)}>`,
@@ -588,17 +553,33 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
 };
 
 export const specToTsx = (spec: Spec): string => {
-  const ctx: Ctx = { spec, imports: new Set(), notes: new Set() };
+  const ctx: Ctx = {
+    spec,
+    imports: new Set(),
+    iconImports: new Set(),
+    notes: new Set(),
+  };
   const root = spec.elements[spec.root];
   const body = root === undefined ? [] : emitElement(root, ctx);
-  const importNames = [...ctx.imports].toSorted((a, b) => a.localeCompare(b));
+  const sorted = (names: ReadonlySet<string>): string[] =>
+    [...names].toSorted((a, b) => a.localeCompare(b));
+  const importNames = sorted(ctx.imports);
+  const iconImportNames = sorted(ctx.iconImports);
 
   const lines: string[] = [];
   if (ctx.notes.size > 0) {
     lines.push(...[...ctx.notes].map((note) => `// NOTE: ${note}`), '');
   }
   if (importNames.length > 0) {
-    lines.push(`import { ${importNames.join(', ')} } from '@k8ordo/ui';`, '');
+    lines.push(`import { ${importNames.join(', ')} } from '@k8ordo/ui';`);
+  }
+  if (iconImportNames.length > 0) {
+    lines.push(
+      `import { ${iconImportNames.join(', ')} } from '@k8ordo/ui/icons';`,
+    );
+  }
+  if (importNames.length + iconImportNames.length > 0) {
+    lines.push('');
   }
   lines.push(
     'export default function Preview() {',

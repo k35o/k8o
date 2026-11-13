@@ -1,4 +1,5 @@
-import { Heading, ListIcon } from '@k8ordo/ui';
+import { Heading } from '@k8ordo/ui';
+import { ListIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import { HtmlNest } from '../html-nest/html-nest';

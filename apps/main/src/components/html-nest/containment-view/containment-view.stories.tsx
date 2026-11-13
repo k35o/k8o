@@ -1,4 +1,4 @@
-import { ListIcon } from '@k8ordo/ui';
+import { ListIcon } from '@k8ordo/ui/icons';
 import { fn } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';

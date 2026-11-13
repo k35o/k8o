@@ -3,6 +3,7 @@ import { join, resolve } from 'node:path';
 
 import type { Spec } from '@json-render/core';
 import * as ui from '@k8ordo/ui';
+import * as icons from '@k8ordo/ui/icons';
 import { catalog } from '@k8ordo/ui/json-render';
 import { registry } from '@k8ordo/ui/json-render/registry';
 import type { ReactElement } from 'react';
@@ -13,7 +14,7 @@ import {
   CONVERTED_PROPS,
   EXCLUDED_PROPS,
   FIELD_TYPE_INPUTS,
-  ICON_COMPONENTS,
+  iconComponentOf,
   specToTsx,
 } from './spec-to-tsx';
 
@@ -37,6 +38,7 @@ const renderWidget = (
 };
 
 const exportedComponents: Record<string, unknown> = ui;
+const exportedIcons: Record<string, unknown> = icons;
 
 const renderedIconComponent = (iconName: string): unknown =>
   renderWidget('Icon', { name: iconName }).type;
@@ -210,7 +212,21 @@ export default function Preview() {
       };
       const tsx = specToTsx(spec);
       expect(tsx).toContain('<ExternalLinkIcon size="sm" />');
-      expect(tsx).toContain("import { ExternalLinkIcon } from '@k8ordo/ui';");
+      expect(tsx).toContain(
+        "import { ExternalLinkIcon } from '@k8ordo/ui/icons';",
+      );
+    });
+
+    it('StatusIcon は AlertIcon にして import する', () => {
+      const spec: Spec = {
+        root: 'i',
+        elements: {
+          i: { type: 'StatusIcon', props: { status: 'warning', size: 'sm' } },
+        },
+      };
+      const tsx = specToTsx(spec);
+      expect(tsx).toContain('<AlertIcon status="warning" size="sm" />');
+      expect(tsx).toContain("import { AlertIcon } from '@k8ordo/ui/icons';");
     });
 
     it('Textarea は rows / autoResize も属性へ変換する', () => {
@@ -352,22 +368,18 @@ export default function Preview() {
   // 手書きの対応表は @k8ordo/ui のバージョンアップで黙って古びるため、
   // インストール済み catalog と機械的に照合して転記漏れを検知する。
   describe('catalogとのドリフト検知', () => {
-    it('ICON_COMPONENTS のキーが catalog の Icon.name と1対1で一致する', () => {
-      const iconNameOptions: readonly string[] =
-        catalog.data.components.Icon.props.shape.name.options;
-      expect(Object.keys(ICON_COMPONENTS).toSorted()).toStrictEqual(
-        [...iconNameOptions].toSorted(),
-      );
-    });
-
-    it.each(Object.entries(ICON_COMPONENTS))(
-      'アイコン %s の対応先 %s が registry の描画するコンポーネントと一致する',
-      (iconName, componentName) => {
-        expect(exportedComponents[componentName]).toBe(
+    it.each(catalog.data.components.Icon.props.shape.name.options)(
+      'アイコン %s の対応先が registry の描画するコンポーネントと一致する',
+      (iconName) => {
+        expect(exportedIcons[String(iconComponentOf(iconName))]).toBe(
           renderedIconComponent(iconName),
         );
       },
     );
+
+    it('catalog に無いアイコン名には対応先を返さない', () => {
+      expect(iconComponentOf('close')).toBeUndefined();
+    });
 
     it('CARD_PADDING のキーが catalog の Card.size と1対1で一致する', () => {
       const sizeOptions: readonly string[] =

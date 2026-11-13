@@ -1,6 +1,7 @@
 'use client';
 
-import { BadIcon, Button, GoodIcon, Stack, Textarea } from '@k8ordo/ui';
+import { Button, Stack, Textarea } from '@k8ordo/ui';
+import { ThumbsDownIcon, ThumbsUpIcon } from '@k8ordo/ui/icons';
 import { useId, useState, useTransition } from 'react';
 import type { FC } from 'react';
 
@@ -61,7 +62,7 @@ export const FeedbackCard: FC<{
             }}
             type="button"
           >
-            <GoodIcon size="sm" />
+            <ThumbsUpIcon size="sm" />
             良い
           </button>
           <button
@@ -73,7 +74,7 @@ export const FeedbackCard: FC<{
             }}
             type="button"
           >
-            <BadIcon size="sm" />
+            <ThumbsDownIcon size="sm" />
             悪い
           </button>
         </fieldset>

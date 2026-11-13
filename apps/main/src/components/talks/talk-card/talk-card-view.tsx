@@ -1,17 +1,13 @@
 'use client';
 
 import { href } from '@k8ordo/framework';
+import { Badge, Button, Card, IconButton, Stack } from '@k8ordo/ui';
 import {
-  Badge,
-  BlogIcon,
-  Button,
-  Card,
+  BookTextIcon,
+  CalendarIcon,
   ExternalLinkIcon,
-  IconButton,
-  PublishDateIcon,
-  SlideIcon,
-  Stack,
-} from '@k8ordo/ui';
+  PresentationIcon,
+} from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC, ReactNode } from 'react';
 
@@ -76,7 +72,7 @@ export const TalkCardView: FC<{
       </Stack>
       <div className={styles.details}>
         <div className={styles.detail}>
-          <PublishDateIcon size="sm" />
+          <CalendarIcon size="sm" />
           <span>{formatDate(new Date(eventDate))}</span>
         </div>
         {eventLocation !== null && (
@@ -115,7 +111,7 @@ export const TalkCardView: FC<{
             </a>
           )}
           size="sm"
-          startIcon={<SlideIcon size="sm" />}
+          startIcon={<PresentationIcon size="sm" />}
           variant="outline"
         >
           スライドを見る
@@ -132,7 +128,7 @@ export const TalkCardView: FC<{
             </a>
           )}
           size="sm"
-          startIcon={<BlogIcon size="sm" />}
+          startIcon={<BookTextIcon size="sm" />}
         >
           ブログで解説を読む
         </Button>

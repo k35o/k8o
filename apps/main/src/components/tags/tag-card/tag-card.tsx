@@ -1,4 +1,5 @@
-import { ChevronIcon, Card, Separator } from '@k8ordo/ui';
+import { Card, Separator } from '@k8ordo/ui';
+import { ChevronIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import styles from './tag-card.module.css';
