@@ -27,9 +27,9 @@ console.log(Math.sumPrecise(numbers)); // 1
 
 コンソールに貼ると、`reduce`は`0.9999999999999999`を、`Math.sumPrecise()`は`1`を出します。
 
-## これまでの方法の問題点
+## reduceで足したときの誤差
 
-配列の合計を求めたいとき、これまでは`Array.prototype.reduce()`や`for...of`ループで`+`を使って書くのが一般的でした。
+これまで配列の合計は、`reduce()`や`for...of`で`+`を使って書いていました。
 
 ```js
 const numbers = [1e20, 0.1, -1e20];
@@ -39,11 +39,11 @@ console.log(sum); // 0
 
 期待する答えは`0.1`ですが、結果は`0`になります。これは中間結果である`1e20 + 0.1`が浮動小数点数の精度の限界で丸められて`1e20`になり、その後`1e20 + (-1e20)`で`0`になるためです。
 
-順序を入れ替えて`[1e20, -1e20, 0.1]`にすれば`0.1`になりますが、入力の順序によって結果が変わってしまうこと自体が問題です。要素数が多くなるほど中間結果の丸めが積み重なり、精度が求められる計算ではこの暗黙の誤差は無視できません。
+順序を入れ替えて`[1e20, -1e20, 0.1]`にすれば`0.1`になりますが、入力の順序で結果が変わります。要素が多いほど途中の丸めが積み重なります。
 
 ## Math.sumPrecise()
 
-`Math.sumPrecise()`は数値の`iterable`を受け取り、中間の丸め誤差を避けて合計を返します。仕様は特定のアルゴリズムを指定しておらず、各値を任意精度で厳密に加算した結果を最後に一度だけ64bit浮動小数点数として表現可能な最も近い値へ丸めたときと同じ結果になることだけを要求しています。TC39 proposalのREADMEでは実装候補としてShewchukのアルゴリズム（Pythonの`math.fsum`と同系統）とNealのsuperaccumulator（xsum）が挙げられており、proposalのpolyfillではShewchukのアルゴリズムが採用されています。
+`Math.sumPrecise()`は、数値の`iterable`を受け取り、途中で丸めずに合計を返します。仕様はアルゴリズムを決めておらず、すべての値を正確に足してから、最後に1回だけ64bitの浮動小数点数に丸めたときと同じ結果を求めています。
 
 ```js
 console.log(Math.sumPrecise([1e20, 0.1, -1e20])); // 0.1
@@ -73,23 +73,15 @@ function* range(start, end) {
 console.log(Math.sumPrecise(range(1, 101))); // 5050
 ```
 
-`Math.max()`のような可変長引数ではなく`iterable`を1つ受け取る設計になっているのは、大きな配列を渡したときに引数展開（`Math.sumPrecise(...huge)`）でスタックオーバーフローを起こさないようにするためです。proposalのREADMEでは次のように説明されています。
+`Math.max()`のような可変長引数ではなく`iterable`を1つ受け取るのは、大きな配列を`Math.sumPrecise(...huge)`のように展開して、スタックがあふれないようにするためです。提案のREADMEは、数万要素を超えると`RangeError`になりやすい、と理由を書いています。
 
-> Math.max precedent suggests variadic, but that's really not what you want - once your lists get larger than a few tens of thousands of elements, you'll probably overflow the stack and get a RangeError.
-
-数万要素を超える配列を可変長引数で渡すとスタックを溢れて`RangeError`になるため、`Math.max()`の前例にならわず`iterable`を直接受け取る形にした、ということです。大量の数値を一度に合計するユースケースを想定した選択といえます。
-
-また、`Math.sum`ではなく`Math.sumPrecise`という名前になっている理由もREADMEに記されています。
-
-> Math.sum is the obvious name, but it's not obvious that this going to be a different (slower) algorithm than naive summation. This is called Math.sumPrecise to call attention to that difference.
-
-単に`Math.sum`だと素朴な加算をするメソッドだと誤解されかねないため、素朴な加算とは異なる（精度を優先するぶん遅い）アルゴリズムが使われていることを名前から伝えるために`sumPrecise`が採用された、ということです。
+名前が`Math.sum`ではなく`Math.sumPrecise`なのも、READMEに理由があります。`Math.sum`では、ふつうに足すだけのメソッドだと思われやすいので、精度を優先して違う（遅くなりうる）方法で足すことを名前で示しています。
 
 100万個の乱数を合計して比べると、SafariとFirefoxでは`Math.sumPrecise()`の方が`reduce`より遅く、Chromeでは逆に速くなります。
 
 ## 引数の挙動
 
-`Math.sumPrecise()`の引数には数値の`iterable`のみを渡せます。`Math.max()`のように文字列を暗黙的に数値へ変換することはなく、数値以外の値が含まれていると`TypeError`が投げられます。引数自体が`iterable`でない場合（数値や`null`を直接渡した場合など）も同じく`TypeError`になります。
+`Math.sumPrecise()`に渡せるのは、数値の`iterable`だけです。`Math.max()`のように文字列を数値に変換することはなく、数値以外の値が入っていると`TypeError`を投げます。数値や`null`のように、引数が`iterable`でないときも`TypeError`です。
 
 ```js
 Math.sumPrecise([1, 2, '3']); // TypeError（要素が数値でない）
@@ -97,7 +89,7 @@ Math.sumPrecise([1, 2, null]); // TypeError（要素が数値でない）
 Math.sumPrecise(123); // TypeError（iterableでない）
 ```
 
-`reduce`が文字列連結や`null`への暗黙の変換を許してしまうのに対して、`Math.sumPrecise()`は数値以外を早期に弾いてくれるため、想定外のデータが混ざった場合にバグを見つけやすくなります。
+`reduce`では文字列がつながったり`null`が`0`になったりしますが、`Math.sumPrecise()`は数値以外をその場で弾くので、想定外のデータが混ざったことに気づけます。
 
 空のiterableを渡した場合は`-0`が返ります。加法の単位元として`+0`ではなく`-0`が返るのは、`-0 + x`が常に`x`と等しいというIEEE 754の性質に合わせるためです。`-0`だけの配列も`-0`のままですが、`+0`が1つでも混ざると結果は`+0`になります。
 
@@ -107,7 +99,7 @@ console.log(Math.sumPrecise([-0, -0, -0])); // -0
 console.log(Math.sumPrecise([-0, -0, -0, 0])); // 0
 ```
 
-`Infinity`や`NaN`が含まれる場合の挙動は少しだけ変わっています。同じ非有限値だけが含まれる場合はそのまま返り、異なる非有限値が混ざった場合は`NaN`が返ります。
+`Infinity`や`NaN`が入っているときは、同じ非有限値だけならその値を返し、違う非有限値が混ざると`NaN`を返します。
 
 ```js
 console.log(Math.sumPrecise([1, Infinity])); // Infinity
@@ -117,7 +109,7 @@ console.log(Math.sumPrecise([Infinity, NaN])); // NaN
 console.log(Math.sumPrecise([1, NaN])); // NaN
 ```
 
-合計値がbinary64の表現範囲を超えた場合は通常の加算と同じく`Infinity`または`-Infinity`が返ります。
+合計がbinary64で表せる範囲を超えると、ふつうの加算と同じく`Infinity`か`-Infinity`を返します。
 
 ```js
 console.log(Math.sumPrecise([1e308, 1e308])); // Infinity
@@ -157,13 +149,11 @@ console.log(Math.sumPrecise([1, 2, 3, 4, 5])); // 15
 
 ただし、各要素が厳密に表現できても合計値の方がbinary64の精度を超える場合は、最後の丸めで誤差が出ます。たとえば`1`と`2 ** -54`はどちらも厳密に表現できますが、その正確な和`1 + 2**-54`はbinary64の有効精度（53bit）を超えるため、結果は最終的に`1`へ丸められます。
 
-10進数での厳密さが必要な場面では、これまでと同様の対応が必要です。
+10進数で正確な値が要るときは、これまでと同じ方法を使います。
 
 - 金額を扱う場合は、整数で扱って最後に桁を戻す
 - 任意精度の10進数が必要な場合は、[decimal.js](https://github.com/MikeMcl/decimal.js)のような10進数ライブラリを使う
 
 ## おわりに
 
-`Math.sumPrecise()`は、合計の途中で生まれる丸め誤差を抑え、入力の順序に依存しない結果を返してくれるメソッドです。
-
-`reduce`や`for`での合計はコードの見た目こそ簡潔ですが、入力の順序や桁の差で結果が変わってしまう不安が残ります。これからは、数値の合計を取る場面では`Math.sumPrecise()`を第一候補として選べば、合計過程の精度と意図の明確さの両方を得られるようになりました。Node.js 26とTypeScript 7ではまだ既定で使えないので、フラグや型の宣言を足して使います。
+`Math.sumPrecise()`を使うと、足す順序や桁の差に左右されずに、すべての値を正確に足してから1回だけ丸めた合計を求められます。`0.1`のような入力の値が持つ誤差までは消えないので、10進数で正確な値が要るときは、整数で計算するか10進数のライブラリを使います。
