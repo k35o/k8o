@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-Service WorkerのES Modules対応は、`navigator.serviceWorker.register()`に`type: 'module'`を渡すと、Service Workerのスクリプトで`import`文を使えるようにするものです。ページと同じESモジュールのファイルを、Service Workerからもそのまま読み込めます。
+Service WorkerのES Modules対応は、`navigator.serviceWorker.register()`に`type: 'module'`を渡すと、Service Workerのスクリプトで`import`文を使えるようにするものです。ページと同じESモジュールのファイルを、Service Workerからもそのまま読み込めます。Firefox 147が対応して、Baseline 2026に入りました。
 
 ビルドツールでService Workerを1つのファイルにまとめているなら、これまでどおりの書き方で足ります。ビルドせずに、ページと同じモジュールをService Workerから読みたいときに`type: 'module'`が要ります。
 
@@ -26,8 +26,6 @@ importScripts('./cache-config.js');
 ```
 
 `importScripts()`は読み込んだスクリプトの変数や関数がすべてグローバルスコープに追加されるため、依存関係が不明確になりやすいという課題がありました。
-
-Baseline 2026で、`type: 'module'`を指定したService Workerが主要なブラウザで使えるようになりました。
 
 ## 使い方
 
@@ -69,19 +67,19 @@ export const cacheName = 'app-v1';
 export const precacheFiles = ['/', '/cache-config.js'];
 ```
 
-Service Workerは`https`か`localhost`でしか登録できませんが、`localhost`なら`http`でも登録できます。`http://localhost`で開くとコンソールに`app-v1`が出て、DevToolsでService Workerが動いていることと、キャッシュ`app-v1`に2つのファイルが入ったことが見えます。Chrome 156、Safari 27.2、Firefox 159のどれでも、キャッシュに2つのファイルが入り、2回目に開いたページがService Workerの制御下に入りました。
+Service Workerは`https`か`localhost`でしか登録できませんが、`localhost`なら`http`でも登録できます。`http://localhost`で開くとコンソールに`app-v1`が出て、DevToolsでService Workerが動いていることと、キャッシュ`app-v1`に2つのファイルが入ったことが見えます。2回目に開いたページは、Service Workerの制御下に入ります。
 
 ES Modulesを使う最大のメリットは、ウェブアプリとService Workerで同じコードを共有できることです。
 `importScripts()`では難しかったコードの再利用が、`import`文によって自然に行えるようになります。
 
 `import()`による動的なインポートはサポートされていないことに注意してください。
-また、`type`を`'module'`に設定すると、`importScripts()`の使用も不可になるので気をつけてください。どちらも呼ぶと`TypeError`になり、メッセージはブラウザで違いました。
+また、`type`を`'module'`に設定すると、`importScripts()`の使用も不可になるので気をつけてください。どちらも呼ぶと`TypeError`になり、メッセージはブラウザで違います。
 
-- Chrome 156: `import() is disallowed on ServiceWorkerGlobalScope by the HTML specification.`、`Module scripts don't support importScripts().`
-- Safari 27.2: `Dynamic-import is not available in Worklets or ServiceWorkers`、`importScripts cannot be used if worker type is "module"`
-- Firefox 159: `Dynamic import not supported in this context`、`` Using `ImportScripts` inside a Module Worker is disallowed. ``
+- Chrome: `import() is disallowed on ServiceWorkerGlobalScope by the HTML specification.`、`Module scripts don't support importScripts().`
+- Safari: `Dynamic-import is not available in Worklets or ServiceWorkers`、`importScripts cannot be used if worker type is "module"`
+- Firefox: `Dynamic import not supported in this context`、`` Using `ImportScripts` inside a Module Worker is disallowed. ``
 
-反対に、`type: 'module'`を付けずに`import`文を書いたService Workerは、3つのブラウザとも登録の時点で`TypeError`になりました。メッセージは、Chrome 156が`ServiceWorker script evaluation failed`、Safari 27.2が`SyntaxError: Unexpected token '{'. import call expects one or two arguments.`でした。また、`import`で読むファイルは、JavaScriptのMIMEタイプで配る必要があります。`text/plain`で返すと、3つのブラウザとも登録に失敗しました。
+反対に、`type: 'module'`を付けずに`import`文を書いたService Workerは、登録の時点で`TypeError`になります。メッセージは、Chromeでは`ServiceWorker script evaluation failed`、Safariでは`SyntaxError: Unexpected token '{'. import call expects one or two arguments.`です。また、`import`で読むファイルは、JavaScriptのMIMEタイプで配る必要があります。`text/plain`で返すと、登録に失敗します。
 
 ## おわりに
 
