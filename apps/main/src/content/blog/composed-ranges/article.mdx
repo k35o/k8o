@@ -15,7 +15,7 @@ featureIds:
 
 `getComposedRanges`メソッドは、ユーザーが選択した範囲を、Shadow DOMの中のノードの位置まで含めて返す`Selection`オブジェクトのメソッドです。中を見てよい`ShadowRoot`を渡すと、その中のテキストノードと文字の位置が`StaticRange`で返ります。Firefox 142が対応して、Baseline 2025に入りました。
 
-選択範囲がふつうのDOMの中だけなら、これまでの`getRangeAt(0)`で足ります。Shadow DOMの中を選んだときや、外から中へまたいで選んだときは、`getRangeAt(0)`ではShadow DOMの中の位置が分かりません。Chromeでマウスを使って外から中へ選ぶと、`getRangeAt(0)`の終わりはホスト要素の位置になり、`toString()`の結果にもShadow DOMの中の文字が入りません。`getComposedRanges`メソッドなら、中の位置まで取れます。
+選択範囲がふつうのDOMの中だけなら、これまでの`getRangeAt(0)`で足ります。Shadow DOMの中を選んだときや、外から中へまたいで選んだときは、`getRangeAt(0)`が返す範囲がブラウザによって違い、Shadow DOMの中の位置が分からないことがあります。たとえばChromeでマウスを使って外から中へ選ぶと、`getRangeAt(0)`の終わりはホスト要素の位置になり、`toString()`の結果にもShadow DOMの中の文字が入りません。`getComposedRanges`メソッドなら、どのブラウザでも中の位置まで取れます。
 
 ```html
 <p id="host"></p>
@@ -60,9 +60,9 @@ const ranges = window.getSelection()?.getComposedRanges({ shadowRoots: [shadowRo
 
 <PlaygroundEmbed demo="getRangeAtとgetComposedRangesの比較" headingLevel="h4" sectionId="composed-ranges" />
 
-このデモの本文は、閉じたShadow DOM（`mode: 'closed'`）の中にあります。本文の一部を選ぶと、3つの方法で取り出した範囲が、どの文字を指しているかが出ます。ChromeとSafariでは、`getRangeAt(0)`は空の範囲になり、どこを選んだのか分かりません。`ShadowRoot`を渡した`getComposedRanges()`は、選んだ文字をそのまま指します。渡さないと、範囲の端がShadow DOMの外に出され、本文の段落まるごとを指します。
+このデモの本文は、閉じたShadow DOM（`mode: 'closed'`）の中にあります。本文の一部を選ぶと、3つの方法で取り出した範囲が、どの文字を指しているかが出ます。`getRangeAt(0)`は、Firefoxでは選んだ文字を指しますが、ChromeとSafariでは空の範囲になり、どこを選んだのか分かりません。`ShadowRoot`を渡した`getComposedRanges()`は、選んだ文字をそのまま指します。渡さないと、範囲の端がShadow DOMの外に出され、本文の段落まるごとを指します。
 
-見出しから本文までまたいで選ぶと、`getRangeAt(0)`の結果はブラウザによって違い、Safariでは`rangeCount`が0になって取り出せません。`ShadowRoot`を渡した`getComposedRanges()`なら、見出しの文字から本文の選んだ文字までを指します。
+見出しから本文までまたいで選ぶと、`getRangeAt(0)`の結果はブラウザでばらばらです。Chromeでは見出しの文字だけを、Firefoxでは本文の文字だけを指し、Safariでは`rangeCount`が0になって取り出せません。`ShadowRoot`を渡した`getComposedRanges()`なら、見出しの文字から本文の選んだ文字までを指します。
 
 `getComposedRanges(shadowRoot)`のように、`ShadowRoot`をオブジェクトに入れずに渡す古い書き方もあります。SafariとFirefoxでは中の位置が返りますが、Chromeでは無視され、渡さないときと同じ結果になります。TypeScriptでも型エラーになるので、`{ shadowRoots: [...] }`の形で渡します。
 
