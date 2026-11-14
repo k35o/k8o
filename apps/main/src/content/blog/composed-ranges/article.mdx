@@ -34,69 +34,17 @@ featureIds:
 
 Shadow DOMの中の文字を選ぶと、コンソールにShadow DOMの中のテキストノードと、選んだ文字の始まりと終わりの位置が出ます。
 
-この記事では、まず`Selection`オブジェクトを紹介し、そのあとで`getComposedRanges`メソッドを説明します。
-
 ## Selection
-`Selection`はユーザーが選択したテキストの範囲やキャレットの位置を扱うオブジェクトです。
 
-`window.getSelection()`を使用して、現在の選択範囲を取得できます。
+`Selection`は、ユーザーが選択したテキストの範囲やキャレットの位置を表すオブジェクトです。`window.getSelection()`で取り出し、`toString()`で選んだ文字列を、`getRangeAt(0)`で選択範囲を`Range`として取り出せます。選択範囲が変わるたびに、`document`に`selectionchange`イベントが届きます。
 
-```ts
-const selection = window.getSelection();
-
-// 選択範囲の文字列を取得
-const text = selection.toString();
-```
-
-<PlaygroundEmbed demo="Selectionオブジェクトのプロパティ" headingLevel="h4" sectionId="composed-ranges" />
-
-上記の例では、`Selection`オブジェクトが持つ選択中の文字列の表示と、いくつかのプロパティを紹介しています。
-
-この他にも、`Selection`オブジェクトは選択中の範囲の個数を返す`rangeCount`プロパティや、テキストが選択されているかどうかを表す`isCollapsed`プロパティなどを持ちます。
-
-テキストの選択範囲やキャレットの変更は、`selectionchange`イベントによって検知することができます。
 ```ts
 document.addEventListener('selectionchange', () => {
   const selection = window.getSelection();
-  console.log(selection?.toString());
+  if (!selection || selection.rangeCount === 0) return;
+  console.log(selection.toString(), selection.getRangeAt(0));
 });
 ```
-`document`に対して登録しているので、上の例はこのページ内のどこを選択しても動作します。
-
-続いて、`Selection`オブジェクトが持つメソッドの紹介です。
-
-<PlaygroundEmbed demo="Selectionオブジェクトのメソッド" headingLevel="h4" sectionId="composed-ranges" />
-
-`addRange`は`Range`オブジェクトを引数に取り、選択範囲に対象を追加します。
-Firefoxでは`addRange`を続けて呼ぶと、複数の範囲を選択できます。ChromeとSafariでは、選択範囲があるうちに呼んだ`addRange`は無視され、`rangeCount`は1のままで、Firefoxでは2になります。
-
-`addRange`を実行する時は、`rangeCount`プロパティを確認してください。`1`以上の場合は選択範囲をクリアして`0`にする必要があります。
-先ほどの例では以下のように`rangeCount`を確認してから`addRange`を実行しています。
-```ts
-const selection = window.getSelection();
-if (selection && textNode) {
-  // rangeCountの初期化
-  if (selection.rangeCount > 0) {
-    selection.removeAllRanges();
-  }
-  const range = new Range();
-  range.setStart(textNode, 54);
-  range.setEnd(textNode, 63);
-  selection.addRange(range);
-}
-```
-
-例の最後のボタンで紹介した`extend`は、選択範囲から指定したノードの先頭までを選択範囲に拡張します。選択範囲が無いときに呼ぶと`InvalidStateError`になるので、デモでは`rangeCount`が1以上のときだけ呼んでいます。
-先頭を除く範囲を選択してから押すことで機能を確認できます。
-先頭ではなく、任意の位置を指定したい場合は、オフセットを第2引数に渡します。
-
-```ts
-// 現在の選択箇所からtextNodeの10文字目まで選択範囲を拡張
-selection.extend(textNode, 10);
-```
-
-メソッドについても、プロパティと同様に、ここで紹介したもの以外に多数存在します。
-しかし、この章の目的は`Selection`オブジェクトの概要と基本的な機能を理解するところなので、説明はここまでとします。
 
 ## getComposedRanges
 
@@ -113,7 +61,7 @@ const ranges = window.getSelection()?.getComposedRanges({ shadowRoots: [shadowRo
 渡した`ShadowRoot`オブジェクトに含まれる要素であれば、Shadow DOM内の要素であっても選択範囲として検出されます。
 選択範囲の端が、オプションで指定していない`ShadowRoot`オブジェクトの中にある場合は、その端がShadow DOMの外に出され、ホスト要素の親とその中でのホスト要素の位置が返されます。
 
-<PlaygroundEmbed demo="Baseline 2025で追加されたgetComposedRangesメソッド" headingLevel="h4" sectionId="composed-ranges" />
+<PlaygroundEmbed demo="getRangeAtとgetComposedRangesの比較" headingLevel="h4" sectionId="composed-ranges" />
 
 この例では、サンプルテキスト全体に`attachShadow({ mode: 'closed' })`しています。
 
