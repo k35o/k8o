@@ -5,14 +5,14 @@ import { BrowserSupportStatusLive } from '@/components/site/browser-support-stat
 
 import preview from '../../../../.storybook/preview';
 import {
-  interceptUrlNavigation,
-  paramInUrl,
+  expectParamInUrl,
+  mountStoryUrl,
 } from '../../../../.storybook/url-state-story';
 import { RadiusMaker } from './radius-maker';
 
 const meta = preview.meta({
   title: 'app/radius-maker/radius-maker',
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
   component: RadiusMaker,
   args: {
     cornerShapeSupport: (
@@ -113,7 +113,7 @@ export const OpenWithUrlValues = meta.story({
   },
 });
 
-export const CommitOnHandleRelease = meta.story({
+export const WriteWhileDraggingHandle = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -124,6 +124,7 @@ export const CommitOnHandleRelease = meta.story({
     if (frame === undefined) {
       throw new Error('枠がありません');
     }
+    const entries = navigation.entries().length;
 
     await fireEvent.pointerDown(handle, { pointerId: 1 });
     await waitFor(async () => {
@@ -141,15 +142,15 @@ export const CommitOnHandleRelease = meta.story({
       await waitFor(async () => {
         await expect(handle).toHaveAttribute('aria-valuenow', value);
       });
-      await expect(paramInUrl('r')).toBeNull();
     }
-
     await fireEvent.pointerUp(handle, { pointerId: 1 });
-    await expect(paramInUrl('r')).toBe('60,30,70,30,70,70,30,70');
+
+    await expectParamInUrl('r', '60,30,70,30,70,70,30,70');
+    await expect(navigation.entries()).toHaveLength(entries);
   },
 });
 
-export const CommitOnKeyUp = meta.story({
+export const WriteWhileKeyHeld = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -160,17 +161,15 @@ export const CommitOnKeyUp = meta.story({
 
     await userEvent.keyboard('{ArrowRight>3}');
     await expect(slider).toHaveAttribute('aria-valuenow', '33');
-    await expect(paramInUrl('r')).toBeNull();
-
+    await expectParamInUrl('r', '33,30,70,30,70,70,30,70');
     await userEvent.keyboard('{/ArrowRight}');
-    await expect(paramInUrl('r')).toBe('33,30,70,30,70,70,30,70');
     await expect(location.search).toContain(
       'r=33%2C30%2C70%2C30%2C70%2C70%2C30%2C70',
     );
   },
 });
 
-export const CommitSizeOnBlur = meta.story({
+export const WriteClampedSize = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -178,11 +177,9 @@ export const CommitSizeOnBlur = meta.story({
 
     await userEvent.clear(input);
     await userEvent.type(input, '999');
-    await expect(paramInUrl('w')).toBeNull();
-
     await userEvent.tab();
     await expect(input).toHaveValue('320');
-    await expect(paramInUrl('w')).toBe('320');
+    await expectParamInUrl('w', '320');
   },
 });
 
@@ -192,14 +189,14 @@ export const WriteTemplateAndShapeAtOnce = meta.story({
     const canvas = within(canvasElement);
 
     await userEvent.click(canvas.getByRole('button', { name: '円' }));
-    await expect(paramInUrl('r')).toBe('50,50,50,50,50,50,50,50');
+    await expectParamInUrl('r', '50,50,50,50,50,50,50,50');
 
     await userEvent.selectOptions(
       canvas.getByRole('combobox', { name: 'かたち(corner-shape)' }),
       'squircle',
     );
-    await expect(paramInUrl('s')).toBe('squircle');
-    await expect(paramInUrl('r')).toBe('50,50,50,50,50,50,50,50');
+    await expectParamInUrl('s', 'squircle');
+    await expectParamInUrl('r', '50,50,50,50,50,50,50,50');
   },
 });
 
@@ -209,6 +206,6 @@ export const WriteDefaultAsNoKey = meta.story({
     const canvas = within(canvasElement);
 
     await userEvent.click(canvas.getByRole('button', { name: 'ブロブ' }));
-    await expect(paramInUrl('r')).toBeNull();
+    await expectParamInUrl('r', null);
   },
 });

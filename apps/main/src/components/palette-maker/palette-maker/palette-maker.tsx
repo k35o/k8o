@@ -16,20 +16,12 @@ import { usePaletteState } from './use-palette-state';
 import styles from './palette-maker.module.css';
 
 const Content: FC = () => {
-  const {
-    hue,
-    chroma,
-    name,
-    setHue,
-    setChroma,
-    setName,
-    setBaseColor,
-    commitProps,
-  } = usePaletteState();
+  const { hue, chroma, name, setHue, setChroma, setName, setBaseColor } =
+    usePaletteState();
   const swatches = useMemo(() => generatePalette(hue, chroma), [hue, chroma]);
 
   return (
-    <Stack gap="lg" {...commitProps}>
+    <Stack gap="lg">
       <Card>
         <div className={styles.panel}>
           <PalettePreview swatches={swatches} />

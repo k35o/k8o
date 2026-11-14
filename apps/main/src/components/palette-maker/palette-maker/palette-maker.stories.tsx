@@ -1,8 +1,9 @@
-import { expect, fireEvent, waitFor, within } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import {
-  interceptUrlNavigation,
+  expectParamInUrl,
+  mountStoryUrl,
   paramInUrl,
 } from '../../../../.storybook/url-state-story';
 import { PALETTE_STEPS } from '../palette-types/palette-types';
@@ -10,7 +11,7 @@ import { PaletteMaker } from './palette-maker';
 
 const meta = preview.meta({
   title: 'app/palette-maker/palette-maker',
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
   component: PaletteMaker,
 });
 
@@ -102,41 +103,25 @@ export const OpenWithUrlValues = meta.story({
   },
 });
 
-export const CommitOnSliderRelease = meta.story({
+export const WriteWhileSliding = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const slider = canvas.getByRole('slider', { name: '色相 (H)' });
     const number = canvas.getByRole('spinbutton', { name: '色相 (H)' });
+    const entries = navigation.entries().length;
 
     for (const value of ['100', '101', '102']) {
       await fireEvent.change(slider, { target: { value } });
       await expect(number).toHaveAttribute('aria-valuenow', value);
-      await expect(paramInUrl('h')).toBeNull();
     }
 
-    await fireEvent.pointerUp(slider);
-    await expect(paramInUrl('h')).toBe('102');
-    await expect(number).toHaveAttribute('aria-valuenow', '102');
+    await expectParamInUrl('h', '102');
+    await expect(navigation.entries()).toHaveLength(entries);
   },
 });
 
-export const CommitOnPointerCancel = meta.story({
-  parameters: { vrt: { skip: true } },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const slider = canvas.getByRole('slider', { name: '色相 (H)' });
-
-    await fireEvent.change(slider, { target: { value: '100' } });
-    await expect(paramInUrl('h')).toBeNull();
-
-    await fireEvent.pointerCancel(slider);
-    await expect(paramInUrl('h')).toBe('100');
-  },
-});
-
-// 段のボタンは keyup も blur も待たずに値が変わる
-export const CommitOnStepperClick = meta.story({
+export const WriteOnStepperClick = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement }) => {
     // aria-hidden なので role では取れない
@@ -146,72 +131,26 @@ export const CommitOnStepperClick = meta.story({
     }
 
     await fireEvent.click(increment);
-    await expect(paramInUrl('h')).toBe('251');
+    await expectParamInUrl('h', '251');
   },
 });
 
-// 支援技術の増減は input と change だけで、ポインタもキーも出ない
-export const CommitWhenSettled = meta.story({
-  parameters: { vrt: { skip: true } },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const slider = canvas.getByRole('slider', { name: '色相 (H)' });
-
-    await fireEvent.change(slider, { target: { value: '100' } });
-    await expect(paramInUrl('h')).toBeNull();
-
-    await waitFor(
-      async () => {
-        await expect(paramInUrl('h')).toBe('100');
-      },
-      { timeout: 2000 },
-    );
-  },
-});
-
-export const NotCommitWhileChanging = meta.story({
-  parameters: { vrt: { skip: true } },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const slider = canvas.getByRole('slider', { name: '色相 (H)' });
-
-    for (const value of ['100', '101', '102', '103']) {
-      await fireEvent.change(slider, { target: { value } });
-      await expect(paramInUrl('h')).toBeNull();
-      await new Promise((resolve) => {
-        setTimeout(resolve, 250);
-      });
-    }
-
-    await waitFor(
-      async () => {
-        await expect(paramInUrl('h')).toBe('103');
-      },
-      { timeout: 2000 },
-    );
-  },
-});
-
-export const CommitOnKeyUp = meta.story({
+export const WriteWhileKeyHeld = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('spinbutton', { name: '色相 (H)' });
-    const entries = navigation.entries().length;
     input.focus();
 
     await userEvent.keyboard('{ArrowUp>3}');
     await expect(input).toHaveAttribute('aria-valuenow', '253');
-    await expect(paramInUrl('h')).toBeNull();
-
+    await expectParamInUrl('h', '253');
     await userEvent.keyboard('{/ArrowUp}');
-    await expect(paramInUrl('h')).toBe('253');
     await expect(input).toHaveFocus();
-    await expect(navigation.entries()).toHaveLength(entries);
   },
 });
 
-export const CommitOnBlur = meta.story({
+export const WritePeakChroma = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -219,10 +158,8 @@ export const CommitOnBlur = meta.story({
 
     await userEvent.clear(input);
     await userEvent.type(input, '0.2');
-    await expect(paramInUrl('c')).toBeNull();
-
     await userEvent.tab();
-    await expect(paramInUrl('c')).toBe('0.2');
+    await expectParamInUrl('c', '0.2');
   },
 });
 
@@ -235,7 +172,7 @@ export const RoundWhenWriting = meta.story({
     await userEvent.clear(input);
     await userEvent.type(input, '0.12345');
     await userEvent.tab();
-    await expect(paramInUrl('c')).toBe('0.123');
+    await expectParamInUrl('c', '0.123');
   },
 });
 
@@ -246,17 +183,27 @@ export const WriteNameOnEachInput = meta.story({
     const input = canvas.getByRole('textbox', { name: 'トークン名' });
 
     await userEvent.clear(input);
-    await expect(paramInUrl('name')).toBeNull();
     await userEvent.type(input, 'b');
-    await expect(paramInUrl('name')).toBe('b');
+    await expectParamInUrl('name', 'b');
     await userEvent.type(input, 'rand');
-    await expect(paramInUrl('name')).toBe('brand');
+    await expectParamInUrl('name', 'brand');
+  },
+});
+
+export const NotWriteInvalidName = meta.story({
+  parameters: { query: 'name=brand', vrt: { skip: true } },
+  play: async ({ canvasElement, userEvent }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole('textbox', { name: 'トークン名' });
 
     await userEvent.type(input, 'X');
+    await expect(input).toHaveValue('brandX');
+    // 書かれないことは待っても分からないので、あとの書き込みが URL に入った時点の値で確かめる
+    await fireEvent.change(canvas.getByRole('slider', { name: '色相 (H)' }), {
+      target: { value: '100' },
+    });
+    await expectParamInUrl('h', '100');
     await expect(paramInUrl('name')).toBe('brand');
-    await expect(
-      canvas.getByRole('textbox', { name: 'トークン名' }),
-    ).toHaveValue('brandX');
   },
 });
 
@@ -268,9 +215,7 @@ export const WriteBaseColorWithoutKeyUp = meta.story({
     const input = canvas.getByRole('textbox', { name: '基準色から取り込む' });
 
     await fireEvent.change(input, { target: { value: '#ff0000' } });
-    await waitFor(async () => {
-      await expect(paramInUrl('h')).toBe('29.2');
-    });
+    await expectParamInUrl('h', '29.2');
     await expect(paramInUrl('c')).toBe('0.258');
   },
 });
@@ -292,10 +237,10 @@ export const KeepOtherValuesWhenCommitting = meta.story({
     await userEvent.clear(input);
     await userEvent.type(input, 'a');
 
+    await expectParamInUrl('name', 'a');
     await expect(paramInUrl('zz')).toBe('1');
     await expect(paramInUrl('h')).toBe('400');
     await expect(paramInUrl('c')).toBe('0.5');
-    await expect(paramInUrl('name')).toBe('a');
     await expect(location.hash).toBe('#x');
   },
 });

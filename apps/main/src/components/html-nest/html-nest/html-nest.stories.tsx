@@ -3,14 +3,14 @@ import { expect, waitFor, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import {
-  interceptUrlNavigation,
+  mountStoryUrl,
   paramInUrl,
 } from '../../../../.storybook/url-state-story';
 import { HtmlNest } from './html-nest';
 
 const meta = preview.meta({
   title: 'app/html-nest/html-nest',
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
   component: HtmlNest,
   args: { pickerIcon: <ListIcon size="sm" /> },
 });

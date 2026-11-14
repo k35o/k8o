@@ -13,8 +13,8 @@ import {
 
 import preview from '../../../../.storybook/preview';
 import {
-  interceptUrlNavigation,
-  paramInUrl,
+  expectParamInUrl,
+  mountStoryUrl,
 } from '../../../../.storybook/url-state-story';
 import type { ReadingList } from '../reading-list-source/reading-list-source';
 import { ReadingListContent } from './reading-list-content';
@@ -129,7 +129,7 @@ const meta = preview.meta({
   title: 'app/reading-list/reading-list-content',
   component: ReadingListContent,
   args: { readingList, filterIcon: <ListIcon /> },
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
 });
 
 export const RendersAllArticles = meta.story({
@@ -267,16 +267,16 @@ export const WriteFiltersToUrl = meta.story({
       await screen.findByRole('combobox', { name: '並び順' }),
       'oldest',
     );
-    await expect(paramInUrl('sort')).toBe('oldest');
+    await expectParamInUrl('sort', 'oldest');
     await userEvent.type(screen.getByRole('textbox', { name: '検索' }), 'ba');
-    await expect(paramInUrl('q')).toBe('ba');
+    await expectParamInUrl('q', 'ba');
 
     const sources = screen.getByRole('combobox', { name: 'ソース' });
     await userEvent.click(sources);
     await userEvent.click(
       await screen.findByRole('option', { name: 'web.dev (1)' }),
     );
-    await expect(paramInUrl('source')).toBe('2');
+    await expectParamInUrl('source', '2');
     await expect(
       canvas.getByText('1件の記事 / 1件のソースで絞り込み中'),
     ).toBeInTheDocument();

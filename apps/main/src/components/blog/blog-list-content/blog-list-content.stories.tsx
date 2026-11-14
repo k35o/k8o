@@ -4,7 +4,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 import preview from '../../../../.storybook/preview';
 import {
   hydrateAfterTyping,
-  interceptUrlNavigation,
+  mountStoryUrl,
   queryInUrl,
 } from '../../../../.storybook/url-state-story';
 import { BlogListContent } from './blog-list-content';
@@ -48,7 +48,7 @@ const meta = preview.meta({
   title: 'app/blog/blog-list-content',
   component: BlogListContent,
   args: { blogs },
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
 });
 
 export const Primary = meta.story({
@@ -71,9 +71,9 @@ export const FilterWhileTyping = meta.story({
     for (const typed of ['h', 'ho', 'hoo', 'hook', 'hooks']) {
       await userEvent.type(input, typed.slice(-1));
       await expect(input).toHaveValue(typed);
-      // waitFor で待つと、遅らせて書く形が待つ「打たない間」をこちらが作ってしまうので、待たずに読む
-      await expect(queryInUrl()).toBe(typed);
     }
+
+    await waitFor(() => expect(queryInUrl()).toBe('hooks'));
 
     await expect(navigation.entries()).toHaveLength(entries);
     await waitFor(() =>
