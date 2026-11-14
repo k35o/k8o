@@ -7,6 +7,8 @@ featureIds:
   - webrtc-encoded-transform
 ---
 
+import { TransformPipeline } from './_components/transform-pipeline';
+
 # WebRTC Encoded TransformでE2EEを実装する
 
 <BrowserSupportStatus featureId="webrtc-encoded-transform" />
@@ -79,20 +81,11 @@ self.addEventListener('rtctransform', (event) => {
 
 ## RTCRtpScriptTransform
 
-WebRTC Encoded Transformは、エンコードとネットワークのあいだ、ネットワークとデコードのあいだに、Workerで動く変換を挟みます。
+WebRTC Encoded Transformは、送信側ではエンコードとネットワークのあいだに、受信側ではネットワークとデコードのあいだに、Workerで動く変換（Transform）を挟みます。
 
-```txt
-// これまで
-[getUserMedia] → [Encoder] → [Network] → [Decoder] → [Display]
-                     ↑                        ↑
-                 触れられない               触れられない
-// これから
-[getUserMedia] → [Encoder] → [Transform] → [Network] → [Transform] → [Decoder] → [Display]
-                                  ↑                          ↑
-                             E2EEを追加可能               E2EEを追加可能
-```
+<TransformPipeline />
 
-扱うのはエンコード済みのデータなので、色を変えるといった映像の効果をかける用途には向きません。
+これまでは、エンコードからデコードまでのあいだに手を入れられませんでした。扱うのはエンコード済みのデータなので、色を変えるといった映像の効果をかける用途には向きません。
 
 変換は、`RTCRtpScriptTransform`を作り、`RTCRtpSender`か`RTCRtpReceiver`の`transform`プロパティに入れて挟みます。
 
