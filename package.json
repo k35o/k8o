@@ -23,7 +23,7 @@
     "@ls-lint/ls-lint": "2.3.2",
     "@repo/oxlint-plugin": "workspace:*",
     "@types/node": "26.6.6",
-    "knip": "6.44.1",
+    "knip": "6.44.2",
     "playwright": "1.65.0",
     "portless": "0.16.0",
     "turbo": "2.11.10",
