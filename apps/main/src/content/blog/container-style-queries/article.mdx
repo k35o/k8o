@@ -15,22 +15,16 @@ featureIds:
 
 Container style queriesは、`@container style(--theme: dark)`のように、祖先要素のカスタムプロパティ（CSS変数）の値を条件にして、子孫のスタイルを切り替えるCSSの仕組みです。サイズクエリの`@container (width > 600px)`と同じ`@container`ルールで、幅の代わりにカスタムプロパティの値を見ます。
 
-親のクラスで子のスタイルを変えるだけなら、`.theme-dark .card`のような子孫セレクタで足ります。一方で、セレクタではカスタムプロパティの値を見られないので、`style`属性で書いた値や親から継承した値を条件にはできません。Container style queriesを使うと、親はカスタムプロパティを立てるだけで、子のCSSがそれを読んでスタイルを決める形に書けます。Firefox 151が対応して、Baseline 2026に入りました。
+親のクラスで子のスタイルを変えるだけなら、`.theme-dark .card`のような子孫セレクタで足ります。ただ、セレクタはカスタムプロパティの値を見られないので、`style`属性で書いた値や親から継承した値を条件にできません。Container style queriesを使うと、親はカスタムプロパティを置くだけで、子のCSSがその値を読んでスタイルを決められます。Firefox 151が対応して、Baseline 2026に入りました。
 
 ## 基本構文
 
-スタイルクエリは、まず`container-name`で祖先にスタイルクエリの対象として名前を付け、その親の上で評価したいカスタムプロパティを`@container style(...)`の中に書きます。
-
-```html
-<div class="theme">
-  <p class="card">カード</p>
-</div>
-```
+`@container`の`style(...)`に、カスタムプロパティと値を書きます。どの祖先の値を見るかは、`container-name`で祖先に名前を付けて決めます。
 
 ```css
 .theme {
   /* [!hl] */
-  /* [!callout: スタイルクエリの対象にする親に名前を付ける] */
+  /* [!callout: スタイルクエリで見る祖先に名前を付ける] */
   container-name: theme;
   --theme: dark;
 }
@@ -45,17 +39,23 @@ Container style queriesは、`@container style(--theme: dark)`のように、祖
 }
 ```
 
+```html
+<div class="theme">
+  <p class="card">カード</p>
+</div>
+```
+
 `.theme`の中の`.card`は、背景が黒、文字が白になります。`.theme`の`--theme`を`light`に書き換えると、元の色に戻ります。
 
-`container-type`を指定する必要はありません。`container-type: size`や`inline-size`はサイズクエリ専用で、スタイルクエリは指定なしでもデフォルトで全要素が暗黙のスタイルクエリコンテナとして扱われます。サイズクエリのようなcontainmentの指定は不要です。
+サイズクエリと違って、`container-type`の指定は要りません。スタイルクエリでは、どの要素もクエリで見る対象になれるからです。
 
-ただし、クエリが見るのは祖先だけです。`.card`自身に`--theme: dark`を書いて`@container style(--theme: dark)`で`.card`を指定しても、スタイルは当たりません。値は、スタイルを当てたい要素の祖先に置きます。`style(color: black)`のようにカスタムプロパティではないプロパティを書いた条件も、どのブラウザでもマッチしません。
+ただし、クエリが見るのは祖先だけです。`.card`自身に`--theme: dark`を書いて`@container style(--theme: dark)`で`.card`を指定しても、スタイルは当たりません。値は、スタイルを当てたい要素の祖先に置きます。`style(color: black)`のように、カスタムプロパティではないふつうのプロパティを書いた条件も、どのブラウザでもマッチしません。
 
-なお、`@container theme { ... }`のように条件を省略する書き方は、name-only container queriesという別機能で、カスタムプロパティの値は見ません。スタイルクエリとして条件分岐したい場合は`style()`の中に条件を書きます。
+`@container theme { ... }`のように`style()`を書かない形は、名前だけで祖先を探す別の機能で、カスタムプロパティの値は見ません。この形は[@containerの名前だけで親要素に応じてスタイルを変える](/blog/container-name-queries)で書いています。
 
-## カスタムプロパティを使う
+## 親の値でボタンの大きさを変える
 
-`.surface`に立てた`--size`の値に応じて、子孫の`.button`のパディングを切り替える例です。
+`.surface`に置いた`--size`の値に応じて、子孫の`.button`のパディングを切り替える例です。
 
 ```css
 /* [!og] */
@@ -77,21 +77,13 @@ Container style queriesは、`@container style(--theme: dark)`のように、祖
 }
 ```
 
-子コンポーネントに`size`用のクラスを増やさずに、親側で`--size`を切り替えるだけでまとめて反映されます。
+ボタンに大きさ用のクラスを足さなくても、親の`--size`を切り替えるだけで、中のボタンがまとめて変わります。
 
 値は、前後の空白を除いた文字列として比べられます。`--size:md`と空白なしで書いても`style(--size: md)`にマッチしますが、`--gap: 16px`は`style(--gap: 1rem)`にマッチしません。`@property`で`syntax: '<length>'`を登録したカスタムプロパティなら、長さとして比べられ、`16px`が`1rem`にマッチします。
 
-## 階層を超えて効かせる
+## 名前で見る祖先を決める
 
-カスタムプロパティはCSSの継承に乗るので、`container-name`で祖先を固定しておけば、深い子孫からでも一番上の祖先を見に行けます。途中の要素が同じカスタムプロパティを上書きしていても、`container-name`で対象を固定しておけば影響を受けません。
-
-```html
-<section class="theme" style="--theme: dark">
-  <article style="--theme: light">
-    <p class="card">深い場所のカード</p>
-  </article>
-</section>
-```
+カスタムプロパティは継承されるので、深い子孫にも上の祖先の値が届きます。途中の要素が同じカスタムプロパティを上書きしていても、`container-name`で見る祖先を決めておけば、その上書きに左右されません。
 
 ```css
 .theme {
@@ -106,9 +98,17 @@ Container style queriesは、`@container style(--theme: dark)`のように、祖
 }
 ```
 
-`@container theme`はクエリの対象を`container-name: theme`が付いている祖先に固定しているので、`article`が`--theme: light`に上書きしていても、`section`の`dark`で判定されて`.card`にはdark側のスタイルが当たります。
+```html
+<section class="theme" style="--theme: dark">
+  <article style="--theme: light">
+    <p class="card">深い場所のカード</p>
+  </article>
+</section>
+```
 
-`container-name`を付けずに`@container style(--theme: dark)`と書くと、対象はもっとも近い祖先のスタイルクエリコンテナになります。CSS Conditional Rules Module Level 5は、スタイルクエリではどの要素もクエリコンテナになると定めているので、もっとも近い祖先のスタイルクエリコンテナは実質的にスタイルを当てる要素の親要素です。上の例だと`article`の`--theme: light`が見えて`.card`にはdark側が当たりません。テーマやモードのような上から降ってくる文脈は、名前付きで明示しておくのが安全です。
+`@container theme`は`container-name: theme`の付いた祖先を見るので、`article`が`--theme: light`に上書きしていても、`section`の`dark`で判定されます。`.card`にはdark側のスタイルが当たります。
+
+`container-name`を付けずに`@container style(--theme: dark)`と書くと、スタイルを当てる要素の親を見ます。どの要素もクエリで見る対象になれるので、いちばん近い祖先である親が選ばれるからです。上の例では`article`の`--theme: light`が見えて、`.card`にはdark側が当たりません。テーマのように上から渡す値は、名前を付けて見る祖先を決めておくと、途中の上書きに左右されません。
 
 <PlaygroundEmbed
   demo="Container style queriesで親のテーマに追従するカード"
@@ -118,4 +118,4 @@ Container style queriesは、`@container style(--theme: dark)`のように、祖
 
 ## おわりに
 
-Container style queriesは、テーマやサイズスケールといった親の文脈に追従する子のスタイルを素直にCSSだけで書く道具です。子コンポーネントに対してテーマ用のクラスや属性を配って回る処理を減らし、子側のCSSが親の値を読みに行く形に書き直していけます。
+Container style queriesを使うと、祖先に置いたカスタムプロパティの値を条件にして、子孫のスタイルを切り替えられます。どの祖先の値を見るかは`container-name`で決め、値はスタイルを当てる要素の祖先に置きます。
