@@ -13,11 +13,9 @@ featureIds:
 
 ## はじめに
 
-WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エンコードした後・デコードする前のフレームの段階でWorkerに渡し、データを書き換えられるようにする機能です。送信側で暗号化して受信側で復号すれば、通信を中継するサーバーにも中身が読めないE2EE（End-to-End Encryption）を実装できます。
+WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エンコードした後・デコードする前のフレームの段階でWorkerに渡し、データを書き換えられるようにする機能です。送信側で暗号化して受信側で復号すれば、通信を中継するサーバーにも中身が読めないE2EE（End-to-End Encryption）を実装できます。Chrome 141が対応して、Baseline 2025に入りました。
 
 1対1でつなぐだけなら、WebRTCが通信をDTLS-SRTPで暗号化するので、これまでの書き方で足ります。SFUのようなメディアサーバーを経由する通信では、サーバーで一度復号されます。サーバーにも読めないように暗号化したいときに、Encoded Transformが要ります。
-
-Chrome 141（Edge 141）で対応し、Baselineのすべてのブラウザで使えるようになりました（Chromeでは2020年から、仕様が変わる前の初期バージョンが使えていました）。
 
 同じページで2つの`RTCPeerConnection`をつなぐと、外のサーバーなしで試せます。
 
@@ -77,7 +75,7 @@ self.addEventListener('rtctransform', (event) => {
 });
 ```
 
-開くと左のcanvasの色が変わり続け、右のvideoに同じ映像が映ります。Chrome 156とSafari 27.2で映ることを確かめました。Chrome 156のコンソールには、Workerが受け取ったフレームの種類と大きさが`key 177`、`delta 111`のように流れます。
+開くと左のcanvasの色が変わり続け、右のvideoに同じ映像が映ります。コンソールには、Workerが受け取ったフレームの種類と大きさが`key 177`、`delta 111`のように流れます。
 
 ## WebRTCとは
 
@@ -106,7 +104,7 @@ new RTCRtpScriptTransform(worker, options, transfer);
 videoSender.transform = new RTCRtpScriptTransform(worker);
 ```
 
-Workerでは、`rtctransform`イベントの`event.transformer`の`readable`からフレームを読み、`writable`に書き戻します。映像のフレームは`RTCEncodedVideoFrame`で、`data`（`ArrayBuffer`）と`type`（`key`か`delta`）を持ちます。`getMetadata()`を呼ぶと、コーデック（既定ではChrome 156が`video/VP8`、Safari 27.2が`video/H264`）や幅と高さが分かります。
+Workerでは、`rtctransform`イベントの`event.transformer`の`readable`からフレームを読み、`writable`に書き戻します。映像のフレームは`RTCEncodedVideoFrame`で、`data`（`ArrayBuffer`）と`type`（`key`か`delta`）を持ちます。`getMetadata()`を呼ぶと、コーデック（既定ではChromeが`video/VP8`、Safariが`video/H264`）や幅と高さが分かります。
 
 ## 使用例
 
@@ -132,7 +130,7 @@ pc2.ontrack = (event) => {
 };
 ```
 
-`CryptoKey`は`options`に入れてWorkerに渡せます（Chrome 156、Safari 27.2、Firefox 159で確認）。ここでは同じページで作った鍵を両方に渡していますが、実際には鍵交換の仕組みで相手と共有します。
+`CryptoKey`は`options`に入れてWorkerに渡せます。ここでは同じページで作った鍵を両方に渡していますが、実際には鍵交換の仕組みで相手と共有します。
 
 Worker側（`e2ee-worker.js`）では、AES-GCMでフレームを暗号化し、初期化ベクトル（IV）を末尾に付けて送ります。受信側は末尾のIVを取り出して復号します。
 
@@ -189,9 +187,11 @@ function concat(...parts) {
 }
 ```
 
-VP8では、フレームの先頭（キーフレームは10バイト、それ以外は3バイト）を暗号化せずに残し、受信側のブラウザがフレームの種類を見分けられるようにします。Chrome 156でフレーム全体を暗号化すると、映像は映りましたが、受信側に届いた130のフレームのうち57が`type`を`key`としていました（送ったキーフレームは4つ）。
+VP8では、フレームの先頭（キーフレームは10バイト、それ以外は3バイト）を暗号化せずに残し、受信側のブラウザがフレームの種類を見分けられるようにします。フレーム全体を暗号化すると、Chromeでは映像は映りますが、受信側ではキーフレームでない多くのフレームが`type`を`key`として届きます。
 
-Chrome 156で試すと、受信側に復号のTransformを置かないときは、映像は一度も映りませんでした。違う鍵で復号すると`decrypt()`が失敗してフレームを捨てるので、やはり映りません。Safari 27.2では既定のコーデックがH.264で、このE2EEのコードでは映像が映りませんでした（フレームをそのまま通す最初の例は映りました）。送信側は28のフレームを暗号化して送りましたが、受信側には1つも届いていませんでした。Workerで暗号化せずに残す先頭のバイト数はVP8に合わせたものなので、Safariでは`addTrack()`の後でVP8を先頭に並べます。
+受信側に復号のTransformを置かないと、映像は映りません。違う鍵で復号すると`decrypt()`が失敗してフレームを捨てるので、やはり映りません。
+
+Safariは既定のコーデックがH.264で、このE2EEのコードのままでは映像が映りません（フレームをそのまま通す最初の例は映ります）。Workerで暗号化せずに残す先頭のバイト数はVP8に合わせたものなので、Safariでは`addTrack()`の後でVP8を先頭に並べます。
 
 ```js
 const [transceiver] = pc1.getTransceivers();
@@ -202,7 +202,7 @@ transceiver.setCodecPreferences([
 ]);
 ```
 
-Safari 27.2でこう並べると、送った47のフレームがすべて復号されて映りました。
+こう並べると、Safariでもフレームが復号されて映ります。
 
 ```txt
 // これまで
@@ -220,7 +220,5 @@ Safari 27.2でこう並べると、送った47のフレームがすべて復号�
 ## おわりに
 
 WebRTCとWebRTC Encoded Transformについて簡単に紹介しました。
-
-WebRTC Encoded Transformは、Baseline 2025に追加された、WebRTCに関する強力な機能です。
 
 これにより、通信を中継するサーバーにも読めない形で映像や音声を送るE2EEのような処理を、WebRTCの送受信の途中に挟めます。
