@@ -111,10 +111,12 @@ Container style queriesは、`@container style(--theme: dark)`のように、祖
 `container-name`を付けずに`@container style(--theme: dark)`と書くと、スタイルを当てる要素の親を見ます。どの要素もクエリで見る対象になれるので、いちばん近い祖先である親が選ばれるからです。上の例では`article`の`--theme: light`が見えて、`.card`にはdark側が当たりません。テーマのように上から渡す値は、名前を付けて見る祖先を決めておくと、途中の上書きに左右されません。
 
 <PlaygroundEmbed
-  demo="Container style queriesで親のテーマに追従するカード"
+  demo="名前を付けたクエリと付けないクエリの比較"
   headingLevel="h4"
   sectionId="container-style-queries"
 />
+
+親をdark、途中の要素をlightにすると、名前を付けたクエリのカードは親のdarkで、名前を付けないクエリのカードは途中の要素のlightで描かれます。
 
 ## おわりに
 
