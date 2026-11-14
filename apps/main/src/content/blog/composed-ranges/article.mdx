@@ -13,9 +13,9 @@ featureIds:
 
 ## はじめに
 
-`getComposedRanges`メソッドは、ユーザーが選択した範囲を、Shadow DOMの中のノードの位置まで含めて返す`Selection`オブジェクトのメソッドです。中を見てよい`ShadowRoot`を渡すと、その中のテキストノードと文字の位置が`StaticRange`で返ります。
+`getComposedRanges`メソッドは、ユーザーが選択した範囲を、Shadow DOMの中のノードの位置まで含めて返す`Selection`オブジェクトのメソッドです。中を見てよい`ShadowRoot`を渡すと、その中のテキストノードと文字の位置が`StaticRange`で返ります。Firefox 142が対応して、Baseline 2025に入りました。
 
-選択範囲がふつうのDOMの中だけなら、これまでの`getRangeAt(0)`で足ります。Shadow DOMの中を選んだときや、外から中へまたいで選んだときは、`getRangeAt(0)`ではShadow DOMの中の位置が分かりません。Chrome 156でマウスを使って外から中へ選ぶと、`getRangeAt(0)`の終わりはホスト要素の位置になり、`toString()`の結果にもShadow DOMの中の文字が入りませんでした。Baseline 2025で揃った`getComposedRanges`メソッドなら、中の位置まで取れます。
+選択範囲がふつうのDOMの中だけなら、これまでの`getRangeAt(0)`で足ります。Shadow DOMの中を選んだときや、外から中へまたいで選んだときは、`getRangeAt(0)`ではShadow DOMの中の位置が分かりません。Chromeでマウスを使って外から中へ選ぶと、`getRangeAt(0)`の終わりはホスト要素の位置になり、`toString()`の結果にもShadow DOMの中の文字が入りません。`getComposedRanges`メソッドなら、中の位置まで取れます。
 
 ```html
 <p id="host"></p>
@@ -68,7 +68,7 @@ document.addEventListener('selectionchange', () => {
 <PlaygroundEmbed demo="Selectionオブジェクトのメソッド" headingLevel="h4" sectionId="composed-ranges" />
 
 `addRange`は`Range`オブジェクトを引数に取り、選択範囲に対象を追加します。
-Firefoxでは`addRange`を続けて呼ぶと、複数の範囲を選択できます。Chrome 156とSafari 27.2では、選択範囲があるうちに呼んだ`addRange`は無視され、`rangeCount`は1のままでした。Firefox 159では2になりました。
+Firefoxでは`addRange`を続けて呼ぶと、複数の範囲を選択できます。ChromeとSafariでは、選択範囲があるうちに呼んだ`addRange`は無視され、`rangeCount`は1のままで、Firefoxでは2になります。
 
 `addRange`を実行する時は、`rangeCount`プロパティを確認してください。`1`以上の場合は選択範囲をクリアして`0`にする必要があります。
 先ほどの例では以下のように`rangeCount`を確認してから`addRange`を実行しています。
@@ -86,7 +86,7 @@ if (selection && textNode) {
 }
 ```
 
-例の最後のボタンで紹介した`extend`は、選択範囲から指定したノードの先頭までを選択範囲に拡張します。選択範囲が無いときに呼ぶと、Chrome 156、Safari 27.2、Firefox 159のどれでも`InvalidStateError`になるので、デモでは`rangeCount`が1以上のときだけ呼んでいます。
+例の最後のボタンで紹介した`extend`は、選択範囲から指定したノードの先頭までを選択範囲に拡張します。選択範囲が無いときに呼ぶと`InvalidStateError`になるので、デモでは`rangeCount`が1以上のときだけ呼んでいます。
 先頭を除く範囲を選択してから押すことで機能を確認できます。
 先頭ではなく、任意の位置を指定したい場合は、オフセットを第2引数に渡します。
 
@@ -122,9 +122,9 @@ const ranges = window.getSelection()?.getComposedRanges({ shadowRoots: [shadowRo
 背景色があるテキスト部分を全て含めて選択した場合や、背景色があるテキストを一部含めた場合、サンプルテキスト以外も含めた選択を試してください。
 `getComposedRanges`メソッドにオプションを渡した場合は、`startContainer`と`endContainer`にShadow Tree内のテキストノードが返ります。オプションを渡さない場合は、ホスト要素の親（サンプルテキストの枠全体）が返ります。
 
-Chrome 156、Safari 27.2、Firefox 159で、Shadow DOMの外の文字から中の文字までを`setBaseAndExtent()`で選ぶと、`getComposedRanges({ shadowRoots })`はどれも外のテキストノードから中のテキストノードまでの範囲を返しました。`getRangeAt(0)`は、Chrome 156とFirefox 159ではShadow DOMの中の1点に縮んだ範囲を返し、Safari 27.2では`rangeCount`が0で呼べませんでした。閉じたShadow DOM（`mode: 'closed'`）でも、`ShadowRoot`を渡せば中の位置が返ります。
+Shadow DOMの外の文字から中の文字までを`setBaseAndExtent()`で選ぶと、`getComposedRanges({ shadowRoots })`は外のテキストノードから中のテキストノードまでの範囲を返します。`getRangeAt(0)`は、ChromeとFirefoxではShadow DOMの中の1点に縮んだ範囲を返し、Safariでは`rangeCount`が0で呼べません。閉じたShadow DOM（`mode: 'closed'`）でも、`ShadowRoot`を渡せば中の位置が返ります。
 
-`ShadowRoot`をオブジェクトに入れずに`getComposedRanges(shadowRoot)`と渡す古い書き方は、Safari 27.2とFirefox 159では中の位置を返しますが、Chrome 156では無視され、ホスト要素の外の位置が返りました。TypeScript 7.0.2でも型エラーになるので、`{ shadowRoots: [...] }`の形で渡します。デモの下の注記には、Safariではオプションを渡すと正しく動かない場合があると書きましたが、`setBaseAndExtent()`で選んだ範囲では、Safari 27.2でも`{ shadowRoots }`の形で中の位置が返りました。
+`ShadowRoot`をオブジェクトに入れずに`getComposedRanges(shadowRoot)`と渡す古い書き方は、SafariとFirefoxでは中の位置を返しますが、Chromeでは無視され、ホスト要素の外の位置が返ります。TypeScriptでも型エラーになるので、`{ shadowRoots: [...] }`の形で渡します。
 
 このように、適切なオプションを付与した`getComposedRanges`メソッドを用いることで、Shadow DOM境界を跨いだ選択が行われたとしても、他の要素と同じようにShadow DOM内の要素を正しく扱えるようになります。
 

@@ -136,9 +136,6 @@ export function GetComposedRanges() {
       >
         選択範囲のテキストを取得する
       </Button>
-      <p className={styles.note}>
-        SafariやIOSのChrome等ではoptionsを含んだgetComposedRangesメソッドが正しく動作しない場合があります。
-      </p>
     </div>
   );
 }
