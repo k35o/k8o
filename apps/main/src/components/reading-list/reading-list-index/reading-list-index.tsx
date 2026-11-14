@@ -1,4 +1,5 @@
-import { Heading, ListIcon, Stack } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
+import { ListIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import { BrowserOnly } from '@/components/site/browser-only/browser-only';

@@ -1,4 +1,5 @@
-import { Heading, PaletteIcon, SparklesIcon } from '@k8ordo/ui';
+import { Heading } from '@k8ordo/ui';
+import { PaletteIcon, SparklesIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import { BrowserSupportStatus } from '@/components/site/browser-support-status/browser-support-status';

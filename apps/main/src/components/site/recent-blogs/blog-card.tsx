@@ -1,5 +1,6 @@
 import { href } from '@k8ordo/framework';
-import { Badge, Heading, Card, PublishDateIcon, TagIcon } from '@k8ordo/ui';
+import { Badge, Heading, Card } from '@k8ordo/ui';
+import { CalendarIcon, TagIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -42,7 +43,7 @@ export const BlogCard: FC<BlogCardProps> = ({
             </div>
           )}
           <div className={styles.date}>
-            <PublishDateIcon size="sm" />
+            <CalendarIcon size="sm" />
             <span>{formatDate(new Date(createdAt), 'yyyy年M月d日')}</span>
           </div>
         </div>

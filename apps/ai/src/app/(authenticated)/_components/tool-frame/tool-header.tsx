@@ -1,6 +1,7 @@
 'use client';
 
-import { IconButton, NavigationMenuIcon } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { MenuIcon } from '@k8ordo/ui/icons';
 import type { FC, ReactNode } from 'react';
 
 import { useSidebarMenu } from './sidebar-menu';
@@ -22,7 +23,7 @@ export const ToolHeader: FC<ToolHeaderProps> = ({ children }) => {
           onClick={open}
           size="sm"
         >
-          <NavigationMenuIcon size="sm" />
+          <MenuIcon size="sm" />
         </IconButton>
       </div>
       {children}

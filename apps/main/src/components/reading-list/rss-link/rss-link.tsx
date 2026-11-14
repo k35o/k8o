@@ -1,6 +1,7 @@
 'use client';
 
-import { IconButton, RSSIcon } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { RssIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 export const RssLink: FC = () => (
@@ -25,6 +26,6 @@ export const RssLink: FC = () => (
       </a>
     )}
   >
-    <RSSIcon />
+    <RssIcon />
   </IconButton>
 );

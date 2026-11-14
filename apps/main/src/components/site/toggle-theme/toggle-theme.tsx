@@ -1,7 +1,8 @@
 'use client';
 
 import { useColorScheme } from '@k8ordo/color-scheme';
-import { DarkModeIcon, IconButton, LightModeIcon } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { MoonIcon, SunIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import styles from './toggle-theme.module.css';
@@ -17,10 +18,10 @@ export const ToggleTheme: FC = () => {
       }}
     >
       <span className={styles.moon}>
-        <DarkModeIcon size="lg" />
+        <MoonIcon size="lg" />
       </span>
       <span className={styles.sun}>
-        <LightModeIcon size="lg" />
+        <SunIcon size="lg" />
       </span>
     </IconButton>
   );

@@ -1,14 +1,10 @@
 'use client';
 
-import {
-  Badge,
-  Button,
-  ExternalLinkIcon,
-  GitHubIcon,
-  Heading,
-  Stack,
-} from '@k8ordo/ui';
+import { Badge, Button, Heading, Stack } from '@k8ordo/ui';
+import { ExternalLinkIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
+
+import { GitHubIcon } from '@/components/site/brand-icons/github-icon';
 
 import type { Artifact } from '../artifacts/artifacts';
 

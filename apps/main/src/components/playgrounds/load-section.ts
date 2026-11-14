@@ -23,3 +23,6 @@ export const loadPlaygroundSection = async (
     ? undefined
     : Object.values(await load()).find(isPlaygroundSection);
 };
+
+// デモの id は、src/playgrounds の下の index.ts を持つディレクトリの名前
+export const playgroundSectionIds: string[] = [...loaders.keys()];

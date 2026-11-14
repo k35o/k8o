@@ -1,12 +1,6 @@
 import { href } from '@k8ordo/framework';
-import {
-  Badge,
-  PublishDateIcon,
-  Separator,
-  Stack,
-  TagIcon,
-  UpdateDateIcon,
-} from '@k8ordo/ui';
+import { Badge, Separator, Stack } from '@k8ordo/ui';
+import { CalendarIcon, ClockIcon, TagIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC, ReactNode } from 'react';
 
@@ -60,14 +54,14 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                 <div className={styles.meta}>
                   <span className={styles.metaItem}>
                     <span className={styles.metaIcon}>
-                      <PublishDateIcon size="sm" />
+                      <CalendarIcon size="sm" />
                     </span>
                     公開: {formatDate(new Date(blog.createdAt))}
                   </span>
                   {blog.updatedAt !== blog.createdAt && (
                     <span className={styles.metaItem}>
                       <span className={styles.metaIcon}>
-                        <UpdateDateIcon size="sm" />
+                        <ClockIcon size="sm" />
                       </span>
                       更新: {formatDate(new Date(blog.updatedAt))}
                     </span>

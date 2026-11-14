@@ -1,14 +1,15 @@
 'use client';
 
 import { href } from '@k8ordo/framework';
-import { CloseIcon, IconButton } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { XIcon } from '@k8ordo/ui/icons';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
-import { useFragmentTarget } from '../hooks/use-hash-index';
+import { useFragmentTarget } from '../hooks/use-fragment-target';
 import { useIsFullscreen } from '../hooks/use-is-fullscreen';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
@@ -93,7 +94,7 @@ export const DeckViewer: FC<{
                 </a>
               )}
             >
-              <CloseIcon />
+              <XIcon />
             </IconButton>
             <p className={styles.title}>{title}</p>
           </div>
@@ -140,7 +141,7 @@ export const DeckViewer: FC<{
                 setIsPresenting(false);
               }}
             >
-              <CloseIcon />
+              <XIcon />
             </IconButton>
           </div>
         </div>

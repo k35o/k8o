@@ -1,10 +1,7 @@
 'use client';
 
-import {
-  HorizontalWritingIcon,
-  IconButton,
-  VerticalWritingIcon,
-} from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { TextHorizontalIcon, TextVerticalIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import { useWritingMode } from './writing-mode-context';
@@ -24,9 +21,9 @@ export const WritingModeSwitcher: FC = () => {
       size="md"
     >
       {isVertical ? (
-        <HorizontalWritingIcon size="md" />
+        <TextHorizontalIcon size="md" />
       ) : (
-        <VerticalWritingIcon size="md" />
+        <TextVerticalIcon size="md" />
       )}
     </IconButton>
   );

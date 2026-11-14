@@ -1,9 +1,10 @@
 'use client';
 
-import { Button, GitHubIcon, Spinner, useToast } from '@k8ordo/ui';
+import { Button, Spinner, useToast } from '@k8ordo/ui';
 import { useState } from 'react';
 import type { FC } from 'react';
 
+import { GitHubIcon } from '@/app/_components/brand-icons/github-icon';
 import { authClient } from '@/shared/auth/auth-client';
 
 export const SignInForm: FC = () => {

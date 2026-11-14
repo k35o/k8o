@@ -1,4 +1,4 @@
-import { AssistantIcon, PackageIcon } from '@k8ordo/ui';
+import { BotMessageIcon, PackageIcon } from '@k8ordo/ui/icons';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
 
@@ -16,7 +16,7 @@ const TOOLS: Array<{
     tool: 'chat',
     href: '/chat',
     label: 'チャット',
-    icon: <AssistantIcon size="sm" />,
+    icon: <BotMessageIcon size="sm" />,
   },
   {
     tool: 'artifacts',

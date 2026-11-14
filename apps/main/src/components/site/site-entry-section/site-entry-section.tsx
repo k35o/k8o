@@ -1,21 +1,20 @@
+import { Heading, Stack } from '@k8ordo/ui';
 import {
-  BlogIcon,
-  CodeXmlIcon,
-  ColorContrastIcon,
-  ColorInfoIcon,
+  BellIcon,
+  BlendIcon,
+  BookTextIcon,
+  CodeIcon,
   ColorScaleIcon,
+  ContrastIcon,
   FlaskIcon,
-  Heading,
-  HorizontalWritingIcon,
-  MixedColorIcon,
-  NewsIcon,
   PackageIcon,
+  PaintBucketIcon,
   PaletteIcon,
+  PresentationIcon,
   ShieldCheckIcon,
-  SlideIcon,
   SquircleIcon,
-  Stack,
-} from '@k8ordo/ui';
+  TextHorizontalIcon,
+} from '@k8ordo/ui/icons';
 import type { ReactNode } from 'react';
 
 import { KIND_SECTION, siteEntries } from '@/shared/site/site-entries';
@@ -27,19 +26,19 @@ import styles from './site-entry-section.module.css';
 
 const ICON: Record<SiteEntryIcon, ReactNode> = {
   browserSupport: <ShieldCheckIcon size="md" />,
-  colorConverter: <ColorInfoIcon size="md" />,
-  contrastChecker: <ColorContrastIcon size="md" />,
-  colorQuiz: <MixedColorIcon size="md" />,
+  colorConverter: <PaintBucketIcon size="md" />,
+  contrastChecker: <ContrastIcon size="md" />,
+  colorQuiz: <BlendIcon size="md" />,
   radiusMaker: <SquircleIcon size="md" />,
   paletteMaker: <ColorScaleIcon size="md" />,
-  mojiCount: <HorizontalWritingIcon size="md" />,
-  htmlNest: <CodeXmlIcon size="md" />,
+  mojiCount: <TextHorizontalIcon size="md" />,
+  htmlNest: <CodeIcon size="md" />,
   fluida: <PaletteIcon size="md" />,
-  blog: <BlogIcon size="md" />,
-  talks: <SlideIcon size="md" />,
+  blog: <BookTextIcon size="md" />,
+  talks: <PresentationIcon size="md" />,
   playgrounds: <FlaskIcon size="md" />,
   artifacts: <PackageIcon size="md" />,
-  readings: <NewsIcon size="md" />,
+  readings: <BellIcon size="md" />,
 };
 
 export const SiteEntrySection = ({ kind }: { kind: SiteEntryKind }) => {

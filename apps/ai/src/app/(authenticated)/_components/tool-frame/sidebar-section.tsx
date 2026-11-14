@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, PlusIcon } from '@k8ordo/ui';
+import { Button } from '@k8ordo/ui';
+import { PlusIcon } from '@k8ordo/ui/icons';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
 

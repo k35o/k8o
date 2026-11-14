@@ -1,7 +1,8 @@
 import { href } from '@k8ordo/framework';
-import { Logo } from '@k8ordo/ui';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import type { FC, ReactNode } from 'react';
+
+import { Logo } from '@/components/site/brand-icons/logo';
 
 import { BrowserSupportNotice } from '../browser-support-notice/browser-support-notice';
 import { Background } from './background/background';

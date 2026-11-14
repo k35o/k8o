@@ -1,11 +1,5 @@
-import {
-  Badge,
-  Button,
-  Card,
-  PaletteIcon,
-  SlideIcon,
-  Spinner,
-} from '@k8ordo/ui';
+import { Badge, Button, Card, Spinner } from '@k8ordo/ui';
+import { PaletteIcon, PresentationIcon } from '@k8ordo/ui/icons';
 import type { FC, Ref } from 'react';
 
 import type { ChatArtifact } from '@/features/agent/application/chat-artifacts';
@@ -37,7 +31,7 @@ export const ArtifactCard: FC<ArtifactCardProps> = ({
           {artifact.kind === 'ui' ? (
             <PaletteIcon size="sm" />
           ) : (
-            <SlideIcon size="sm" />
+            <PresentationIcon size="sm" />
           )}
         </span>
         <p className={styles.title}>{artifact.title}</p>

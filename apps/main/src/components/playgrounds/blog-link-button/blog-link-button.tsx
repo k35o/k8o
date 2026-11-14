@@ -1,7 +1,8 @@
 'use client';
 
 import { href } from '@k8ordo/framework';
-import { BlogIcon, Button } from '@k8ordo/ui';
+import { Button } from '@k8ordo/ui';
+import { BookTextIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 export const BlogLinkButton: FC<{ slug: string }> = ({ slug }) => (
@@ -12,7 +13,7 @@ export const BlogLinkButton: FC<{ slug: string }> = ({ slug }) => (
       </a>
     )}
     size="sm"
-    startIcon={<BlogIcon size="sm" />}
+    startIcon={<BookTextIcon size="sm" />}
   >
     ブログで解説を読む
   </Button>

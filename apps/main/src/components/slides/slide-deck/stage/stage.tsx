@@ -1,5 +1,6 @@
-import { Logo } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
+
+import { Logo } from '@/components/site/brand-icons/logo';
 
 import { SlideQRCode } from '../slide-qr-code/slide-qr-code';
 

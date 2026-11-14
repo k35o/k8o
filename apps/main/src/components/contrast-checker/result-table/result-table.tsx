@@ -1,4 +1,4 @@
-import { AlertIcon } from '@k8ordo/ui';
+import { AlertIcon } from '@k8ordo/ui/icons';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 

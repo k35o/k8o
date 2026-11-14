@@ -1,13 +1,6 @@
 import { href } from '@k8ordo/framework';
-import {
-  Badge,
-  Card,
-  Grid,
-  Heading,
-  PublishDateIcon,
-  Stack,
-  TagIcon,
-} from '@k8ordo/ui';
+import { Badge, Card, Grid, Heading, Stack } from '@k8ordo/ui';
+import { CalendarIcon, TagIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -42,7 +35,7 @@ export const Recommend: FC<RecommendProps> = ({ blogs }) => {
                     ))}
                   </div>
                   <div className={styles.date}>
-                    <PublishDateIcon size="sm" />
+                    <CalendarIcon size="sm" />
                     <span>
                       公開:{' '}
                       {formatDate(new Date(blog.createdAt), 'yyyy年M月d日')}

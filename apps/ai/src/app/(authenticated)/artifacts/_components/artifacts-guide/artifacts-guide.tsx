@@ -1,6 +1,7 @@
 'use client';
 
-import { AssistantIcon, Button, EmptyState, PackageIcon } from '@k8ordo/ui';
+import { Button, EmptyState } from '@k8ordo/ui';
+import { BotMessageIcon, PackageIcon } from '@k8ordo/ui/icons';
 import Link from 'next/link';
 import type { FC } from 'react';
 
@@ -25,7 +26,7 @@ export const ArtifactsGuide: FC = () => (
               </Link>
             )}
             size="sm"
-            startIcon={<AssistantIcon size="sm" />}
+            startIcon={<BotMessageIcon size="sm" />}
             variant="solid"
           >
             チャットで作る
