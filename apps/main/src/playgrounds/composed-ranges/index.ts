@@ -14,7 +14,7 @@ export const composedRangesSection: PlaygroundSection = {
       component: GetComposedRanges,
       title: 'getRangeAtとgetComposedRangesの比較',
       description:
-        '閉じたShadow Tree内の選択で、getRangeAtとgetComposedRangesが返す範囲の違いを比較できます。',
+        '閉じたShadow DOMの中を選んだとき、getRangeAtとgetComposedRangesの範囲がどの文字を指すかを比べられます。',
     },
   ],
 };

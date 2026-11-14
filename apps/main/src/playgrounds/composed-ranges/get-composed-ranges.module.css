@@ -7,6 +7,9 @@
 .sample {
   display: flex;
   flex-direction: column;
+  padding: calc(var(--spacing) * 3);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-subtle);
 }
 
 .label {
@@ -14,6 +17,14 @@
 }
 
 .note {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.placeholder,
+.resultsLabel,
+.empty {
   color: var(--color-fg-mute);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
@@ -28,11 +39,12 @@
 .result {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--spacing) * 2);
+  gap: var(--spacing);
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
+.covered {
+  padding-inline: calc(var(--spacing) * 0.5);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-bg-subtle);
+  color: var(--color-fg-base);
 }
