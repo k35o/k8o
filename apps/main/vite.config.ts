@@ -8,14 +8,13 @@ import mdx from '@mdx-js/rollup';
 import rehypePreset from '@repo/mdx-preset/rehype';
 import remarkPreset from '@repo/mdx-preset/remark';
 import { defineConfig } from 'vite';
-import type { Plugin } from 'vite';
 
 import floor from './src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-script.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { pagePolicy, securityHeaders } from './src/site/security-headers.ts';
 import type { DeployTarget } from './src/site/security-headers.ts';
-import { BEFORE_NOT_FOUND, beforeFiles } from './src/site/vercel-routes.ts';
+import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
 
 const targets = browserTargets(floor.minVersions);
 
@@ -30,23 +29,11 @@ const alias = {
   '@playgrounds': fileURLToPath(new URL('./src/playgrounds', import.meta.url)),
 };
 
-// vercel() の規則は Vercel だけが当てる。server.headers は Vite 自身の応答にしか付かず、
-// framework が描く HTML に届かないので、dev のヘッダーはどの応答にも先に付ける
-const devSecurityHeaders: Plugin = {
-  name: 'k8o:dev-security-headers',
-  apply: 'serve',
-  configureServer(server) {
-    const headers = Object.entries(securityHeaders('development'));
-    server.middlewares.use((_req, res, next) => {
-      for (const [name, value] of headers) {
-        res.setHeader(name, value);
-      }
-      next();
-    });
-  },
-};
+const colorSchemeHash = await colorSchemeScriptHash(
+  COLOR_SCHEME_SCRIPT_OPTIONS,
+);
 
-export default defineConfig({
+export default defineConfig(({ command, isPreview }) => ({
   resolve: { alias },
   // @repo/helpers は in-source のテストを持つ。置き換えないとテストの本体が client のバンドルに残る
   define: { 'import.meta.vitest': 'undefined' },
@@ -63,7 +50,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    devSecurityHeaders,
     // framework() の React と plugin-rsc より先に、MDX を JSX にする
     {
       enforce: 'pre',
@@ -72,13 +58,16 @@ export default defineConfig({
     framework({
       mode: 'static',
       reactCompiler: true,
-      csp: pagePolicy(
-        deployTarget,
-        await colorSchemeScriptHash(COLOR_SCHEME_SCRIPT_OPTIONS),
+      // vite dev だけ dev の値にする。vite preview はビルドと同じ値を送る
+      headers: securityHeaders(
+        command === 'serve' && isPreview !== true
+          ? 'development'
+          : deployTarget,
       ),
+      csp: pagePolicy(deployTarget, colorSchemeHash),
     }),
     vercel({
-      beforeFiles: beforeFiles(deployTarget),
+      beforeFiles: BEFORE_FILES,
       beforeNotFound: BEFORE_NOT_FOUND,
     }),
     betterCssModules(),
@@ -92,4 +81,4 @@ export default defineConfig({
     // CSP の font-src は 'self' だけなので、小さなフォントも data: URI に埋め込まずファイルで配る
     assetsInlineLimit: (file) => (file.endsWith('.woff2') ? false : undefined),
   },
-});
+}));
