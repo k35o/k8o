@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エンコードした後・デコードする前のフレームの段階でWorkerに渡し、データを書き換えられるようにする機能です。送信側で暗号化して受信側で復号すれば、通信を中継するサーバーにも中身が読めないE2EE（End-to-End Encryption）を実装できます。Chrome 141が対応して、Baseline 2025に入りました。
+WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エンコードした後やデコードする前のフレームの段階でWorkerに渡し、データを書き換えられるようにする機能です。送信側で暗号化して受信側で復号すれば、通信を中継するサーバーにも中身が読めないE2EE（End-to-End Encryption）を実装できます。Chrome 141が対応して、Baseline 2025に入りました。
 
 1対1でつなぐだけなら、WebRTCが通信をDTLS-SRTPで暗号化するので、これまでの書き方で足ります。SFUのようなメディアサーバーを経由する通信では、サーバーで一度復号されます。サーバーにも読めないように暗号化したいときに、Encoded Transformが要ります。
 
@@ -77,22 +77,30 @@ self.addEventListener('rtctransform', (event) => {
 
 開くと左のcanvasの色が変わり続け、右のvideoに同じ映像が映ります。コンソールには、Workerが受け取ったフレームの種類と大きさが`key 177`、`delta 111`のように流れます。
 
-## WebRTC Encoded Transformとは
+## RTCRtpScriptTransform
 
-WebRTC Encoded Transformは、WebRTC APIの一部で、エンコードされたメディアフレームを変換するために使用される機能です。
-Workerスレッドで実行される変換処理をWebRTCの送信・受信パイプラインに挿入できます。
+WebRTC Encoded Transformは、エンコードとネットワークのあいだ、ネットワークとデコードのあいだに、Workerで動く変換を挟みます。
 
-この機能は`RTCRtpScriptTransform`インターフェイスや、`RTCRtpSender`・`RTCRtpReceiver`の`transform`プロパティを利用して実装されます。
+```txt
+// これまで
+[getUserMedia] → [Encoder] → [Network] → [Decoder] → [Display]
+                     ↑                        ↑
+                 触れられない               触れられない
+// これから
+[getUserMedia] → [Encoder] → [Transform] → [Network] → [Transform] → [Decoder] → [Display]
+                                  ↑                          ↑
+                             E2EEを追加可能               E2EEを追加可能
+```
+
+扱うのはエンコード済みのデータなので、色を変えるといった映像の効果をかける用途には向きません。
+
+変換は、`RTCRtpScriptTransform`を作り、`RTCRtpSender`か`RTCRtpReceiver`の`transform`プロパティに入れて挟みます。
 
 ```ts
 new RTCRtpScriptTransform(worker, options, transfer);
 ```
 
-第1引数には変換処理を実行するWorkerオブジェクトを指定します。
-第2引数には変換処理に関するオプションを、第3引数には、Workerに転送するオブジェクトの配列を指定します。
-第2、第3引数は省略可能です。
-
-`RTCRtpSender`・`RTCRtpReceiver`の`transform`プロパティは`RTCRtpScriptTransform`を設定するものです。
+第1引数には変換を動かすWorkerを渡します。第2引数はWorkerに渡すオプションで、第3引数はWorkerに転送するオブジェクトの配列です。第2引数と第3引数は省けます。
 
 ```ts
 videoSender.transform = new RTCRtpScriptTransform(worker);
@@ -100,9 +108,9 @@ videoSender.transform = new RTCRtpScriptTransform(worker);
 
 Workerでは、`rtctransform`イベントの`event.transformer`の`readable`からフレームを読み、`writable`に書き戻します。映像のフレームは`RTCEncodedVideoFrame`で、`data`（`ArrayBuffer`）と`type`（`key`か`delta`）を持ちます。`getMetadata()`を呼ぶと、コーデック（既定ではChromeが`video/VP8`、Safariが`video/H264`）や幅と高さが分かります。
 
-## 使用例
+## E2EEを実装する
 
-例としてE2EEを実装します。上の`index.html`の`sender.transform`と`pc2.ontrack`を次のように替え、送信側で暗号化し、受信側で復号します。
+はじめにの`index.html`の`sender.transform`と`pc2.ontrack`を次のように替え、送信側で暗号化し、受信側で復号します。
 
 ```js
 // [!og]
@@ -198,21 +206,6 @@ transceiver.setCodecPreferences([
 
 こう並べると、Safariでもフレームが復号されて映ります。
 
-```txt
-// これまで
-[getUserMedia] → [Encoder] → [Network] → [Decoder] → [Display]
-                     ↑                        ↑
-                 触れられない               触れられない
-// これから
-[getUserMedia] → [Encoder] → [Transform] → [Network] → [Transform] → [Decoder] → [Display]
-                                  ↑                          ↑
-                             E2EEを追加可能               E2EEを追加可能
-```
-
-このように、WebRTC Encoded Transformを使うと、送受信するフレームのデータを書き換えられます。扱うのはエンコード済みのデータなので、色を変えるといった映像の効果をかける用途には向きません。
-
 ## おわりに
 
-WebRTCとWebRTC Encoded Transformについて簡単に紹介しました。
-
-これにより、通信を中継するサーバーにも読めない形で映像や音声を送るE2EEのような処理を、WebRTCの送受信の途中に挟めます。
+WebRTC Encoded Transformを使うと、エンコード済みのフレームをWorkerで書き換えてから送受信できます。送信側で暗号化して受信側で復号すれば、SFUのようなサーバーを経由しても中身を読ませないE2EEを、WebRTCの送受信の途中に挟めます。
