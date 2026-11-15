@@ -22,7 +22,7 @@ updatedAt: 2026-11-09
 
 ## SuspenseListとは
 
-`SuspenseList`は、2019年にReactの実験的機能として追加されたコンポーネントで、複数の`Suspense`の読み込み順序や表示パターンを制御できる機能です。今も実験版（`react@experimental`）にだけあり、安定版のReact 19.3.1とcanary版には含まれていません。
+`SuspenseList`は、2019年にReactの実験的機能として追加されたコンポーネントで、複数の`Suspense`の読み込み順序や表示パターンを制御できる機能です。今も実験版（`react@experimental`）にだけあり、安定版とcanary版のReactには含まれていません。
 複数の非同期処理が同時に発生する場面で、UXを向上させるために使用されます。
 
 <LinkCard href="https://github.com/facebook/react/pull/15902" />
@@ -50,7 +50,7 @@ export default function App() {
 }
 ```
 
-開くと、最初は`Loading 1...`だけが出ます。1.5秒ほどで`1500ms`と`Loading 2...`に変わり、2秒ほどで4つがそろって表示されます。0.5秒で読み込みが終わる3つ目も、上の2つが表示されるまで待ちます。React 0.0.0-experimental-e84e1492-20261031を、Chrome 156、Safari 27.2、Firefox 159で開いて同じ結果でした。`SuspenseList`を外すと、3つ目が0.5秒ほどで先に表示されます。
+開くと、最初は`Loading 1...`だけが出ます。1.5秒ほどで`1500ms`と`Loading 2...`に変わり、2秒ほどで4つがそろって表示されます。0.5秒で読み込みが終わる3つ目も、上の2つが表示されるまで待ちます。`SuspenseList`を外すと、3つ目が0.5秒ほどで先に表示されます。
 
 ## 基本的な使い方
 
@@ -94,7 +94,7 @@ export default function App() {
 </SuspenseList>
 ```
 
-先ほどの4つの`Suspense`を`backwards`で並べると、画面には4つ目が上、1つ目がいちばん下に並び、その1つ目から表示されました。並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。こちらは上から1つ目、2つ目の順に並んだまま、4つ目と3つ目が先に表示されました。
+先ほどの4つの`Suspense`を`backwards`で並べると、画面には4つ目が上、1つ目がいちばん下に並び、その1つ目から表示されます。並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。こちらは上から1つ目、2つ目の順に並んだまま、4つ目と3つ目が先に表示されます。
 
 #### together（同時表示）
 
@@ -122,7 +122,7 @@ export default function App() {
 
 ### tail
 
-`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。省略すると`hidden`になります。`together`に`tail`を渡すと、開発用のビルドでは`<SuspenseList tail="collapsed" /> is only valid if revealOrder is "forwards" (default) or "backwards".`という警告がコンソールに出て、`tail`は無視されました。
+`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。省略すると`hidden`になります。`together`に`tail`を渡すと、開発用のビルドでは`<SuspenseList tail="collapsed" /> is only valid if revealOrder is "forwards" (default) or "backwards".`という警告がコンソールに出て、`tail`は無視されます。
 
 #### collapsed
 
@@ -254,4 +254,4 @@ export default function App() {
 
 `SuspenseList`は複数の非同期コンポーネントの表示を制御する強力な機能です。適切に使用することで、UXを大幅に向上させることができます。
 
-Reactのブログで実験的機能として紹介された`ViewTransition`・`addTransitionType`・`Activity`は安定版のReactに入り、19.3.1にはどれも含まれています。`SuspenseList`は今も実験版にだけあり、既定値や`backwards`の意味が変わっています。使うときは、入れた実験版で`revealOrder`と`tail`の動きを確かめてください。
+Reactのブログで実験的機能として紹介された`ViewTransition`・`addTransitionType`・`Activity`は安定版のReactに入っています。`SuspenseList`は今も実験版にだけあり、既定値や`backwards`の意味が変わっています。使うときは、入れた実験版で`revealOrder`と`tail`の動きを確かめてください。
