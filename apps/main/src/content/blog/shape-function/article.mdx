@@ -19,12 +19,21 @@ import { ShapeCommandDemo } from './_components/shape-command-demo';
 
 円や楕円、直線だけの多角形なら、今までどおり`circle()`や`ellipse()`、`polygon()`で足ります。曲線を含む図形は`path()`でも描けますが、SVGのパス構文を使うため単位なしのピクセル値しか指定できず、`%`や`calc()`が使えません。要素のサイズに応じて図形を変化させるには、SVGに頼る必要がありました。
 
-```css
+```css demo="path-fixed"
 .triangle {
+  width: 300px;
+  height: 100px;
+  background-color: teal;
   /* path()は固定のピクセル値しか使えない */
   clip-path: path('M 50 0 L 100 100 L 0 100 Z');
 }
 ```
+
+```html demo="path-fixed"
+<div class="triangle"></div>
+```
+
+要素の幅は300pxでも、三角形は`path()`に書いた100pxの大きさのままで、左に寄ります。
 
 SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさに合わせて描けるのが`shape()`です。
 
@@ -32,7 +41,7 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 
 `shape()`は、主に`clip-path`と`offset-path`に書きます。`clip-path`に書くと、図形の内側だけが表示され、外側は切り取られます。
 
-```css
+```css demo="shape-triangle"
 .triangle {
   width: 200px;
   height: 100px;
@@ -40,6 +49,10 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
   /* shape(<fill-rule>? from 開始点, <shape-command>, ...) */
   clip-path: shape(from 50% 0%, line to 100% 100%, line to 0% 100%, close);
 }
+```
+
+```html demo="shape-triangle"
+<div class="triangle"></div>
 ```
 
 `class="triangle"`の要素は、幅200px、高さ100pxの長方形から、上辺の中央を頂点とする三角形に切り抜かれます。`width`を400pxにしても、三角形のまま横に伸びます。切り抜いた外側の左上と右上の隅で`document.elementFromPoint()`を呼ぶと、切り抜いた要素ではなく下にある要素が返ります。
