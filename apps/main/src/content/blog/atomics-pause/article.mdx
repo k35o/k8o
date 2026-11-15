@@ -34,7 +34,7 @@ if (isMainThread) {
 }
 ```
 
-Node.jsで動かすと、`Atomics.add`で足した`int32[1]`は必ず2000000になり、`++`で足した`int32[0]`は1544495や1816934のように毎回足りなくなりました。同じことをブラウザのWorkerで試しても、どのブラウザでも`++`の方は2000000に届きません。
+Node.jsで動かすと、`Atomics.add`で足した`int32[1]`は必ず2000000になり、`++`で足した`int32[0]`は毎回2000000より少なくなります。同じことをブラウザのWorkerで試しても、どのブラウザでも`++`の方は2000000に届きません。
 
 ブラウザで`SharedArrayBuffer`を使うには、ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`crossOriginIsolated`を`true`にします。ヘッダーの無いページでは、どのブラウザでも`SharedArrayBuffer`自体が定義されていません。
 
@@ -184,11 +184,11 @@ function unlock(int32) {
 
 `Atomics.pause`を呼ばずにループを回すと、ロックが空くまでCPUを使い続けるので、ほかのスレッドの邪魔になることがあります。`Atomics.pause`を呼ぶと、ループの1回ごとに短く待ちます。
 
-4つのWorkerがこのロックを100万回ずつ取り合い、ロックの中で`int32[1]++`をすると、どのブラウザでも結果は4000000になりました。Chromeでは`Atomics.pause`を入れると約160ms、外すと約200msで終わり、Node.jsでも約120〜150msと約180〜220msでした（Apple M4のMac）。SafariとFirefoxは回ごとのばらつきが大きく、どちらが速いとは言えませんでした。
+4つのWorkerがこのロックを100万回ずつ取り合い、ロックの中で`int32[1]++`をすると、どのブラウザでも結果は4000000になります。
 
 `Atomics.pause`には、待つ時間のヒントを整数で渡せます。ヒントが使われるとは限りませんが、使われる場合は、大きい値では小さい値のとき以上に待ちます。[Intelの最適化マニュアル](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html)では、ループで待つ時間を少しずつ延ばすバックオフが勧められています。
 
-上の`lock`では、試した回数を渡しています。手元で100万回呼んだ時間は引数が0でも1000でも変わらず、Chromeで約17ms、Safariで約10ms、Firefoxで約11msでした。どのブラウザでも、引数による違いは見えませんでした。`1.5`や文字列の`'1'`を渡すと、どれも`TypeError`になります。
+上の`lock`では、試した回数を渡しています。100万回呼んだ時間は、どのブラウザでも引数が0でも1000でも変わりません。`1.5`や文字列の`'1'`を渡すと、どれも`TypeError`になります。
 
 ## おわりに
 
