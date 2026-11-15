@@ -1,20 +1,20 @@
 'use client';
 
+import { useColorScheme } from '@k8ordo/color-scheme';
 import { IconButton } from '@k8ordo/ui';
 import { MoonIcon, SunIcon } from '@k8ordo/ui/icons';
-import { useTheme } from 'next-themes';
 import type { FC } from 'react';
 
 import styles from './toggle-theme.module.css';
 
 export const ToggleTheme: FC = () => {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { scheme, setPreference } = useColorScheme();
 
   return (
     <IconButton
       label="テーマを切り替える"
       onClick={() => {
-        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+        setPreference(scheme === 'dark' ? 'light' : 'dark');
       }}
     >
       <span className={styles.moon}>

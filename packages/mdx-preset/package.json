@@ -13,7 +13,7 @@
       "types": "./src/rehype.ts",
       "default": "./src/rehype.ts"
     },
-    "./katex.css": "./styles/katex.css"
+    "./math.css": "./styles/math.css"
   },
   "scripts": {
     "test": "vitest run",
@@ -23,9 +23,9 @@
   "dependencies": {
     "@repo/code-highlight": "workspace:*",
     "hast-util-from-html-isomorphic": "2.0.0",
-    "katex": "catalog:",
     "remark-frontmatter": "5.0.0",
     "remark-math": "6.0.0",
+    "temml": "0.14.0",
     "unist-util-visit": "5.2.0"
   },
   "devDependencies": {
