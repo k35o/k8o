@@ -14,7 +14,7 @@ featureIds:
 
 ## はじめに
 
-`Atomics.waitAsync`は、`SharedArrayBuffer`の値が`notify`で通知されるのを、スレッドを止めずに`Promise`で待つ静的メソッドです。`Atomics.wait`の非同期版で、Baseline 2025で使えるようになりました。
+`Atomics.waitAsync`は、`SharedArrayBuffer`の値が`notify`で通知されるのを、スレッドを止めずに`Promise`で待つ静的メソッドです。`Atomics.wait`の非同期版です。Firefox 145が対応して、Baseline 2025に入りました。
 
 Workerの計算結果を受け取るだけなら、Workerが`postMessage`で送り、メインスレッドが`message`イベントで受け取れば足ります。Workerと共有したメモリの値が書き換わるのを待つときに、`Atomics.waitAsync`が要ります。`Atomics.wait`はスレッドを止めて待つので、ブラウザのメインスレッドで呼ぶと`TypeError`になります。
 
@@ -39,7 +39,7 @@ onmessage = ({ data: int32 }) => {
 };
 ```
 
-ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`main.js`を読み込むと、コンソールに`ok 42`が出ます。Chrome 156、Safari 27.2、Firefox 159のどれでも、待っているあいだもメインスレッドのタイマーは動き続けました。
+ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`main.js`を読み込むと、コンソールに`ok 42`が出ます。どのブラウザでも、待っているあいだもメインスレッドのタイマーは動き続けます。
 
 `Atomics`と`Atomics.pause`についての簡単な説明は[AtomicsでWorker間の共有メモリを安全に読み書きする](/blog/atomics-pause)をご覧ください。
 
@@ -63,14 +63,14 @@ const result = Atomics.waitAsync(int32, 0, 0, 1000);
 
 非同期な処理を行うメソッドですが、戻り値は同期的で、`value`が`Promise`かどうかを示す`async`プロパティと、`waitAsync`の結果を表す`value`プロパティを持つオブジェクトを返します。
 
-戻り値の型は次のとおりです。TypeScript 7.0.2では、`lib`に`es2024`以降を含めると同じ形の型が付きます。
+戻り値の型は次のとおりです。TypeScriptでは、`lib`に`es2024`以降を含めると同じ形の型が付きます。
 ```ts
 type ReturnValue =
 	| { async: false; value: "not-equal" | "timed-out" }
 	| { async: true; value: Promise<"ok" | "timed-out"> };
 ```
 
-`{ async: false; value: "not-equal" }`が返される時は、引数の配列とインデックスが指す位置に存在する値が第3引数で渡した値と異なっていた場合です。Workerが値を書き換えてから呼ぶと、3つのブラウザで`{ async: false, value: 'not-equal' }`が返りました。冒頭の`main.js`で`waitAsync`を`postMessage`より先に呼んでいるのは、このためです。
+`{ async: false; value: "not-equal" }`が返される時は、引数の配列とインデックスが指す位置に存在する値が第3引数で渡した値と異なっていた場合です。Workerが値を書き換えてから呼ぶと、どのブラウザでも`{ async: false, value: 'not-equal' }`が返ります。冒頭の`main.js`で`waitAsync`を`postMessage`より先に呼んでいるのは、このためです。
 
 `{ async: false; value: "timed-out" }`が返される時は、タイムアウトが0ミリ秒に指定されていた場合です。
 
@@ -101,7 +101,7 @@ if (result.async) {
 ```
 共有していない配列を渡すなど引数が不正なときは、呼び出した時点で`TypeError`が投げられます。`value`の`Promise`が`reject`されることはありません。
 
-Node.js 26.13.0では、`waitAsync`の`Promise`だけが残るとプロセスが終わり、タイムアウトを100msにしても`then`は呼ばれませんでした。Node.jsで使うときは、Workerのようにプロセスを動かし続けるものと組み合わせます。
+Node.jsでは、`waitAsync`の`Promise`だけが残るとプロセスが終わり、タイムアウトを100msにしても`then`は呼ばれません。Node.jsで使うときは、Workerのようにプロセスを動かし続けるものと組み合わせます。
 
 ## おわりに
 `Atomics`の新しいメソッド、`waitAsync`について解説しました。
