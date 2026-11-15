@@ -15,17 +15,15 @@ import '@repo/mdx-preset/katex.css';
 
 ## はじめに
 
-`font-family: math`は、数式の描画に向いたフォントをブラウザに選ばせる一般フォントファミリーです。MathMLの`<math>`要素には既定でこれが当たり、OSに入っている数式用フォントで分数や添字が組まれます。
+`font-family: math`は、数式の描画に向いたフォントをブラウザに選ばせる一般フォントファミリーです。MathMLの`<math>`要素には既定でこれが当たり、OSに入っている数式用フォントで分数や添字が組まれます。Firefox 149が対応して、Baseline 2026に入りました。
 
 上付き文字（$x^2$）や下付き文字（$a_n$）、分数（$\frac{a}{b}$）、積分記号（$\int$）など、数学特有の表現には専用のグリフが必要です。KaTeXやMathJaxで数式を描くなら、それぞれが自前のフォントを持つので、この指定は要りません。ブラウザがMathMLで描く式や、x²のようにUnicodeの記号で書いた式に数式用フォントを使うには、これまで`Cambria Math`や`STIX Two Math`のようにOSごとのフォント名を並べていました。`math`と書けば、その環境にある数式用フォントをブラウザが選びます。
-
-Chrome 109で先に使えており、Safari 26.2とFirefox 149が対応してBaseline 2026に加わりました。
 
 ## デモ
 
 <PlaygroundEmbed demo="font-family: mathプロパティ" headingLevel="h4" sectionId="font-family-math" />
 
-チェックを外して`sans-serif`にすると、macOSのChrome 156では1行の中で字ごとにフォントが変わります。ℕ・ℤ・ℝはMenlo、ℚ・ℂはHelvetica、⊂はApple Symbolsで描かれました。`math`のままなら、aₙのₙだけがシステムのフォント（.SF NS）になり、ほかの字はSTIX Two Mathで描かれました。
+チェックを外して`sans-serif`にすると、macOSのChromeでは1行の中で字ごとにフォントが変わります。ℕ・ℤ・ℝはMenlo、ℚ・ℂはHelvetica、⊂はApple Symbolsで描かれます。`math`のままなら、aₙのₙだけがシステムのフォント（.SF NS）になり、ほかの字はSTIX Two Mathで描かれます。
 
 ## font-family: mathとは
 
@@ -52,7 +50,7 @@ Chrome 109で先に使えており、Safari 26.2とFirefox 149が対応してBas
 }
 ```
 
-`<math>`要素には、ブラウザの既定のスタイルで`font-family: math`が当たっています。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`<math>`の`font-family`の計算値は`math`でした。
+`<math>`要素には、ブラウザの既定のスタイルで`font-family: math`が当たっています。どのブラウザでも、`<math>`の`font-family`の計算値は`math`です。
 
 <math display="block">
   <mrow>
@@ -91,7 +89,7 @@ Chrome 109で先に使えており、Safari 26.2とFirefox 149が対応してBas
 </math>
 ```
 
-上の`<math>`に`font-family: sans-serif`を当てると、MATHテーブルの無いフォントで組まれます。文字サイズ60pxで比べると、Chrome 156では積分記号が大きくならず、式の高さが164pxから106pxに縮みました。Safari 27.2でも164pxから112pxに縮みました。Firefox 159は積分記号を大きく描いたままで、数字と文字の形だけが変わりました。
+上の`<math>`に`font-family: sans-serif`を当てると、MATHテーブルの無いフォントで組まれます。文字サイズ60pxで比べると、Chromeでは積分記号が大きくならず、式の高さが164pxから106pxに縮みます。Safariでも164pxから112pxに縮みます。Firefoxは積分記号を大きく描いたままで、数字と文字の形だけが変わります。
 
 ## 使われるフォント
 
@@ -99,7 +97,7 @@ Chrome 109で先に使えており、Safari 26.2とFirefox 149が対応してBas
 `serif`を指定したときに明朝体が選ばれるのと同じ仕組みです。
 
 どのフォントが選ばれるかはブラウザとOSの組み合わせによって異なります。
-macOS 27.2では、Chrome 156、Safari 27.2、Firefox 159のいずれでも、OSに入っている`STIX Two Math`が選ばれました。文字の幅が`font-family: "STIX Two Math"`と一致し、Chrome 156の開発者ツールでも描画に使われたフォントはSTIX Two Mathでした。Windowsには数式用の`Cambria Math`が入っています。
+macOSでは、どのブラウザでもOSに入っている`STIX Two Math`が選ばれます。文字の幅が`font-family: "STIX Two Math"`と一致し、Chromeの開発者ツールでも描画に使われたフォントはSTIX Two Mathです。Windowsには数式用の`Cambria Math`が入っています。
 
 ## おわりに
 
