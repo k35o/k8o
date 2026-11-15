@@ -11,7 +11,7 @@ featureIds:
 
 <BrowserSupportStatus featureId="link-rel-dns-prefetch" />
 
-`<link rel="dns-prefetch">`は、指定したオリジンのドメイン名をIPアドレスに変えるDNSルックアップを、そのオリジンへのリクエストより前に済ませておくようブラウザに伝える指定です。実際にリソースを取得するときには名前解決が終わっているので、その分だけ待ち時間が短くなります。
+`<link rel="dns-prefetch">`は、指定したオリジンのドメイン名をIPアドレスに変えるDNSルックアップを、そのオリジンへのリクエストより前に済ませておくようブラウザに伝える指定です。実際にリソースを取得するときには名前解決が終わっているので、その分だけ待ち時間が短くなります。iOSのSafari 26が対応して、Baseline 2025に入りました。
 
 外部のリソースを読み込む際、ブラウザはまずそのリソースのドメイン名をIPアドレスに変換するためにDNSルックアップを行います。このプロセスは時間がかかることがあり、リソースの読み込みパフォーマンスに影響を与えることがありました。同じオリジンのリソースなら、ページを開いた時点で名前解決が済んでいるので指定は要りません。`dns-prefetch`が効くのは、JavaScriptやユーザーの操作で後から読み込む、ほかのオリジンのリソースです。
 
@@ -23,9 +23,9 @@ featureIds:
 </head>
 ```
 
-Chrome 156、Safari 27.2、Firefox 159で、ページを開いてから2.5秒後にほかのオリジンの画像を読み込み、名前解決にかかった時間を比べました。`dns-prefetch`を書いたオリジンは0〜1ミリ秒で、書かなかったオリジンは約90〜310ミリ秒でした。JavaScriptで後から`<link>`を足したオリジンも、0〜1ミリ秒でした。
+ページを開いてから2.5秒後にほかのオリジンの画像を読み込み、名前解決にかかった時間を比べると、どのブラウザでも`dns-prefetch`を書いたオリジンは0〜1ミリ秒で、書かなかったオリジンは約90〜310ミリ秒かかります。JavaScriptで後から`<link>`を足したオリジンも、0〜1ミリ秒です。
 
-時間は、Resource Timingの`domainLookupEnd`と`domainLookupStart`の差で測れます。次のコードを実行すると、読み込んだリソースごとに名前解決にかかった時間が出ます。ほかのオリジンのリソースは、レスポンスに`Timing-Allow-Origin`ヘッダーが無いと、名前解決に時間がかかっていても0になりました（3つのブラウザで同じ）。
+時間は、Resource Timingの`domainLookupEnd`と`domainLookupStart`の差で測れます。次のコードを実行すると、読み込んだリソースごとに名前解決にかかった時間が出ます。ほかのオリジンのリソースは、レスポンスに`Timing-Allow-Origin`ヘッダーが無いと、名前解決に時間がかかっていても0になります。
 
 ```js
 for (const entry of performance.getEntriesByType('resource')) {
@@ -33,9 +33,7 @@ for (const entry of performance.getEntriesByType('resource')) {
 }
 ```
 
-`<link rel="dns-prefetch">`は`<head>`の中に置くのが一般的ですが、HTMLの仕様では`<body>`の中にも置けます。Chrome 156、Safari 27.2、Firefox 159のどれでも、`<body>`に置いても名前解決が前倒しされました。
-
-Firefoxは126まで、HTTPSのページでは`dns-prefetch`を無視していました。Firefox 127でHTTPSのページでも効くようになり、iOSのSafariが26で対応して、Baseline 2025に加わりました。
+`<link rel="dns-prefetch">`は`<head>`の中に置くのが一般的ですが、HTMLの仕様では`<body>`の中にも置けます。どのブラウザでも、`<body>`に置いても名前解決が前倒しされます。
 
 `preconnect`と似ていますが、`preconnect`は`dns-prefetch`で行うDNSルックアップに加えて、TCP接続やTLSハンドシェイクを行うところに違いがあります。
 
