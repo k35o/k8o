@@ -61,14 +61,16 @@ featureIds:
 不透明度を変えるだけなら、これまでも2つの書き方がありました。
 
 ```css
-/* 相対色構文: 色空間を決めて全チャンネルを書き直す */
---brand-hover: rgb(from var(--brand) r g b / 40%);
+:root {
+  /* 相対色構文: 色空間を決めて全チャンネルを書き直す */
+  --hover-relative: rgb(from var(--brand) r g b / 40%);
 
-/* color-mix(): 透明と混ぜる。40%が欲しいのに60%と書く */
---brand-hover: color-mix(in srgb, var(--brand), transparent 60%);
+  /* color-mix(): 透明と混ぜる。40%が欲しいのに60%と書く */
+  --hover-mix: color-mix(in srgb, var(--brand), transparent 60%);
 
-/* alpha(): 色空間を書かず、アルファだけを指定する */
---brand-hover: alpha(from var(--brand) / 40%);
+  /* alpha(): 色空間を書かず、アルファだけを指定する */
+  --hover-alpha: alpha(from var(--brand) / 40%);
+}
 ```
 
 どちらも色空間を自分で選ぶ必要があります。`oklch()`のトークンを`rgb(from ...)`や`in srgb`に通すと、計算値はsRGBの`color(srgb ...)`に書き換わります。元の色空間のまま扱うには、`oklch(from var(--brand) l c h / 40%)`のようにトークン側の関数に合わせて書き直すことになります。`alpha()`は元の色の色空間をそのまま引き継ぐので、トークンが`oklch()`でも`color(display-p3 ...)`でも派生色の側は変わりません。
