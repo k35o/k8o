@@ -37,6 +37,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
 - ヘッダーのお問い合わせ（`components/site/contact-to-me`）は、`HeaderActions` が Suspense で包まずに描くので、HTML のヘッダーにボタンと閉じた dialog が出る。JS なしでもボタンは出て、押しても dialog は開かない（テーマのボタンと同じ）
+- お問い合わせのフォームは `@k8ordo/form` に載せる。schema（`contact-to-me/contact-fields.ts`。api の `/public/inquiries` と同じ長さの決まり）から `formFields` で導いた fields を、サーバーの部品の `HeaderActions` が props で渡し、`ContactToMe` が `useForm` で属性とエラーを出す（zod はクライアントに渡らない）。static mode には Server Action が無いので、送信は `useActionState` の関数がブラウザから api を呼び、送れなかったときは本文を `values` で、失敗の文言を `errors` で返す
 
 ## 記事の MDX
 

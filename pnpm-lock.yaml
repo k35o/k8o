@@ -188,6 +188,9 @@ catalogs:
     '@k8ordo/color-scheme':
       specifier: 3.0.0
       version: 3.0.0
+    '@k8ordo/form':
+      specifier: 3.0.0
+      version: 3.0.0
     '@k8ordo/framework':
       specifier: 3.0.0
       version: 3.0.0
@@ -520,6 +523,9 @@ importers:
       '@k8ordo/color-scheme':
         specifier: 'catalog:'
         version: 3.0.0(@k8ordo/state@3.0.0(@k8ordo/router@3.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@k8ordo/form':
+        specifier: 'catalog:'
+        version: 3.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@k8ordo/i18n':
         specifier: 'catalog:'
         version: 3.0.0(typescript@7.0.2)
@@ -1692,6 +1698,20 @@ packages:
       '@k8ordo/state': ^3.0.0
       '@types/react': '>=19.3.0'
       react: '>=19.3.0'
+      typescript: '>=7.0.0'
+      zod: ^4.6.6
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      typescript:
+        optional: true
+
+  '@k8ordo/form@3.0.0':
+    resolution: {integrity: sha512-K2Ogtk2gC3DaWSCT+G3rpTty4m9D9P+I+Ucd0lKaSRw67SUM6xLaMrVvDQV42nMlXxWwvMfRPmlvKc/fJXXaiw==}
+    peerDependencies:
+      '@types/react': '>=19.3.0'
+      react: '>=19.3.0'
+      react-dom: '>=19.3.0'
       typescript: '>=7.0.0'
       zod: ^4.6.6
     peerDependenciesMeta:
@@ -7044,6 +7064,15 @@ snapshots:
     dependencies:
       '@k8ordo/state': 3.0.0(@k8ordo/router@3.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       react: 19.3.1
+      zod: 4.6.7
+    optionalDependencies:
+      '@types/react': 19.3.0
+      typescript: 7.0.2
+
+  '@k8ordo/form@3.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
       zod: 4.6.7
     optionalDependencies:
       '@types/react': 19.3.0
