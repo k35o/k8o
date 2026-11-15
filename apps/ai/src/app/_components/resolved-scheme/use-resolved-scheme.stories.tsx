@@ -20,8 +20,6 @@ const meta = preview.meta({
   args: { onRender: () => undefined },
 });
 
-export const Default = meta.story();
-
 // サーバーで描いた HTML を置いてから hydrate し、描画ごとの値を並べる。dark を選んだ利用者に、
 // light を一度も返さない
 export const NeverLightForDarkVisitor = meta.story({
