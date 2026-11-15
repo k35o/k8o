@@ -153,17 +153,82 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 - レイアウトシフトの削減: 順次表示されるので、読み込みの順番によるレイアウトの変更を抑制できます。
 - UXの向上: ユーザーが期待する順序でコンテンツが表示されるため、体感的な読み込み速度が向上します（子要素のデータの読み込み時間に大きな差がない事を仮定しています）。
 
-## Playground
+## SuspenseListを使わずに並べた場合
 
-当初はこのPlaygroundで`revealOrder`や`tail`を切り替えながら`SuspenseList`を体験できましたが、その後のReact・Next.jsの更新で、このサイトが動く環境（React 19.2 / Next.js 16）では`SuspenseList`自体が利用できなくなりました。現在のPlaygroundでは、`SuspenseList`なしで複数の`Suspense`が並列に解決されていく様子と、フォールバックUIの有無による見え方の違いを確認できます。
+このサイトの例は安定版のReactで動くので、`SuspenseList`を使えません。代わりに、`SuspenseList`を使わずに4つの`Suspense`を並べると、読み込みの終わった順にばらばらに表示されることを確かめられます。チェックを切り替えると、フォールバックUIの有無で見え方がどう変わるかも比べられます。
 
-<PlaygroundEmbed
-  demo="SuspenseListによる読み込み制御"
-  headingLevel="h4"
-  sectionId="suspense-list"
-/>
+```tsx demo="suspense"
+import { Suspense, use, useState } from 'react';
 
-`SuspenseList`が再び利用できるようになったら、`revealOrder`と`tail`を試せるPlaygroundに戻す予定です。
+const wait = (ms: number): Promise<number> =>
+  new Promise((resolve) => {
+    setTimeout(() => resolve(ms), ms);
+  });
+
+const load = () => [
+  { key: 'key1', time: wait(1500) },
+  { key: 'key2', time: wait(2000) },
+  { key: 'key3', time: wait(500) },
+  { key: 'key4', time: wait(1000) },
+];
+
+function Item({ name, time }: { name: string; time: Promise<number> }) {
+  const ms = use(time);
+  return (
+    <li>
+      {name}: {ms}ms
+    </li>
+  );
+}
+
+export default function App() {
+  const [items, setItems] = useState(load);
+  const [hasFallback, setHasFallback] = useState(true);
+
+  return (
+    <>
+      <label>
+        <input
+          type="checkbox"
+          checked={hasFallback}
+          onChange={(event) => {
+            setHasFallback(event.target.checked);
+            setItems(load());
+          }}
+        />
+        フォールバックUIを表示する
+      </label>
+      <ul className="items">
+        {items.map(({ key, time }) => (
+          <Suspense
+            key={key}
+            // [!hl]
+            fallback={hasFallback ? <li className="fallback">Loading...</li> : null}
+          >
+            <Item name={key} time={time} />
+          </Suspense>
+        ))}
+      </ul>
+    </>
+  );
+}
+```
+
+```css demo="suspense"
+.items {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fallback {
+  color: GrayText;
+}
+```
+
+`SuspenseList`が安定版のReactに入ったら、`revealOrder`と`tail`を試せる例に替える予定です。
 
 ## おわりに
 
