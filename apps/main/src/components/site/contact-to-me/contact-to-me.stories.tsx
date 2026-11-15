@@ -2,6 +2,7 @@ import { HttpResponse, http } from 'msw/http';
 import { expect, fn, screen, waitFor } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
+import { contactFields } from './contact-fields';
 import { ContactToMe } from './contact-to-me';
 
 const INQUIRIES_URL = 'https://api.k8o.me/public/inquiries';
@@ -14,6 +15,7 @@ const receivedInquiry = fn();
 const meta = preview.meta({
   title: 'app/globals/contact-to-me',
   component: ContactToMe,
+  args: { fields: contactFields },
   // 送信中はボタンが無効になってフォーカスを失うことがあり、応答の速さでフォーカスの枠が
   // 出たり出なかったりする。VRT の撮影をそろえるため、最後にフォーカスを外す
   afterEach: () => {
@@ -65,7 +67,34 @@ export const Submit = meta.story({
   },
 });
 
-export const TooLongMessage = meta.story({
+export const EmptyMessage = meta.story({
+  beforeEach: ({ msw }) => {
+    msw.use(
+      http.post(INQUIRIES_URL, async ({ request }) => {
+        receivedInquiry(await request.json());
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+  },
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'お問い合わせ' }));
+    const textbox = await canvas.findByRole('textbox', {
+      name: '不具合やご要望をご記入ください',
+    });
+    await userEvent.click(canvas.getByRole('button', { name: '送信' }));
+
+    await waitFor(async () => {
+      await expect(textbox).toBeInvalid();
+    });
+    await expect(textbox).toHaveAccessibleDescription(
+      'お問い合わせの内容を入力してください',
+    );
+    await expect(textbox).toHaveFocus();
+    await expect(receivedInquiry).not.toHaveBeenCalled();
+  },
+});
+
+export const CannotExceedMaxLength = meta.story({
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'お問い合わせ' }));
     const textbox = await canvas.findByRole('textbox', {
@@ -73,15 +102,9 @@ export const TooLongMessage = meta.story({
     });
     await userEvent.click(textbox);
     await userEvent.paste('あ'.repeat(256));
-    await userEvent.click(canvas.getByRole('button', { name: '送信' }));
 
-    await waitFor(async () => {
-      await expect(textbox).toBeInvalid();
-    });
-    await expect(textbox).toHaveAccessibleDescription(
-      '255文字を超えています（256文字）',
-    );
-    await expect(textbox).toHaveValue('あ'.repeat(256));
+    await expect(textbox).toHaveValue('あ'.repeat(255));
+    await expect(textbox).toBeValid();
   },
 });
 
@@ -132,5 +155,46 @@ export const NetworkErrorKeepsMessage = meta.story({
     await expect(
       canvas.getByRole('textbox', { name: '不具合やご要望をご記入ください' }),
     ).toHaveValue(MESSAGE);
+  },
+});
+
+// 送り終えた画面は Submit と同じで、押したボタンに戻るフォーカスの Tooltip が出るかどうかは時機で変わるので撮らない
+export const RetryAfterFailure = meta.story({
+  parameters: { vrt: { skip: true } },
+  beforeEach: ({ msw }) => {
+    let failed = false;
+    msw.use(
+      http.post(INQUIRIES_URL, async ({ request }) => {
+        if (!failed) {
+          failed = true;
+          return HttpResponse.json(
+            { ok: false, error: 'internal_error' },
+            { status: 500 },
+          );
+        }
+        receivedInquiry(await request.json());
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+  },
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'お問い合わせ' }));
+    const textbox = await canvas.findByRole('textbox', {
+      name: '不具合やご要望をご記入ください',
+    });
+    await userEvent.type(textbox, MESSAGE);
+    await userEvent.click(canvas.getByRole('button', { name: '送信' }));
+    await expect(await canvas.findByText(FAILED_MESSAGE)).toBeInTheDocument();
+    await waitFor(async () => {
+      await expect(textbox).toHaveFocus();
+    });
+
+    // 本文を直さずに、そのまま送り直せる
+    await userEvent.click(canvas.getByRole('button', { name: '送信' }));
+
+    await expect(
+      await screen.findByText('お問い合わせの送信に成功しました'),
+    ).toBeInTheDocument();
+    await expect(receivedInquiry).toHaveBeenCalledWith({ message: MESSAGE });
   },
 });

@@ -23,6 +23,7 @@
     "@fontsource-variable/m-plus-2": "5.3.1",
     "@k8o/html-nest": "catalog:",
     "@k8ordo/color-scheme": "catalog:",
+    "@k8ordo/form": "catalog:",
     "@k8ordo/i18n": "catalog:",
     "@k8ordo/state": "catalog:",
     "@k8ordo/ui": "catalog:",
