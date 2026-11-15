@@ -17,18 +17,23 @@ featureIds:
 
 ボタンが1つなら、そのボタンの`click`イベントで足ります。複数のボタンから1つのポップオーバーを開くUIでは、これまで各ボタンの`click`で押されたボタンを変数に覚え、ポップオーバーの側でそれを読んでいました。`source`なら、ポップオーバーの`toggle`イベントのリスナー1つで、押されたボタンが分かります。
 
-```html
+```js demo="toggle-source"
+const log = document.getElementById('log');
+
+document.getElementById('menu').addEventListener('toggle', (event) => {
+  // [!hl]
+  log.textContent = `${event.newState} ${event.source?.id ?? null}`;
+});
+```
+
+```html demo="toggle-source"
 <button popovertarget="menu" id="a">A</button>
 <button popovertarget="menu" id="b">B</button>
 <div id="menu" popover>メニュー</div>
-<script>
-  document.getElementById('menu').addEventListener('toggle', (event) => {
-    console.log(event.newState, event.source?.id);
-  });
-</script>
+<p id="log"></p>
 ```
 
-Aを押すとコンソールに`open a`、もう一度Aを押すと`closed a`が出ます。Bで開けば`open b`です。
+Aを押すと結果の欄に`open a`、もう一度Aを押すと`closed a`が出ます。Bで開けば`open b`で、外側をクリックして閉じると`closed null`です。
 
 ## sourceに入る値
 
