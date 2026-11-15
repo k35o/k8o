@@ -158,8 +158,9 @@ export const NetworkErrorKeepsMessage = meta.story({
   },
 });
 
+// 送り終えた画面は Submit と同じで、押したボタンに戻るフォーカスの Tooltip が出るかどうかは時機で変わるので撮らない
 export const RetryAfterFailure = meta.story({
-  parameters: { vrt: { remove: '[data-toast-id]' } },
+  parameters: { vrt: { skip: true } },
   beforeEach: ({ msw }) => {
     let failed = false;
     msw.use(
