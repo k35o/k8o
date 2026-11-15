@@ -1,3 +1,4 @@
+import { ColorSchemeScript } from '@k8ordo/color-scheme';
 import { cn } from '@repo/helpers/cn';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
@@ -26,6 +27,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body className={cn(mPlus2.variable, notoSansJp.variable, styles.body)}>
         <AppProvider>{children}</AppProvider>
       </body>

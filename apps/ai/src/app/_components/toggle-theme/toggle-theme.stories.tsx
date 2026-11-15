@@ -20,7 +20,7 @@ export const Default = meta.story({
   },
 });
 
-// color-scheme は next-themes に inline で書かせず、@k8ordo/ui の CSS が class から決める
+// color-scheme は inline では書かれず、@k8ordo/ui の CSS が class から決める
 export const Dark = meta.story({
   parameters: { theme: 'dark' },
   play: async () => {

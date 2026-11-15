@@ -1,7 +1,7 @@
+import { useColorScheme } from '@k8ordo/color-scheme';
 import addonA11y from '@storybook/addon-a11y';
 import addonDocs from '@storybook/addon-docs';
 import { definePreview } from '@storybook/nextjs-vite';
-import { useTheme } from 'next-themes';
 import Script from 'next/script';
 import { memo, useEffect } from 'react';
 import type { FC } from 'react';
@@ -15,13 +15,14 @@ import './preview.css';
 
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   function ApplyThemeByStorybook({ theme }) {
-    const { theme: currentTheme, setTheme } = useTheme();
+    const { preference, setPreference } = useColorScheme();
+    const wanted = theme === 'dark' ? 'dark' : 'light';
 
     useEffect(() => {
-      if (currentTheme !== theme) {
-        setTheme(theme === 'dark' ? 'dark' : 'light');
+      if (preference !== wanted) {
+        setPreference(wanted);
       }
-    }, [theme, currentTheme, setTheme]);
+    }, [wanted, preference, setPreference]);
 
     return null;
   },

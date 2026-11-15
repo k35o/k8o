@@ -1,11 +1,11 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 
 import { DeckPreview } from '@/app/_components/deck-preview';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
+import { useResolvedScheme } from '@/app/_components/resolved-scheme';
 import {
   DeckHighlightContext,
   highlightKey,
@@ -18,13 +18,12 @@ type SharedDeckProps = {
 };
 
 export const SharedDeck: FC<SharedDeckProps> = ({ source, highlights }) => {
-  const { resolvedTheme } = useTheme();
+  const scheme = useResolvedScheme();
   const highlight = useMemo<HighlightFn | null>(() => {
     // テーマが決まる前に渡すと、決まったあとに取り直すことになる
-    if (resolvedTheme !== 'light' && resolvedTheme !== 'dark') {
+    if (scheme === null) {
       return null;
     }
-    const theme = resolvedTheme;
     const byBlock = new Map(
       highlights.map((entry) => [highlightKey(entry.lang, entry.code), entry]),
     );
@@ -34,10 +33,10 @@ export const SharedDeck: FC<SharedDeckProps> = ({ source, highlights }) => {
       Promise.resolve(
         blocks.map(
           (block) =>
-            byBlock.get(highlightKey(block.lang, block.code))?.[theme] ?? null,
+            byBlock.get(highlightKey(block.lang, block.code))?.[scheme] ?? null,
         ),
       );
-  }, [resolvedTheme, highlights]);
+  }, [scheme, highlights]);
   return (
     <DeckHighlightContext value={highlight}>
       <DeckPreview isStreaming={false} printable source={source} />
