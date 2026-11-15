@@ -1,4 +1,6 @@
-import { Card, LogoIcon } from '@k8ordo/ui';
+import { Card } from '@k8ordo/ui';
+
+import { LogoIcon } from '@/app/_components/brand-icons/logo';
 
 import { SignInForm } from './_components/sign-in-form';
 

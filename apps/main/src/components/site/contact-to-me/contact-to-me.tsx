@@ -1,5 +1,7 @@
 'use client';
 
+import { useForm } from '@k8ordo/form';
+import type { FormState } from '@k8ordo/form';
 import {
   Anchor,
   Button,
@@ -7,30 +9,23 @@ import {
   FormControl,
   IconButton,
   Modal,
-  SendIcon,
   Textarea,
   useToast,
 } from '@k8ordo/ui';
+import { SendIcon } from '@k8ordo/ui/icons';
 import { useActionState, useCallback, useState } from 'react';
 import type { FC } from 'react';
 
 import { publicApi } from '@/shared/api/public-api';
 
+import type { ContactFields } from './contact-fields';
+
 import styles from './contact-to-me.module.css';
-
-type ContactState = {
-  error: string | null;
-  defaultValue: string;
-};
-
-const INITIAL_STATE: ContactState = { error: null, defaultValue: '' };
-
-const MAX_MESSAGE_LENGTH = 255;
 
 const FAILED_MESSAGE =
   'お問い合わせの送信に失敗しました。しばらくしてから再度お試しください。';
 
-export const ContactToMe: FC = () => {
+export const ContactToMe: FC<{ fields: ContactFields }> = ({ fields }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpen = useCallback(() => {
@@ -46,30 +41,24 @@ export const ContactToMe: FC = () => {
       <IconButton label="お問い合わせ" onClick={onOpen}>
         <SendIcon size="lg" />
       </IconButton>
-      <ContactToMeModal isOpen={isOpen} onClose={onClose} />
+      <ContactToMeModal fields={fields} isOpen={isOpen} onClose={onClose} />
     </>
   );
 };
 
 const ContactToMeModal: FC<{
+  fields: ContactFields;
   isOpen: boolean;
   onClose: () => void;
-}> = ({ isOpen, onClose }) => {
+}> = ({ fields, isOpen, onClose }) => {
   const { open: onToastOpen } = useToast();
 
+  // static mode には Server Action が無いので、送信はブラウザから api を呼ぶ。入力の検証は useForm が
+  // 送信の前に済ませ、ここに届くのは通った値だけ。送れなかったときは、打った本文を values で返して残す
   const handleAction = useCallback(
-    async (
-      _prevState: ContactState,
-      formData: FormData,
-    ): Promise<ContactState> => {
+    async (_prevState: FormState, formData: FormData): Promise<FormState> => {
       const value = formData.get('message');
       const message = typeof value === 'string' ? value : '';
-      if (message.length > MAX_MESSAGE_LENGTH) {
-        return {
-          error: `${MAX_MESSAGE_LENGTH}文字を超えています（${message.length}文字）`,
-          defaultValue: message,
-        };
-      }
       try {
         const res = await publicApi.public.inquiries.$post({
           json: { message },
@@ -77,48 +66,37 @@ const ContactToMeModal: FC<{
         if (res.ok) {
           onToastOpen('success', 'お問い合わせの送信に成功しました');
           onClose();
-          return INITIAL_STATE;
+          return {};
         }
-        return { error: FAILED_MESSAGE, defaultValue: message };
       } catch {
-        return { error: FAILED_MESSAGE, defaultValue: message };
+        // 下で失敗の文言を返す
       }
+      return {
+        errors: { message: FAILED_MESSAGE },
+        values: { message },
+        token: crypto.randomUUID(),
+      };
     },
     [onToastOpen, onClose],
   );
 
-  const [state, formAction, pending] = useActionState(
-    handleAction,
-    INITIAL_STATE,
-  );
+  const [state, formAction, pending] = useActionState(handleAction, {});
+  const form = useForm(fields, state);
+  const message = form.field('message');
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Dialog.Root>
         <Dialog.Header onClose={onClose} title="お問い合わせ" />
         <Dialog.Content>
-          <form action={formAction} className={styles.form}>
+          <form {...form.props} action={formAction} className={styles.form}>
             <FormControl
-              errorText={state.error ?? undefined}
+              errorText={message.error}
               helpText="255文字以内で入力してください"
-              invalid={state.error !== null}
+              invalid={message.invalid}
               label="不具合やご要望をご記入ください"
-              renderInput={({
-                id,
-                'aria-describedby': ariaDescribedby,
-                disabled,
-                invalid,
-              }) => (
-                <Textarea
-                  aria-describedby={ariaDescribedby}
-                  defaultValue={state.defaultValue}
-                  disabled={disabled}
-                  id={id}
-                  invalid={invalid}
-                  name="message"
-                  required
-                  rows={5}
-                />
+              renderInput={(props) => (
+                <Textarea {...props} {...message.input} rows={5} />
               )}
             />
             <p className={styles.issueNote}>

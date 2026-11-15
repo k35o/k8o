@@ -1,6 +1,7 @@
 'use client';
 
-import { ForkIcon, IconButton, useToast } from '@k8ordo/ui';
+import { IconButton, useToast } from '@k8ordo/ui';
+import { GitForkIcon } from '@k8ordo/ui/icons';
 import { unstable_rethrow } from 'next/navigation';
 import type { FC } from 'react';
 
@@ -44,7 +45,7 @@ export const ArtifactForkButton: FC<ArtifactForkButtonProps> = ({
       onAction={fork}
       size="sm"
     >
-      <ForkIcon size="sm" />
+      <GitForkIcon size="sm" />
     </IconButton>
   );
 };

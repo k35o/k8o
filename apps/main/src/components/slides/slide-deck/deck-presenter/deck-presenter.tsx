@@ -7,7 +7,7 @@ import type { FC } from 'react';
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
-import { useFragmentTarget } from '../hooks/use-hash-index';
+import { useFragmentTarget } from '../hooks/use-fragment-target';
 import { useClosePresenterOnViewerStop } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
 import { slideDeckState } from '../slide-deck/deck-state';

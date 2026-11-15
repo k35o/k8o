@@ -1,6 +1,7 @@
 'use client';
 
-import { IconButton, SubscribeIcon } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { BookmarkIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 export const NotificationsLink: FC = () => (
@@ -18,6 +19,6 @@ export const NotificationsLink: FC = () => (
       </a>
     )}
   >
-    <SubscribeIcon size="lg" />
+    <BookmarkIcon size="lg" />
   </IconButton>
 );

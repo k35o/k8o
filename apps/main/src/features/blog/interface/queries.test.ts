@@ -4,13 +4,16 @@ import type { PublishedBlog } from '@repo/api/build-data';
 import { describe, expect, it, vi } from 'vitest';
 
 import { findBlogMetadata } from '@/features/blog/application/blog';
+import { getBlogDemos } from '@/features/blog/application/demos';
 import { getMarkdown } from '@/features/blog/application/markdown';
 
 import {
   findBlogContent,
+  findBlogDemoDocument,
   findBlogMarkdown,
   getBlogContent,
   getBlogContents,
+  getBlogDemoNames,
   getBlogsByTags,
   getFeatureBlogMap,
 } from './queries';
@@ -25,6 +28,17 @@ vi.mock('@/features/blog/application/og-code', () => ({
 }));
 vi.mock('@/features/blog/application/markdown', () => ({
   getMarkdown: vi.fn(),
+}));
+vi.mock('@/features/blog/application/demos', () => ({
+  getBlogDemos: vi.fn(),
+}));
+vi.mock('@/features/blog/application/demo-document', () => ({
+  buildDemoDocument: ({ name, script }: { name: string; script: string }) =>
+    `<title>${name}</title><script>${script}</script>`,
+}));
+vi.mock('@/features/blog/application/demo-scripts', () => ({
+  getBundledDemoScript: (slug: string, name: string) =>
+    `bundled(${slug}/${name})`,
 }));
 
 const CSS = { id: 3, name: 'CSS' };
@@ -187,6 +201,92 @@ describe('findBlogMarkdown', () => {
 
       await expect(findBlogMarkdown('draft-blog')).resolves.toBeNull();
       expect(getMarkdown).not.toHaveBeenCalled();
+    });
+  });
+});
+
+const dots = {
+  name: 'dots',
+  html: '<ul></ul>',
+  css: '',
+  js: 'console.log(1);',
+  tsx: '',
+};
+
+describe('getBlogDemoNames', () => {
+  describe('正常系', () => {
+    it('記事の動く例の名前を返す', async () => {
+      vi.mocked(getBlogDemos).mockResolvedValue([
+        dots,
+        { ...dots, name: 'grid' },
+      ]);
+
+      await expect(getBlogDemoNames('blog-a')).resolves.toStrictEqual([
+        'dots',
+        'grid',
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('動く例の無い記事は空を返す', async () => {
+      vi.mocked(getBlogDemos).mockResolvedValue([]);
+
+      await expect(getBlogDemoNames('blog-a')).resolves.toStrictEqual([]);
+    });
+  });
+});
+
+describe('findBlogDemoDocument', () => {
+  describe('正常系', () => {
+    it('一覧の記事の、名前の合う例の文書を、例の JS をそのまま置いて返す', async () => {
+      vi.mocked(getPublishedBlogs).mockResolvedValue([published(1, 'blog-a')]);
+      mockMetadata();
+      vi.mocked(getBlogDemos).mockResolvedValue([dots]);
+
+      await expect(findBlogDemoDocument('blog-a', 'dots')).resolves.toBe(
+        '<title>dots</title><script>console.log(1);</script>',
+      );
+    });
+
+    it('tsx の例は、ビルドが React ごと束ねた JS を置く', async () => {
+      vi.mocked(getPublishedBlogs).mockResolvedValue([published(1, 'blog-a')]);
+      mockMetadata();
+      vi.mocked(getBlogDemos).mockResolvedValue([
+        {
+          name: 'counter',
+          html: '',
+          css: '',
+          js: '',
+          tsx: 'export default function App() { return null; }',
+        },
+      ]);
+
+      await expect(findBlogDemoDocument('blog-a', 'counter')).resolves.toBe(
+        '<title>counter</title><script>bundled(blog-a/counter)</script>',
+      );
+    });
+  });
+
+  describe('異常系', () => {
+    it('一覧に無い記事は null を返し、例を読まない', async () => {
+      vi.mocked(getPublishedBlogs).mockResolvedValue([]);
+      vi.mocked(getBlogDemos).mockClear();
+
+      await expect(
+        findBlogDemoDocument('draft-blog', 'dots'),
+      ).resolves.toBeNull();
+      expect(getBlogDemos).not.toHaveBeenCalled();
+    });
+
+    it('記事に無い名前の例は null を返す', async () => {
+      vi.mocked(getPublishedBlogs).mockResolvedValue([published(1, 'blog-a')]);
+      mockMetadata();
+      vi.mocked(getBlogDemos).mockResolvedValue([dots]);
+
+      await expect(
+        findBlogDemoDocument('blog-a', 'missing'),
+      ).resolves.toBeNull();
     });
   });
 });

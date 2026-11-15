@@ -1,7 +1,10 @@
 'use client';
 
-import { IconButton, QiitaIcon, RSSIcon } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
+import { RssIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
+
+import { QiitaIcon } from '@/components/site/brand-icons/qiita-icon';
 
 import styles from './external-blog.module.css';
 
@@ -51,7 +54,7 @@ export const ExternalBlog: FC = () => (
         </a>
       )}
     >
-      <RSSIcon />
+      <RssIcon />
     </IconButton>
   </div>
 );

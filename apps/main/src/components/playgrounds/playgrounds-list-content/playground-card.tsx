@@ -1,5 +1,6 @@
 import { href } from '@k8ordo/framework';
-import { BlogIcon, Card, ChevronIcon, Heading } from '@k8ordo/ui';
+import { Card, Heading } from '@k8ordo/ui';
+import { BookTextIcon, ChevronIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import type { PlaygroundSummary } from './types';
@@ -24,7 +25,7 @@ export const PlaygroundCard: FC<{
           <span>デモ{playground.demoCount}件</span>
           {playground.hasBlog && (
             <span className={styles.blog}>
-              <BlogIcon size="sm" />
+              <BookTextIcon size="sm" />
               ブログ記事
             </span>
           )}

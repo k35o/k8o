@@ -15,41 +15,42 @@ catalog:
   '@better-css-modules/vite': 0.4.1
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 1.1.0
-  '@k8ordo/color-scheme': 2.3.1
-  '@k8ordo/framework': 2.3.1
-  '@k8ordo/i18n': 2.3.1
-  '@k8ordo/router': 2.3.1
-  '@k8ordo/state': 2.3.1
-  '@k8ordo/ui': 2.3.1
+  '@k8ordo/color-scheme': 3.0.0
+  '@k8ordo/form': 3.0.0
+  '@k8ordo/framework': 3.0.0
+  '@k8ordo/i18n': 3.0.0
+  '@k8ordo/router': 3.0.0
+  '@k8ordo/state': 3.0.0
+  '@k8ordo/ui': 3.0.0
   '@libsql/client': 0.18.0
-  '@storybook/addon-a11y': 10.6.5
-  '@storybook/addon-docs': 10.6.5
-  '@storybook/addon-mcp': '10.6.5'
-  '@storybook/addon-vitest': 10.6.5
-  '@storybook/nextjs-vite': 10.6.5
-  '@storybook/react-vite': 10.6.5
+  '@storybook/addon-a11y': 10.6.6
+  '@storybook/addon-docs': 10.6.6
+  '@storybook/addon-mcp': '10.6.6'
+  '@storybook/addon-vitest': 10.6.6
+  '@storybook/nextjs-vite': 10.6.6
+  '@storybook/react-vite': 10.6.6
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
-  '@vitest/browser-playwright': 5.0.5
-  ai: 7.0.159
-  better-auth: 1.7.15
-  chromatic: 18.13.6
+  '@vitest/browser-playwright': 5.1.0
+  ai: 7.0.160
+  better-auth: 1.7.18
+  chromatic: 18.14.2
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.4
-  hono: 4.13.16
+  hono: 4.13.17
   katex: 0.19.1
   next: 16.4.5
   next-themes: 0.4.6
-  oxc-transform-react: 0.156.0
+  oxc-transform-react: 0.157.0
   react: 19.3.1
   react-dom: 19.3.1
-  storybook: 10.6.5
+  storybook: 10.6.6
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.2
-  vite: 8.3.5
-  vitest: 5.0.5
-  wrangler: 4.156.1
+  vite: 8.3.6
+  vitest: 5.1.0
+  wrangler: 4.158.0
   zod: 4.6.7
 
 minimumReleaseAge: 10080

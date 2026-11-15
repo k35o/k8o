@@ -5,8 +5,8 @@ import type { BrowserSupportFeature } from '@/features/browser-support/interface
 
 import preview from '../../../.storybook/preview';
 import {
-  interceptUrlNavigation,
-  paramInUrl,
+  expectParamInUrl,
+  mountStoryUrl,
 } from '../../../.storybook/url-state-story';
 import { BrowserSupportFeatureList } from './browser-support-feature-list';
 
@@ -107,7 +107,7 @@ const BLOG_MAP: Record<string, BlogLink> = {
 
 const meta = preview.meta({
   title: 'app/browser-support/browser-support-feature-list',
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
   component: BrowserSupportFeatureList,
   args: {
     features: FEATURES,
@@ -214,7 +214,7 @@ export const OpenWithUrlValues = meta.story({
       'true',
     );
     await expect(canvas.queryByText('Popover API')).toBeNull();
-    await expect(paramInUrl('year')).toBe('1999');
+    await expectParamInUrl('year', '1999');
   },
 });
 
@@ -243,18 +243,18 @@ export const WriteFiltersToUrl = meta.story({
     const entries = navigation.entries().length;
 
     await userEvent.click(canvas.getByRole('checkbox', { name: 'Newly' }));
-    await expect(paramInUrl('newly')).toBe('false');
+    await expectParamInUrl('newly', 'false');
     await userEvent.click(canvas.getByRole('checkbox', { name: 'Newly' }));
-    await expect(paramInUrl('newly')).toBeNull();
+    await expectParamInUrl('newly', null);
 
     await userEvent.click(canvas.getByRole('tab', { name: /^2025/u }));
-    await expect(paramInUrl('year')).toBe('2025');
+    await expectParamInUrl('year', '2025');
     await expect(canvas.getByText('Promise.try()')).toBeInTheDocument();
     await userEvent.click(canvas.getByRole('tab', { name: /^2026/u }));
-    await expect(paramInUrl('year')).toBeNull();
+    await expectParamInUrl('year', null);
 
     await userEvent.type(canvas.getByRole('textbox', { name: '検索' }), 'pop');
-    await expect(paramInUrl('q')).toBe('pop');
+    await expectParamInUrl('q', 'pop');
     await expect(navigation.entries()).toHaveLength(entries);
   },
 });

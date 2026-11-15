@@ -1,14 +1,7 @@
 'use client';
 
-import {
-  Alert,
-  Badge,
-  CloseIcon,
-  FullscreenIcon,
-  IconButton,
-  ListBox,
-  PackageIcon,
-} from '@k8ordo/ui';
+import { Alert, Badge, IconButton, ListBox } from '@k8ordo/ui';
+import { MaximizeIcon, PackageIcon, XIcon } from '@k8ordo/ui/icons';
 import Link from 'next/link';
 import type { FC, Ref } from 'react';
 
@@ -147,12 +140,12 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
               }}
               size="sm"
             >
-              <FullscreenIcon size="sm" />
+              <MaximizeIcon size="sm" />
             </IconButton>
           </div>
           <div className={styles.close}>
             <IconButton label="プレビューを閉じる" onClick={onClose} size="sm">
-              <CloseIcon size="sm" />
+              <XIcon size="sm" />
             </IconButton>
           </div>
         </div>

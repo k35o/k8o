@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { pagePolicy, securityHeaders } from './security-headers';
+import {
+  DEMO_CONTENT_SECURITY_POLICY,
+  pagePolicy,
+  securityHeaders,
+} from './security-headers';
 
 const directivesOf = (policy: string | undefined): string[] =>
   (policy ?? '')
@@ -103,6 +107,30 @@ describe('securityHeaders', () => {
 
     it('dev は、Safari が localhost の http まで https に上げないよう、upgrade-insecure-requests を付けない', () => {
       expect(directive(devCsp, 'upgrade-insecure-requests')).toBeUndefined();
+    });
+  });
+});
+
+describe('DEMO_CONTENT_SECURITY_POLICY', () => {
+  describe('正常系', () => {
+    it('例の inline の script と style だけを動かし、外へは何も読みに行かない', () => {
+      expect(directivesOf(DEMO_CONTENT_SECURITY_POLICY)).toStrictEqual([
+        "default-src 'none'",
+        "script-src 'unsafe-inline'",
+        "style-src 'unsafe-inline'",
+        "base-uri 'none'",
+        "form-action 'none'",
+        "frame-ancestors 'self'",
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('ページは自分のオリジンの例を iframe で読め、例は自分のオリジンのページにだけ埋め込まれる', () => {
+      expect(directive(csp, 'frame-src')).toContain("'self'");
+      expect(directive(DEMO_CONTENT_SECURITY_POLICY, 'frame-ancestors')).toBe(
+        "frame-ancestors 'self'",
+      );
     });
   });
 });

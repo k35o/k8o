@@ -1,11 +1,5 @@
-import {
-  Badge,
-  Heading,
-  Card,
-  PublishDateIcon,
-  TagIcon,
-  UpdateDateIcon,
-} from '@k8ordo/ui';
+import { Badge, Heading, Card } from '@k8ordo/ui';
+import { CalendarIcon, ClockIcon, TagIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -59,13 +53,13 @@ export const ContentCard: FC<ContentCardProps> = ({
             )}
             <div className={styles.dateRow}>
               <div className={styles.date}>
-                <PublishDateIcon size="sm" />
+                <CalendarIcon size="sm" />
                 <span>
                   公開: {formatDate(new Date(createdAt), 'yyyy年M月d日')}
                 </span>
               </div>
               <div className={styles.date}>
-                <UpdateDateIcon size="sm" />
+                <ClockIcon size="sm" />
                 <span>
                   更新: {formatDate(new Date(updatedAt), 'yyyy年M月d日')}
                 </span>

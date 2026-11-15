@@ -1,7 +1,8 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { EmptyState, FlaskIcon, Heading, Stack, TextField } from '@k8ordo/ui';
+import { EmptyState, Heading, Stack, TextField } from '@k8ordo/ui';
+import { FlaskIcon } from '@k8ordo/ui/icons';
 import {
   playgroundCategories,
   playgroundCategoryLabels,

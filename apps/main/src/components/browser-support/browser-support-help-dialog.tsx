@@ -1,6 +1,7 @@
 'use client';
 
-import { AlertIcon, Badge, Dialog, IconButton, Modal, Stack } from '@k8ordo/ui';
+import { Badge, Dialog, IconButton, Modal, Stack } from '@k8ordo/ui';
+import { AlertIcon } from '@k8ordo/ui/icons';
 import { useCallback, useState } from 'react';
 import type { FC } from 'react';
 

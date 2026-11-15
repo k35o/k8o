@@ -49,11 +49,10 @@ const Content: FC<Props> = ({
     setWidth,
     setHeight,
     setShape,
-    commitProps,
   } = useRadiusState();
 
   return (
-    <Stack gap="lg" {...commitProps}>
+    <Stack gap="lg">
       <Card>
         <div className={styles.editor}>
           <RadiusCanvas

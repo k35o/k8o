@@ -1,12 +1,10 @@
-import {
-  Badge,
-  ChromeIcon,
-  EdgeIcon,
-  FirefoxIcon,
-  SafariIcon,
-} from '@k8ordo/ui';
+import { Badge } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import { ChromeIcon } from '@/components/site/brand-icons/chrome-icon';
+import { EdgeIcon } from '@/components/site/brand-icons/edge-icon';
+import { FirefoxIcon } from '@/components/site/brand-icons/firefox-icon';
+import { SafariIcon } from '@/components/site/brand-icons/safari-icon';
 import type {
   BrowserSupportFeature,
   SupportStatus,

@@ -9,6 +9,10 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./demo": {
+      "types": "./src/demo.ts",
+      "default": "./src/demo.ts"
+    },
     "./parser": {
       "types": "./src/parser.ts",
       "default": "./src/parser.ts"

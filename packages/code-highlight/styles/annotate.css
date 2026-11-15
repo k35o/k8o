@@ -170,6 +170,12 @@
     :scope:is(.code-annotate-group *) > .code-annotate-copy {
       inset-block-start: -1.85rem;
     }
+
+    /* 動かす例の枠（.code-annotate-demo-code）は面と余白を自分で持つ */
+    :scope:has(> .code-annotate-copy):is(.code-annotate-demo-code > *) {
+      margin: 0;
+      background-color: transparent;
+    }
   }
 
   ::view-transition-group(.code-group) {
@@ -235,6 +241,12 @@
   .writing-v .code-annotate-block:not(.code-annotate-group *),
   .writing-v .code-annotate-group {
     margin-inline: 1rem;
+  }
+
+  /* 縦書きの余白より後に置き、同じ詳細度の規則に並びで勝つ */
+  .code-annotate-demo-code > .code-annotate-group {
+    margin: 0;
+    background-color: transparent;
   }
 
   @media not print {
