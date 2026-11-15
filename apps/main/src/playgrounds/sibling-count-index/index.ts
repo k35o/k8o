@@ -16,7 +16,7 @@ export const siblingCountIndexSection: PlaygroundSection = {
       component: ElementCountingDemo,
       title: '何が番号を消費するか',
       description:
-        'style、script、display:noneの項目を含むリストに、sibling-index()の値を表示しています。画面に出ない要素も番号を消費するので、見えている番号が飛びます。',
+        'style、script、display:noneの項目と、コメントとテキストノードを含むリストに、sibling-index()の値を表示しています。画面に出ない要素も番号を消費し、コメントとテキストノードは消費しません。',
     },
     {
       component: SiblingIndexStaggerDemo,

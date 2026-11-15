@@ -44,3 +44,42 @@ export const CountsHiddenSiblings = meta.story({
     await expect(script).toHaveTextContent('/* 計測用 */');
   },
 });
+
+const commentsIn = (tree: Element | null): string[] =>
+  [...(tree?.childNodes ?? [])]
+    .filter((node) => node instanceof Comment)
+    .map((node) => node.data.trim());
+
+const textsIn = (tree: Element | null): string[] =>
+  [...(tree?.childNodes ?? [])]
+    .filter((node) => node instanceof Text)
+    .map((node) => node.data.trim())
+    .filter((text) => text !== '');
+
+// 正常系: コメントとテキストノードは番号を消費せず、スイッチを入れるとコメントの中身が文字で出る
+export const SkipsCommentsAndTextNodes = meta.story({
+  play: async ({ canvas, canvasElement }) => {
+    const tree = canvasElement.querySelector('.scid-tree');
+    await expect(commentsIn(tree)).toStrictEqual(['コメント']);
+    await expect(textsIn(tree)).toStrictEqual(['テキストノード']);
+    await expect(
+      [...canvasElement.querySelectorAll('.scid-node')].map(
+        (node) => getComputedStyle(node).counterReset,
+      ),
+    ).toStrictEqual(
+      ['1', '2', '3', '4', '5', '6', '7'].map((index) => `scid-index ${index}`),
+    );
+
+    const toggle = canvas.getByRole('switch', {
+      name: '画面に出ない子要素も表示する',
+    });
+    await userEvent.click(toggle);
+    await expect(textsIn(tree)).toStrictEqual([
+      '<!-- コメント -->',
+      'テキストノード',
+    ]);
+
+    await userEvent.click(toggle);
+    await expect(textsIn(tree)).toStrictEqual(['テキストノード']);
+  },
+});
