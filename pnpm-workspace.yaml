@@ -80,8 +80,8 @@ minimumReleaseAgeExclude:
 overrides:
   'drizzle-kit>@esbuild-kit/esm-loader': '-'
   # remark-math が使う micromark-extension-math は katex ^0.16 に依存する。index が HTML 出力用の
-  # mathHtml も読み込むので katex を import するが、MDX の描画には使わない。記事が読む版と
-  # そろえ、脆弱性のある 0.16 を残さない
+  # mathHtml も読み込むので katex を import するが、MDX の描画には使わない。脆弱性のある
+  # 0.16 を残さない
   'micromark-extension-math>katex': 'catalog:'
 
 trustPolicy: no-downgrade
