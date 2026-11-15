@@ -32,7 +32,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 - ルートレイアウトの部品（GlobalLayout・Provider など）の失敗は `routes/error.tsx` の外で起きるので、`components/site/root-error-boundary` が受けて api に送る
 - page・not-found・route.ts はリクエストが届いたときに読まれ、それが静的に読むクライアントの部品と CSS（サーバーの部品の CSS Modules を含む）は、そのページだけが読む。layout・error が静的に読むものは、どのページも読む（区画の layout のものも、トップと 404 が読む）。殻にはどのページにも要るものだけを置く。区画の見出しと説明と幅のように、その区画のページだけが要る枠も layout.tsx に置かず、部品（`components/tags/tags-frame`・`components/slides/slides-frame`）にしてページが描く
 - クライアントの部品が静的に読むモジュールを、ほかのページか殻のクライアントの部品も読むと、そのモジュールはページのチャンクに入らず、分け合うファイルに入る。@k8ordo/ui のアイコン（`@k8ordo/ui/icons`）は 1 つずつ別のモジュールで、ロゴ類は `components/site/brand-icons` に 1 つずつ置く
-- page・not-found が import する CSS と副作用は、そのページを読んでから効き、読んだあとはそのタブ（ビルドと dev ではそのプロセス）に残ってほかのページにも効く。ほかのページも当てにするもの（`globals.css`・フォント・`@/i18n`）はルートの layout で import する。そのページだけが使う CSS（記事の MDX が読む KaTeX の CSS、mdx-base が読むコードハイライトの CSS）はページの側に置く。置けるのは、ほかのページの見た目を変えないものに限る（KaTeX とコードハイライトの CSS が見た目を決めるのは、`.katex`・`.shiki`・`.code-annotate-*` などのクラスの要素だけ）
+- page・not-found が import する CSS と副作用は、そのページを読んでから効き、読んだあとはそのタブ（ビルドと dev ではそのプロセス）に残ってほかのページにも効く。ほかのページも当てにするもの（`globals.css`・フォント・`@/i18n`）はルートの layout で import する。そのページだけが使う CSS（mdx-base が読む数式とコードハイライトの CSS）はページの側に置く。置けるのは、ほかのページの見た目を変えないものに限る（数式とコードハイライトの CSS が見た目を決めるのは、`math` の要素と、`.math-scroll`・`.shiki`・`.code-annotate-*` などのクラスの要素だけ）
 - head の CSS の並びは k8ordo の docs の routing.md の「How a page is sent」のとおり（サーバーの部品の CSS が前、クライアントの部品の CSS が後）。framework が並びのために head に書く中身の無い `<style>` を、CSP は `style-src` の `'unsafe-inline'` で通す。src の CSS Modules は、記事とデモのものも含めて `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS と同じ層なので、同じ詳細度の規則の勝ち負けはその並びで決まる。同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように外から class を受ける部品）は、両方で同じプロパティを書かない
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
@@ -43,8 +43,8 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 - MDX は `vite.config.ts` の `@mdx-js/rollup`（`enforce: 'pre'`）が JSX にする。remark・rehype は `@repo/mdx-preset` の preset
 - 記事のページ（`routes/blog/[slug]/page.tsx`）は、`components/blog/blog-article` が `import.meta.glob` で集めた MDX を slug ごとに遅れて読み、`components/site/mdx-base` の `MdxContent` で描く。`MdxContent` は mdx-base の部品（見出し・コードブロックなど）に、渡された部品（記事は `components/blog/blog-mdx-components` の `blogMdxComponents(slug)`。BrowserSupportStatus・PlaygroundEmbed・Playground・LinkCard・Image・FloatImage・Alert と、動く例の code-demo）を重ねる
-- plugin-rsc が import した CSS を載せる包みを付けるのは、CSS を静的に import する `.tsx` などのモジュールが export する、大文字で始まる関数の部品だけ。包んだ部品が、自分の import の木（build ではそれが入るチャンク）の CSS を載せる。だから、MDX を描く部品と、それが読む CSS（mdx-base の CSS Modules とコードハイライトの `@repo/code-highlight/styles.css`）は mdx-base に置く。部品の表だけを export して呼ぶ側で描くと、dev のページにその CSS が載らない
-- `.mdx` が import した CSS（記事の KaTeX の CSS と CSS Modules）は、framework がそのファイルを描くページに載せる。glob にクエリは要らない
+- plugin-rsc が import した CSS を載せる包みを付けるのは、CSS を静的に import する `.tsx` などのモジュールが export する、大文字で始まる関数の部品だけ。包んだ部品が、自分の import の木（build ではそれが入るチャンク）の CSS を載せる。だから、MDX を描く部品と、それが読む CSS（mdx-base の CSS Modules、コードハイライトの `@repo/code-highlight/styles.css`、数式の `@repo/mdx-preset/math.css`）は mdx-base に置く。部品の表だけを export して呼ぶ側で描くと、dev のページにその CSS が載らない
+- `.mdx` が import した CSS（記事の CSS Modules）は、framework がそのファイルを描くページに載せる。glob にクエリは要らない
 - ページの切り替えでは、移る先が `<ViewTransition>`（コードのタブ）を含んでいても、文書の view transition は始まらない。始まるのは、ページの中でタブを切り替えたとき
 
 ## 記事の動く例
