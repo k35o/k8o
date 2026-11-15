@@ -7,12 +7,12 @@ featureIds:
   - urlpattern
 ---
 
-
 # URLPatternでURLのパスからパラメータを取り出す
 
 <BrowserSupportStatus featureId="urlpattern" />
 
 ## はじめに
+
 URLPattern APIは、`/blog/:id`のようなパターンでURLを照合し、`:id`に当たる部分を取り出せるAPIです。Safari 26が対応して、Baseline 2025に入りました。
 
 パスが決まった文字列と同じかを見るだけなら、`url.pathname === "/blog"`や`startsWith()`で足ります。`/blog/`の後ろの記事名を取り出したり、数字だけのIDに絞ったりするには、これまで正規表現を書いていました。URLPatternなら名前を付けたパラメータで書け、ホスト名やクエリも部品ごとに照合できます。
@@ -26,10 +26,9 @@ console.log(pattern.test("https://k8o.me/talks"));
 
 コンソールに貼ると、`slug`が`"urlpattern"`のオブジェクトと、`false`が出ます。`exec`は一致した部分を部品ごとに返し、`test`は一致したかどうかだけを返します。
 
-この記事では、URLPattern APIの基本的な使い方について紹介します。
+## パターンを作る
 
-## URLPattern
-URLPattern APIは、生成した`URLPattern`オブジェクトを使って、URLのパターンマッチを行います。
+パターンは、`URLPattern`のコンストラクタで作ります。
 
 ```ts
 const pattern = new URLPattern(
@@ -39,7 +38,7 @@ const pattern = new URLPattern(
 )
 ```
 
-`input`は必須で、`baseURL`と`options`は省略可能です。`baseURL`を省略して`input`と`options`を指定することもできます。
+`input`は必須で、`baseURL`と`options`は省けます。`baseURL`だけを省いて、`input`と`options`を渡すこともできます。
 
 ```ts
 // これはもちろんOK
@@ -54,11 +53,14 @@ new URLPattern(
 )
 ```
 
-第1引数の`input`にはURLのパターンを文字列かオブジェクトで渡します。
+第1引数の`input`には、URLのパターンを文字列かオブジェクトで渡します。
+
 ```ts
 const pattern1 = new URLPattern("https://k8o.me/blog/:id");
 ```
-オブジェクトの場合は、`protocol`・`username`・`password`・`hostname`・`port`・`pathname`・`search`・`hash`・`baseURL`の各プロパティにパターンを指定します。
+
+オブジェクトでは、`hostname`や`pathname`のようなURLの部品ごとのプロパティと、`baseURL`にパターンを書きます。
+
 ```ts
 // [!og]
 const pattern2 = new URLPattern({
@@ -75,7 +77,7 @@ const pattern3 = new URLPattern({
 
 `pattern1`と`pattern3`は同じ意味になります。`pattern2`だけは`port`が`*`になるので、`https://k8o.me:8080/blog/a`のようにポート番号の付いたURLにも一致します。
 
-指定していないプロパティは`*`が渡された、つまりワイルドカードとして扱われます。ただし、`baseURL`を指定した場合は、指定したプロパティより前の部品を`baseURL`の値で埋めます。部品の順は`protocol`・`hostname`・`port`・`pathname`・`search`・`hash`です。`baseURL`だけを渡せばどの部品も`baseURL`の値になり、`https://k8o.me`なら`port`・`search`・`hash`が`''`、`pathname`が`/`になります。`username`と`password`は`baseURL`から埋めず、`*`のままです。
+書かなかったプロパティは`*`、つまりワイルドカードになります。ただし`baseURL`を書いたときは、書いたプロパティより前の部品を`baseURL`の値で埋めます。部品の順は、`protocol`、`hostname`、`port`、`pathname`、`search`、`hash`です。`baseURL`だけを渡せば、どの部品も`baseURL`の値になります。`https://k8o.me`なら`port`と`search`、`hash`が`''`に、`pathname`が`/`になります。`username`と`password`は`baseURL`から埋めず、`*`のままです。
 
 ```ts
 // 同じ
@@ -111,15 +113,15 @@ const pattern4 = new URLPattern({
 });
 ```
 
-第2引数の`baseURL`には、相対URLを解決するための基準となるURLを文字列で渡します。
+第2引数の`baseURL`には、相対URLの基準になるURLを文字列で渡します。
+
 ```ts
 // pattern1とpattern2は同じ意味になる
 const pattern1 = new URLPattern("https://k8o.me/blog/:id");
 const pattern2 = new URLPattern("/blog/:id", "https://k8o.me");
 ```
 
-第3引数の`options`にはパターンマッチのオプションを渡せます。現在付与できるのは`ignoreCase`のみで、デフォルトは`false`です。
-デフォルトでは大文字小文字を区別しますが、`ignoreCase`を`true`にすると大文字小文字を区別しなくなります。
+第3引数の`options`に渡せるのは、今は`ignoreCase`だけです。既定の`false`では大文字と小文字を区別し、`true`にすると区別しません。
 
 ```ts
 const pattern = new URLPattern("/blog/:id", "https://k8o.me", { ignoreCase: true });
@@ -128,9 +130,9 @@ console.log(pattern.test("https://k8o.me/BLOG/urlpattern")); // ChromeとSafari�
 
 Firefoxでは、`:id`や`*`を含むパターンに`ignoreCase: true`を渡しても、大文字小文字を区別します。区別しなくなるのは、`/blog`のように固定の文字列だけのパターンのときです。
 
-## 定義したパターンと照合するexecメソッド
-作成した`URLPattern`オブジェクトは、URLのパターンマッチを`exec`メソッドで行います。
-`exec`メソッドは、指定したURLが定義したパターンに一致するかどうかを確認し、一致した場合はマッチした部品ごとの情報を返します。
+## execで照合する
+
+`exec`は、渡したURLがパターンに一致するかを見て、一致したときは部品ごとの情報を返します。一致しなければ`null`です。
 
 ```ts
 const pattern = new URLPattern("https://k8o.me/blog/:id");
@@ -147,14 +149,12 @@ if (result) {
   console.log("パターンに一致しませんでした");
 }
 ```
-戻り値は各部品ごとに一致した情報をオブジェクトで返します。`input`には一致した文字列が、`groups`にはパターンマッチでキャプチャされた値が格納されます。パターンが`*`の部品では、`*`に当たった文字列が`0`という名前で`groups`に入ります。
 
-返り値のオブジェクトは部品の他に`inputs`プロパティも持ち、入力された情報が配列で返ってきます。
+部品ごとのオブジェクトの`input`には一致した文字列が、`groups`には取り出した値が入ります。パターンが`*`の部品では、`*`に当たった文字列が`0`という名前で`groups`に入ります。戻り値には部品のほかに`inputs`もあり、渡した引数が配列で入ります。
 
-`exec`メソッドの引数にはコンストラクタと同様に`input`と`baseURL`を渡せます。
-渡すのは照合するURLですので、オブジェクトを`input`に渡した場合、指定していない部分は`''`が渡されたものとされます。
+`exec`の引数には、コンストラクタと同じく`input`と`baseURL`を渡せます。照合するURLを渡すので、`input`にオブジェクトを渡したときは、書かなかった部品は`''`として扱われます。
 
-`groups`の値は、パスに日本語を含むURLでもパーセントエンコードされたまま入ります。`/blog/あ`なら`id`は`%E3%81%82`になるので、元の文字に戻すには`decodeURIComponent()`を通します。また、`:id`は`/`をまたがないので、`/blog/urlpattern/`のように末尾にスラッシュが付いたURLには一致しません。末尾のスラッシュを許すなら`/blog/:id{/}?`と書きます。どのブラウザとNode.jsでも同じです。
+`groups`の値は、パスに日本語を含むURLでもパーセントエンコードされたまま入ります。`/blog/あ`なら`id`は`%E3%81%82`になるので、元の文字に戻すには`decodeURIComponent()`を通します。`:id`は`/`をまたがないので、`/blog/urlpattern/`のように末尾にスラッシュの付いたURLには一致しません。末尾のスラッシュを許すなら、`/blog/:id{/}?`と書きます。どのブラウザとNode.jsでも同じです。
 
 パターンを並べて順に`exec`を呼べば、URLを振り分けるルーティングを正規表現なしで書けます。`:id(\d+)`のように、パラメータの後ろの括弧に正規表現を書けば、当てはまる文字を絞れます。
 
@@ -179,20 +179,19 @@ console.log(matchRoute("https://k8o.me/tags/css"));        // null
 console.log(matchRoute("https://k8o.me/talks/"));          // { name: "talks", params: {} }
 ```
 
-## 定義したパターンに一致すること確認するtestメソッド
-作成した`URLPattern`オブジェクトは、URLのパターンマッチの一致を`test`メソッドで確認できます。
-`test`メソッドは、指定したURLが定義したパターンに一致するかどうかを真偽値で返します。
+## testで一致するかを見る
+
+`test`は、渡したURLがパターンに一致するかを真偽値で返します。引数は`exec`と同じです。
+
 ```ts
 const pattern = new URLPattern("/blog/:id", "https://k8o.me");
 console.log(pattern.test("https://k8o.me/blog/urlpattern?query=abc#section1")); // true
 console.log(pattern.test("https://k8o.me/blog")); // false
 ```
 
-`test`メソッドの引数は`exec`メソッドと同様です。
+## 部品ごとのパターンを読む
 
-## 適用されたパターンマッチを部品ごとに確認する
-作成した`URLPattern`オブジェクトは、適用されたパターンを部品ごとに確認するためのプロパティを持ちます。
-`protocol`・`username`・`password`・`hostname`・`port`・`pathname`・`search`・`hash`の各部品にどのようなパターンが適用されたかを確認できます。
+`URLPattern`のオブジェクトは、部品ごとのパターンをプロパティに持ちます。どの部品にどのパターンが入ったかを、ここから読めます。
 
 ```ts
 const pattern1 = new URLPattern("https://k8o.me");
@@ -232,9 +231,8 @@ console.log(pattern3.search);   // "*"
 console.log(pattern3.hash);     // "*"
 ```
 
-初めの方に紹介した、第1引数の渡し方による違いも、この機能を用いて確認しました。文字列で`https://k8o.me`のようにホスト名まで書くと`port`が`''`になり、オブジェクトで`port`を省くと`*`になります。
+第1引数の渡し方による違いも、このプロパティで確かめられます。文字列で`https://k8o.me`のようにホスト名まで書くと`port`が`''`になり、オブジェクトで`port`を省くと`*`になります。
 
 ## おわりに
-URLのパスからパラメータを取り出すURLPattern APIについて紹介しました。
 
-これまでRegExp等で書いてきたURLの照合とルーティングを、`/blog/:id`のようなパターンで書けるのは非常に便利だと感じました。取り出した値がパーセントエンコードされたままであることと、Firefoxでは`ignoreCase`がパラメータを含むパターンに効かないことには気をつけてください。
+URLPatternを使うと、正規表現で書いてきたURLの照合とルーティングを、`/blog/:id`のようなパターンで書けます。取り出した値はパーセントエンコードされたままで、Firefoxでは`ignoreCase`がパラメータを含むパターンに効かないことに気をつけます。
