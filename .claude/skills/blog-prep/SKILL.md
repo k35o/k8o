@@ -84,7 +84,33 @@ import '@repo/mdx-preset/katex.css';
 
 記事の CSS はその記事のページだけに載るので、import を忘れるとその記事の数式が崩れる。抜けは `apps/main/src/features/blog/application/article-files.test.ts` が落とす。既存の例: `apps/main/src/content/blog/font-family-math/article.mdx`。
 
-### 3. Playgroundコンポーネント（デモがある場合）
+### 3. 動く例（HTML・CSS・JS・React で書けるデモ）
+
+HTML・CSS・JS か、React の部品（tsx）で書けるデモは、記事のコードブロックのメタに `demo="<名前>"` を書く。記事に見せたコードがそのまま動くので、Playground や `_components` を作らない。
+
+````mdx
+```html demo="dots"
+<ul class="dots">
+  <li style="--i: 0"></li>
+</ul>
+```
+
+```css demo="dots"
+.dots li {
+  /* [!hl] */
+  animation-delay: calc(abs(var(--i) - 3) * 50ms);
+}
+```
+````
+
+- 同じ名前のブロックを隣り合わせに書くと、1つの例になる。記事ではタブ（html・css・js）の隣に結果が出て、どの例にも「やり直す」が付く
+- 言語は `html`・`css`・`js`・`tsx`。`js` は module の script として、HTML の後に動く。1つの例に `js` と `tsx` の両方は書かない
+- `tsx` は React の部品を `export default` で書く。描く（`createRoot`）のはビルドが足すので、記事には書かない。React はサイトと同じ安定版で、`react` と `react-dom` のほかは import できない（ビルドが止まる）。ビルドが本番版の React ごと束ね、例の文書は gzip で 70kB ほどになる
+- 例に固有の見た目（大きさ・色・並べ方）はすべてコードに書き、要の行は `[!hl]` で強調する。サイトのトークンは使えない。テーマで変える色は `light-dark()` で書く（記事のテーマが例に届く）
+- 名前は URL（`/blog/{slug}/demos/{名前}`）になるので、小文字の英数字とハイフンで書く。離れたブロックに同じ名前を付けると、`features/blog/application/article-files.test.ts` が落ちる
+- 例は sandbox の iframe（origin を持たない）で動き、外へは何も読みに行けない。localStorage・クリップボード・Wake Lock のように origin や権限が要るデモは Playground で作る
+
+### 4. Playgroundコンポーネント（動く例で作れないデモ）
 
 ディレクトリ名は機能の内容がわかる名前を使用する（例: `caret-position-from-point`, `event-timing`）。
 
@@ -263,7 +289,8 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] `apps/main/src/content/blog/{slug}/article.mdx` 雛形作成（Web 機能の記事なら `featureIds` と `<BrowserSupportStatus>` の ID をそろえる）
 - [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `article.mdx` に KaTeX の CSS を import
 - [ ] `<LinkCard>` を使う場合: `pnpm run -F main generate:link-card-metadata` を流し（「OGP が取れなかった」が出たら時間をおいて流し直す）、`link-card-metadata.json` をコミット
-- [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
+- [ ] HTML・CSS・JS・React（tsx）で書けるデモは、コードブロックに `demo="<名前>"` を書く（必要な場合）
+- [ ] Playgroundのデモと `.module.css` 作成（origin や権限が要るデモなど、動く例で作れない場合）
 - [ ] Storybookストーリー作成（必要な場合）
 
 ### データベース
