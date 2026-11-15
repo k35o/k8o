@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 
 import { esmImportSources, mdxParser } from '@/shared/mdx/mdx-tree';
 
+import { readDemos } from './demos';
 import { collectLinkCardHrefs } from './link-card-urls';
 import { blogPath } from './path';
 
@@ -180,6 +181,15 @@ describe('src/content/blog の記事', () => {
             (href) => !linkCardMetadataHrefs.has(href),
           ),
         ).toStrictEqual([]);
+      },
+    );
+
+    it.each(slugs)(
+      '%s の動く例（demo のメタを書いたコードブロック）は、HTML・CSS・JS で隣り合わせに書いてある',
+      (slug) => {
+        expect(() =>
+          readDemos(readFileSync(blogPath(slug), 'utf8')),
+        ).not.toThrow();
       },
     );
   });

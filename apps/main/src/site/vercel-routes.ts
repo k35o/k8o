@@ -1,6 +1,7 @@
 import type { VercelRoute } from '@k8ordo/framework/vercel';
 
-import { ARTICLE, SLUG } from './patterns.ts';
+import { ARTICLE, DEMO_PATHNAME, SLUG } from './patterns.ts';
+import { DEMO_CONTENT_SECURITY_POLICY } from './security-headers.ts';
 
 const ACCEPTS_MARKDOWN = [
   { type: 'header', key: 'accept', value: '.*text/markdown.*' },
@@ -35,6 +36,13 @@ export const BEFORE_FILES: readonly VercelRoute[] = [
   {
     src: `^/(?:blog/${ARTICLE})?$`,
     headers: { Vary: 'Accept' },
+    continue: true,
+    caseSensitive: true,
+  },
+  // framework() の頭より後に当たり、同じ名前の頭を書き換えるので、ページの CSP に代わる
+  {
+    src: `^${DEMO_PATHNAME}$`,
+    headers: { 'Content-Security-Policy': DEMO_CONTENT_SECURITY_POLICY },
     continue: true,
     caseSensitive: true,
   },
