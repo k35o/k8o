@@ -88,18 +88,13 @@ export const bundleDemoScript = async (
   return escapeClosingScript(output.output[0].code);
 };
 
-const VIRTUAL_ID = 'virtual:blog-demo-scripts';
-const RESOLVED_VIRTUAL_ID = `\0${VIRTUAL_ID}`;
-const ARTICLE_FILE = /\/content\/blog\/[^/]+\/article\.mdx$/u;
+export type DemoBundler = (demo: TsxDemo) => Promise<string>;
 
-// 記事の tsx の例を束ねた JS を、route.ts が読む virtual:blog-demo-scripts にする。束ねた結果は
-// tsx の中身ごとに覚え、dev で記事を保存したときは変わった例だけを束ね直す
-export const blogDemoScripts = (
-  readTsxDemos: () => Promise<TsxDemo[]>,
-  options: BundleOptions,
-): Plugin => {
+// 束ねた結果は tsx の中身ごとに覚える。ビルドは例の文書の CSP のハッシュと route.ts が読む JS に同じ
+// 結果を使い、dev は記事を保存したときに変わった例だけを束ね直す
+export const demoBundler = (options: BundleOptions): DemoBundler => {
   const bundles = new Map<string, Promise<string>>();
-  const bundle = (demo: TsxDemo): Promise<string> => {
+  return (demo) => {
     const cached = bundles.get(demo.tsx);
     if (cached !== undefined) {
       return cached;
@@ -111,36 +106,44 @@ export const blogDemoScripts = (
     bundles.set(demo.tsx, bundled);
     return bundled;
   };
-
-  return {
-    name: 'k8o:blog-demo-scripts',
-    resolveId(source) {
-      return source === VIRTUAL_ID ? RESOLVED_VIRTUAL_ID : undefined;
-    },
-    async load(id) {
-      if (id !== RESOLVED_VIRTUAL_ID) {
-        return undefined;
-      }
-      const scripts = Object.fromEntries(
-        await Promise.all(
-          (await readTsxDemos()).map(
-            async (demo) =>
-              [`${demo.slug}/${demo.name}`, await bundle(demo)] as const,
-          ),
-        ),
-      );
-      return [
-        `const scripts = ${JSON.stringify(scripts)};`,
-        'export const findDemoScript = (slug, name) => scripts[slug + "/" + name];',
-      ].join('\n');
-    },
-    hotUpdate({ file, modules }) {
-      if (!ARTICLE_FILE.test(file)) {
-        return undefined;
-      }
-      const scripts =
-        this.environment.moduleGraph.getModuleById(RESOLVED_VIRTUAL_ID);
-      return scripts === undefined ? undefined : [...modules, scripts];
-    },
-  };
 };
+
+const VIRTUAL_ID = 'virtual:blog-demo-scripts';
+const RESOLVED_VIRTUAL_ID = `\0${VIRTUAL_ID}`;
+const ARTICLE_FILE = /\/content\/blog\/[^/]+\/article\.mdx$/u;
+
+// 記事の tsx の例を束ねた JS を、route.ts が読む virtual:blog-demo-scripts にする
+export const blogDemoScripts = (
+  readTsxDemos: () => Promise<TsxDemo[]>,
+  bundle: DemoBundler,
+): Plugin => ({
+  name: 'k8o:blog-demo-scripts',
+  resolveId(source) {
+    return source === VIRTUAL_ID ? RESOLVED_VIRTUAL_ID : undefined;
+  },
+  async load(id) {
+    if (id !== RESOLVED_VIRTUAL_ID) {
+      return undefined;
+    }
+    const scripts = Object.fromEntries(
+      await Promise.all(
+        (await readTsxDemos()).map(
+          async (demo) =>
+            [`${demo.slug}/${demo.name}`, await bundle(demo)] as const,
+        ),
+      ),
+    );
+    return [
+      `const scripts = ${JSON.stringify(scripts)};`,
+      'export const findDemoScript = (slug, name) => scripts[slug + "/" + name];',
+    ].join('\n');
+  },
+  hotUpdate({ file, modules }) {
+    if (!ARTICLE_FILE.test(file)) {
+      return undefined;
+    }
+    const scripts =
+      this.environment.moduleGraph.getModuleById(RESOLVED_VIRTUAL_ID);
+    return scripts === undefined ? undefined : [...modules, scripts];
+  },
+});

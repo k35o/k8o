@@ -83,14 +83,18 @@ export const DEMO_CONTENT_SECURITY_POLICY = toHeaderValue([
 export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue(DEMO_DIRECTIVES);
 
 // framework() が書き出す各ページの <meta> の CSP。framework は payload と React の inline の script の
-// ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュだけを渡す
+// ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュを渡す。記事の動く例の文書は
+// iframe の srcdoc で記事の CSP を引き継ぐので、例の文書の inline の script のハッシュも渡す。router は
+// ページを読み直さずに移り、最初に読んだページの <meta> が残るので、例の無いページにも同じものを書く
 export const pagePolicy = (
   environment: DeployTarget,
   colorSchemeScriptHash: string,
+  demoScriptHashes: readonly string[],
 ): Readonly<Record<string, readonly string[]>> => ({
   'script-src': [
     "'self'",
     colorSchemeScriptHash,
+    ...demoScriptHashes,
     ...scriptHostsOf(environment),
   ],
 });

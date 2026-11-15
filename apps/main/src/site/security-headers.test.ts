@@ -155,7 +155,7 @@ describe('pagePolicy', () => {
 
   describe('正常系', () => {
     it('inline の script は、テーマのハッシュでだけ許し、外は GA のスクリプトだけを読む', () => {
-      expect(pagePolicy('production', themeHash)).toStrictEqual({
+      expect(pagePolicy('production', themeHash, [])).toStrictEqual({
         'script-src': [
           "'self'",
           "'sha256-theme'",
@@ -164,8 +164,25 @@ describe('pagePolicy', () => {
       });
     });
 
+    it('記事の動く例の文書の inline の script も、ハッシュで許す', () => {
+      expect(
+        pagePolicy('production', themeHash, [
+          "'sha256-bridge'",
+          "'sha256-demo'",
+        ]),
+      ).toStrictEqual({
+        'script-src': [
+          "'self'",
+          "'sha256-theme'",
+          "'sha256-bridge'",
+          "'sha256-demo'",
+          'https://www.googletagmanager.com',
+        ],
+      });
+    });
+
     it('preview は、Vercel が差し込む Toolbar のスクリプトも許す', () => {
-      expect(pagePolicy('preview', themeHash)).toStrictEqual({
+      expect(pagePolicy('preview', themeHash, [])).toStrictEqual({
         'script-src': [
           "'self'",
           "'sha256-theme'",
