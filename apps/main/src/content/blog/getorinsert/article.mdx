@@ -14,7 +14,7 @@ featureIds:
 
 ## はじめに
 
-`getOrInsert`と`getOrInsertComputed`は、`Map`と`WeakMap`のメソッドです。キーが無ければ値を追加してから返し、キーがあればその値を返します。Baseline 2026で使えるようになりました。
+`getOrInsert`と`getOrInsertComputed`は、`Map`と`WeakMap`のメソッドです。キーが無ければ値を追加してから返し、キーがあればその値を返します。Chrome 145が対応して、Baseline 2026に入りました。
 
 配列の要素をまとめてグループに分けるだけなら、`Map.groupBy`で足ります。要素があとから1つずつ届き、そのたびにキーの値を取り出して手を加える場面では、これまで次のように書いていました。
 
@@ -132,7 +132,7 @@ for (const post of posts) {
 console.log(byTag.get('css')); // ['field-sizing', '@scope']
 ```
 
-コールバックの中で同じキーに`set`しても、追加されるのはコールバックが返した値です。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0のどれでも、次のコードは`'outer'`を2回出し、`size`は1でした。コールバックで`Map`を書き換えないようにします。
+コールバックの中で同じキーに`set`しても、追加されるのはコールバックが返した値です。次のコードは、どのブラウザでもNode.jsでも`'outer'`を2回出し、`size`は1になります。コールバックで`Map`を書き換えないようにします。
 
 ```js
 const map = new Map();
@@ -159,7 +159,7 @@ formatters.getOrInsertComputed('en-US', createFormatter);
 
 `getOrInsert`と`getOrInsertComputed`の型は、[TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0-beta/#new-types-for-%22upsert%22-methods-(a.k.a.-getorinsert))で`esnext`ライブラリに追加されました。TypeScript 5.9以前には型がありません。
 
-手元のTypeScript 7.0.2でも、型があるのは`esnext`ライブラリだけでした。`lib`が`es2025`以前だと`Property 'getOrInsert' does not exist on type 'Map<string, number>'`（TS2550）になるので、`lib`に`esnext`を含めます。追加された型は次のとおりです。
+型があるのは、今も`esnext`ライブラリだけです。`lib`が`es2025`以前だと`Property 'getOrInsert' does not exist on type 'Map<string, number>'`（TS2550）になるので、`lib`に`esnext`を含めます。追加された型は次のとおりです。
 
 ```ts
 interface Map<K, V> {
