@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`:open`疑似クラスは、`<dialog>`・`<details>`・`<select>`・ピッカーを持つ`<input>`が開いているあいだだけマッチするセレクタです。`<select>`の選択肢の一覧や、`<input type="color">`の色を選ぶ画面を開いているときにも当たります。
+`:open`疑似クラスは、`<dialog>`・`<details>`・`<select>`・ピッカーを持つ`<input>`が開いているあいだだけマッチするセレクタです。`<select>`の選択肢の一覧や、`<input type="color">`の色を選ぶ画面を開いているときにも当たります。Safari 26.5が対応して、Baseline 2026に入りました。
 
 `<dialog>`と`<details>`だけなら、これまでの`open`属性のセレクタで足ります。`<select>`や`<input>`のピッカーには、開いている状態を選ぶセレクタがありませんでした。
 
@@ -22,7 +22,7 @@ featureIds:
 - `<select>` → 専用セレクタなし
 - `<input type="color">`などのピッカー → 専用セレクタなし
 
-Baseline 2026で揃った`:open`疑似クラスは、これらをまとめて表せるセレクタです。なお、`popover`属性を持つ要素は別系統で`:popover-open`が用意されており、`:open`の対象には含まれません。
+`:open`疑似クラスは、これらをまとめて表せるセレクタです。なお、`popover`属性を持つ要素は別系統で`:popover-open`が用意されており、`:open`の対象には含まれません。
 
 ```html
 <style>
@@ -53,7 +53,7 @@ detailsを開くと赤い枠が付き、閉じると消えます。selectは、�
 
 `popover`属性を持つ要素は`:open`ではなく`:popover-open`で扱います。
 
-Chrome 156、Safari 27.2、Firefox 159のどれでも、`<dialog>`は`show()`でも`showModal()`でも開いているあいだマッチし、popoverは`:popover-open`にだけマッチしました。Chrome 156では、`<select>`をクリックして一覧を開くとマッチし、一覧を開かない`multiple`付きの`<select>`はクリックしてもマッチしませんでした。`<input type="color">`は色を選ぶ画面を、`<input type="date">`はカレンダーを開いているあいだマッチしました。
+`<dialog>`は`show()`でも`showModal()`でも開いているあいだマッチし、popoverは`:popover-open`にだけマッチします。`<select>`はクリックして一覧を開くとマッチし、一覧を開かない`multiple`付きの`<select>`はクリックしてもマッチしません。`<input type="color">`は色を選ぶ画面を、`<input type="date">`はカレンダーを開いているあいだマッチします。
 
 ## 使い方
 
@@ -100,4 +100,4 @@ section:has(:open) {
 
 ## おわりに
 
-`:open`の本当の価値は`<select>`やピッカー付き`<input>`（`color`、`date`、`file`など）が開いている状態にスタイリングできることにあります。`<dialog>`や`<details>`は元から属性セレクタで取れていたので`:open`はそれを横断的にまとめる書き方でしかないですが、これらネイティブピッカーの開閉に追従するCSSはこれまで書きようがなく、`:open`が唯一無二の手段として加わった形です。Baseline 2026で主要ブラウザに揃ったことで、ネイティブUIに踏み込んだスタイリングが現実的に書けるようになりました。
+`:open`の本当の価値は`<select>`やピッカー付き`<input>`（`color`、`date`、`file`など）が開いている状態にスタイリングできることにあります。`<dialog>`や`<details>`は元から属性セレクタで取れていたので`:open`はそれを横断的にまとめる書き方でしかないですが、これらネイティブピッカーの開閉に追従するCSSはこれまで書きようがなく、`:open`が唯一無二の手段として加わった形です。
