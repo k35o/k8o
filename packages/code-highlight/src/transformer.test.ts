@@ -143,6 +143,12 @@ describe('annotateTransformer', () => {
 
       expect(wrapperElement(tree)?.properties['data-label']).toBe('foo.ts');
     });
+
+    it('メタの demo="..." をラッパーの data-demo にする', async () => {
+      const tree = await toHast('<p></p>', 'demo="dots"', 'html');
+
+      expect(wrapperElement(tree)?.properties['data-demo']).toBe('dots');
+    });
   });
 
   describe('エッジケース', () => {

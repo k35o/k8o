@@ -1,5 +1,7 @@
 import type { Element, Nodes, Parent, Root } from 'hast';
 
+import { DEMO_TAG } from './demo.ts';
+
 const BLOCK_CLASS = 'code-annotate-block';
 export const GROUP_TAG = 'code-group';
 
@@ -27,11 +29,23 @@ const asCodeBlock = (node: Nodes): Element | undefined => {
     : undefined;
 };
 
+const demoOf = (block: Element): string | undefined => {
+  const raw = block.properties['data-demo'];
+  return typeof raw === 'string' ? raw : undefined;
+};
+
 const createGroup = (blocks: Element[]): Element => ({
   type: 'element',
   tagName: GROUP_TAG,
   properties: {},
   children: blocks,
+});
+
+const createDemo = (name: string, children: Element[]): Element => ({
+  type: 'element',
+  tagName: DEMO_TAG,
+  properties: { name },
+  children,
 });
 
 export const groupAdjacentCodeBlocks = (tree: Root | Parent): void => {
@@ -40,10 +54,12 @@ export const groupAdjacentCodeBlocks = (tree: Root | Parent): void => {
   let pendingBlank: Nodes[] = [];
 
   const flush = (): void => {
-    if (run.length >= 2) {
-      next.push(createGroup(run));
+    const blocks = run.length >= 2 ? [createGroup(run)] : run;
+    const demo = run[0] === undefined ? undefined : demoOf(run[0]);
+    if (demo === undefined) {
+      next.push(...blocks);
     } else {
-      next.push(...run);
+      next.push(createDemo(demo, blocks));
     }
     next.push(...pendingBlank);
     run = [];
@@ -56,7 +72,11 @@ export const groupAdjacentCodeBlocks = (tree: Root | Parent): void => {
     }
     const block = asCodeBlock(child);
     if (block !== undefined) {
-      if (run.length > 0) pendingBlank = [];
+      if (run[0] !== undefined && demoOf(run[0]) !== demoOf(block)) {
+        flush();
+      } else {
+        pendingBlank = [];
+      }
       run.push(block);
       continue;
     }
