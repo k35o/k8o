@@ -14,7 +14,7 @@ export const rootFontUnitsSection: PlaygroundSection = {
       component: UnitComparisonDemo,
       title: '単位の比較',
       description:
-        '文字とバーを4倍で並べ、ricは「水」の幅、rchは「0」の幅、rcapはHの高さ、rexはxの高さに対応することを示します。',
+        '文字とバーを4倍で並べ、ricが水の幅、rchが0の幅、rcapがHの高さ、rexがxの高さに当たることを見比べられます。',
     },
     {
       component: RootComparisonDemo,
