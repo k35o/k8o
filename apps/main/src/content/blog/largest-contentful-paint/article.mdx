@@ -87,47 +87,19 @@ LCPの候補になるのは、次の要素です。
 - `background-image`で画像を付けた要素
 - `p`要素などのテキストを含む要素
 
-### PerformanceEntryから継承したプロパティ
+`entry`から読む値は、次のとおりです。
 
-`LargestContentfulPaint`は`PerformanceEntry`を継承しており、`startTime`、`entryType`などのプロパティを持ちます。
+- `startTime`：LCPの時刻。`renderTime`が0でなければ`renderTime`、0なら`loadTime`
+- `renderTime`：要素が描かれた時刻
+- `loadTime`：リソースの読み込みが終わった時刻。テキストの要素では0
+- `size`：要素の見えている部分の面積（平方ピクセル）
+- `element`：LCPの候補になった要素
+- `url`：画像などのリソースのURL
+- `id`：要素の`id`属性の値。無ければ空文字列
 
-#### startTime
+`Timing-Allow-Origin`ヘッダーの無い別のオリジンの画像でも、`renderTime`には少し粗くした時刻が入ります。どのブラウザでも`0`にはなりません。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
 
-`renderTime`が0でなければ`renderTime`を、0なら`loadTime`を返します。
-
-#### entryType
-
-`LargestContentfulPaint`の場合は`"largest-contentful-paint"`を返します。
-
-### LargestContentfulPaint独自のプロパティ
-
-独自のプロパティは、次の6つです。
-
-#### renderTime
-
-要素が描かれた時刻です。
-
-`Timing-Allow-Origin`ヘッダーの無い別のオリジンの画像では、少し粗くした時刻が入ります。どのブラウザでも`0`にはなりません。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
-
-#### loadTime
-
-リソースの読み込みが終わった時刻です。テキストの要素では0になります。
-
-#### size
-
-要素の見えている部分の面積を、平方ピクセルで返します。クリップされた部分や、ビューポートの外の部分は含みません。
-
-#### element
-
-LCPの候補になった要素を返します。どのブラウザでも、`entry`を受け取った後にその要素をDOMから消すと、`element`は`null`になります。Shadow DOMの中の画像は、ChromeとFirefoxでは`element`が`null`の`entry`として届き、Safariでは`entry`になりません。
-
-#### url
-
-画像などのリソースを持つ要素では、そのURLを返します。
-
-#### id
-
-要素の`id`属性の値を返します。`id`属性が無ければ空文字列です。
+どのブラウザでも、`entry`を受け取った後にその要素をDOMから消すと、`element`は`null`になります。Shadow DOMの中の画像は、ChromeとFirefoxでは`element`が`null`の`entry`として届き、Safariでは`entry`になりません。
 
 ## おわりに
 
