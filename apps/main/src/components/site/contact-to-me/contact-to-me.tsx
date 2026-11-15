@@ -7,10 +7,10 @@ import {
   FormControl,
   IconButton,
   Modal,
-  SendIcon,
   Textarea,
   useToast,
 } from '@k8ordo/ui';
+import { SendIcon } from '@k8ordo/ui/icons';
 import { useActionState, useCallback, useState } from 'react';
 import type { FC } from 'react';
 

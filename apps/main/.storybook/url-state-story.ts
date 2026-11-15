@@ -1,46 +1,35 @@
+import { mountPageUrl } from '@k8ordo/state/testing';
 import type { ReactElement } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
+import { expect, waitFor } from 'storybook/test';
 
 export const paramInUrl = (key: string): string | null =>
   new URL(location.href).searchParams.get(key);
 
 export const queryInUrl = (): string | null => paramInUrl('q');
 
-// Storybook には Navigation API を拾う router が無く、url の state を書く navigate がそのままでは
-// iframe を読み込み直すので、同じ文書の navigate を止める。Story は同じページで続けて走るので、
-// Story の前に parameters.query と parameters.hash を URL に足し、Story のあとに Story の前の URL へ戻す
-export const interceptUrlNavigation = ({
+// @k8ordo/state は続く replace の書き込みを間引くので、値は少し遅れて URL に入る
+export const expectParamInUrl = async (
+  key: string,
+  value: string | null,
+): Promise<void> => {
+  await waitFor(async () => {
+    await expect(paramInUrl(key)).toBe(value);
+  });
+};
+
+// Story の URL を parameters.query（q=css のような query の文字列）と parameters.hash で決める
+export const mountStoryUrl = ({
   parameters,
 }: {
   parameters: Record<string, unknown>;
 }): (() => void) => {
-  const before = { state: history.state as unknown, url: location.href };
-  const url = new URL(before.url);
-  // q を URLSearchParams で書き直すと %20 が + になるので、渡された綴りのまま足す
-  if (typeof parameters['query'] === 'string') {
-    url.search = [url.search.slice(1), parameters['query']]
-      .filter(Boolean)
-      .join('&');
-  }
-  if (typeof parameters['hash'] === 'string') {
-    url.hash = parameters['hash'];
-  }
-  history.replaceState(before.state, '', url);
-  const intercept = (event: NavigateEvent): void => {
-    if (
-      event.canIntercept &&
-      new URL(event.destination.url).pathname === location.pathname
-    ) {
-      // 本物の router と同じく、update() でフォーカスと位置を動かさない
-      event.intercept({ focusReset: 'manual', scroll: 'manual' });
-    }
-  };
-  navigation.addEventListener('navigate', intercept);
-  return () => {
-    navigation.removeEventListener('navigate', intercept);
-    history.replaceState(before.state, '', before.url);
-  };
+  const { query, hash } = parameters;
+  return mountPageUrl({
+    ...(typeof query === 'string' && { search: query }),
+    ...(typeof hash === 'string' && { hash }),
+  });
 };
 
 // Story は描いた時から React が欄を持つので、hydrate の前に打つことが起きない。サーバーで描いた

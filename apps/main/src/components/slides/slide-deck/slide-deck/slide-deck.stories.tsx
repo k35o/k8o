@@ -6,7 +6,7 @@ import { expect, spyOn, userEvent, within } from 'storybook/test';
 import { GlobalLayout } from '@/components/site/global-layout/global-layout';
 
 import preview from '../../../../../.storybook/preview';
-import { interceptUrlNavigation } from '../../../../../.storybook/url-state-story';
+import { mountStoryUrl } from '../../../../../.storybook/url-state-story';
 import { H1, H2 } from '../../mdx-parts/heading/heading';
 import { P } from '../../mdx-parts/paragraph/paragraph';
 import { Cover } from '../../slide-mdx/cover/cover';
@@ -38,7 +38,7 @@ const meta = preview.meta({
       <P key="end-body">ありがとうございました。</P>,
     ],
   },
-  beforeEach: interceptUrlNavigation,
+  beforeEach: mountStoryUrl,
 });
 
 const counterOf = (canvasElement: HTMLElement): Element | null =>

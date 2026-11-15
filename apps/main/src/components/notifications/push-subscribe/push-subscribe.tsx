@@ -1,6 +1,7 @@
 'use client';
 
-import { Alert, Button, Card, SubscribeIcon } from '@k8ordo/ui';
+import { Alert, Button, Card } from '@k8ordo/ui';
+import { BookmarkIcon } from '@k8ordo/ui/icons';
 import {
   useEffect,
   useState,
@@ -178,7 +179,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
                 variant="outline"
                 disabled={isPending}
                 onClick={unsubscribe}
-                startIcon={<SubscribeIcon />}
+                startIcon={<BookmarkIcon />}
               >
                 {isPending ? '処理中...' : '購読を解除する'}
               </Button>
@@ -188,7 +189,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
                 variant="solid"
                 disabled={isPending}
                 onClick={subscribe}
-                startIcon={<SubscribeIcon />}
+                startIcon={<BookmarkIcon />}
               >
                 {isPending ? '処理中...' : '通知を受け取る'}
               </Button>

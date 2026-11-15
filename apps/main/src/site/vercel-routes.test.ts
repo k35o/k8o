@@ -2,9 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import { articleMarkdownHref } from '@/components/blog/blog-layout/article-markdown-href';
 
-import { BEFORE_NOT_FOUND, beforeFiles } from './vercel-routes';
-
-const BEFORE_FILES = beforeFiles('production');
+import { securityHeaders } from './security-headers';
+import { BEFORE_FILES, BEFORE_NOT_FOUND } from './vercel-routes';
 
 const sources = [...BEFORE_FILES, ...BEFORE_NOT_FOUND].map(({ src }) => src);
 
@@ -38,9 +37,10 @@ const answerOf = (path: string, accept = 'text/html'): Answer => {
   return { status: 200, file: path };
 };
 
-// Vercel は当たる continue の規則の頭を順に重ね、同じ名前の頭は後の規則の値で置き換える
+// framework() の headers は vercel() がどの規則よりも前に書く。Vercel は当たる continue の規則の頭を
+// 順に重ね、同じ名前の頭は後の規則の値で置き換える
 const headersOf = (path: string): Readonly<Record<string, string>> => {
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = { ...securityHeaders('production') };
   for (const route of BEFORE_FILES) {
     const matches = new RegExp(
       route.src,

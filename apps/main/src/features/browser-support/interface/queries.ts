@@ -26,11 +26,9 @@ export type BrowserSupportFeatureChange =
 export type BrowserAvailability = BrowserSupportFeature['support'][number];
 export type SupportStatus = BrowserSupportFeature['status'];
 
-// 「直近1週間」の基準の時刻も一緒に覚え、HTML とペイロードの 2 回の描画で同じ値にする
-export const getBrowserSupportSnapshot = memoizeInBuild(
+export const getBrowserSupportSnapshot =
   async (): Promise<BrowserSupportSnapshot> =>
-    readBrowserSupportSnapshot(Date.now()),
-);
+    readBrowserSupportSnapshot(Date.now());
 
 const getFeatureStatusLookup = memoizeInBuild(loadFeatureStatusLookup);
 

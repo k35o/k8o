@@ -1,4 +1,5 @@
-import { Card, ChevronIcon, ExternalLinkIcon, Heading } from '@k8ordo/ui';
+import { Card, Heading } from '@k8ordo/ui';
+import { ChevronIcon, ExternalLinkIcon } from '@k8ordo/ui/icons';
 import type { ReactNode } from 'react';
 
 import styles from './app-card.module.css';

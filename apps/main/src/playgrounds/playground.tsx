@@ -1,4 +1,4 @@
-import { ExternalLinkIcon, FlaskIcon } from '@k8ordo/ui';
+import { ExternalLinkIcon, FlaskIcon } from '@k8ordo/ui/icons';
 import { cn } from '@repo/helpers/cn';
 import type { FC, PropsWithChildren } from 'react';
 

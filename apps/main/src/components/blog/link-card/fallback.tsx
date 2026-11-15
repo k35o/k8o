@@ -1,4 +1,5 @@
-import { ExternalLinkIcon, Card } from '@k8ordo/ui';
+import { Card } from '@k8ordo/ui';
+import { ExternalLinkIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import styles from './fallback.module.css';

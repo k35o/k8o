@@ -1,7 +1,11 @@
 'use client';
 
-import { GitHubIcon, IconButton, QiitaIcon, TwitterIcon } from '@k8ordo/ui';
+import { IconButton } from '@k8ordo/ui';
 import type { FC } from 'react';
+
+import { GitHubIcon } from '@/components/site/brand-icons/github-icon';
+import { QiitaIcon } from '@/components/site/brand-icons/qiita-icon';
+import { TwitterIcon } from '@/components/site/brand-icons/twitter-icon';
 
 export const SocialIcons: FC = () => (
   <>

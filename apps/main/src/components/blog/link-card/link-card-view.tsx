@@ -1,4 +1,5 @@
-import { ExternalLinkIcon, Card } from '@k8ordo/ui';
+import { Card } from '@k8ordo/ui';
+import { ExternalLinkIcon } from '@k8ordo/ui/icons';
 import { cn } from '@repo/helpers/cn';
 import type { OgMetadata } from '@repo/helpers/og/og-metadata';
 import type { FC } from 'react';

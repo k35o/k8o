@@ -1,13 +1,11 @@
 import { notFound } from '@k8ordo/framework';
 
-import { getBlogToc as _getBlogToc } from '@/features/blog/application/blog';
 import {
   getBlogs as _getBlogs,
   selectRelatedBlogs,
 } from '@/features/blog/application/blogs';
 import { buildFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
 import { getMarkdown } from '@/features/blog/application/markdown';
-import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
 import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
@@ -59,14 +57,8 @@ export const getBlogContent = async (slug: string) => {
   return blog;
 };
 
-export const findBlogMarkdown = memoizeInBuild(
-  async (slug: string): Promise<string | null> =>
-    (await findBlogContent(slug)) === null ? null : getMarkdown(slug),
-);
-
-export const getBlogOgCode = memoizeInBuild(_getBlogOgCode);
-
-export const getBlogToc = memoizeInBuild(_getBlogToc);
+export const findBlogMarkdown = async (slug: string): Promise<string | null> =>
+  (await findBlogContent(slug)) === null ? null : getMarkdown(slug);
 
 export const getBlogsByTags = async (slug: string) =>
   selectRelatedBlogs(await getBlogs(), slug).map((blog) => ({
@@ -80,5 +72,7 @@ export const getBlogsByTags = async (slug: string) =>
 export const getFeatureBlogMap = async () =>
   buildFeatureBlogMap(await getBlogs());
 
+export { getBlogToc } from '@/features/blog/application/blog';
+export { getBlogOgCode } from '@/features/blog/application/og-code';
 export type { BlogLink } from '@/features/blog/application/feature-blog-map';
 export type { HeadingTree } from '@/features/blog/application/toc-tree';

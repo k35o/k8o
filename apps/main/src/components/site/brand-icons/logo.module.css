@@ -1,0 +1,13 @@
+.glyph {
+  fill: var(--color-primary-fg);
+}
+
+.primary {
+  /* better-css-modules-disable-next-line tokens/color -- ロゴの色は @k8ordo/ui のトークンに無く、ロゴが自分で持つ */
+  fill: light-dark(oklch(49% 0.12 180), oklch(75% 0.175 180));
+}
+
+.secondary {
+  /* better-css-modules-disable-next-line tokens/color -- ロゴの色は @k8ordo/ui のトークンに無く、ロゴが自分で持つ */
+  fill: light-dark(oklch(57.5% 0.145 180), oklch(66% 0.165 180));
+}

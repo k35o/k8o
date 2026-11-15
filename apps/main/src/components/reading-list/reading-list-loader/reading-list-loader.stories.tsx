@@ -1,4 +1,4 @@
-import { ListIcon } from '@k8ordo/ui';
+import { ListIcon } from '@k8ordo/ui/icons';
 import { HttpResponse, http } from 'msw/http';
 import { Suspense, useState } from 'react';
 import type { FC, ReactNode } from 'react';

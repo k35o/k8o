@@ -1,6 +1,7 @@
 'use client';
 
-import { Badge, ChevronIcon, FormControl, Select } from '@k8ordo/ui';
+import { Badge, FormControl, Select } from '@k8ordo/ui';
+import { ChevronIcon } from '@k8ordo/ui/icons';
 import { useState } from 'react';
 
 import styles from './field-sizing-demo.module.css';

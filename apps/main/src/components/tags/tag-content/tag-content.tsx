@@ -1,5 +1,6 @@
 import { href } from '@k8ordo/framework';
-import { Heading, Stack, TagIcon } from '@k8ordo/ui';
+import { Heading, Stack } from '@k8ordo/ui';
+import { TagIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import { TagCard } from '../tag-card/tag-card';

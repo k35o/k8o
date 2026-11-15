@@ -5,11 +5,8 @@ import type { FC } from 'react';
 import { MdxContent } from '@/components/site/mdx-base/mdx-base';
 import { slideMdxComponents } from '@/components/slides/slide-mdx-components/slide-mdx-components';
 
-// plugin-rsc は .tsx などの部品にしか、import した CSS を差し込む包みを付けない。
-// query で .mdx の default も包ませ、デッキが import する CSS を載せる
 const decks = import.meta.glob<MDXContent>('@content/slides/*/content.mdx', {
   import: 'default',
-  query: '?vite-rsc-css-export=default',
 });
 
 const DECK_FILE = /\/slides\/([a-z0-9-]+)\/content\.mdx$/u;

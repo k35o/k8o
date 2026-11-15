@@ -1,8 +1,6 @@
 import type { VercelRoute } from '@k8ordo/framework/vercel';
 
 import { ARTICLE, SLUG } from './patterns.ts';
-import { securityHeaders } from './security-headers.ts';
-import type { DeployTarget } from './security-headers.ts';
 
 const ACCEPTS_MARKDOWN = [
   { type: 'header', key: 'accept', value: '.*text/markdown.*' },
@@ -16,11 +14,7 @@ const PATH_TO_REDIRECT = `((?:${SEGMENT}/)*${SEGMENT})`;
 
 // Vercel は既定で大文字と小文字を区別しない。/Blog などは 404 にするので、記事とフィードに
 // 当てる規則は caseSensitive にする
-export const beforeFiles = (
-  environment: DeployTarget,
-): readonly VercelRoute[] => [
-  // Cache-Control は assets の immutable まで上書きするので、ここには置かない
-  { src: '^/.*$', headers: securityHeaders(environment), continue: true },
+export const BEFORE_FILES: readonly VercelRoute[] = [
   {
     src: `^/${PATH_TO_REDIRECT}/$`,
     status: 308,
@@ -56,8 +50,8 @@ export const beforeFiles = (
       'Vercel-CDN-Cache-Control':
         'max-age=3600, stale-while-revalidate=86400, stale-if-error=86400',
       // フィードは外のサイトの題や説明を k8o.me の origin で返す。WebKit は rss+xml を XML として
-      // 読み、XHTML の script を動かすので、何も読ませない。同じ名前の頭は後の規則の値で置き換わるので、
-      // default-src の効かない指示子もここで書く
+      // 読み、XHTML の script を動かすので、何も読ませない。framework() の headers の CSP をこの値で
+      // 置き換えるので、default-src の効かない指示子もここで書く
       'Content-Security-Policy':
         "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; report-to csp-endpoint",
     },

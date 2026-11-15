@@ -1,4 +1,5 @@
-import { AlertIcon, Stack } from '@k8ordo/ui';
+import { Stack } from '@k8ordo/ui';
+import { AlertIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import type { PaletteSwatch } from '../palette-types/palette-types';

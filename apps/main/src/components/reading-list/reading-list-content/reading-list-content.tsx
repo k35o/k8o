@@ -1,14 +1,8 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import {
-  Button,
-  Card,
-  Drawer,
-  EmptyState,
-  Stack,
-  SubscribeIcon,
-} from '@k8ordo/ui';
+import { Button, Card, Drawer, EmptyState, Stack } from '@k8ordo/ui';
+import { BookmarkIcon } from '@k8ordo/ui/icons';
 import {
   startTransition,
   useCallback,
@@ -180,7 +174,7 @@ export const ReadingListContent: FC<{
         {filteredArticles.length === 0 ? (
           <EmptyState
             description="検索条件やソースの選択を変更してみてください"
-            icon={<SubscribeIcon size="lg" />}
+            icon={<BookmarkIcon size="lg" />}
             title="条件に一致する記事がありません"
           />
         ) : (
