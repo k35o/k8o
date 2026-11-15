@@ -7,8 +7,6 @@ featureIds:
   - shape-function
 ---
 
-import { ShapeCommandDemo } from './_components/shape-command-demo';
-
 # CSS shape()で曲線のある図形をレスポンシブに描く
 
 <BrowserSupportStatus featureId="shape-function" />
@@ -99,9 +97,11 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 
 直線を描きます。`line`はどの方向にも、`hline`は水平にだけ、`vline`は垂直にだけ動きます。
 
-```css
+```css demo="line"
 /* [!og] */
 .shape {
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 0% 0%,        /* 左上から開始 */
     line to 100% 0%,   /* → 右上へ */
@@ -114,14 +114,18 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-<ShapeCommandDemo type="line" />
+```html demo="line"
+<div class="shape"></div>
+```
 
 ### move
 
 描かずに現在位置を動かします。`close`の後に、新しいサブパスを始めるときに使います。
 
-```css
+```css demo="move"
 .shape {
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 5% 10%,     /* 左上から開始 */
     hline to 45%,    /* → 右上へ */
@@ -137,14 +141,18 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-<ShapeCommandDemo type="move" />
+```html demo="move"
+<div class="shape"></div>
+```
 
 ### curve
 
 ベジェ曲線を描きます。`with`の後に制御点を書いて、曲がり具合を決めます。制御点が1つなら2次ベジェ曲線、`/`で区切って2つ書くと3次ベジェ曲線になります。
 
-```css
+```css demo="curve"
 .shape {
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 0% 0%,                 /* 左上から開始 */
     hline to 100%,              /* → 右端へ */
@@ -158,16 +166,20 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-この例は、ツールチップのような吹き出しの形です。底辺の突起の高さは`48px`で固定し、全体の幅と高さは要素に追従させています。固定の長さと`%`を混ぜた図形は、`path()`では描けません。
+```html demo="curve"
+<div class="shape"></div>
+```
 
-<ShapeCommandDemo type="curve" />
+この例は、ツールチップのような吹き出しの形です。底辺の突起の高さは`48px`で固定し、全体の幅と高さは要素に追従させています。固定の長さと`%`を混ぜた図形は、`path()`では描けません。
 
 ### smooth
 
 直前の`curve`や`smooth`の制御点を反転させた点を制御点にして、なめらかにつながる曲線を描きます。直前が曲線のコマンドでなければ、現在位置を制御点にします。
 
-```css
+```css demo="smooth"
 .shape {
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 0% 50%,                 /* 左端の中央から開始 */
     curve to 25% 0% with 10% 0%, /* 最初の山 */
@@ -179,14 +191,19 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-<ShapeCommandDemo type="smooth" />
+```html demo="smooth"
+<div class="shape"></div>
+```
 
 ### arc
 
 楕円の弧を描きます。`of`の後に楕円の半径を書きます。1つ目が横（rx）、2つ目が縦（ry）の半径で、1つだけ書くと円の弧になります。
 
-```css
+```css demo="arc"
 .shape {
+  width: 200px;
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 50% 15%,                       /* 上端の中央から開始 */
     arc to 50% 85% of 60px 55px cw, /* rx=60px, ry=55pxの楕円に沿って時計回りに弧を描く */
@@ -195,7 +212,9 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-<ShapeCommandDemo type="arc" />
+```html demo="arc"
+<div class="shape"></div>
+```
 
 ほかに、次のキーワードを書けます。
 
@@ -205,8 +224,11 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 
 `large`を書くと、同じ2点のあいだでも大きい方の弧を描きます。
 
-```css
+```css demo="arc-large"
 .shape {
+  width: 200px;
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 50% 15%,
     arc to 50% 85% of 60px 55px large cw,
@@ -215,12 +237,17 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-<ShapeCommandDemo type="arc-large" />
+```html demo="arc-large"
+<div class="shape"></div>
+```
 
 `rotate`を書くと、楕円そのものを回転させます。
 
-```css
+```css demo="arc-rotate"
 .shape {
+  width: 200px;
+  height: 128px;
+  background-color: teal;
   clip-path: shape(
     from 50% 15%,
     arc to 50% 85% of 80px 50px cw rotate 45deg,
@@ -229,7 +256,9 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 }
 ```
 
-<ShapeCommandDemo type="arc-rotate" />
+```html demo="arc-rotate"
+<div class="shape"></div>
+```
 
 ## path()との比較
 
