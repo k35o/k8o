@@ -6,6 +6,7 @@ import {
 } from '@/features/blog/application/blogs';
 import { buildDemoDocument } from '@/features/blog/application/demo-document';
 import { getBlogDemos } from '@/features/blog/application/demos';
+import type { BlogDemo } from '@/features/blog/application/demos';
 import { buildFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
 import { getMarkdown } from '@/features/blog/application/markdown';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
@@ -66,6 +67,17 @@ export const findBlogMarkdown = async (slug: string): Promise<string | null> =>
 export const getBlogDemoNames = async (slug: string): Promise<string[]> =>
   (await getBlogDemos(slug)).map(({ name }) => name);
 
+const demoScriptOf = async (slug: string, demo: BlogDemo): Promise<string> => {
+  if (demo.tsx === '') {
+    return demo.js;
+  }
+  // virtual:blog-demo-scripts は vite.config のプラグインだけが作り、テストと Storybook には無いので、
+  // tsx の例を描くときにだけ読む
+  const { getBundledDemoScript } =
+    await import('@/features/blog/application/demo-scripts');
+  return getBundledDemoScript(slug, demo.name);
+};
+
 // 記事の動く例の HTML。下書きの記事と、記事に無い名前の例は null
 export const findBlogDemoDocument = async (
   slug: string,
@@ -84,7 +96,7 @@ export const findBlogDemoDocument = async (
     name: demo.name,
     html: demo.html,
     css: demo.css,
-    script: demo.js,
+    script: await demoScriptOf(slug, demo),
   });
 };
 

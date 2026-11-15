@@ -36,6 +36,10 @@ vi.mock('@/features/blog/application/demo-document', () => ({
   buildDemoDocument: ({ name, script }: { name: string; script: string }) =>
     `<title>${name}</title><script>${script}</script>`,
 }));
+vi.mock('@/features/blog/application/demo-scripts', () => ({
+  getBundledDemoScript: (slug: string, name: string) =>
+    `bundled(${slug}/${name})`,
+}));
 
 const CSS = { id: 3, name: 'CSS' };
 const BASELINE = { id: 5, name: 'Baseline' };
@@ -206,6 +210,7 @@ const dots = {
   html: '<ul></ul>',
   css: '',
   js: 'console.log(1);',
+  tsx: '',
 };
 
 describe('getBlogDemoNames', () => {
@@ -241,6 +246,24 @@ describe('findBlogDemoDocument', () => {
 
       await expect(findBlogDemoDocument('blog-a', 'dots')).resolves.toBe(
         '<title>dots</title><script>console.log(1);</script>',
+      );
+    });
+
+    it('tsx の例は、ビルドが React ごと束ねた JS を置く', async () => {
+      vi.mocked(getPublishedBlogs).mockResolvedValue([published(1, 'blog-a')]);
+      mockMetadata();
+      vi.mocked(getBlogDemos).mockResolvedValue([
+        {
+          name: 'counter',
+          html: '',
+          css: '',
+          js: '',
+          tsx: 'export default function App() { return null; }',
+        },
+      ]);
+
+      await expect(findBlogDemoDocument('blog-a', 'counter')).resolves.toBe(
+        '<title>counter</title><script>bundled(blog-a/counter)</script>',
       );
     });
   });

@@ -8,14 +8,23 @@ import { mdxParser } from '@/shared/mdx/mdx-tree';
 
 import { blogPath } from './path';
 
-const DEMO_LANGS = ['html', 'css', 'js'] as const;
+const DEMO_LANGS = ['html', 'css', 'js', 'tsx'] as const;
 
 type DemoLang = (typeof DEMO_LANGS)[number];
 
+// tsx は React の部品を export default で書き、ビルドが React ごと束ねて描く
 export type BlogDemo = { name: string } & Record<DemoLang, string>;
 
 const isDemoLang = (lang: string | null | undefined): lang is DemoLang =>
   DEMO_LANGS.some((demoLang) => demoLang === lang);
+
+const assertOneScript = (demo: BlogDemo): void => {
+  if (demo.js !== '' && demo.tsx !== '') {
+    throw new Error(
+      `demo="${demo.name}" には js と tsx のどちらか一方だけを書く`,
+    );
+  }
+};
 
 // 記事の MDX から、メタに demo="<名前>" を書いたコードブロックを例ごとに集める。記事に描くときは
 // @repo/code-highlight が、隣り合う同じ名前のブロックを1つの例にまとめる
@@ -40,7 +49,7 @@ export const readDemos = (source: string): BlogDemo[] => {
         }
         // 注釈の行は記事にもコピーにも出ないので、動かすコードからも外す
         const { code } = parseAnnotations(node.value);
-        const base = demo ?? { name, html: '', css: '', js: '' };
+        const base = demo ?? { name, html: '', css: '', js: '', tsx: '' };
         demos.set(name, {
           ...base,
           [node.lang]: [base[node.lang], code].filter(Boolean).join('\n'),
@@ -54,7 +63,11 @@ export const readDemos = (source: string): BlogDemo[] => {
   };
 
   visit(mdxParser.parse(source).children);
-  return [...demos.values()];
+  const collected = [...demos.values()];
+  for (const demo of collected) {
+    assertOneScript(demo);
+  }
+  return collected;
 };
 
 export const getBlogDemos = async (slug: string): Promise<BlogDemo[]> =>

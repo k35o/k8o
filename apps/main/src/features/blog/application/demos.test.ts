@@ -24,8 +24,19 @@ describe('readDemos', () => {
           html: '<ul class="dots"></ul>',
           css: '.dots { display: flex; }',
           js: 'console.log(1);',
+          tsx: '',
         },
       ]);
+    });
+
+    it('React の部品を書いた tsx も集める', () => {
+      const source = article(
+        fence('tsx', 'demo="counter"', 'export default function App() {}'),
+      );
+
+      expect(readDemos(source)[0]?.tsx).toBe(
+        'export default function App() {}',
+      );
     });
 
     it('注釈の行は、記事に出ないので動かすコードからも外す', () => {
@@ -74,7 +85,16 @@ describe('readDemos', () => {
       expect(() => readDemos(source)).toThrow(/demo="dots"/u);
     });
 
-    it('HTML・CSS・JS 以外の言語は投げる', () => {
+    it('js と tsx を同じ例に書くと投げる', () => {
+      const source = article(
+        fence('js', 'demo="dots"', 'console.log(1);'),
+        fence('tsx', 'demo="dots"', 'export default function App() {}'),
+      );
+
+      expect(() => readDemos(source)).toThrow(/js と tsx/u);
+    });
+
+    it('HTML・CSS・JS・tsx 以外の言語は投げる', () => {
       const source = article(fence('ts', 'demo="dots"', 'const a = 1;'));
 
       expect(() => readDemos(source)).toThrow(/ts/u);
