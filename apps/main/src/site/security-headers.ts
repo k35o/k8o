@@ -1,3 +1,5 @@
+import { DEMO_TRUSTED_TYPES_POLICY } from '../shared/demo/demo-trusted-html.ts';
+
 export type DeployTarget = 'preview' | 'production';
 
 type SiteEnvironment = 'development' | DeployTarget;
@@ -49,7 +51,7 @@ export const securityHeaders = (
     // 違反を集める
     'Content-Security-Policy-Report-Only': toHeaderValue([
       "require-trusted-types-for 'script'",
-      "trusted-types 'none'",
+      `trusted-types ${DEMO_TRUSTED_TYPES_POLICY}`,
       'report-to csp-endpoint',
     ]),
     // preview と dev のレポートは、api が Origin を許可しないので受け付けられない
@@ -61,27 +63,40 @@ export const securityHeaders = (
   };
 };
 
-// 記事の動く例（/blog/:slug/demos/:demo）の文書の CSP。ページの CSP に代えて付ける。例は記事の
-// iframe が sandbox で origin を持たせずに読むので、記事のページにだけ埋め込ませ、例の inline の
-// script と style を動かす。外へは何も読みに行かない
-export const DEMO_CONTENT_SECURITY_POLICY = toHeaderValue([
+// 記事の動く例（/blog/:slug/demos/:demo）の文書は、inline の script と style だけを動かし、外へは
+// 何も読みに行かない
+const DEMO_DIRECTIVES = [
   "default-src 'none'",
   "script-src 'unsafe-inline'",
   "style-src 'unsafe-inline'",
   "base-uri 'none'",
   "form-action 'none'",
-  "frame-ancestors 'self'",
+];
+
+// 例の URL の応答に、ページの CSP に代えて付ける。記事は文書を fetch して iframe の srcdoc に入れるので、
+// URL はどのページにも埋め込ませない
+export const DEMO_CONTENT_SECURITY_POLICY = toHeaderValue([
+  ...DEMO_DIRECTIVES,
+  "frame-ancestors 'none'",
 ]);
 
+// 例の文書の頭の <meta> の CSP。文書を応答の頭を通さずに読んでも同じ制限が効く。frame-ancestors は
+// <meta> では効かない
+export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue(DEMO_DIRECTIVES);
+
 // framework() が書き出す各ページの <meta> の CSP。framework は payload と React の inline の script の
-// ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュだけを渡す
+// ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュを渡す。記事の動く例の文書は
+// iframe の srcdoc で記事の CSP を引き継ぐので、例の文書の inline の script のハッシュも渡す。router は
+// ページを読み直さずに移り、最初に読んだページの <meta> が残るので、例の無いページにも同じものを書く
 export const pagePolicy = (
   environment: DeployTarget,
   colorSchemeScriptHash: string,
+  demoScriptHashes: readonly string[],
 ): Readonly<Record<string, readonly string[]>> => ({
   'script-src': [
     "'self'",
     colorSchemeScriptHash,
+    ...demoScriptHashes,
     ...scriptHostsOf(environment),
   ],
 });
