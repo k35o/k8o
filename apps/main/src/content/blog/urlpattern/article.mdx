@@ -13,7 +13,7 @@ featureIds:
 <BrowserSupportStatus featureId="urlpattern" />
 
 ## はじめに
-URLPattern APIは、`/blog/:id`のようなパターンでURLを照合し、`:id`に当たる部分を取り出せるAPIです。Safari 26のサポートによって、Baseline 2025入りした新しい機能です。
+URLPattern APIは、`/blog/:id`のようなパターンでURLを照合し、`:id`に当たる部分を取り出せるAPIです。Safari 26が対応して、Baseline 2025に入りました。
 
 パスが決まった文字列と同じかを見るだけなら、`url.pathname === "/blog"`や`startsWith()`で足ります。`/blog/`の後ろの記事名を取り出したり、数字だけのIDに絞ったりするには、これまで正規表現を書いていました。URLPatternなら名前を付けたパラメータで書け、ホスト名やクエリも部品ごとに照合できます。
 
@@ -123,10 +123,10 @@ const pattern2 = new URLPattern("/blog/:id", "https://k8o.me");
 
 ```ts
 const pattern = new URLPattern("/blog/:id", "https://k8o.me", { ignoreCase: true });
-console.log(pattern.test("https://k8o.me/BLOG/urlpattern")); // Chrome 156とSafari 27.2はtrue、Firefox 159はfalse
+console.log(pattern.test("https://k8o.me/BLOG/urlpattern")); // ChromeとSafariはtrue、Firefoxはfalse
 ```
 
-Firefox 159では、`:id`や`*`を含むパターンに`ignoreCase: true`を渡しても、大文字小文字を区別しました。区別しなくなったのは、`/blog`のように固定の文字列だけのパターンのときです。
+Firefoxでは、`:id`や`*`を含むパターンに`ignoreCase: true`を渡しても、大文字小文字を区別します。区別しなくなるのは、`/blog`のように固定の文字列だけのパターンのときです。
 
 ## 定義したパターンと照合するexecメソッド
 作成した`URLPattern`オブジェクトは、URLのパターンマッチを`exec`メソッドで行います。
@@ -154,7 +154,7 @@ if (result) {
 `exec`メソッドの引数にはコンストラクタと同様に`input`と`baseURL`を渡せます。
 渡すのは照合するURLですので、オブジェクトを`input`に渡した場合、指定していない部分は`''`が渡されたものとされます。
 
-`groups`の値は、パスに日本語を含むURLでもパーセントエンコードされたまま入ります。`/blog/あ`なら`id`は`%E3%81%82`になるので、元の文字に戻すには`decodeURIComponent()`を通します。また、`:id`は`/`をまたがないので、`/blog/urlpattern/`のように末尾にスラッシュが付いたURLには一致しません。末尾のスラッシュを許すなら`/blog/:id{/}?`と書きます。Chrome 156、Safari 27.2、Firefox 159とNode.js 26.13.0のどれでも同じでした。
+`groups`の値は、パスに日本語を含むURLでもパーセントエンコードされたまま入ります。`/blog/あ`なら`id`は`%E3%81%82`になるので、元の文字に戻すには`decodeURIComponent()`を通します。また、`:id`は`/`をまたがないので、`/blog/urlpattern/`のように末尾にスラッシュが付いたURLには一致しません。末尾のスラッシュを許すなら`/blog/:id{/}?`と書きます。どのブラウザとNode.jsでも同じです。
 
 パターンを並べて順に`exec`を呼べば、URLを振り分けるルーティングを正規表現なしで書けます。`:id(\d+)`のように、パラメータの後ろの括弧に正規表現を書けば、当てはまる文字を絞れます。
 
@@ -237,4 +237,4 @@ console.log(pattern3.hash);     // "*"
 ## おわりに
 URLのパスからパラメータを取り出すURLPattern APIについて紹介しました。
 
-これまでRegExp等で書いてきたURLの照合とルーティングを、`/blog/:id`のようなパターンで書けるのは非常に便利だと感じました。取り出した値がパーセントエンコードされたままであることと、Firefox 159では`ignoreCase`がパラメータを含むパターンに効かないことには気をつけてください。
+これまでRegExp等で書いてきたURLの照合とルーティングを、`/blog/:id`のようなパターンで書けるのは非常に便利だと感じました。取り出した値がパーセントエンコードされたままであることと、Firefoxでは`ignoreCase`がパラメータを含むパターンに効かないことには気をつけてください。
