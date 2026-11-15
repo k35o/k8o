@@ -13,11 +13,11 @@ featureIds:
 
 ## はじめに
 
-`:active-view-transition-type()`は、`startViewTransition()`の`types`オプションで渡したタイプのView Transitionが進んでいる間だけ、ルート要素（`<html>`）に当たる疑似クラスです。同じView Transitionでも、進むと戻るのようにタイプごとに別のアニメーションを書き分けられます。
+`:active-view-transition-type()`は、`startViewTransition()`の`types`オプションで渡したタイプのView Transitionが進んでいる間だけ、ルート要素（`<html>`）に当たる疑似クラスです。同じView Transitionでも、進むと戻るのようにタイプごとに別のアニメーションを書き分けられます。Firefox 147が対応して、Baseline 2026に入りました。
 
 アニメーションが1種類で済むなら、`::view-transition-old()`と`::view-transition-new()`に直接書けば足ります。進むと戻るで向きを変えるように遷移ごとにアニメーションを切り替えたい場合、これまでは遷移の前にJavaScriptで`<html>`へクラスを付け、終わったら外していました。`types`と`:active-view-transition-type()`を使うと、この付け外しをブラウザに任せられます。
 
-[以前紹介したBaseline 2025に追加されたView Transition API](/blog/view-transitions)は、DOM更新時やページ遷移時に滑らかなアニメーションを適用できるAPIです。この記事で紹介する疑似クラスは、Baseline 2026で追加されました。
+[以前紹介したBaseline 2025に追加されたView Transition API](/blog/view-transitions)は、DOM更新時やページ遷移時に滑らかなアニメーションを適用できるAPIです。
 
 ## :active-view-transition-type()とは
 
@@ -55,9 +55,9 @@ featureIds:
 </script>
 ```
 
-進むを押すと、数字の増えた新しい画面が右から滑り込みます。戻るを押すと、数字の減った画面が左から入ってきます。Chrome 156、Safari 27.2、Firefox 159のどれでも、進むと`::view-transition-new(root)`に`from-right`が、戻ると`from-left`が当たりました。
+進むを押すと、数字の増えた新しい画面が右から滑り込みます。戻るを押すと、数字の減った画面が左から入ってきます。どのブラウザでも、進むと`::view-transition-new(root)`に`from-right`が、戻ると`from-left`が当たります。
 
-当たるのはルート要素だけです。Chrome 156、Safari 27.2、Firefox 159で、遷移の間に`.card:active-view-transition-type(forwards)`と`:active-view-transition-type(forwards) .card`の2つの書き方を試すと、どれでもスタイルが当たったのは後者だけでした。ルートの外の要素を切り替えるときは、`html:active-view-transition-type(forwards) .card`のように子孫セレクタで書きます。
+当たるのはルート要素だけです。遷移の間に`.card:active-view-transition-type(forwards)`と`:active-view-transition-type(forwards) .card`の2つの書き方を試すと、どのブラウザでもスタイルが当たるのは後者だけです。ルートの外の要素を切り替えるときは、`html:active-view-transition-type(forwards) .card`のように子孫セレクタで書きます。
 
 ## タイプの設定方法
 
@@ -73,7 +73,7 @@ document.startViewTransition({
 });
 ```
 
-返り値の`ViewTransition`の`types`は、`add()`や`delete()`を持つSetに似たオブジェクトです。遷移の途中に`forwards`を消して`backwards`を足すと、Chrome 156ではその場で、Safari 27.2では次の描画から、当たるアニメーションが`backwards`のものに切り替わりました。Firefox 159では、`<html>`は`:active-view-transition-type(backwards)`に当たるのに、アニメーションは`forwards`のまま変わりませんでした。
+返り値の`ViewTransition`の`types`は、`add()`や`delete()`を持つSetに似たオブジェクトです。遷移の途中に`forwards`を消して`backwards`を足すと、Chromeではその場で、Safariでは次の描画から、当たるアニメーションが`backwards`のものに切り替わります。Firefoxでは、`<html>`は`:active-view-transition-type(backwards)`に当たるのに、アニメーションは`forwards`のまま変わりません。
 
 `startViewTransition`があるかだけを見ると、`types`を受け取らない古い実装（BCDではChrome 111〜124、Safari 18.0〜18.1、Firefox 144〜146）を見分けられません。デモでは、同時に実装された疑似クラスに対応しているかを`CSS.supports('selector(:active-view-transition-type(forwards))')`で確かめてから呼び、対応していなければアニメーションなしでDOMだけを書き換えています。Reactで状態を変えるときは、`update`の中の更新を`flushSync()`で包みます。`update`が終わった時点のDOMが新しい画面として撮られるからです。
 
@@ -86,7 +86,7 @@ document.startViewTransition({
 }
 ```
 
-ページをまたぐ遷移では、移る前と後の両方のページのCSSに`@view-transition`を書きます。Chrome 156とSafari 27.2はこの規則を`CSSViewTransitionRule`として読み、`types`に`slide`が入りました。Firefox 159は規則ごと読み捨てるので、ページをまたぐ遷移そのものが動きません。
+ページをまたぐ遷移では、移る前と後の両方のページのCSSに`@view-transition`を書きます。ChromeとSafariはこの規則を`CSSViewTransitionRule`として読み、`types`に`slide`が入ります。Firefoxは規則ごと読み捨てるので、ページをまたぐ遷移そのものが動きません。
 
 ## 基本的な使い方
 
@@ -158,4 +158,4 @@ html:active-view-transition-type(backwards) {
 
 `:active-view-transition-type()`を使うと、`<html>`のクラスを付け外しせずに、遷移のタイプごとにアニメーションを書き分けられます。進む・戻るのように向きのある移動で、操作に合ったアニメーションを付けられます。
 
-同じDocumentの中の遷移なら、Chrome・Safari・Firefoxのいずれでも`types`を渡せます。ページをまたぐ遷移で`@view-transition`の`types`を使う書き方は、Firefox 159では動きません。
+同じDocumentの中の遷移なら、Chrome・Safari・Firefoxのいずれでも`types`を渡せます。ページをまたぐ遷移で`@view-transition`の`types`を使う書き方は、Firefoxでは動きません。
