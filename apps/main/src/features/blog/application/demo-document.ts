@@ -1,4 +1,5 @@
 import { DEMO_MESSAGE } from '@/shared/demo/demo-message';
+import { DEMO_META_CONTENT_SECURITY_POLICY } from '@/site/security-headers';
 
 // script は例の JS か、tsx を React ごと束ねた JS
 export type DemoDocument = {
@@ -60,6 +61,7 @@ export const buildDemoDocument = (demo: DemoDocument): string => {
     '<html lang="ja">',
     '<head>',
     '<meta charset="utf-8">',
+    `<meta http-equiv="Content-Security-Policy" content="${DEMO_META_CONTENT_SECURITY_POLICY}">`,
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
     '<meta name="robots" content="noindex">',
     `<title>${demo.name}</title>`,

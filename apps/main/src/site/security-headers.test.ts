@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   DEMO_CONTENT_SECURITY_POLICY,
+  DEMO_META_CONTENT_SECURITY_POLICY,
   pagePolicy,
   securityHeaders,
 } from './security-headers';
@@ -54,14 +55,14 @@ describe('securityHeaders', () => {
       );
     });
 
-    it('Trusted Types は Report-Only でだけ縛り、生の文字列を渡す sink とポリシーを作るものを報告する', () => {
+    it('Trusted Types は Report-Only でだけ縛り、生の文字列を渡す sink と、例の文書の policy のほかのポリシーを作るものを報告する', () => {
       expect(directive(csp, 'require-trusted-types-for')).toBeUndefined();
       expect(directive(csp, 'trusted-types')).toBeUndefined();
       expect(
         directivesOf(production['Content-Security-Policy-Report-Only']),
       ).toStrictEqual([
         "require-trusted-types-for 'script'",
-        "trusted-types 'none'",
+        'trusted-types k8o-demo',
         'report-to csp-endpoint',
       ]);
     });
@@ -120,17 +121,28 @@ describe('DEMO_CONTENT_SECURITY_POLICY', () => {
         "style-src 'unsafe-inline'",
         "base-uri 'none'",
         "form-action 'none'",
-        "frame-ancestors 'self'",
+        "frame-ancestors 'none'",
       ]);
     });
   });
 
   describe('エッジケース', () => {
-    it('ページは自分のオリジンの例を iframe で読め、例は自分のオリジンのページにだけ埋め込まれる', () => {
-      expect(directive(csp, 'frame-src')).toContain("'self'");
-      expect(directive(DEMO_CONTENT_SECURITY_POLICY, 'frame-ancestors')).toBe(
-        "frame-ancestors 'self'",
-      );
+    it('記事は例の URL を iframe に埋め込まずに fetch で読むので、ページの connect-src が自分のオリジンを許す', () => {
+      expect(directive(csp, 'connect-src')).toContain("'self'");
+    });
+  });
+});
+
+describe('DEMO_META_CONTENT_SECURITY_POLICY', () => {
+  describe('正常系', () => {
+    it('例の URL の頭と同じ制限を持ち、meta では効かない frame-ancestors だけを外す', () => {
+      expect(directivesOf(DEMO_META_CONTENT_SECURITY_POLICY)).toStrictEqual([
+        "default-src 'none'",
+        "script-src 'unsafe-inline'",
+        "style-src 'unsafe-inline'",
+        "base-uri 'none'",
+        "form-action 'none'",
+      ]);
     });
   });
 });
@@ -140,7 +152,7 @@ describe('pagePolicy', () => {
 
   describe('正常系', () => {
     it('inline の script は、テーマのハッシュでだけ許し、外は GA のスクリプトだけを読む', () => {
-      expect(pagePolicy('production', themeHash)).toStrictEqual({
+      expect(pagePolicy('production', themeHash, [])).toStrictEqual({
         'script-src': [
           "'self'",
           "'sha256-theme'",
@@ -149,8 +161,25 @@ describe('pagePolicy', () => {
       });
     });
 
+    it('記事の動く例の文書の inline の script も、ハッシュで許す', () => {
+      expect(
+        pagePolicy('production', themeHash, [
+          "'sha256-bridge'",
+          "'sha256-demo'",
+        ]),
+      ).toStrictEqual({
+        'script-src': [
+          "'self'",
+          "'sha256-theme'",
+          "'sha256-bridge'",
+          "'sha256-demo'",
+          'https://www.googletagmanager.com',
+        ],
+      });
+    });
+
     it('preview は、Vercel が差し込む Toolbar のスクリプトも許す', () => {
-      expect(pagePolicy('preview', themeHash)).toStrictEqual({
+      expect(pagePolicy('preview', themeHash, [])).toStrictEqual({
         'script-src': [
           "'self'",
           "'sha256-theme'",

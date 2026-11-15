@@ -19,8 +19,9 @@ const demo = {
   script: "document.querySelector('.message').textContent = 'JS が書き換えた';",
 };
 
-// Storybook には例の route が無いので、同じ文書を data: の URL で読む
-const src = `data:text/html;charset=utf-8,${encodeURIComponent(buildDemoDocument(demo))}`;
+// Storybook には例の route が無いので、同じ文書を data: の URL から fetch する
+const demoDocument = buildDemoDocument(demo);
+const src = `data:text/html;charset=utf-8,${encodeURIComponent(demoDocument)}`;
 
 // rehype が出力する形に合わせ、data-label を持つ div で pre を包む
 const blocks = [
@@ -61,7 +62,11 @@ export const Primary = meta.story({
     await expect(canvas.getByText('結果')).toBeVisible();
     const frame = frameOf(canvasElement);
     await expect(frame).toHaveAttribute('sandbox', 'allow-scripts');
-    await expect(frame).toHaveAttribute('src', src);
+    await expect(frame).not.toHaveAttribute('src');
+    // 例の URL から読んだ文書を、origin を持たせずに srcdoc で描く
+    await waitFor(async () => {
+      await expect(frame).toHaveAttribute('srcdoc', demoDocument);
+    });
   },
 });
 
@@ -77,6 +82,9 @@ export const FitsHeightToDocument = meta.story({
 export const ReloadsOnReplay = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const before = frameOf(canvasElement);
+    await waitFor(async () => {
+      await expect(before).toHaveAttribute('srcdoc', demoDocument);
+    });
 
     await userEvent.click(
       within(canvasElement).getByRole('button', { name: 'やり直す' }),
@@ -86,5 +94,10 @@ export const ReloadsOnReplay = meta.story({
       await expect(frameOf(canvasElement)).not.toBe(before);
     });
     await expect(before).not.toBeInTheDocument();
+    // 作り直した iframe にも、読んだ文書を入れ直す
+    await expect(frameOf(canvasElement)).toHaveAttribute(
+      'srcdoc',
+      demoDocument,
+    );
   },
 });

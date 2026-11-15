@@ -16,3 +16,19 @@ interface WebGLRenderingContextBase {
   // oxlint-disable-next-line typescript/method-signature-style -- lib.domのメソッドにオーバーロードを足せるのは、メソッドの宣言をマージするときだけ
   getExtension(extensionName: 'EXT_texture_norm16'): EXT_texture_norm16 | null;
 }
+
+// TypeScript 7.0のDOM型定義にまだTrusted Typesのpolicyが無いため補う。TrustedHTMLは@types/reactが空のinterfaceで置く
+type TrustedTypePolicy = {
+  createHTML: (input: string) => TrustedHTML;
+};
+
+type TrustedTypePolicyFactory = {
+  createPolicy: (
+    policyName: string,
+    policyOptions: { createHTML: (input: string) => string },
+  ) => TrustedTypePolicy;
+};
+
+interface Window {
+  readonly trustedTypes: TrustedTypePolicyFactory;
+}

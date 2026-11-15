@@ -11,13 +11,16 @@ import mdx from '@mdx-js/rollup';
 import rehypePreset from '@repo/mdx-preset/rehype';
 import remarkPreset from '@repo/mdx-preset/remark';
 import { defineConfig, runnerImport } from 'vite';
+import type { UserConfigFnPromise } from 'vite';
 
+import type * as demoDocument from './src/features/blog/application/demo-document.ts';
 import type * as demos from './src/features/blog/application/demos.ts';
 import floor from './src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-script.ts';
-import { blogDemoScripts } from './src/site/blog-demo-scripts.ts';
+import { blogDemoScripts, demoBundler } from './src/site/blog-demo-scripts.ts';
 import type { TsxDemo } from './src/site/blog-demo-scripts.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
+import { inlineScriptHashes } from './src/site/inline-script-hashes.ts';
 import { pagePolicy, securityHeaders } from './src/site/security-headers.ts';
 import type { DeployTarget } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
@@ -37,44 +40,76 @@ const alias = {
 
 // 設定のバンドルは workspace の @repo/* を外に出し、Node がそのまま読むと拡張子の無い import で落ちるので、
 // 記事の例を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず alias を引き継がないので渡す
+const importWithAlias = async <T>(path: string): Promise<T> =>
+  (
+    await runnerImport<T>(fileURLToPath(new URL(path, import.meta.url)), {
+      resolve: { alias },
+    })
+  ).module;
+
 let demosModule: Promise<typeof demos> | undefined;
 
-const readDemosOf = async (
-  source: string,
-): Promise<ReturnType<typeof demos.readDemos>> => {
-  demosModule ??= runnerImport<typeof demos>(
-    fileURLToPath(
-      new URL('./src/features/blog/application/demos.ts', import.meta.url),
-    ),
-    { resolve: { alias } },
-  ).then(({ module }) => module);
-  return (await demosModule).readDemos(source);
+type ArticleDemo = {
+  slug: string;
+  demo: ReturnType<typeof demos.readDemos>[number];
 };
 
 // dev で記事を直したら束ね直すので、そのつど記事のファイルを読む
-const readTsxDemos = async (): Promise<TsxDemo[]> => {
+const readArticleDemos = async (): Promise<ArticleDemo[]> => {
+  demosModule ??= importWithAlias<typeof demos>(
+    './src/features/blog/application/demos.ts',
+  );
+  const { readDemos } = await demosModule;
   const blogDir = join(alias['@content'], 'blog');
   const perArticle = await Promise.all(
     readdirSync(blogDir)
       .filter((slug) => existsSync(join(blogDir, slug, 'article.mdx')))
       .map(async (slug) =>
-        (
-          await readDemosOf(
-            await readFile(join(blogDir, slug, 'article.mdx'), 'utf8'),
-          )
-        )
-          .filter(({ tsx }) => tsx !== '')
-          .map(({ name, tsx }) => ({ slug, name, tsx })),
+        readDemos(
+          await readFile(join(blogDir, slug, 'article.mdx'), 'utf8'),
+        ).map((demo) => ({ slug, demo })),
       ),
   );
   return perArticle.flat();
+};
+
+const readTsxDemos = async (): Promise<TsxDemo[]> =>
+  (await readArticleDemos())
+    .filter(({ demo }) => demo.tsx !== '')
+    .map(({ slug, demo }) => ({ slug, name: demo.name, tsx: demo.tsx }));
+
+const bundleTsxDemo = demoBundler({
+  root: import.meta.dirname,
+  target: targets.build,
+});
+
+// 記事の動く例の文書の inline の script を、どのページの <meta> の CSP でも許すハッシュ（pagePolicy）。
+// 文書は route.ts と同じ関数で組み立て、tsx は route.ts が読む JS と同じ束ねた結果を使う
+const readDemoScriptHashes = async (): Promise<string[]> => {
+  const { buildDemoDocument } = await importWithAlias<typeof demoDocument>(
+    './src/features/blog/application/demo-document.ts',
+  );
+  const documents = await Promise.all(
+    (await readArticleDemos()).map(async ({ slug, demo }) =>
+      buildDemoDocument({
+        name: demo.name,
+        html: demo.html,
+        css: demo.css,
+        script:
+          demo.tsx === ''
+            ? demo.js
+            : await bundleTsxDemo({ slug, name: demo.name, tsx: demo.tsx }),
+      }),
+    ),
+  );
+  return [...new Set(documents.flatMap(inlineScriptHashes))];
 };
 
 const colorSchemeHash = await colorSchemeScriptHash(
   COLOR_SCHEME_SCRIPT_OPTIONS,
 );
 
-export default defineConfig(({ command, isPreview }) => ({
+const config: UserConfigFnPromise = async ({ command, isPreview }) => ({
   resolve: { alias },
   // @repo/helpers は in-source のテストを持つ。置き換えないとテストの本体が client のバンドルに残る
   define: { 'import.meta.vitest': 'undefined' },
@@ -105,17 +140,19 @@ export default defineConfig(({ command, isPreview }) => ({
           ? 'development'
           : deployTarget,
       ),
-      csp: pagePolicy(deployTarget, colorSchemeHash),
+      // dev の HTML は <meta> の CSP を持たないので、例を束ねてハッシュを取るのはビルドのときだけ
+      csp: pagePolicy(
+        deployTarget,
+        colorSchemeHash,
+        command === 'build' ? await readDemoScriptHashes() : [],
+      ),
     }),
     vercel({
       beforeFiles: BEFORE_FILES,
       beforeNotFound: BEFORE_NOT_FOUND,
     }),
     betterCssModules(),
-    blogDemoScripts(readTsxDemos, {
-      root: import.meta.dirname,
-      target: targets.build,
-    }),
+    blogDemoScripts(readTsxDemos, bundleTsxDemo),
   ],
   css: {
     transformer: 'lightningcss',
@@ -126,4 +163,6 @@ export default defineConfig(({ command, isPreview }) => ({
     // CSP の font-src は 'self' だけなので、小さなフォントも data: URI に埋め込まずファイルで配る
     assetsInlineLimit: (file) => (file.endsWith('.woff2') ? false : undefined),
   },
-}));
+});
+
+export default defineConfig(config);

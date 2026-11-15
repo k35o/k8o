@@ -51,8 +51,11 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 - コードブロックのメタの `demo="<名前>"`（`@repo/code-highlight/demo`）が、隣り合う同じ名前の html・css・js・tsx のブロックを1つの例にする。記事では `@repo/code-highlight` がブロックを `code-demo` の要素で包み、`blogMdxComponents(slug)` が `components/blog/code-demo` の部品で描く。例の HTML は `routes/blog/[slug]/demos/[demo]/route.ts` が、記事の MDX の同じブロックから `features/blog/application/demos.ts` で読んで組み立てるので、見せるコードと動くコードは1つの書き方から出る
 - 例の URL は、`routes/blog/[slug]/demos/[demo]/paths.ts` が記事ごとに例の名前から作る。例を使う記事が1本も無いと、値の無い route としてビルドが止まる。名前の書き誤りと離れたブロックは `readDemos` が投げ、`article-files.test.ts` が落とす
-- 例の URL は、`framework()` の頭の CSP に代えて `DEMO_CONTENT_SECURITY_POLICY`（`site/security-headers.ts`）で返す。Vercel は `vercel-routes.ts` の規則が、`vite dev` は route.ts の応答の頭が書き換える（ビルドは応答をファイルにして頭を捨てる）。記事は `sandbox="allow-scripts"` の iframe で読むので、例は origin を持たず、記事の DOM・localStorage・cookie に触れない
-- tsx の例は、`vite.config.ts` の `blogDemoScripts`（`site/blog-demo-scripts.ts`）が、export default の部品を描く入口と本番版の React ごと 1 本の JS に束ね、`virtual:blog-demo-scripts` にする。例の iframe は origin を持たず、サイトの共有のファイルを module で読めないので、React も例ごとに文書の中に入れる。束ねた結果は tsx の中身ごとに覚え、dev では記事を保存すると束ね直す。import は `react` と `react-dom` だけを許す。route は tsx の例を描くときにだけ `features/blog/application/demo-scripts.ts` を読む（テストと Storybook はこのプラグインを持たない）
+- 記事は、結果の欄が画面に近づくと例の URL を fetch し、文書を `sandbox="allow-scripts"` の iframe の `srcdoc` に入れる（`code-demo-view.tsx`）。例は origin を持たず、記事の DOM・localStorage・cookie に触れない。iframe に URL を読ませないのは、allow-same-origin の無い sandbox の iframe のリクエストを止める閲覧環境（Claude Desktop のブラウザの欄）でも描くため。例は記事の JS が動いてから出て、JS が無いと出ない。やり直すときは iframe を作り直し、読んだ文書を入れ直す
+- 例の URL は、`framework()` の頭の CSP に代えて `DEMO_CONTENT_SECURITY_POLICY`（`site/security-headers.ts`）で返す。Vercel は `vercel-routes.ts` の規則が、`vite dev` は route.ts の応答の頭が書き換える（ビルドは応答をファイルにして頭を捨てる）。srcdoc の文書はこの頭を通らないので、例の文書は頭の初めに同じ制限の `<meta>`（`DEMO_META_CONTENT_SECURITY_POLICY`）を持つ
+- srcdoc の文書は記事の CSP（頭と `<meta>`）も引き継ぐ。記事の `<meta>` は inline の script をハッシュでだけ許すので、ビルドのときに `vite.config.ts` が全記事の例の文書を route.ts と同じ `buildDemoDocument` で組み立て、その inline の script のハッシュ（`site/inline-script-hashes.ts`）を `pagePolicy` で `<meta>` に足す。router はページを読み直さずに移り、最初に読んだページの `<meta>` が残るので、例の無いページにも同じハッシュを書く。dev の HTML は `<meta>` の CSP を持たないので、ハッシュの抜けは dev では分からず、本番ビルドで確かめる
+- srcdoc は Trusted Types の受け口なので、記事は文書を `shared/demo/demo-trusted-html.ts` の `k8o-demo` の policy で TrustedHTML にして渡す
+- tsx の例は、`vite.config.ts` の `blogDemoScripts`（`site/blog-demo-scripts.ts`）が、export default の部品を描く入口と本番版の React ごと 1 本の JS に束ね、`virtual:blog-demo-scripts` にする。例の iframe は origin を持たず、サイトの共有のファイルを module で読めないので、React も例ごとに文書の中に入れる。束ねた結果は `demoBundler` が tsx の中身ごとに覚え、ハッシュと route.ts の JS に同じ結果を使い、dev では記事を保存すると束ね直す。import は `react` と `react-dom` だけを許す。route は tsx の例を描くときにだけ `features/blog/application/demo-scripts.ts` を読む（テストと Storybook はこのプラグインを持たない）
 - 例の文書は、記事と postMessage で配色と高さをやりとりする（形は `shared/demo/demo-message.ts`、例の側の script は `demo-document.ts`）。Safari は iframe の `prefers-color-scheme` を記事の `color-scheme` に合わせないので、記事が手で選んだ配色を送る
 
 ## Playground
@@ -118,7 +121,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 - 頭の CSP の `script-src` は `'unsafe-inline'` のまま置き、inline の script は、`framework()` の `csp` が各ページの `<head>` に書くハッシュだけの `<meta>` の CSP（`pagePolicy`）で縛る（`security-headers.ts` の注釈）。script は頭と `<meta>` の両方が許すときだけ動く。テーマの script は渡した値を中身に持つので、ルートの layout の `ColorSchemeScript` と `vite.config.ts` の `colorSchemeScriptHash()` には同じ `COLOR_SCHEME_SCRIPT_OPTIONS`（`src/shared/site/color-scheme-script.ts`）を渡す。`<meta>` の CSP の違反はレポートに届かない
 - Vercel の Toolbar のための `https://vercel.live` は、preview のビルドの CSP（頭の `script-src`・`frame-src` と `<meta>` の `script-src`）にだけ入る。preview かどうかは、`.github/workflows/vercel-prebuilt.yml` の deploy の job が付ける `DEPLOY_TARGET`（push は production、ほかは preview）で決まる。`DEPLOY_TARGET` の無いビルドは production の形になる
 - `Cross-Origin-Opener-Policy: same-origin` を付け、ほかのオリジンの窓と閲覧の文脈を分ける。サイトの中で窓を開くのはスライドの発表者モードの `window.open` だけで、開く先は同じオリジンのデッキ
-- Trusted Types は Report-Only で観測している（`security-headers.ts` の注釈）。default ポリシーは作らない。作ると sink に渡した文字列がそこで変換され、違反として上がらなくなる。違反のレポートは、`effectiveDirective` が `require-trusted-types-for` で、`sample` に sink 名と値の先頭が入る
+- Trusted Types は Report-Only で観測している（`security-headers.ts` の注釈）。default ポリシーは作らない。作ると sink に渡した文字列がそこで変換され、違反として上がらなくなる。名前付きの policy は、記事の動く例の文書を srcdoc に入れる `k8o-demo` だけを作り、`trusted-types` にはこの名前だけを書く。違反のレポートは、`effectiveDirective` が `require-trusted-types-for` で、`sample` に sink 名と値の先頭が入る
 
 ## テストと Storybook
 
