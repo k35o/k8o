@@ -49,25 +49,7 @@ featureIds:
 
 `<math>`要素には、ブラウザの既定のスタイルで`font-family: math`が当たっています。どのブラウザでも、`<math>`の`font-family`の計算値は`math`です。
 
-<math display="block">
-  <mrow>
-    <msubsup>
-      <mo>∫</mo>
-      <mn>0</mn>
-      <mn>1</mn>
-    </msubsup>
-    <msup><mi>x</mi><mn>2</mn></msup>
-    <mi>dx</mi>
-  </mrow>
-  <mo>=</mo>
-  <mfrac>
-    <mn>1</mn>
-    <mn>3</mn>
-  </mfrac>
-</math>
-
-```html
-<!-- 上記の数式を表示するHTML -->
+```html demo="integral"
 <math display="block">
   <mrow>
     <msubsup>
@@ -86,7 +68,7 @@ featureIds:
 </math>
 ```
 
-上の`<math>`に`font-family: sans-serif`を当てると、MATHテーブルの無いフォントで組まれます。ChromeとSafariでは積分記号が大きくならず、式の高さが縮みます。Firefoxは積分記号を大きく描いたままで、数字と文字の形だけが変わります。
+この`<math>`に`font-family: sans-serif`を当てると、MATHテーブルの無いフォントで組まれます。ChromeとSafariでは積分記号が大きくならず、式の高さが縮みます。Firefoxは積分記号を大きく描いたままで、数字と文字の形だけが変わります。
 
 ## 使われるフォント
 
