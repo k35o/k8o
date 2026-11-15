@@ -177,21 +177,6 @@ console.log(JSON.isRawJSON({ rawJSON: '123' })); // false
 
 `JSON.stringify`を包むライブラリで、受け取った値をraw JSONオブジェクトとして扱うかを見分けるときに使います。
 
-## TypeScriptの型
-
-TypeScriptには、`lib`を`esnext`にしても、`JSON.rawJSON`と`JSON.isRawJSON`、reviverの`context`の型がありません。`JSON.rawJSON`は`Property 'rawJSON' does not exist on type 'JSON'`（TS2339）になり、3つの引数を取るreviverはTS2345になります。使うときは、グローバルの`.d.ts`に型を足します。`source`はプリミティブ値のときだけあるので省略可能にしてあり、`BigInt`に渡すときは`context.source!`と書きます。
-
-```ts title="json-source-text-access.d.ts"
-interface JSON {
-  parse(
-    text: string,
-    reviver: (this: any, key: string, value: any, context: { source?: string }) => any,
-  ): any;
-  rawJSON(text: string): { readonly rawJSON: string };
-  isRawJSON(value: unknown): boolean;
-}
-```
-
 ## おわりに
 
 読み取るときはreviverの`context.source`を、書き出すときは`JSON.rawJSON`を使うと、`Number.MAX_SAFE_INTEGER`を超える数値も元のテキストのまま扱えます。`BigInt`と組み合わせれば、レスポンスの形を変えたりライブラリを足したりせずに、64ビット整数のIDを丸めずに読み書きできます。
