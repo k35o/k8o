@@ -45,7 +45,7 @@ observer.observe({ type: 'largest-contentful-paint', buffered: true });
 
 <PlaygroundEmbed demo="LCP計測" headingLevel="h4" sectionId="largest-contentful-paint" />
 
-### 複数のEntry
+### LCPが確定するとき
 
 `PerformanceObserver`には複数の`entry`が届きます。ページの読み込みが進むにつれて、一番大きな要素が変わるからです。最初は小さなテキストが一番大きくても、後から大きな画像が読み込まれると、その画像の要素が新しい`entry`として届きます。
 
@@ -77,11 +77,15 @@ for (const type of ['keydown', 'pointerdown']) {
 
 そのため、SPAでリンクをクリックし、文書を読み込まずにページを移ったときも、移った先のページのLCPは届きません。`buffered: true`でobserveし直すと、届くのは文書を読み込んだページの`entry`です。
 
-## Largest Contentful Paint API
+## 対象の要素とプロパティ
 
-Largest Contentful Paint APIは、ビューポート内で一番大きなコンテンツ要素が描画されるまでの時間を、`LargestContentfulPaint`インターフェースで返します。
+LCPの候補になるのは、次の要素です。
 
-LCPの計測のためのAPIなので、`img`要素・`svg`内の`image`要素・`video`要素・`background-image`でスタイリングされた要素と、`p`要素などのテキスト要素が対象となります。
+- `img`要素
+- `svg`の中の`image`要素
+- `video`要素
+- `background-image`で画像を付けた要素
+- `p`要素などのテキストを含む要素
 
 ### PerformanceEntryから継承したプロパティ
 
@@ -89,7 +93,7 @@ LCPの計測のためのAPIなので、`img`要素・`svg`内の`image`要素・
 
 #### startTime
 
-後に紹介する`LargestContentfulPaint`独自のプロパティである`renderTime`または`loadTime`のいずれかの時刻を返します。`renderTime`が0でなければ`renderTime`を、0なら`loadTime`を返します。
+`renderTime`が0でなければ`renderTime`を、0なら`loadTime`を返します。
 
 #### entryType
 
@@ -97,40 +101,34 @@ LCPの計測のためのAPIなので、`img`要素・`svg`内の`image`要素・
 
 ### LargestContentfulPaint独自のプロパティ
 
-また、独自のプロパティとして`renderTime`・`loadTime`・`size`・`element`・`url`・`id`を持ちます。
+独自のプロパティは、次の6つです。
 
 #### renderTime
 
-要素が実際にレンダリングされた時間です。
+要素が描かれた時刻です。
 
-クロスオリジンの画像で`Timing-Allow-Origin`ヘッダーが無い場合、以前は`0`でしたが、今は少し粗くした時刻を返してよいことになっています。`Timing-Allow-Origin`を付けずに別のオリジンの画像を読むと、どのブラウザでも`0`ではなく描画の時刻が入ります。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
+`Timing-Allow-Origin`ヘッダーの無い別のオリジンの画像では、少し粗くした時刻が入ります。どのブラウザでも`0`にはなりません。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
 
 #### loadTime
 
-リソースの読み込みが完了した時間です。
-
-テキスト要素の場合は0になります。
+リソースの読み込みが終わった時刻です。テキストの要素では0になります。
 
 #### size
 
-要素のサイズをピクセル単位の面積で返します。
-
-この値は要素の可視領域のサイズであり、クリップされた部分やビューポート外の部分は含まれません。
+要素の見えている部分の面積を、平方ピクセルで返します。クリップされた部分や、ビューポートの外の部分は含みません。
 
 #### element
 
-LCPの候補になった要素を返します。
-
-要素がDOMから削除された場合や、Shadow DOM内にある場合は`null`を返します。どのブラウザでも、`entry`を受け取った後にその要素をDOMから消すと、`element`は`null`になります。Shadow DOMの中の画像は、ChromeとFirefoxでは`element`が`null`の`entry`として届き、Safariでは`entry`になりません。
+LCPの候補になった要素を返します。どのブラウザでも、`entry`を受け取った後にその要素をDOMから消すと、`element`は`null`になります。Shadow DOMの中の画像は、ChromeとFirefoxでは`element`が`null`の`entry`として届き、Safariでは`entry`になりません。
 
 #### url
 
-リソースを持つ場合、そのリソースのURLを返します。
+画像などのリソースを持つ要素では、そのURLを返します。
 
 #### id
 
-要素のid属性の値を返します。id属性がない場合は空文字列を返します。
+要素の`id`属性の値を返します。`id`属性が無ければ空文字列です。
 
 ## おわりに
 
-`LargestContentfulPaint`を使うと、ページを読み込んだときに一番大きな要素が描かれた時刻と、その要素をページのコードから受け取れます。候補が変わるたびに`entry`が届き、ユーザーの最初の操作で報告が止まるので、その時点で最後の`entry`をLCPとして扱います。
+`LargestContentfulPaint`を使うと、一番大きな要素が描かれた時刻とその要素を、ページのコードから受け取れます。候補が変わるたびに`entry`が届き、最初の操作で報告が止まるので、その時点で最後の`entry`をLCPとして扱います。
