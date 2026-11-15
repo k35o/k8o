@@ -7,7 +7,6 @@ featureIds:
   - atomics-wait-async
 ---
 
-
 # Atomics.waitAsyncでメインスレッドを止めずに待つ
 
 <BrowserSupportStatus featureId="atomics-wait-async"></BrowserSupportStatus>
@@ -41,18 +40,16 @@ onmessage = ({ data: int32 }) => {
 
 ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`main.js`を読み込むと、コンソールに`ok 42`が出ます。どのブラウザでも、待っているあいだもメインスレッドのタイマーは動き続けます。
 
-`Atomics`と`Atomics.pause`についての簡単な説明は[AtomicsでWorker間の共有メモリを安全に読み書きする](/blog/atomics-pause)をご覧ください。
+`Atomics`の基本と`Atomics.pause`は、[AtomicsでWorker間の共有メモリを安全に読み書きする](/blog/atomics-pause)で書いています。
 
-## Atomics.waitAsync
-`Atomics.waitAsync`は名前の通り、`Atomics.wait`の非同期バージョンです。
+## 引数と戻り値
 
-`waitAsync`は非同期に`notify`を待機するので、スレッドをブロックしません。そのため、メインスレッドでも利用できる利点を持ちます。
+`waitAsync`は4つの引数を取ります。
 
-`waitAsync`は、第1引数に`SharedArrayBuffer`を元にした`Int32Array`または`BigInt64Array`、第2引数にその配列内のインデックスを受け取ります。
-
-第3引数には、引数の配列とインデックスが指す位置に存在することを期待する値を渡します。
-
-最後に、任意の第4引数としてタイムアウト時間（ミリ秒）を指定できます。
+- 第1引数：`SharedArrayBuffer`を元にした`Int32Array`か`BigInt64Array`
+- 第2引数：その配列のインデックス
+- 第3引数：その位置にあると期待する値
+- 第4引数：タイムアウトのミリ秒。省略できる
 
 ```ts
 const sab = new SharedArrayBuffer(4);
@@ -61,20 +58,21 @@ const int32 = new Int32Array(sab);
 const result = Atomics.waitAsync(int32, 0, 0, 1000);
 ```
 
-非同期な処理を行うメソッドですが、戻り値は同期的で、`value`が`Promise`かどうかを示す`async`プロパティと、`waitAsync`の結果を表す`value`プロパティを持つオブジェクトを返します。
+戻り値は`Promise`ではなく、すぐに返るオブジェクトです。`async`は`value`が`Promise`かどうかを、`value`は待った結果を表します。
 
 戻り値の型は次のとおりです。TypeScriptでは、`lib`に`es2024`以降を含めると同じ形の型が付きます。
+
 ```ts
 type ReturnValue =
 	| { async: false; value: "not-equal" | "timed-out" }
 	| { async: true; value: Promise<"ok" | "timed-out"> };
 ```
 
-`{ async: false; value: "not-equal" }`が返される時は、引数の配列とインデックスが指す位置に存在する値が第3引数で渡した値と異なっていた場合です。Workerが値を書き換えてから呼ぶと、どのブラウザでも`{ async: false, value: 'not-equal' }`が返ります。冒頭の`main.js`で`waitAsync`を`postMessage`より先に呼んでいるのは、このためです。
+`{ async: false; value: "not-equal" }`は、その位置の値が第3引数と違っていたときに返ります。Workerが値を書き換えてから呼ぶと、どのブラウザでも`{ async: false, value: 'not-equal' }`が返ります。冒頭の`main.js`で`waitAsync`を`postMessage`より先に呼んでいるのは、このためです。
 
-`{ async: false; value: "timed-out" }`が返される時は、タイムアウトが0ミリ秒に指定されていた場合です。
+`{ async: false; value: "timed-out" }`は、タイムアウトに0ミリ秒を渡したときに返ります。
 
-`{ async: true; value: Promise<"ok" | "timed-out"> }`が通常返されるであろう値で、`notify`によって呼び出された場合に`"ok"`、`notify`が呼び出される前にタイムアウトした場合に`"timed-out"`を返す`value`が`Promise`に包まれて格納されています。
+ふだん返るのは`{ async: true; value: Promise<"ok" | "timed-out"> }`です。`value`の`Promise`は、`notify`で起こされると`"ok"`に、その前にタイムアウトすると`"timed-out"`になります。
 
 ```ts
 // [!og]
@@ -99,11 +97,11 @@ if (result.async) {
     });
 }
 ```
+
 共有していない配列を渡すなど引数が不正なときは、呼び出した時点で`TypeError`が投げられます。`value`の`Promise`が`reject`されることはありません。
 
 Node.jsでは、`waitAsync`の`Promise`だけが残るとプロセスが終わり、タイムアウトを100msにしても`then`は呼ばれません。Node.jsで使うときは、Workerのようにプロセスを動かし続けるものと組み合わせます。
 
 ## おわりに
-`Atomics`の新しいメソッド、`waitAsync`について解説しました。
 
-`Atomics.wait`が同期的に`notify`を待機するのに対して、`waitAsync`は非同期に`notify`を待機できるので、メインスレッドで共有メモリ上のデータを待機したい場合に便利です。Workerが先に書き換えたときは`not-equal`が同期的に返るので、`async`を確かめてから`value`を使います。
+`Atomics.waitAsync`はスレッドを止めずに`notify`を待つので、メインスレッドでもWorkerが共有メモリを書き換えるのを待てます。Workerが先に書き換えたときは`not-equal`がすぐに返るので、`async`を確かめてから`value`を使います。
