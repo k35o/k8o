@@ -18,16 +18,39 @@ featureIds:
 
 要素自身の文字に合わせるなら、`ch`や`ic`で足ります。入力欄の幅を中の数字10桁に合わせるなら`10ch`です。見出しのように文字サイズの違う要素の中では、`ch`や`ic`の値も変わります。本文の文字を基準に同じ長さにそろえたいときは、`r`の付いた単位を使います。
 
-```html
-<p style="font-size: 32px">
-  <span style="display: inline-block; width: 10ch; background: gold">10ch</span>
-</p>
-<p style="font-size: 32px">
-  <span style="display: inline-block; width: 10rch; background: skyblue">10rch</span>
-</p>
+```css demo="ch-rch"
+:root {
+  /* r の付いた単位は、ルートのフォントで測る */
+  font-family: system-ui, sans-serif;
+}
+
+p {
+  font-size: 32px;
+}
+
+span {
+  display: inline-block;
+  color: black;
+}
+
+.ch {
+  width: 10ch;
+  background: gold;
+}
+
+.rch {
+  /* [!hl] */
+  width: 10rch;
+  background: skyblue;
+}
 ```
 
-ブラウザで開くと、文字サイズが32pxの段落の中で、`10ch`の帯は32pxの数字10桁分に伸びます。`10rch`の帯はルートの文字サイズ（ブラウザの既定なら16px）の数字10桁分のままで、`10ch`の半分の長さです。
+```html demo="ch-rch"
+<p><span class="ch">10ch</span></p>
+<p><span class="rch">10rch</span></p>
+```
+
+文字サイズが32pxの段落の中で、`10ch`の帯は32pxの数字10桁分に伸びます。`10rch`の帯はルートの文字サイズ（ブラウザの既定なら16px）の数字10桁分のままで、`10ch`のおよそ半分の長さです。
 
 ## 要素のフォントで測るcap、ch、ex、ic
 
