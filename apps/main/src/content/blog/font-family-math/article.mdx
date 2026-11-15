@@ -7,8 +7,6 @@ featureIds:
   - font-family-math
 ---
 
-import '@repo/mdx-preset/katex.css';
-
 # font-family: mathで数式用のフォントを指定する
 
 <BrowserSupportStatus featureId="font-family-math"></BrowserSupportStatus>
@@ -17,7 +15,7 @@ import '@repo/mdx-preset/katex.css';
 
 `font-family: math`は、数式の描画に向いたフォントをブラウザに選ばせる一般フォントファミリーです。MathMLの`<math>`要素には既定でこれが当たり、OSに入っている数式用フォントで分数や添字が組まれます。Firefox 149が対応して、Baseline 2026に入りました。
 
-上付き文字（$x^2$）や下付き文字（$a_n$）、分数（$\frac{a}{b}$）、積分記号（$\int$）など、数学特有の表現には専用の字形が要ります。KaTeXやMathJaxで数式を描くなら、それぞれが自前のフォントを持つので、この指定は要りません。ブラウザがMathMLで描く式や、x²のようにUnicodeの記号で書いた式に数式用フォントを使うには、これまで`Cambria Math`や`STIX Two Math`のようにOSごとのフォント名を並べていました。`math`と書けば、その環境にある数式用フォントをブラウザが選びます。
+上付き文字（<math><msup><mi>x</mi><mn>2</mn></msup></math>）や下付き文字（<math><msub><mi>a</mi><mi>n</mi></msub></math>）、分数（<math><mfrac><mi>a</mi><mi>b</mi></mfrac></math>）、積分記号（<math><mo>∫</mo></math>）など、数学特有の表現には専用の字形が要ります。KaTeXやMathJaxで数式を描くなら、それぞれが自前のフォントを持つので、この指定は要りません。ブラウザがMathMLで描く式や、x²のようにUnicodeの記号で書いた式に数式用フォントを使うには、これまで`Cambria Math`や`STIX Two Math`のようにOSごとのフォント名を並べていました。`math`と書けば、その環境にある数式用フォントをブラウザが選びます。
 
 ## sans-serifとの見比べ
 
@@ -29,12 +27,12 @@ import '@repo/mdx-preset/katex.css';
 
 `math`に選ばれるのは、OpenTypeのMATHテーブルを持つフォントです。MATHテーブルには、次のような表現に要る字形や、添字をずらす量といった寸法が入っています。ブラウザはMathMLの数式を、この寸法を使って組みます。
 
-- 上付き文字と下付き文字：$x^2$や$a_n$などの指数や添字
-- 複数行にまたがる括弧：$$\left( \frac{a}{b} \right)$$
-- 数式の入れ子：$$\frac{\frac{a}{b}}{c}$$
-- Blackboard bold：$\mathbb{N}$、$\mathbb{Z}$、$\mathbb{R}$など
+- 上付き文字と下付き文字：<math><msup><mi>x</mi><mn>2</mn></msup></math>や<math><msub><mi>a</mi><mi>n</mi></msub></math>などの指数や添字
+- 複数行にまたがる括弧：<math display="block"><mrow><mo>(</mo><mfrac><mi>a</mi><mi>b</mi></mfrac><mo>)</mo></mrow></math>
+- 数式の入れ子：<math display="block"><mfrac><mfrac><mi>a</mi><mi>b</mi></mfrac><mi>c</mi></mfrac></math>
+- Blackboard bold：<math><mi>ℕ</mi></math>、<math><mi>ℤ</mi></math>、<math><mi>ℝ</mi></math>など
 
-この節の式は、KaTeXが自前のフォントで描いたものです。
+この節の式はMathMLで書いてあり、`<math>`に当たる`font-family: math`のフォントで描かれています。
 
 一般フォントファミリーは、特定のフォント名ではなく、フォントの種類を指定するキーワードです。`serif`（明朝体）や`sans-serif`（ゴシック体）、`monospace`（等幅）などがあり、`math`はその数式版です。
 
