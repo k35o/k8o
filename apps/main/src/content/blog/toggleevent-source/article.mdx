@@ -13,9 +13,9 @@ featureIds:
 
 ## はじめに
 
-`ToggleEvent.source`は、ポップオーバーや`<dialog>`を開閉したボタンを、`toggle`・`beforetoggle`イベントから読めるプロパティです。開いたか閉じたかに加えて、どのボタンで開閉したかが同じイベントで分かります。
+`ToggleEvent.source`は、ポップオーバーや`<dialog>`を開閉したボタンを、`toggle`・`beforetoggle`イベントから読めるプロパティです。開いたか閉じたかに加えて、どのボタンで開閉したかが同じイベントで分かります。Safari 26.5が対応して、Baseline 2026に入りました。
 
-ボタンが1つなら、そのボタンの`click`イベントで足ります。複数のボタンから1つのポップオーバーを開くUIでは、これまで各ボタンの`click`で押されたボタンを変数に覚え、ポップオーバーの側でそれを読むといった工夫が必要でした。Baseline 2026で揃った`source`なら、ポップオーバーの`toggle`イベントのリスナー1つで、押されたボタンが分かります。
+ボタンが1つなら、そのボタンの`click`イベントで足ります。複数のボタンから1つのポップオーバーを開くUIでは、これまで各ボタンの`click`で押されたボタンを変数に覚え、ポップオーバーの側でそれを読むといった工夫が必要でした。`source`なら、ポップオーバーの`toggle`イベントのリスナー1つで、押されたボタンが分かります。
 
 ```html
 <button popovertarget="menu" id="a">A</button>
@@ -42,7 +42,7 @@ Aを押すとコンソールに`open a`、もう一度Aを押すと`closed a`が
 - `commandfor` + `command="show-popover"` / `"hide-popover"` / `"toggle-popover"`が指定されたボタン
 - スクリプトから`showPopover({ source })` / `togglePopover({ source })`の`source`オプションで渡した要素
 
-ボタンの2つは、開く方向でも閉じる方向でも押したボタンが入ります。`<dialog>`も、`commandfor`と`command="show-modal"`・`"close"`のボタンで開閉すると、そのボタンが入りました。`<details>`の`toggle`イベントでは`null`です。`togglePopover({ source })`で閉じたときは、Chrome 156とFirefox 159では`null`、Safari 27.2では渡した要素が入りました。
+ボタンの2つは、開く方向でも閉じる方向でも押したボタンが入ります。`<dialog>`も、`commandfor`と`command="show-modal"`・`"close"`のボタンで開閉すると、そのボタンが入ります。`<details>`の`toggle`イベントでは`null`です。`togglePopover({ source })`で閉じたときは、ChromeとFirefoxでは`null`、Safariでは渡した要素が入ります。
 
 ### `source`が`null`になるケース
 
@@ -50,7 +50,7 @@ Aを押すとコンソールに`open a`、もう一度Aを押すと`closed a`が
 
 - `hidePopover()`をスクリプトから呼ぶ（`hidePopover`は`source`オプションを取らない）
 - `showPopover()` / `togglePopover()`を`source`オプションを取らずに呼ぶ
-- ESCキーや外側クリックによるlight-dismissで閉じる（Chrome 156で、外側のクリックとESCキーで閉じたときに`null`でした）
+- ESCキーや外側クリックによるlight-dismissで閉じる（どのブラウザでも、外側のクリックとESCキーで閉じたときは`null`です）
 
 ユーザー操作起点の発火と区別できるので、リスナー側で分岐させる材料にも使えます。
 
@@ -95,10 +95,10 @@ popover.addEventListener('toggle', (event) => {
 
 aliceのボタンを押すと、ポップオーバーにaliceの詳細と出ます。ボタンごとに個別のリスナーを張ったり、最後に押されたボタンを別途状態として持ち回したりする必要がなくなり、ポップオーバー側の1か所で発火元を判定できるのが`event.source`の効きどころです。
 
-ただし、`popovertarget`の既定の動き（`toggle`）では、ポップオーバーを開いたまま別のメンバーの詳細を押すと、切り替わらずに閉じます。Chrome 156、Safari 27.2、Firefox 159のどれでも、そのときの`toggle`イベントは`newState`が`closed`で、`source`は後から押したボタンでした。`popovertargetaction="show"`にすると、開いているあいだは押しても何も起きず、イベントも届きません。デモでは、ボタンの`click`で`hidePopover()`と`showPopover({ source })`を続けて呼び、開いたまま中身を切り替えています。このとき`beforetoggle`は閉じる向きと開く向きの2回届き、`toggle`は`oldState`も`newState`も`open`の1回にまとまりました。
+ただし、`popovertarget`の既定の動き（`toggle`）では、ポップオーバーを開いたまま別のメンバーの詳細を押すと、切り替わらずに閉じます。どのブラウザでも、そのときの`toggle`イベントは`newState`が`closed`で、`source`は後から押したボタンです。`popovertargetaction="show"`にすると、開いているあいだは押しても何も起きず、イベントも届きません。デモでは、ボタンの`click`で`hidePopover()`と`showPopover({ source })`を続けて呼び、開いたまま中身を切り替えています。このとき`beforetoggle`は閉じる向きと開く向きの2回届き、`toggle`は`oldState`も`newState`も`open`の1回にまとまります。
 
-Reactの`onToggle`で受け取る合成イベントにも、React 19.3.1では実行時に`source`が入っていました。ただし@types/react 19.3.0の型には`source`が無いので、TypeScriptでは`event.nativeEvent.source`から読みます。デモもこの書き方です。
+Reactの`onToggle`で受け取る合成イベントにも、実行時には`source`が入ります。ただし@types/reactの型には`source`が無いので、TypeScriptでは`event.nativeEvent.source`から読みます。デモもこの書き方です。
 
 ## おわりに
 
-`ToggleEvent.source`はやっていることは小さいですが、複数トリガーが1つのポップオーバーを共有するUIでは効きの大きい機能です。Baseline 2026で揃ったことで、ボタンごとにリスナーを分けたり、開いたボタンをグローバルに記録したりといった回避策が一段整理できます。Popover APIや`commandfor`を組み合わせた宣言的なUIと相性がよく、合わせて使うときに覚えておきたい一手です。開いたまま別のボタンで中身を切り替えるときは、`hidePopover()`と`showPopover({ source })`を続けて呼びます。
+`ToggleEvent.source`はやっていることは小さいですが、複数トリガーが1つのポップオーバーを共有するUIでは効きの大きい機能です。ボタンごとにリスナーを分けたり、開いたボタンをグローバルに記録したりといった回避策が一段整理できます。Popover APIや`commandfor`を組み合わせた宣言的なUIと相性がよく、合わせて使うときに覚えておきたい一手です。開いたまま別のボタンで中身を切り替えるときは、`hidePopover()`と`showPopover({ source })`を続けて呼びます。
