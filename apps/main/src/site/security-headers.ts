@@ -61,6 +61,18 @@ export const securityHeaders = (
   };
 };
 
+// 記事の動く例（/blog/:slug/demos/:demo）の文書の CSP。ページの CSP に代えて付ける。例は記事の
+// iframe が sandbox で origin を持たせずに読むので、記事のページにだけ埋め込ませ、例の inline の
+// script と style を動かす。外へは何も読みに行かない
+export const DEMO_CONTENT_SECURITY_POLICY = toHeaderValue([
+  "default-src 'none'",
+  "script-src 'unsafe-inline'",
+  "style-src 'unsafe-inline'",
+  "base-uri 'none'",
+  "form-action 'none'",
+  "frame-ancestors 'self'",
+]);
+
 // framework() が書き出す各ページの <meta> の CSP。framework は payload と React の inline の script の
 // ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュだけを渡す
 export const pagePolicy = (

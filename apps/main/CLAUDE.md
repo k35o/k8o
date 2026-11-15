@@ -42,10 +42,18 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 ## 記事の MDX
 
 - MDX は `vite.config.ts` の `@mdx-js/rollup`（`enforce: 'pre'`）が JSX にする。remark・rehype は `@repo/mdx-preset` の preset
-- 記事のページ（`routes/blog/[slug]/page.tsx`）は、`components/blog/blog-article` が `import.meta.glob` で集めた MDX を slug ごとに遅れて読み、`components/site/mdx-base` の `MdxContent` で描く。`MdxContent` は mdx-base の部品（見出し・コードブロックなど）に、渡された部品（記事は `components/blog/blog-mdx-components` の `blogMdxComponents`。BrowserSupportStatus・PlaygroundEmbed・Playground・LinkCard・Image・FloatImage・Alert）を重ねる
+- 記事のページ（`routes/blog/[slug]/page.tsx`）は、`components/blog/blog-article` が `import.meta.glob` で集めた MDX を slug ごとに遅れて読み、`components/site/mdx-base` の `MdxContent` で描く。`MdxContent` は mdx-base の部品（見出し・コードブロックなど）に、渡された部品（記事は `components/blog/blog-mdx-components` の `blogMdxComponents(slug)`。BrowserSupportStatus・PlaygroundEmbed・Playground・LinkCard・Image・FloatImage・Alert と、動く例の code-demo）を重ねる
 - plugin-rsc が import した CSS を載せる包みを付けるのは、CSS を静的に import する `.tsx` などのモジュールが export する、大文字で始まる関数の部品だけ。包んだ部品が、自分の import の木（build ではそれが入るチャンク）の CSS を載せる。だから、MDX を描く部品と、それが読む CSS（mdx-base の CSS Modules とコードハイライトの `@repo/code-highlight/styles.css`）は mdx-base に置く。部品の表だけを export して呼ぶ側で描くと、dev のページにその CSS が載らない
 - `.mdx` が import した CSS（記事の KaTeX の CSS と CSS Modules）は、framework がそのファイルを描くページに載せる。glob にクエリは要らない
 - ページの切り替えでは、移る先が `<ViewTransition>`（コードのタブ）を含んでいても、文書の view transition は始まらない。始まるのは、ページの中でタブを切り替えたとき
+
+## 記事の動く例
+
+- コードブロックのメタの `demo="<名前>"`（`@repo/code-highlight/demo`）が、隣り合う同じ名前の html・css・js・tsx のブロックを1つの例にする。記事では `@repo/code-highlight` がブロックを `code-demo` の要素で包み、`blogMdxComponents(slug)` が `components/blog/code-demo` の部品で描く。例の HTML は `routes/blog/[slug]/demos/[demo]/route.ts` が、記事の MDX の同じブロックから `features/blog/application/demos.ts` で読んで組み立てるので、見せるコードと動くコードは1つの書き方から出る
+- 例の URL は、`routes/blog/[slug]/demos/[demo]/paths.ts` が記事ごとに例の名前から作る。例を使う記事が1本も無いと、値の無い route としてビルドが止まる。名前の書き誤りと離れたブロックは `readDemos` が投げ、`article-files.test.ts` が落とす
+- 例の URL は、`framework()` の頭の CSP に代えて `DEMO_CONTENT_SECURITY_POLICY`（`site/security-headers.ts`）で返す。Vercel は `vercel-routes.ts` の規則が、`vite dev` は route.ts の応答の頭が書き換える（ビルドは応答をファイルにして頭を捨てる）。記事は `sandbox="allow-scripts"` の iframe で読むので、例は origin を持たず、記事の DOM・localStorage・cookie に触れない
+- tsx の例は、`vite.config.ts` の `blogDemoScripts`（`site/blog-demo-scripts.ts`）が、export default の部品を描く入口と本番版の React ごと 1 本の JS に束ね、`virtual:blog-demo-scripts` にする。例の iframe は origin を持たず、サイトの共有のファイルを module で読めないので、React も例ごとに文書の中に入れる。束ねた結果は tsx の中身ごとに覚え、dev では記事を保存すると束ね直す。import は `react` と `react-dom` だけを許す。route は tsx の例を描くときにだけ `features/blog/application/demo-scripts.ts` を読む（テストと Storybook はこのプラグインを持たない）
+- 例の文書は、記事と postMessage で配色と高さをやりとりする（形は `shared/demo/demo-message.ts`、例の側の script は `demo-document.ts`）。Safari は iframe の `prefers-color-scheme` を記事の `color-scheme` に合わせないので、記事が手で選んだ配色を送る
 
 ## Playground
 

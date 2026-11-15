@@ -1,6 +1,7 @@
 import type { ShikiTransformer } from '@shikijs/types';
 import type { Element, ElementContent } from 'hast';
 
+import { parseDemoName } from './demo.ts';
 import { parseAnnotations } from './parser.ts';
 import type { Annotation } from './parser.ts';
 
@@ -101,6 +102,7 @@ export const annotateTransformer = (): ShikiTransformer => ({
     if (filename !== undefined) {
       node.properties['data-filename'] = filename;
     }
+    const demo = parseDemoName(this.options.meta?.__raw);
     // og は目印だけで描画に影響しないため、gutter の要否には数えない
     const state = (this.meta as AnnotateMeta).codeAnnotate;
     const hasVisibleAnnotation = (state?.annotations ?? []).some((line) =>
@@ -114,6 +116,7 @@ export const annotateTransformer = (): ShikiTransformer => ({
         class: 'code-annotate-block',
         ...(label === undefined ? {} : { 'data-label': label }),
         ...(hasVisibleAnnotation ? { 'data-annotated': '' } : {}),
+        ...(demo === undefined ? {} : { 'data-demo': demo }),
       },
       children: [node],
     };

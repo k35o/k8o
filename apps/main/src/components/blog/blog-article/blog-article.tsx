@@ -24,5 +24,5 @@ export const BlogArticle: FC<{ slug: string }> = async ({ slug }) => {
     notFound();
   }
   const Article = await load();
-  return <MdxContent Content={Article} components={blogMdxComponents} />;
+  return <MdxContent Content={Article} components={blogMdxComponents(slug)} />;
 };

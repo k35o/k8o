@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import { articleMarkdownHref } from '@/components/blog/blog-layout/article-markdown-href';
 
-import { securityHeaders } from './security-headers';
+import {
+  DEMO_CONTENT_SECURITY_POLICY,
+  securityHeaders,
+} from './security-headers';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './vercel-routes';
 
 const sources = [...BEFORE_FILES, ...BEFORE_NOT_FOUND].map(({ src }) => src);
@@ -134,6 +137,15 @@ describe('vercel() の規則', () => {
       );
       expect(headersOf('/reading-list')['Content-Security-Policy']).toContain(
         "script-src 'self'",
+      );
+    });
+
+    it('記事の動く例は、ページの CSP に代えて例の CSP で返す', () => {
+      expect(
+        headersOf('/blog/abs-sign/demos/dots')['Content-Security-Policy'],
+      ).toBe(DEMO_CONTENT_SECURITY_POLICY);
+      expect(headersOf('/blog/abs-sign')['Content-Security-Policy']).toContain(
+        "frame-ancestors 'none'",
       );
     });
 
