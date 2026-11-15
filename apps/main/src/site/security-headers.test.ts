@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   DEMO_CONTENT_SECURITY_POLICY,
+  DEMO_META_CONTENT_SECURITY_POLICY,
   pagePolicy,
   securityHeaders,
 } from './security-headers';
@@ -131,6 +132,20 @@ describe('DEMO_CONTENT_SECURITY_POLICY', () => {
       expect(directive(DEMO_CONTENT_SECURITY_POLICY, 'frame-ancestors')).toBe(
         "frame-ancestors 'self'",
       );
+    });
+  });
+});
+
+describe('DEMO_META_CONTENT_SECURITY_POLICY', () => {
+  describe('正常系', () => {
+    it('例の URL の頭と同じ制限を持ち、meta では効かない frame-ancestors だけを外す', () => {
+      expect(directivesOf(DEMO_META_CONTENT_SECURITY_POLICY)).toStrictEqual([
+        "default-src 'none'",
+        "script-src 'unsafe-inline'",
+        "style-src 'unsafe-inline'",
+        "base-uri 'none'",
+        "form-action 'none'",
+      ]);
     });
   });
 });

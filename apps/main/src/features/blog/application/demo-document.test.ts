@@ -25,6 +25,14 @@ describe('buildDemoDocument', () => {
       );
     });
 
+    it('srcdoc に入れても例の URL と同じ制限が効くよう、頭の初めに CSP の meta を置く', () => {
+      const document = buildDemoDocument(demo);
+      const meta = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none';">`;
+
+      expect(document).toContain(`<head>\n<meta charset="utf-8">\n${meta}\n`);
+      expect(document.indexOf(meta)).toBeLessThan(document.indexOf('<style'));
+    });
+
     it('検索に拾わせない', () => {
       expect(buildDemoDocument(demo)).toContain(
         '<meta name="robots" content="noindex">',
