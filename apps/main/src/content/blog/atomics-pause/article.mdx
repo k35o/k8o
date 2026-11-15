@@ -35,9 +35,9 @@ if (isMainThread) {
 }
 ```
 
-Node.js 26.13.0で動かすと、`Atomics.add`で足した`int32[1]`は必ず2000000になり、`++`で足した`int32[0]`は1544495や1816934のように毎回足りなくなりました。同じことをブラウザのWorkerで試しても、Chrome 156、Safari 27.2、Firefox 159のどれでも`++`の方はどの回も2000000に届きませんでした。
+Node.jsで動かすと、`Atomics.add`で足した`int32[1]`は必ず2000000になり、`++`で足した`int32[0]`は1544495や1816934のように毎回足りなくなりました。同じことをブラウザのWorkerで試しても、どのブラウザでも`++`の方は2000000に届きません。
 
-ブラウザで`SharedArrayBuffer`を使うには、ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`crossOriginIsolated`を`true`にします。ヘッダーの無いページでは、3つのブラウザのどれでも`SharedArrayBuffer`自体が定義されていませんでした。
+ブラウザで`SharedArrayBuffer`を使うには、ページを`Cross-Origin-Opener-Policy: same-origin`と`Cross-Origin-Embedder-Policy: require-corp`のヘッダーで返し、`crossOriginIsolated`を`true`にします。ヘッダーの無いページでは、どのブラウザでも`SharedArrayBuffer`自体が定義されていません。
 
 ```js
 // 4バイトのSharedArrayBufferを作成
@@ -133,7 +133,7 @@ console.log(Atomics.load(int32, 0)); // 2
 `wait`は`SharedArrayBuffer`を元にした`Int32Array`または`BigInt64Array`でのみ利用でき、共有していない配列を渡すと`TypeError`になります。`notify`は共有していない配列にも呼べますが、待機しているスレッドが無いので常に0を返します。
 
 `wait`は指定したインデックスの値が指定した値と一致する場合`notify`からの通知があるまで待機します。
-待機中、スレッドはブロックされます。そのため、メインスレッドから呼び出すことは許可されていません。ブラウザのメインスレッドで呼ぶと、Chrome 156、Safari 27.2、Firefox 159のどれでも`TypeError`になりました。Node.jsのメインスレッドでは呼べます（Node.js 26.13.0で確認）。
+待機中、スレッドはブロックされます。そのため、メインスレッドから呼び出すことは許可されていません。ブラウザのメインスレッドで呼ぶと、どのブラウザでも`TypeError`になります。Node.jsのメインスレッドでは呼べます。
 
 ```js
 // notifyから通知が来るまで待機する
@@ -170,7 +170,7 @@ console.log(agent); // 1
 
 <BrowserSupportStatus featureId="atomics-pause"></BrowserSupportStatus>
 
-`Atomics.pause`はBaseline 2025で追加された、マイクロウェイト（非常に短い待機）を実現するための新しい静的メソッドです。
+`Atomics.pause`は、マイクロウェイト（非常に短い待機）を実現するための新しい静的メソッドです。Firefox 137が対応して、Baseline 2025に入りました。
 このメソッドはスピンロックやビジーウェイトのループ内で使用され、CPUに対してスピン中であるというヒントを与えて、リソースの消費を最適化します。
 
 ロックが空くまでループを回して待つのがスピンロックです。次の`lock`は、`compareExchange`で0を1に替えられたらロックを取れたことにし、取れなかった回は`Atomics.pause`を呼んでから試し直します。
@@ -190,15 +190,15 @@ function unlock(int32) {
 
 `Atomics.pause`を呼ばずにループを回し続けると、ロックが解放されるまでCPUをフル稼働させるので、他のプロセスやスレッドに悪影響を及ぼす可能性があります。`Atomics.pause`は、CPUに対して今スピン中であるというヒントを与え、ループの1回ごとに短く待ちます。
 
-4つのWorkerがこのロックを100万回ずつ取り合い、ロックの中で`int32[1]++`をすると、どのブラウザでも結果は4000000になりました。Chrome 156では`Atomics.pause`を入れると約160ms、外すと約200msで終わり、Node.js 26.13.0でも約120〜150msと約180〜220msでした（Apple M4のMac）。Safari 27.2とFirefox 159は回ごとのばらつきが大きく、どちらが速いとは言えませんでした。
+4つのWorkerがこのロックを100万回ずつ取り合い、ロックの中で`int32[1]++`をすると、どのブラウザでも結果は4000000になりました。Chromeでは`Atomics.pause`を入れると約160ms、外すと約200msで終わり、Node.jsでも約120〜150msと約180〜220msでした（Apple M4のMac）。SafariとFirefoxは回ごとのばらつきが大きく、どちらが速いとは言えませんでした。
 
 `Atomics.pause`には任意引数があり、待機時間についてのヒントを整数で渡します（ヒントが利用されることは保証されていません）。利用された場合は、与えられた値より小さい値を渡された時の待機時間以上は待つように働きます。
 [Intelの最適化マニュアル](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html)ではループにおいてこれを使ったBackoff戦略を利用することが推奨されています。
 
-上の`lock`では、試した回数を渡しています。手元で100万回呼んだ時間は引数が0でも1000でも変わらず、Chrome 156で約17ms、Safari 27.2で約10ms、Firefox 159で約11msでした。3つのブラウザとも、引数による違いは見えませんでした。`1.5`や文字列の`'1'`を渡すと、どれも`TypeError`になります。
+上の`lock`では、試した回数を渡しています。手元で100万回呼んだ時間は引数が0でも1000でも変わらず、Chromeで約17ms、Safariで約10ms、Firefoxで約11msでした。どのブラウザでも、引数による違いは見えませんでした。`1.5`や文字列の`'1'`を渡すと、どれも`TypeError`になります。
 
 ## おわりに
 
-共有メモリの安全な操作方法として、`Atomics`の静的メソッドの基本的な使い方から、Baseline 2025で使えるようになった`Atomics.pause`の活用までを解説しました。
+共有メモリの安全な操作方法として、`Atomics`の静的メソッドの基本的な使い方から、`Atomics.pause`の活用までを解説しました。
 
-`Atomics`を適切に利用することで、マルチスレッド環境におけるデータの整合性を保ちつつ、効率的な同期処理が可能になります。`Atomics.pause`は、スピンロックのループで呼ぶだけでCPUにスピン中であることを伝えられ、手元のChrome 156ではロックの取り合いが速く終わりました。
+`Atomics`を適切に利用することで、マルチスレッド環境におけるデータの整合性を保ちつつ、効率的な同期処理が可能になります。`Atomics.pause`は、スピンロックのループで呼ぶだけでCPUにスピン中であることを伝えられ、手元のChromeではロックの取り合いが速く終わりました。
