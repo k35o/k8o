@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`LargestContentfulPaint`（Largest Contentful Paint API）は、ページを開いてから、画面に見えている中で一番大きな画像やテキストのブロックが描かれた時刻と、その要素を返すAPIです。Core Web VitalsのLCP（Largest Contentful Paint）は、この時刻を読み込みの速さの指標にしたものです。
+`LargestContentfulPaint`（Largest Contentful Paint API）は、ページを開いてから、画面に見えている中で一番大きな画像やテキストのブロックが描かれた時刻と、その要素を返すAPIです。Core Web VitalsのLCP（Largest Contentful Paint）は、この時刻を読み込みの速さの指標にしたものです。Safari 26.2が対応して、Baseline 2025に入りました。
 
 手元で一度測るだけなら、Chrome DevToolsのPerformanceパネルやLighthouseで足ります。実際のユーザーの環境でLCPを集めたいときや、どの要素がLCPになったかをページのコードから調べたいときに、このAPIを使います。
 
@@ -73,7 +73,7 @@ for (const type of ['keydown', 'pointerdown']) {
 }
 ```
 
-ここでは、ユーザーの最初のクリックやキー入力でLCPを確定しています。ブラウザも、最初の操作の後は新しい`entry`を報告しません。Chrome 156とFirefox 159で、ボタンをクリックした後にもっと大きな画像を足しても、`entry`は届きませんでした。
+ここでは、ユーザーの最初のクリックやキー入力でLCPを確定しています。ブラウザも、最初の操作の後は新しい`entry`を報告しません。どのブラウザでも、ボタンをクリックした後にもっと大きな要素を足しても、`entry`は届きません。
 
 そのため、SPAでリンクをクリックし、文書を読み込まずにページを移ったときも、移った先のページのLCPは届きません。`buffered: true`でobserveし直すと、届くのは文書を読み込んだページの`entry`です。
 
@@ -103,7 +103,7 @@ LCPの計測のためのAPIなので、`img`要素・`svg`内の`image`要素・
 
 要素が実際にレンダリングされた時間です。
 
-クロスオリジンの画像で`Timing-Allow-Origin`ヘッダーが無い場合、以前は`0`でしたが、今は少し粗くした時刻を返してよいことになっています。Chrome 156、Safari 27.2、Firefox 159で`Timing-Allow-Origin`を付けずに別のオリジンの画像を読むと、どれも`0`ではなく描画の時刻が入りました。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
+クロスオリジンの画像で`Timing-Allow-Origin`ヘッダーが無い場合、以前は`0`でしたが、今は少し粗くした時刻を返してよいことになっています。`Timing-Allow-Origin`を付けずに別のオリジンの画像を読むと、どのブラウザでも`0`ではなく描画の時刻が入ります。正確な時刻が要るときは、画像を返すサーバーで`Timing-Allow-Origin`を付けます。
 
 #### loadTime
 
@@ -121,7 +121,7 @@ LCPの計測のためのAPIなので、`img`要素・`svg`内の`image`要素・
 
 LCPの候補になった要素を返します。
 
-要素がDOMから削除された場合や、Shadow DOM内にある場合は`null`を返します。Chrome 156、Safari 27.2、Firefox 159で、`entry`を受け取った後にその要素をDOMから消すと、`element`は`null`になりました。Shadow DOMの中の画像は、Chrome 156とFirefox 159では`element`が`null`の`entry`として届き、Safari 27.2では`entry`になりませんでした。
+要素がDOMから削除された場合や、Shadow DOM内にある場合は`null`を返します。どのブラウザでも、`entry`を受け取った後にその要素をDOMから消すと、`element`は`null`になります。Shadow DOMの中の画像は、ChromeとFirefoxでは`element`が`null`の`entry`として届き、Safariでは`entry`になりません。
 
 #### url
 
@@ -134,5 +134,3 @@ LCPの候補になった要素を返します。
 ## おわりに
 
 `LargestContentfulPaint`を使うと、ページを読み込んだときに一番大きな要素が描かれた時刻と、その要素をページのコードから受け取れます。候補が変わるたびに`entry`が届き、ユーザーの最初の操作で報告が止まるので、その時点で最後の`entry`をLCPとして扱います。
-
-Baseline 2025で主要なブラウザに揃ったので、実際のユーザーの環境でLCPを集め、どの要素が遅いかを調べる用途に使えます。
