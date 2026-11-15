@@ -23,36 +23,36 @@ View Transition APIそのものは、[View Transition APIの記事](/blog/view-t
 
 進むと戻るのボタンで、新しい画面が入ってくる向きを変える例です。
 
-```html
+```css demo="direction"
+@keyframes from-right { from { translate: 100% 0; } }
+@keyframes from-left { from { translate: -100% 0; } }
+
+html:active-view-transition-type(forwards)::view-transition-new(root) {
+  animation: from-right 0.4s;
+}
+html:active-view-transition-type(backwards)::view-transition-new(root) {
+  animation: from-left 0.4s;
+}
+```
+
+```html demo="direction"
 <p id="page">1</p>
 <button id="prev">戻る</button>
 <button id="next">進む</button>
+```
 
-<style>
-  @keyframes from-right { from { translate: 100% 0; } }
-  @keyframes from-left { from { translate: -100% 0; } }
-
-  html:active-view-transition-type(forwards)::view-transition-new(root) {
-    animation: from-right 0.4s;
-  }
-  html:active-view-transition-type(backwards)::view-transition-new(root) {
-    animation: from-left 0.4s;
-  }
-</style>
-
-<script>
-  const page = document.querySelector('#page');
-  const go = (type, diff) => {
-    document.startViewTransition({
-      update: () => {
-        page.textContent = Number(page.textContent) + diff;
-      },
-      types: [type],
-    });
-  };
-  document.querySelector('#next').addEventListener('click', () => go('forwards', 1));
-  document.querySelector('#prev').addEventListener('click', () => go('backwards', -1));
-</script>
+```js demo="direction"
+const page = document.querySelector('#page');
+const go = (type, diff) => {
+  document.startViewTransition({
+    update: () => {
+      page.textContent = Number(page.textContent) + diff;
+    },
+    types: [type],
+  });
+};
+document.querySelector('#next').addEventListener('click', () => go('forwards', 1));
+document.querySelector('#prev').addEventListener('click', () => go('backwards', -1));
 ```
 
 進むを押すと、数字の増えた新しい画面が右から滑り込みます。戻るを押すと、数字の減った画面が左から入ってきます。どのブラウザでも、進むと`::view-transition-new(root)`に`from-right`が、戻ると`from-left`が当たります。
