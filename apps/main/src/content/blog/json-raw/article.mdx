@@ -11,7 +11,7 @@ featureIds:
 
 <BrowserSupportStatus featureId="json-raw" />
 
-`JSON.rawJSON`は、渡したテキストを`JSON.stringify`の出力にそのまま埋め込む値を作るメソッドです。`JSON.parse`のreviverに渡る`context.source`と合わせてJSON source text accessと呼ばれ、JSONのテキストとJavaScriptの値を行き来するときに丸められる数値を、元のテキストのまま扱えます。
+`JSON.rawJSON`は、渡したテキストを`JSON.stringify`の出力にそのまま埋め込む値を作るメソッドです。`JSON.parse`のreviverに渡る`context.source`と合わせてJSON source text accessと呼ばれ、JSONのテキストとJavaScriptの値を行き来するときに丸められる数値を、元のテキストのまま扱えます。Safari 18.4が対応して、Baseline 2025に入りました。
 
 扱う整数が`Number.MAX_SAFE_INTEGER`以下なら、これまでの`JSON.parse`と`JSON.stringify`で足ります。それを超える64ビット整数のIDを、1桁も変えずに`BigInt`で読み書きするときに、この機能が要ります。
 
@@ -103,7 +103,7 @@ JSON.parse('{"a": 1, "b": [2, 3]}', (key, value, context) => {
 
 配列`[2, 3]`の各要素にはそれぞれの`source`が渡される一方、配列そのものである`b`と、最後に呼ばれるルートのオブジェクト（`key`は空文字列）では`context`が空になっています。
 
-`source`には、値を書いたときのテキストが崩れずに入ります。Chrome 156、Safari 27.2、Firefox 159のどれでも、`1.0`や`1e2`は書いたとおりの文字列になり、文字列は前後のダブルクォートとエスケープを含んだままでした。
+`source`には、値を書いたときのテキストが崩れずに入ります。`1.0`や`1e2`は書いたとおりの文字列になり、文字列は前後のダブルクォートとエスケープを含んだままです。
 
 ```js
 JSON.parse('{"a": 1.0, "b": 1e2, "c": "\\u0041"}', (key, value, context) => {
@@ -130,7 +130,7 @@ console.log(JSON.stringify({ balance: raw }));
 値がJavaScriptの数値を一度も経由しないので、丸めが起きる場所がありません。
 
 `JSON.rawJSON`が返すのは、数値そのものではなく専用のオブジェクトです。
-上の`raw`をNode.js 26.13.0で表示すると、渡したテキストを保持する`rawJSON`プロパティだけを持っていることがわかります。
+上の`raw`をNode.jsで表示すると、渡したテキストを保持する`rawJSON`プロパティだけを持っていることがわかります。
 
 ```js
 console.log(raw); // [Object: null prototype] { rawJSON: '12345678901234567890' }
@@ -199,7 +199,7 @@ console.log(JSON.isRawJSON({ rawJSON: '123' })); // false
 
 ## TypeScriptの型
 
-TypeScript 7.0.2には、`lib`を`esnext`にしても`JSON.rawJSON`と`JSON.isRawJSON`、reviverの`context`の型がありません。`JSON.rawJSON`は`Property 'rawJSON' does not exist on type 'JSON'`（TS2339）に、3つの引数を取るreviverはTS2345になります。型は、グローバルの`.d.ts`に足せば使えます。`source`はプリミティブ値のときだけあるので省略可能にしてあり、`BigInt`に渡すときは`context.source!`と書きます。
+TypeScriptには、`lib`を`esnext`にしても`JSON.rawJSON`と`JSON.isRawJSON`、reviverの`context`の型がありません。`JSON.rawJSON`は`Property 'rawJSON' does not exist on type 'JSON'`（TS2339）に、3つの引数を取るreviverはTS2345になります。型は、グローバルの`.d.ts`に足せば使えます。`source`はプリミティブ値のときだけあるので省略可能にしてあり、`BigInt`に渡すときは`context.source!`と書きます。
 
 ```ts title="json-source-text-access.d.ts"
 interface JSON {
@@ -219,6 +219,5 @@ JSONテキストとJavaScriptの値の間で失われていた情報にアクセ
 読み取りはreviverの`context.source`を、書き出しは`JSON.rawJSON`を使います。
 `BigInt`のような任意精度の表現と組み合わせれば、レスポンスの形式を変えることなく欠損のない読み書きができます。
 
-JSON source text accessはBaseline 2025で各ブラウザに揃いました。
 これまでは独自のJSONパーサーを持つライブラリを入れたり、レスポンスの形式そのものを変えたりして避けてきた問題です。
 それが追加の依存なしに、標準の機能だけで解けるようになりました。
