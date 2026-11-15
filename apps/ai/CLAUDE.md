@@ -26,6 +26,13 @@ features は次のとおり。
 
 @k8ordo/ui の組み込み文言（閉じる・必須・コピーしましたなど）は `@k8ordo/i18n` のロケール集合で決まり、集合が無い環境では英語になる。集合は `src/i18n.ts` の1か所で定義し、サーバーの描画（`app/layout.tsx`・`global-error.tsx`）とブラウザ（`_providers/app.tsx`）の両方から副作用 import する。
 
+## 配色
+
+配色は `@k8ordo/color-scheme` が持つ。ルートの layout の `<head>` に `ColorSchemeScript`、`_providers/app.tsx` に `ColorSchemeProvider` を置き、選んだ配色は `@k8ordo/state` の localStorage の行に入る。切り替えは `useColorScheme`（`app/_components/toggle-theme`）。
+
+- Next.js は stylesheet を `<head>` の先頭へ上げるので、配色の script は HTML の中で stylesheet より後ろに出る。script が stylesheet より前にあることは color-scheme がちらつかないことを保証する条件で、この構成では満たせない。script を前へ出す細工は足さない
+- `useColorScheme` の `scheme` は、サーバーと hydrate の描画では既定の light を返す。配色で取りに行くもの（デッキのコードのハイライト）は `app/_components/resolved-scheme` の `useResolvedScheme` で読み、決まるまで null を受け取って取りに行かない
+
 ## 生成 UI（json-render）
 
 エージェントの `generate_ui` は、json-render の spec を作る。コード表示の TSX は `spec-to-tsx.ts` で spec から変換する。catalog・registry・検証は
