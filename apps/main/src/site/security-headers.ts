@@ -1,3 +1,5 @@
+import { DEMO_TRUSTED_TYPES_POLICY } from '../shared/demo/demo-trusted-html.ts';
+
 export type DeployTarget = 'preview' | 'production';
 
 type SiteEnvironment = 'development' | DeployTarget;
@@ -49,7 +51,7 @@ export const securityHeaders = (
     // 違反を集める
     'Content-Security-Policy-Report-Only': toHeaderValue([
       "require-trusted-types-for 'script'",
-      "trusted-types 'none'",
+      `trusted-types ${DEMO_TRUSTED_TYPES_POLICY}`,
       'report-to csp-endpoint',
     ]),
     // preview と dev のレポートは、api が Origin を許可しないので受け付けられない
@@ -71,11 +73,11 @@ const DEMO_DIRECTIVES = [
   "form-action 'none'",
 ];
 
-// 例の URL の応答に、ページの CSP に代えて付ける。例は記事の iframe が sandbox で origin を
-// 持たせずに読むので、記事のページにだけ埋め込ませる
+// 例の URL の応答に、ページの CSP に代えて付ける。記事は文書を fetch して iframe の srcdoc に入れるので、
+// URL はどのページにも埋め込ませない
 export const DEMO_CONTENT_SECURITY_POLICY = toHeaderValue([
   ...DEMO_DIRECTIVES,
-  "frame-ancestors 'self'",
+  "frame-ancestors 'none'",
 ]);
 
 // 例の文書の頭の <meta> の CSP。文書を応答の頭を通さずに読んでも同じ制限が効く。frame-ancestors は

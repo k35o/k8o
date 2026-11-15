@@ -55,14 +55,14 @@ describe('securityHeaders', () => {
       );
     });
 
-    it('Trusted Types は Report-Only でだけ縛り、生の文字列を渡す sink とポリシーを作るものを報告する', () => {
+    it('Trusted Types は Report-Only でだけ縛り、生の文字列を渡す sink と、例の文書の policy のほかのポリシーを作るものを報告する', () => {
       expect(directive(csp, 'require-trusted-types-for')).toBeUndefined();
       expect(directive(csp, 'trusted-types')).toBeUndefined();
       expect(
         directivesOf(production['Content-Security-Policy-Report-Only']),
       ).toStrictEqual([
         "require-trusted-types-for 'script'",
-        "trusted-types 'none'",
+        'trusted-types k8o-demo',
         'report-to csp-endpoint',
       ]);
     });
@@ -121,17 +121,14 @@ describe('DEMO_CONTENT_SECURITY_POLICY', () => {
         "style-src 'unsafe-inline'",
         "base-uri 'none'",
         "form-action 'none'",
-        "frame-ancestors 'self'",
+        "frame-ancestors 'none'",
       ]);
     });
   });
 
   describe('エッジケース', () => {
-    it('ページは自分のオリジンの例を iframe で読め、例は自分のオリジンのページにだけ埋め込まれる', () => {
-      expect(directive(csp, 'frame-src')).toContain("'self'");
-      expect(directive(DEMO_CONTENT_SECURITY_POLICY, 'frame-ancestors')).toBe(
-        "frame-ancestors 'self'",
-      );
+    it('記事は例の URL を iframe に埋め込まずに fetch で読むので、ページの connect-src が自分のオリジンを許す', () => {
+      expect(directive(csp, 'connect-src')).toContain("'self'");
     });
   });
 });
