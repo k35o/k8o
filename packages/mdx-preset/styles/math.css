@@ -1,0 +1,34 @@
+/* rehype-math が MathML を作る Temml と同じ版の CSS。端末にある数式用のフォントで描く版を読む */
+@import 'temml/dist/Temml-Local.css';
+
+/* Temml-Local.css は Cambria Math などのフォント名を math より先に並べる。
+   数式のフォント（macOS の STIX Two Math）は、同じ font-size でも本文の M PLUS 2 の欧文より字面が
+   小さいので、x-height を本文（0.52）にそろえる */
+math {
+  font-family: math;
+  font-size-adjust: 0.52;
+}
+
+/* Temml-Local.css は行の中で折り返すために math を inline-flex にし、記事に手で書いた
+   display="block" の math まで行の中に入れる。ブラウザの UA の値（block math か block）に戻す */
+math[display='block'] {
+  display: revert;
+}
+
+/* 数式の箱は端数の丸めで 1〜2px 縦にはみ出すので、overflow-x だけにすると縦のスクロールバーも出る */
+.math-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* 縦書きの記事でも数式は横書きで組む（math 要素はブラウザが横書きに固定する）。縦書きかどうかは
+   @k8ordo/ui の .writing-v が立てる --writing で見る（.writing-h の島では horizontal に戻る）。
+   縦書きの中の横書きの箱は、幅を決めないと画面の幅まで広がるので、式の幅に縮める */
+@container style(--writing: vertical) {
+  .math-scroll {
+    writing-mode: horizontal-tb;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    margin-block: auto;
+  }
+}

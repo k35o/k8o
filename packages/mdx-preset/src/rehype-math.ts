@@ -1,11 +1,9 @@
 import type { Element, ElementContent, Root, RootContent, Text } from 'hast';
 import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic';
-import katex from 'katex';
+import temml from 'temml';
 import { SKIP, visit } from 'unist-util-visit';
 
-// remark-math が出す数式の要素を KaTeX の HTML に置き換える rehype プラグイン。
-// 記事はこのパッケージの katex.css を読むので、HTML も同じ katex で作る。rehype-katex は
-// katex ^0.16 を固定し、0.18 でクラス名が変わった CSS と合わなくなっていた
+// remark-math が出す数式の要素を、Temml で MathML に置き換える rehype プラグイン
 
 // unified が渡す VFile の message の型に収まるよう、cause は Error に絞る
 type MessageSink = {
@@ -49,38 +47,41 @@ const toMathSource = (element: Element): MathSource | undefined => {
     : undefined;
 };
 
-const renderToHtml = (
+const renderToMathml = (
   { value, displayMode }: MathSource,
   file: MessageSink,
 ): string => {
   try {
-    return katex.renderToString(value, { displayMode, throwOnError: true });
+    return temml.renderToString(value, { displayMode, throwOnError: true });
   } catch (error) {
-    // 数式の誤りではビルドを止めず、警告を出して KaTeX のエラー表示で描く
-    file.message('KaTeX で数式を描画できない', {
+    // 数式の誤りではビルドを止めず、警告を出して Temml のエラー表示で描く
+    file.message('Temml で数式を描画できない', {
       cause: error instanceof Error ? error : undefined,
     });
-    return katex.renderToString(value, { displayMode, throwOnError: false });
+    return temml.renderToString(value, { displayMode, throwOnError: false });
   }
 };
 
-// KaTeX の HTML は要素とテキストだけからなる
+// Temml の出力は要素とテキストだけからなる
 const isRenderedContent = (node: RootContent): node is Element | Text =>
   node.type === 'element' || node.type === 'text';
 
-// 別行の数式は狭い画面で横にスクロールする。中に操作できる要素の無いスクロールの箱は、
-// Safari ではキーボードで届かないので、Tab で止まれるようにする
-const focusableDisplay = (node: Element | Text): Element | Text =>
-  node.type === 'element' && hasClass(node, 'katex-display')
-    ? { ...node, properties: { ...node.properties, tabIndex: 0 } }
-    : node;
+// 別行の数式は狭い画面で横にスクロールする。math 要素は Safari と Firefox ではスクロールの箱に
+// ならないので、外側に箱を置く。中に操作できる要素の無いスクロールの箱は、Safari ではキーボードで
+// 届かないので、Tab で止まれるようにする
+const scrollBox = (children: ElementContent[]): Element => ({
+  type: 'element',
+  tagName: 'div',
+  properties: { className: ['math-scroll'], tabIndex: 0 },
+  children,
+});
 
-const render = (source: MathSource, file: MessageSink): ElementContent[] =>
-  fromHtmlIsomorphic(renderToHtml(source, file), {
+const render = (source: MathSource, file: MessageSink): ElementContent[] => {
+  const rendered = fromHtmlIsomorphic(renderToMathml(source, file), {
     fragment: true,
-  })
-    .children.filter(isRenderedContent)
-    .map(focusableDisplay);
+  }).children.filter(isRenderedContent);
+  return source.displayMode ? [scrollBox(rendered)] : rendered;
+};
 
 export default function rehypeMath(): (tree: Root, file: MessageSink) => void {
   return (tree, file) => {

@@ -1,12 +1,11 @@
 import type { MDXContent } from 'mdx/types';
+import { createElement } from 'react';
 import { expect, userEvent } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import { MdxContent } from './mdx-base';
 
 import styles from './mdx-base.stories.module.css';
-// アプリでは数式を使う記事が読み込むため、Storybook では Story 側で読み込む
-import '@repo/mdx-preset/katex.css';
 
 // コンパイルした MDX と同じく、`##` を components の h2 で描く
 const Article: MDXContent = ({ components }) => {
@@ -19,29 +18,44 @@ const Article: MDXContent = ({ components }) => {
 
 const TERMS = Array.from({ length: 60 }, (_, index) => String(index + 1));
 
-// rehype-math が描く別行の数式（KaTeX の HTML の箱に tabindex を足したもの）と同じ入れ子と class にする。
-// JSX には MathML の型が無いので、読み上げ用の MathML は式の文字で代える
+// rehype-math が描く別行の数式（Temml の MathML を、tabindex を付けたスクロールの箱で包んだもの）と同じ形にする。
+// JSX には MathML の要素の型が無いので、createElement で作る
 const MathArticle: MDXContent = () => (
   // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- rehype-math と同じく、横にスクロールする箱をキーボードで届かせる
-  <span className="katex-display" tabIndex={0}>
-    <span className="katex">
-      <span className="katex-mathml">{TERMS.join(' + ')}</span>
-      <span aria-hidden="true" className="katex-html">
-        {TERMS.map((term, index) => (
-          <span className="katex-base" key={term}>
-            <span className="mord">{term}</span>
-            {index < TERMS.length - 1 && (
-              <>
-                <span className="mspace" style={{ marginRight: '0.2222em' }} />
-                <span className="mbin">+</span>
-                <span className="mspace" style={{ marginRight: '0.2222em' }} />
-              </>
-            )}
-          </span>
-        ))}
-      </span>
-    </span>
-  </span>
+  <div className="math-scroll" tabIndex={0}>
+    {createElement(
+      'math',
+      {
+        display: 'block',
+        className: 'tml-display',
+        style: { display: 'block math' },
+      },
+      createElement(
+        'mrow',
+        null,
+        TERMS.flatMap((term, index) => {
+          const number = createElement('mn', { key: term }, term);
+          return index === 0
+            ? [number]
+            : [createElement('mo', { key: `+${term}` }, '+'), number];
+        }),
+      ),
+    )}
+  </div>
+);
+
+// 記事の MDX に手で書いた別行の MathML
+const HandwrittenBlockMathArticle: MDXContent = () => (
+  <div data-testid="frame">
+    {createElement(
+      'math',
+      { display: 'block' },
+      createElement('msup', null, [
+        createElement('mi', { key: 'base' }, 'x'),
+        createElement('mn', { key: 'exponent' }, '2'),
+      ]),
+    )}
+  </div>
 );
 
 const meta = preview.meta({
@@ -79,7 +93,7 @@ export const LongDisplayMath = meta.story({
     ),
   ],
   play: async ({ canvasElement }) => {
-    const display = canvasElement.querySelector('.katex-display');
+    const display = canvasElement.querySelector('.math-scroll');
     if (!(display instanceof HTMLElement)) {
       throw new TypeError('別行の数式がありません');
     }
@@ -93,5 +107,21 @@ export const LongDisplayMath = meta.story({
 
     await userEvent.tab();
     await expect(display).toHaveFocus();
+  },
+});
+
+// 正常系: 数式の CSS を読んでも、記事に手で書いた display="block" の math は行の中に入らず、枠の幅いっぱいの箱になる
+export const HandwrittenBlockMath = meta.story({
+  args: { Content: HandwrittenBlockMathArticle },
+  play: async ({ canvas }) => {
+    const frame = canvas.getByTestId('frame');
+    const math = frame.querySelector('math');
+    if (math === null) {
+      throw new TypeError('math 要素がありません');
+    }
+
+    await expect(math.getBoundingClientRect().width).toBe(
+      frame.getBoundingClientRect().width,
+    );
   },
 });

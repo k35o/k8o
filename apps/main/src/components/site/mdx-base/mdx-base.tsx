@@ -10,6 +10,7 @@ import { CodeBlock } from '@/components/site/code-block/code-block';
 import { CodeGroup } from '@/components/site/code-block/code-group';
 
 import '@repo/code-highlight/styles.css';
+import '@repo/mdx-preset/math.css';
 import styles from './mdx-base.module.css';
 
 // インラインコード等を含む見出しからidに使う全文を取り出す。

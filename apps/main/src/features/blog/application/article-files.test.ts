@@ -21,14 +21,6 @@ const slugs = readdirSync(join(cwd(), 'src/content/blog')).filter(
 const parse = (slug: string) =>
   mdxParser.parse(readFileSync(blogPath(slug), 'utf8'));
 
-const hasMath = (node: Nodes): boolean =>
-  node.type === 'inlineMath' ||
-  node.type === 'math' ||
-  (node.type === 'code' && node.lang === 'math') ||
-  ('children' in node && node.children.some((child) => hasMath(child)));
-
-const mathSlugs = slugs.filter((slug) => hasMath(parse(slug)));
-
 const defaultImports = (slug: string): Map<string, string> =>
   new Map(
     parse(slug)
@@ -156,15 +148,6 @@ describe('src/content/blog の記事', () => {
         ),
       ).toStrictEqual([]);
     });
-
-    it.each(mathSlugs)(
-      '%s は数式を使うので @repo/mdx-preset/katex.css を import する',
-      (slug) => {
-        expect(esmImportSources(parse(slug))).toContain(
-          '@repo/mdx-preset/katex.css',
-        );
-      },
-    );
 
     it.each(imageSlugs)(
       '%s の Image と FloatImage は、画像の実寸と同じ縦横比の width と height を持つ',

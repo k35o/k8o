@@ -20,6 +20,13 @@ const element = (
 const inlineMath = (value: string): Element =>
   element('code', ['language-math', 'math-inline'], [text(value)]);
 
+const displayMath = (value: string): Element =>
+  element(
+    'pre',
+    [],
+    [element('code', ['language-math', 'math-display'], [text(value)])],
+  );
+
 const run = (
   children: ElementContent[],
 ): { tree: Root; messages: string[] } => {
@@ -31,6 +38,16 @@ const run = (
   return { tree, messages };
 };
 
+const elementsOf = (tree: Root, tagName: string): Element[] => {
+  const elements: Element[] = [];
+  visit(tree, 'element', (node) => {
+    if (node.tagName === tagName) {
+      elements.push(node);
+    }
+  });
+  return elements;
+};
+
 const classNamesOf = (tree: Root): string[] => {
   const classNames: string[] = [];
   visit(tree, 'element', (node) => {
@@ -40,14 +57,6 @@ const classNamesOf = (tree: Root): string[] => {
     }
   });
   return classNames;
-};
-
-const tagNamesOf = (tree: Root): string[] => {
-  const tagNames: string[] = [];
-  visit(tree, 'element', (node) => {
-    tagNames.push(node.tagName);
-  });
-  return tagNames;
 };
 
 const tabIndexesOf = (tree: Root): unknown[] => {
@@ -62,22 +71,8 @@ const tabIndexesOf = (tree: Root): unknown[] => {
 
 describe('rehypeMath', () => {
   describe('正常系', () => {
-    it('インラインの数式を KaTeX の HTML に置き換える', () => {
+    it('インラインの数式を、前後のテキストを残したまま MathML の math 要素に置き換える', () => {
       const { tree, messages } = run([
-        element('p', [], [text('式 '), inlineMath('x^2'), text(' を描く')]),
-      ]);
-
-      const classNames = classNamesOf(tree);
-      expect(classNames).toContain('katex');
-      expect(classNames).toContain('katex-base');
-      expect(classNames).not.toContain('katex-display');
-      expect(classNames).not.toContain('language-math');
-      expect(tagNamesOf(tree)).not.toContain('code');
-      expect(messages).toStrictEqual([]);
-    });
-
-    it('前後のテキストを残したまま置き換える', () => {
-      const { tree } = run([
         element('p', [], [text('式 '), inlineMath('x^2'), text(' を描く')]),
       ]);
 
@@ -86,52 +81,55 @@ describe('rehypeMath', () => {
           tagName: 'p',
           children: [
             text('式 '),
-            { tagName: 'span', properties: { className: ['katex'] } },
+            {
+              tagName: 'math',
+              children: [
+                {
+                  tagName: 'msup',
+                  children: [{ tagName: 'mi' }, { tagName: 'mn' }],
+                },
+              ],
+            },
             text(' を描く'),
           ],
         },
       ]);
+      expect(elementsOf(tree, 'code')).toStrictEqual([]);
+      expect(messages).toStrictEqual([]);
     });
 
-    it('ブロックの数式は pre ごと display モードの HTML に置き換える', () => {
-      const { tree } = run([
-        element(
-          'pre',
-          [],
-          [
-            element(
-              'code',
-              ['language-math', 'math-display'],
-              [text(String.raw`\frac{a}{b}`)],
-            ),
-          ],
-        ),
-      ]);
+    it('インラインの数式は display を block にしない', () => {
+      const { tree } = run([element('p', [], [inlineMath('x^2')])]);
 
-      expect(classNamesOf(tree)).toContain('katex-display');
-      expect(classNamesOf(tree)).toContain('mfrac');
-      expect(tagNamesOf(tree)).not.toContain('pre');
+      expect(elementsOf(tree, 'math')[0]?.properties).not.toHaveProperty(
+        'display',
+      );
     });
 
-    it('ブロックの数式は、横にスクロールしてもキーボードで届くよう Tab で止まれる箱にする', () => {
-      const { tree } = run([
-        element(
-          'pre',
-          [],
-          [element('code', ['language-math', 'math-display'], [text('a + b')])],
-        ),
+    it('ブロックの数式は pre ごと、display が block の math 要素に置き換える', () => {
+      const { tree } = run([displayMath(String.raw`\frac{a}{b}`)]);
+
+      expect(elementsOf(tree, 'pre')).toStrictEqual([]);
+      expect(elementsOf(tree, 'math')).toMatchObject([
+        { properties: { display: 'block' } },
       ]);
+      expect(elementsOf(tree, 'mfrac')).toHaveLength(1);
+    });
+
+    it('ブロックの数式は、横にスクロールしてもキーボードで届くよう Tab で止まれる箱で包む', () => {
+      const { tree } = run([displayMath('a + b')]);
 
       expect(tree.children).toMatchObject([
         {
-          tagName: 'span',
-          properties: { className: ['katex-display'], tabIndex: 0 },
+          tagName: 'div',
+          properties: { className: ['math-scroll'], tabIndex: 0 },
+          children: [{ tagName: 'math' }],
         },
       ]);
       expect(tabIndexesOf(tree)).toStrictEqual([0]);
     });
 
-    it('```math のコードブロックも display モードで描く', () => {
+    it('```math のコードブロックもブロックの数式として描く', () => {
       const { tree } = run([
         element(
           'pre',
@@ -140,17 +138,33 @@ describe('rehypeMath', () => {
         ),
       ]);
 
-      expect(classNamesOf(tree)).toContain('katex-display');
-      expect(tagNamesOf(tree)).not.toContain('pre');
+      expect(elementsOf(tree, 'pre')).toStrictEqual([]);
+      expect(elementsOf(tree, 'math')).toMatchObject([
+        { properties: { display: 'block' } },
+      ]);
+    });
+
+    it('\\mathbb の文字は、mathvariant を読まないブラウザでも出るよう Unicode の文字で書く', () => {
+      const { tree } = run([inlineMath(String.raw`\mathbb{N}`)]);
+
+      expect(elementsOf(tree, 'mi')).toMatchObject([{ children: [text('ℕ')] }]);
+    });
+
+    it('cases の列の左揃えを、columnalign を読まないブラウザでも効く class で書く', () => {
+      const { tree } = run([
+        displayMath(String.raw`\begin{cases} a & b \\ c & d \end{cases}`),
+      ]);
+
+      expect(classNamesOf(tree)).toContain('tml-left');
     });
   });
 
   describe('異常系', () => {
-    it('構文が誤っている数式は警告を出し、KaTeX のエラー表示で描く', () => {
+    it('構文が誤っている数式は警告を出し、Temml のエラー表示で描く', () => {
       const { tree, messages } = run([inlineMath(String.raw`\frac{a}`)]);
 
-      expect(messages).toStrictEqual(['KaTeX で数式を描画できない']);
-      expect(classNamesOf(tree)).toContain('katex-error');
+      expect(messages).toStrictEqual(['Temml で数式を描画できない']);
+      expect(classNamesOf(tree)).toContain('temml-error');
     });
   });
 

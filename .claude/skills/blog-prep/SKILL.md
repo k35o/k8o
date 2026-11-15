@@ -74,15 +74,11 @@ featureIds:
 - `<PlaygroundEmbed>` と `<Playground>` の `headingLevel` には、置いた節の見出しの一つ下の段を書く。`##` は h3 で描かれるので、`##` の節の中は `h4`、`###` の中は `h5`、`####` の中は `h6`、最初の `##` より前は `h3`。書き忘れと段の取り違えは `components/site/mdx-base/article-outline.test.ts` が落とす
 - OGP画像には記事のタイトルが入る。コードが主役の記事では、載せたいコードブロックの1つに `// [!og]` を書くと、そのコードも描かれる
 
-### 2. 数式（KaTeX）を使う記事
+### 2. 数式を使う記事
 
-数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と KaTeX）は `apps/main/vite.config.ts` の MDX の設定で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。KaTeX の CSS は記事が自分で持つので、数式を使う記事の `article.mdx` が import する。frontmatter の直後に以下の 1 行を追加する（縦書きの調整も同じ CSS に入っている）:
+数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と Temml）は `apps/main/vite.config.ts` の MDX の設定で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。式は MathML になり、ブラウザが `font-family: math` のフォントで描く。数式の CSS（縦書きの調整を含む）は mdx-base が読むので、記事は import しない。既存の例: `apps/main/src/content/blog/contrast-color/article.mdx`。
 
-```mdx
-import '@repo/mdx-preset/katex.css';
-```
-
-記事の CSS はその記事のページだけに載るので、import を忘れるとその記事の数式が崩れる。抜けは `apps/main/src/features/blog/application/article-files.test.ts` が落とす。既存の例: `apps/main/src/content/blog/font-family-math/article.mdx`。
+カンマで区切った数は、`$(64, 128, 192)$` のようにカンマの後ろに空白を書く。空白が無いと Temml が `64,128,192` を1つの数にまとめ、カンマの後ろが詰まる。
 
 ### 3. 動く例（HTML・CSS・JS・React で書けるデモ）
 
@@ -287,7 +283,6 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 ### ファイル作成
 
 - [ ] `apps/main/src/content/blog/{slug}/article.mdx` 雛形作成（Web 機能の記事なら `featureIds` と `<BrowserSupportStatus>` の ID をそろえる）
-- [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `article.mdx` に KaTeX の CSS を import
 - [ ] `<LinkCard>` を使う場合: `pnpm run -F main generate:link-card-metadata` を流し（「OGP が取れなかった」が出たら時間をおいて流し直す）、`link-card-metadata.json` をコミット
 - [ ] HTML・CSS・JS・React（tsx）で書けるデモは、コードブロックに `demo="<名前>"` を書く（必要な場合）
 - [ ] Playgroundのデモと `.module.css` 作成（origin や権限が要るデモなど、動く例で作れない場合）
