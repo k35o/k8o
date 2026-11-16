@@ -11,7 +11,7 @@ featureIds:
 
 <BrowserSupportStatus featureId="single-color-gradients"></BrowserSupportStatus>
 
-`linear-gradient()`・`radial-gradient()`・`conic-gradient()`は、色を1つだけ渡しても書けます。`linear-gradient(red)`は、赤一色で塗った画像になります。Chrome 135、Firefox 136、Safari 18.4が対応し、Baseline 2025に入りました。
+`linear-gradient()`・`radial-gradient()`・`conic-gradient()`は、色を1つだけ渡しても書けます。`linear-gradient(red)`は、赤一色で塗った画像になります。Chrome 135が対応して、Baseline 2025に入りました。
 
 背景を1色で塗るだけなら、`background-color`で足ります。ただし`background-color`は背景の一番下にしか置けないので、背景画像の上に色を重ねるには、色を画像として書く必要があります。これまで`linear-gradient(red, red)`のように同じ色を2回書いていたところを、1回で書けるようになりました。
 
@@ -32,7 +32,7 @@ featureIds:
 
 開くと、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
 
-Chrome 156、Safari 27.2、Firefox 159で、`linear-gradient(red)`と`linear-gradient(red, red)`は同じ赤一色に描かれ、半透明の黒を1色と2色で重ねた結果も画素の値が同じでした。計算値を読むと、`linear-gradient(red)`は`linear-gradient(rgb(255, 0, 0))`のままです。以前から受け付けられていた`linear-gradient(red 0 100%)`は、3つとも`linear-gradient(rgb(255, 0, 0) 0px, rgb(255, 0, 0) 100%)`と2つの色に分けて返されました。
+どのブラウザでも、`linear-gradient(red)`と`linear-gradient(red, red)`は同じ赤一色に描かれ、半透明の黒を1色で重ねても2色で重ねても同じ見た目になります。計算値を読むと、`linear-gradient(red)`は`linear-gradient(rgb(255, 0, 0))`のままです。以前から受け付けられていた`linear-gradient(red 0 100%)`は、どのブラウザでも`linear-gradient(rgb(255, 0, 0) 0px, rgb(255, 0, 0) 100%)`と2つの色に分けて返されます。
 
 <LinkCard href="https://github.com/w3c/csswg-drafts/issues/10092" />
 
