@@ -45,30 +45,32 @@ panel.addEventListener('transitionrun', (event) => {
 
 `transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。どのブラウザでも、トランジションの3つのイベントの`event.animation`を`===`で比べると、どれも同じです。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つこともできます。
 
-```html
-<div id="badge">●</div>
-<style>
-  #badge {
-    animation: blink 0.5s infinite;
+```css demo="blink"
+#badge {
+  animation: blink 0.5s infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
-  }
-</style>
-<script>
-  const badge = document.querySelector('#badge');
-  let iterations = 0;
-  badge.addEventListener('animationiteration', (event) => {
-    iterations += 1;
-    // 2周したところで止める
-    if (iterations === 2) event.animation.pause();
-  });
-</script>
+}
 ```
 
-開くと、●が2回点滅したあと、表示されたまま止まります。
+```html demo="blink"
+<div id="badge">●</div>
+```
+
+```js demo="blink"
+const badge = document.querySelector('#badge');
+let iterations = 0;
+badge.addEventListener('animationiteration', (event) => {
+  iterations += 1;
+  // 2周したところで止める
+  if (iterations === 2) event.animation.pause();
+});
+```
+
+結果の欄では、●が2回点滅したあと、表示されたまま止まります。
 
 ## getAnimations()で探す方法との違い
 
@@ -78,13 +80,48 @@ panel.addEventListener('transitionrun', (event) => {
 
 2つ目は、`animationend`で受け取るときです。`animation-fill-mode`が`none`だと、`animationend`の中で`getAnimations()`を呼んでも、いま終わったアニメーションは見つかりません。`getAnimations()`が返すのは仕様で[relevant](https://drafts.csswg.org/web-animations-1/#relevant-animations-section)と定義されたアニメーション、つまり効果がこれから始まるか進行中か、まだ残っているものだけです。`none`の場合、終わった時点でこの条件から外れます。`event.animation`なら、終わった後でも`playState`が`finished`の`CSSAnimation`として読めます。どのブラウザでも、`animation-fill-mode`を`forwards`にすると、`animationend`の中の`getAnimations()`にも終わったアニメーションが残ります。
 
-<PlaygroundEmbed
-  demo="同じ名前の2本のアニメーションをevent.animationで区別する"
-  headingLevel="h4"
-  sectionId="animation-accessors"
-/>
+```css demo="beat"
+@keyframes beat {
+  50% {
+    opacity: 0.2;
+  }
+}
 
-ログの`animationName`はすべて`beat`ですが、`event.animation`から読んだdurationで2本を区別できます。`animationend`の行では`getAnimations().includes(animation)`が`false`になり、終わったアニメーションが一覧から外れたと分かります。
+#box {
+  width: 2rem;
+  height: 2rem;
+  background-color: steelblue;
+  animation:
+    beat 0.5s,
+    beat 0.8s;
+}
+```
+
+```html demo="beat"
+<div id="box"></div>
+<ol id="log"></ol>
+```
+
+```js demo="beat"
+const box = document.querySelector('#box');
+const log = document.querySelector('#log');
+
+const record = (event) => {
+  const { animation } = event;
+  const duration = animation.effect.getTiming().duration;
+  const item = document.createElement('li');
+  item.textContent = `${event.type} ${event.animationName} ${duration}ms`;
+  if (event.type === 'animationend') {
+    item.textContent += ` 一覧に残る: ${box.getAnimations().includes(animation)}`;
+  }
+  log.append(item);
+};
+
+box.addEventListener('animationstart', record);
+box.addEventListener('animationend', record);
+```
+
+結果の欄のログでは`animationName`はすべて`beat`ですが、`event.animation`から読んだdurationで2本を区別できます。`animationend`の行では、`getAnimations()`に残っているかが`false`になり、終わったアニメーションが一覧から外れたと分かります。
 
 ## 疑似要素のアニメーション
 
@@ -105,7 +142,7 @@ const event = new AnimationEvent('animationend', { animationName: 'fade' });
 
 2つ目は、`event.animation`からアニメーションを操作すると、CSS側の指定が効かなくなる点です。たとえば`animation-play-state`は、CSSアニメーションを`running`で再生し、`paused`で止めるプロパティです。`:hover`のときだけ`paused`にして、ホバー中は止めるといった使い方をします。ところが`event.animation`で`pause()`や`play()`を一度呼ぶと、そのアニメーションは以後`animation-play-state`の変更に従わなくなります。[CSS Animations Level 2](https://drafts.csswg.org/css-animations-2/#animations)が、APIでの操作をCSSより優先すると定めているためです。`effect.updateTiming()`で指定した項目も同じで、対応する`animation-*`プロパティの変更は反映されません。どのブラウザでも、`pause()`と`play()`を続けて呼んだあとに`animation-play-state`を`paused`にしても、`playState`は`running`のままです。`updateTiming()`で`duration`を2000にしたあとに`animation-duration`を0.5sにしても、2000のままです。CSS側で制御し続けたいアニメーションでは、`event.animation`は読むだけにとどめます。
 
-3つ目は、TypeScriptの型です。TypeScriptのDOMの型には、`AnimationEvent`と`TransitionEvent`の`animation`がまだありません。`event.animation`と書くとTS2339のエラーになるので、上のデモでは`'animation' in event`で確かめてから、`instanceof CSSAnimation`で絞り込んでいます。
+3つ目は、TypeScriptの型です。TypeScriptのDOMの型には、`AnimationEvent`と`TransitionEvent`の`animation`がまだありません。`event.animation`と書くとTS2339のエラーになるので、TypeScriptでは`'animation' in event`で確かめてから、`instanceof CSSAnimation`で絞り込みます。
 
 ## おわりに
 
