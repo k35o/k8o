@@ -9,13 +9,9 @@ updatedAt: 2026-11-09
 
 ## はじめに
 
-`satisfies`は、式の型が指定した型に合うかを検査し、式の型はそのまま残す演算子で、TypeScript 4.9で追加されました。[4.9のドキュメント](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator)では次のように紹介されています。
+`satisfies`は、式の型が指定した型に合うかを検査し、式の型はそのまま残す演算子で、TypeScript 4.9で追加されました。
 
-> The new `satisfies` operator lets us validate that the type of an expression matches some type, without changing the resulting type of that expression.
->
-> (翻訳 by DeepL)新しい `satisfies` 演算子を使うと、式の結果の型を変更することなく、式の型がある型にマッチするかどうかを検証することができる。
-
-変数の型を宣言した型そのものにしたいなら、型注釈で足ります。型を検査しながら、推論されたリテラル型を残したいときに`satisfies`を使います。ただし、制約にリテラル型のユニオンがあると、`satisfies`を付けた式の型が付けないときより絞り込まれます。この記事では、それが起きる例と理由を紹介します。
+変数の型を宣言した型そのものにしたいなら、型注釈で足ります。型を検査しながら、推論されたリテラル型を残したいときに`satisfies`を使います。ただし、制約にリテラル型のユニオンがあると、`satisfies`を付けた式の型が付けないときより絞り込まれます。
 
 下の3つの`palette`オブジェクトに注目してください（[TypeScript Playground](https://www.typescriptlang.org/play/?#code/FAFwngDgpgBAwgewDYIE4GcYF4YCJVQAmuMAPngOYFQB2J5uARkgK5S4DcwwAxgjehAwIAQyRQQIKAEZsMAN7AYymAUIAuPAGIAZjoAMh-bgA0SlVSi1NuLYb2HT55czY27RvU4C+MEZj4BEC5efkFhMQkpACZNACUoPlRCAB5EFAwTGEFUAEsaCgA+OUUVVSJ3ByMnMstrbXsDYzMy1yh3I30vM19-GEDBEIGhUXFJKABmEudyjW0qxxaLahoOrqaalTa1xp8-ALChdBEQXPQdXKhMBKTU9LR0LJz8oo4gA)）。
 
@@ -215,10 +211,3 @@ type Result2 = {
 ## まとめ
 
 リテラル型のユニオンで制約が課されると、リテラル型がそのまま保持されます。`satisfies`で絞り込まれた型にはユニオンのほかの値を代入できないので、あとで書き換える値は型注釈で宣言します。
-
-## 参考
-
-- [TypeScript#55189](https://github.com/microsoft/TypeScript/issues/55189)
-- [TypeScript#47920](https://github.com/microsoft/TypeScript/issues/47920)
-- [TypeScript#46827](https://github.com/microsoft/TypeScript/pull/46827)
-- [TypeScript#48696](https://github.com/microsoft/TypeScript/issues/48696)
