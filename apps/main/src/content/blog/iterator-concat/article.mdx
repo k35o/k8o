@@ -15,7 +15,7 @@ featureIds:
 
 `Iterator.concat()`は、複数のIterableを受け取り、それらの値を順に返す1つのイテレータを作る静的メソッドです。値は配列にまとめず、取り出すときに1つずつ読みます。Safari 26.4が対応して、Baseline 2026に入りました。
 
-値の数が少なく全部を使うなら、スプレッド構文で配列にして結合すれば足ります。大きな配列や終わりの無いジェネレータをつなぎ、先頭やつなぎ目のあたりだけを使うときに、`Iterator.concat()`が要ります。[以前紹介したBaseline 2025に追加されたIterator Helpers](/blog/iterator-methods)の`take`や`drop`と組み合わせると、つないだ値を配列にせずに切り出せます。
+値の数が少なく全部を使うなら、スプレッド構文で配列にして結合すれば足ります。大きな配列や終わりの無いジェネレータをつなぎ、先頭やつなぎ目のあたりだけを使うときに、`Iterator.concat()`が要ります。[Iterator Helpers](/blog/iterator-methods)の`take`や`drop`と組み合わせると、つないだ値を配列にせずに切り出せます。
 
 ```js
 const first = Array.from({ length: 1_000_000 }, (_, i) => i);
@@ -24,13 +24,11 @@ console.log(Iterator.concat(first, second).drop(999_998).take(4).toArray());
 // [999998, 999999, 'a', 'b']
 ```
 
-コンソールに貼ると`[999998, 999999, 'a', 'b']`が出ます。100万要素の配列をコピーせずに、つなぎ目の前後の4つだけを取り出しています。
-
-<LinkCard href="https://github.com/tc39/proposal-iterator-sequencing" />
+100万要素の配列をコピーせずに、つなぎ目の前後の4つだけを取り出しています。
 
 ## これまでの方法
 
-複数のIterableの値を順番に処理したい場面はよくあります。これまでは、スプレッド構文で配列に変換してから結合するか、ジェネレータ関数で`yield*`を使う方法がありました。
+これまでは、スプレッド構文で配列にしてからつなぐか、ジェネレータ関数で`yield*`を使っていました。
 
 ```js
 // スプレッド構文で配列に変換する方法
@@ -38,7 +36,7 @@ const combined = [...[1, 2, 3], ...[4, 5, 6]];
 // [1, 2, 3, 4, 5, 6]
 ```
 
-スプレッド構文は簡潔ですが、すべての値を即座に配列へ展開するため、遅延評価の恩恵を受けられません。
+スプレッド構文は短く書けますが、すべての値をその場で配列に展開します。
 
 ```js
 // ジェネレータ関数を使う方法
@@ -51,13 +49,11 @@ function* concat(...iterables) {
 const combined = concat([1, 2, 3], [4, 5, 6]);
 ```
 
-ジェネレータ関数なら遅延評価は実現できますが、結合のためだけに専用のヘルパー関数を定義する必要があります。
-
-`Iterator.concat()`を使えば、専用関数の定義なしにIterableを宣言的に結合できます。
+ジェネレータ関数なら値を1つずつ読めますが、つなぐためだけに関数を定義することになります。`Iterator.concat()`なら、関数を定義せずにIterableをつなげます。
 
 ## Iterator.concat()
 
-`Iterator.concat()`は`Iterator`コンストラクタの静的メソッドで、複数のIterableを受け取り、それらの値を順番に返す新しい`Iterator`オブジェクトを生成します。
+`Iterator.concat()`が返すイテレータは、`next()`を呼ぶたびに、渡したIterableの値を前から順に返します。
 
 ```js
 const iter = Iterator.concat([1, 2, 3], [4, 5, 6]);
@@ -70,7 +66,7 @@ console.log(iter.next()); // { value: 6, done: false }
 console.log(iter.next()); // { value: undefined, done: true }
 ```
 
-引数には任意の数のIterableを渡せます。配列だけでなく`Set`や`Map`など、`[Symbol.iterator]`を持つオブジェクトを混在させて渡せます。
+引数にはいくつでもIterableを渡せます。配列と`Set`や`Map`のように、種類の違うIterableを混ぜても構いません。
 
 ```js
 // [!og]
@@ -90,7 +86,7 @@ for (const value of iter) {
 
 ## 遅延評価
 
-`Iterator.concat()`が返す`Iterator`オブジェクトは遅延評価されます。結合した結果を配列にまとめるのではなく、`next()`が呼ばれたタイミングで値を取り出します。
+`Iterator.concat()`は、`next()`が呼ばれたときに初めて、渡したIterableから値を取り出します。
 
 ```js
 function* generateNumbers(label, count) {
@@ -124,15 +120,13 @@ console.log(iter.next());
 // { value: 1, done: false }
 ```
 
-1つ目のIterableの値をすべて返し終えてから、2つ目のIterableの値を返し始めていることがわかります。必要になるまで各Iterableの値は評価されません。
-
-なお、先頭に無限Iterableを渡すと後続のIterableには永遠に到達しないため、順序には注意が必要です。
+1つ目のIterableの値を返し終えてから、2つ目のIterableの値を読み始めます。そのため、先頭に終わりの無いIterableを渡すと、後ろのIterableには届きません。
 
 100万要素の配列を2つつないで先頭の10個を取るなら、スプレッド構文で配列にするより、`Iterator.concat()`と`take()`の方がずっと速く済みます。全部の値を`for...of`で取り出すときは、スプレッド構文の方が速くなります。
 
-## 引数はIterableであること
+## 渡せる値
 
-`Iterator.concat()`の引数はIterable（`[Symbol.iterator]`を持つオブジェクト）である必要があります。配列、`Set`、`Map`、ジェネレータオブジェクトなどの組み込みIterableはそのまま渡せます。
+`Iterator.concat()`に渡せるのは、`[Symbol.iterator]`を持つオブジェクトです。配列や`Set`、`Map`、ジェネレータオブジェクトはそのまま渡せます。
 
 文字列はIterableですが、オブジェクトではないので渡せません。`Iterator.concat('abc')`は`TypeError`になります。文字列をつなぐときは、`Iterator.from('abc')`でイテレータにしてから渡します。
 
@@ -141,7 +135,7 @@ Iterator.concat('abc'); // TypeError
 Iterator.concat(Iterator.from('abc'), ['d']).toArray(); // ['a', 'b', 'c', 'd']
 ```
 
-`[Symbol.iterator]`を持つオブジェクトであれば渡せますが、`next`メソッドだけを持つ非Iterableなオブジェクトを渡すと`TypeError`になります。
+自分で作ったオブジェクトも、`[Symbol.iterator]`を持っていれば渡せます。`next`メソッドだけを持つオブジェクトはIterableではないので、`TypeError`になります。
 
 ```js
 // [Symbol.iterator]を持つオブジェクトはIterableなので渡せる
@@ -176,10 +170,8 @@ Iterator.concat(Iterator.from(rawIterator)); // OK
 
 `next`メソッドだけを持つオブジェクトは、`Iterator.from()`で包むと渡せます。
 
-`Iterator.concat()`は呼び出し時にすべての引数に対して`[Symbol.iterator]`メソッドの存在を検証し、反復中に途中終了が起きた場合は現在のイテレータを確実にクローズします。
+`[Symbol.iterator]`があるかは、`Iterator.concat()`を呼んだ時点で、すべての引数について確かめます。`for...of`を`break`で抜けると、そのとき読んでいたイテレータの`return()`が呼ばれます。
 
-## 終わりに
+## おわりに
 
-`Iterator.concat()`により、複数のIterableを結合するためにジェネレータ関数を自前で用意したり、配列に変換する必要がなくなりました。
-
-[Iterator Helpers](/blog/iterator-methods)の`drop`や`take`と組み合わせれば、大きなIterableをつないでも、必要な範囲だけを配列にせずに取り出せます。全部の値を使うなら、スプレッド構文で配列にした方が速いこともあります。
+`Iterator.concat()`を使うと、ジェネレータ関数を書かず、配列にもせずに、複数のIterableをつなげます。`drop`や`take`と組み合わせれば必要な範囲だけを取り出せますが、全部の値を使うならスプレッド構文の方が速く済みます。
