@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`Iterator.concat()`は、複数のIterableを受け取り、それらの値を順に返す1つのイテレータを作る静的メソッドです。値は配列にまとめず、取り出すときに1つずつ読みます。Baseline 2026で使えるようになりました。
+`Iterator.concat()`は、複数のIterableを受け取り、それらの値を順に返す1つのイテレータを作る静的メソッドです。値は配列にまとめず、取り出すときに1つずつ読みます。Safari 26.4が対応して、Baseline 2026に入りました。
 
 値の数が少なく全部を使うなら、スプレッド構文で配列にして結合すれば足ります。大きな配列や終わりの無いジェネレータをつなぎ、先頭やつなぎ目のあたりだけを使うときに、`Iterator.concat()`が要ります。[以前紹介したBaseline 2025に追加されたIterator Helpers](/blog/iterator-methods)の`take`や`drop`と組み合わせると、つないだ値を配列にせずに切り出せます。
 
@@ -128,13 +128,13 @@ console.log(iter.next());
 
 なお、先頭に無限Iterableを渡すと後続のIterableには永遠に到達しないため、順序には注意が必要です。
 
-手元で100万要素の配列を2つつないで先頭の10個を取ると、スプレッド構文で配列にする書き方はChrome 156で約7ms、Safari 27.2で約5ms、Firefox 159で約9msかかりました。`Iterator.concat()`と`take()`はどれも1ms未満でした。全部の値を`for...of`で取り出すときはスプレッド構文の方が速く、Chrome 156で約18msと約23ms、Safari 27.2で約4msと約17ms、Firefox 159で約10msと約34msでした。`yield*`のジェネレータ関数と比べても、`Iterator.concat()`の方が速かったのはChrome 156だけでした。
+100万要素の配列を2つつないで先頭の10個を取るなら、スプレッド構文で配列にするより、`Iterator.concat()`と`take()`の方がずっと速く済みます。全部の値を`for...of`で取り出すときは、スプレッド構文の方が速くなります。
 
 ## 引数はIterableであること
 
 `Iterator.concat()`の引数はIterable（`[Symbol.iterator]`を持つオブジェクト）である必要があります。配列、`Set`、`Map`、ジェネレータオブジェクトなどの組み込みIterableはそのまま渡せます。
 
-文字列はIterableですが、オブジェクトではないので渡せません。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0のどれでも、`Iterator.concat('abc')`は`TypeError`になりました。文字列をつなぐときは、`Iterator.from('abc')`でイテレータにしてから渡します。
+文字列はIterableですが、オブジェクトではないので渡せません。`Iterator.concat('abc')`は`TypeError`になります。文字列をつなぐときは、`Iterator.from('abc')`でイテレータにしてから渡します。
 
 ```js
 Iterator.concat('abc'); // TypeError
