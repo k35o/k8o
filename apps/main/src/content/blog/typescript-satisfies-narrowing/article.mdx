@@ -41,7 +41,7 @@ const palette3 = {
   bleu: "#0000ff"
 } as const satisfies Record<Colors, string>;
 ```
-各例では`blue`を`bleu`と誤って記述しています。`palette1`には型の制約がないため、このミスを検出できません。一方、`palette2`は型注釈で、`palette3`は`satisfies`演算子で制約を課しているため、タイプミスがエラーとして検出されます。TypeScript 7.0.2では、`palette2`と`palette3`の`bleu`の行が`Object literal may only specify known properties, and 'bleu' does not exist in type 'Record<Colors, string>'.`（TS2353）になりました。
+各例では`blue`を`bleu`と誤って記述しています。`palette1`には型の制約がないため、このミスを検出できません。一方、`palette2`は型注釈で、`palette3`は`satisfies`演算子で制約を課しているため、タイプミスがエラーとして検出されます。`palette2`と`palette3`の`bleu`の行は、`Object literal may only specify known properties, and 'bleu' does not exist in type 'Record<Colors, string>'.`（TS2353）になります。
 
 タイプミスを修正するとそれぞれの型は以下のように推論されます。
 
@@ -128,7 +128,7 @@ type User2 = {
 
 `is_verified`の制約は`boolean`ですが、`true`は`boolean`に拡張されていません。これは`boolean`が`true | false`のエイリアスであり、リテラル型のユニオンとして扱われるためです。
 
-絞り込まれた型は、あとで値を書き換えるときに効いてきます。`user2`を`let`で宣言して書き換えると、TypeScript 7.0.2と5.9.3のどちらでも、ユニオンのほかの値を代入した行がエラーになりました。
+絞り込まれた型は、あとで値を書き換えるときに効いてきます。`user2`を`let`で宣言して書き換えると、ユニオンのほかの値を代入した行がエラーになります。
 
 ```ts
 let user2 = {
