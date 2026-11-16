@@ -42,11 +42,9 @@ const observer = new PerformanceObserver((list) => {
 });
 
 observer.observe({
-  // Event Timing APIを使用する時に指定される
   type: 'event',
   buffered: true,
-  // durationThresholdを指定して、16ms以上のentryのみ取得
-  // デフォルトは104msなので、通常の操作がほとんどフィルタリングされてしまう
+  // 16ms以上のentryを受け取る。既定の104msでは、ふつうの操作がほとんど届かない
   durationThreshold: 16,
 });
 ```
@@ -85,7 +83,7 @@ for (const entries of interactions.values()) {
 
 1回のクリックでは、`pointerup`と`click`が同じ描画の前に処理され、どちらの`duration`も同じ値になります。`duration`が一番長い`entry`を1つだけ選んで内訳を出すと、先に届く`pointerup`が選ばれ、`click`のハンドラの時間が描画遅延に数えられます。押してから100ms後に離すクリックで50msかかる`click`のハンドラを動かすと、どのブラウザでも、そのように選んだ内訳は処理時間が0ms、描画遅延が約48msになります。同じ描画で終わった`entry`の処理をまとめると、処理時間は約50msになります。
 
-TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as PerformanceEventTiming[]`で絞ります。TypeScriptの`PerformanceObserverInit`には`durationThreshold`が無く、そのまま書くとTS2353になります。
+TypeScriptでは、`getEntries()`の型が`PerformanceEntry[]`なので、`as PerformanceEventTiming[]`で絞ります。`PerformanceObserverInit`の型には`durationThreshold`が無く、そのまま書くとTS2353になります。
 
 <PlaygroundEmbed demo="イベントタイミング計測" headingLevel="h5" sectionId="event-timing" />
 
@@ -159,9 +157,7 @@ TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as Perform
 
 ## INP
 
-INP（Interaction to Next Paint）は、ページのライフサイクル全体を通じて最も遅いインタラクションの待ち時間を測定するCore Web Vitalsの指標です。
-
-INPは、基本的な使い方で集めた`interactions`のうち、一番長い`duration`です（インタラクションが多いページでは、50回ごとに一番遅いものを1つ除きます）。ページを閉じる前に送るなら、`visibilitychange`で`hidden`になったときに求めます。
+INPは、ページを開いてから閉じるまでで一番遅かった操作の時間です。基本的な使い方で集めた`interactions`なら、一番長い`duration`がINPになります（インタラクションが多いページでは、50回ごとに一番遅いものを1つ除きます）。ページを閉じる前に送るなら、`visibilitychange`で`hidden`になったときに求めます。
 
 ```js
 // ページが隠れるときに、一番遅いインタラクションのdurationを出す
@@ -176,7 +172,7 @@ document.addEventListener('visibilitychange', () => {
 
 ### FIDの計測
 
-`type: 'first-input'`を指定すると、最初の入力イベントのみを取得できます。つまり、FID（First Input Delay）を計測できます。FIDは、2024年3月にCore Web VitalsでINPに置き換えられた指標です。
+`type: 'first-input'`を指定すると、最初の入力イベントだけを受け取れます。これで、2024年3月にCore Web VitalsでINPに置き換えられた、FID（First Input Delay）を測れます。
 
 ```js
 const observer = new PerformanceObserver((list) => {
@@ -189,10 +185,8 @@ const observer = new PerformanceObserver((list) => {
 observer.observe({ type: 'first-input', buffered: true });
 ```
 
-FIDの計測なので、上記のコードではユーザーが最初にページを操作したときから、イベントハンドラの処理を開始するまでの時間を測定しています。
+FIDは、最初の操作からハンドラが動き出すまでの時間なので、`processingStart`から`startTime`を引きます。
 
 ## おわりに
 
-Event Timing APIを使うと、クリックやキー入力から次の描画までの時間を、入力遅延・処理時間・描画遅延に分けて測れます。1回の操作で起きるイベントは同じ`interactionId`でまとめ、同じ描画で終わった`entry`の処理を合わせて内訳を出します。
-
-INPも、集めた`duration`の一番長いものとして求められます。
+Event Timing APIを使うと、クリックやキー入力から次の描画までの時間を、入力遅延と処理時間と描画遅延に分けて測れます。1回の操作のイベントを`interactionId`でまとめれば、内訳もINPも求められます。
