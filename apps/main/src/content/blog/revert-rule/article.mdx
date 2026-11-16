@@ -31,7 +31,7 @@ featureIds:
 
 `.button.tinted`の宣言が選ばれた時点で、`.button`の`royalblue`は使われません。`--tint`が無いと値が無効になり、初期値の`transparent`になります。基本のルールを`background-color: var(--tint, royalblue)`と書き換えられるなら、それで足ります。
 
-## revert・revert-layerとの違い
+## revertとrevert-layerとの違い
 
 3つのキーワードは巻き戻す単位が違います。`revert`はオリジン、`revert-layer`はカスケードレイヤー、`revert-rule`はスタイルルールを単位にします。同じ`components`レイヤーに3つのキーワードを書き、背景色がそれぞれどの値になるかをコメントに示します。
 
@@ -69,7 +69,7 @@ featureIds:
 
 ## 変数が無いときだけ宣言を取り消す
 
-冒頭の例は、`var()`のフォールバックに`revert-rule`を書けば解決します。フォールバックにはCSS全体キーワードを書けます。
+はじめにの例は、`var()`のフォールバックに`revert-rule`を書けば解決します。フォールバックにはCSS全体キーワードを書けます。
 
 ```css
 /* [!og] */
@@ -84,7 +84,7 @@ featureIds:
 
 `--tint`が未定義なら、このルールの宣言はなかったことになり、`.button`の`royalblue`が当たります。どのブラウザでも、`--tint`の無いボタンは`royalblue`に、`--tint: green`を渡したボタンは緑になります。
 
-`--tint: revert-rule`と変数のほうに書くと、戻るのは`--tint`自体なので注意してください。親から`--tint: orange`を継承していると、`--tint`は継承したオレンジに戻り、背景もオレンジになります。継承する値が無ければ`--tint`は無効になり、背景は`transparent`です。
+`--tint: revert-rule`と変数のほうに書くと、戻るのは`--tint`自体です。親から`--tint: orange`を継承していると、`--tint`は継承したオレンジに戻り、背景もオレンジになります。継承する値が無ければ`--tint`は無効になり、背景は`transparent`です。
 
 ## 同じルールの宣言には戻らない
 
