@@ -38,7 +38,7 @@ featureIds:
 <textarea id="bio" name="bio"></textarea>
 ```
 
-JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。このプロパティが返すのは属性の文字列ではなく、その要素で自動修正が働くかを表す真偽値です。`autocorrect="off"`の要素のほか、`type`が`password`・`email`・`url`の`input`と、`off`の`<form>`を引き継いだ要素でも`false`になり、それ以外では`true`です。どのブラウザでも、`<input type="password" autocorrect="on">`は`false`を返します。`false`を代入すると属性は`off`に、`true`なら`on`になります。対応しているかどうかは`'autocorrect' in HTMLElement.prototype`で判定できます。
+JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。このプロパティが返すのは属性の文字列ではなく、その要素で自動修正が働くかを表す真偽値です。`false`になるのは、`autocorrect="off"`の要素と、`type`が`password`か`email`か`url`の`input`と、`off`の`<form>`を引き継いだ要素です。それ以外では`true`です。どのブラウザでも、`<input type="password" autocorrect="on">`は`false`を返します。`false`を代入すると属性は`off`に、`true`なら`on`になります。対応しているかどうかは`'autocorrect' in HTMLElement.prototype`で判定できます。
 
 <PlaygroundEmbed demo="属性の値と反映されるプロパティを見る" headingLevel="h4" sectionId="autocorrect" />
 
@@ -69,4 +69,4 @@ JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。この
 
 ## おわりに
 
-`autocorrect`は、Safari独自の実装からHTML標準の属性になりました。値は`on`と`off`で、`<form>`に書けばフォームに属する入力欄が引き継ぎます。識別子を入力する欄に`autocorrect="off"`を付ける長年のおまじないは、仕様に裏付けのある指定になりました。
+`autocorrect="off"`を使うと、入力中の単語の置き換えを要素ごとに止められ、`<form>`に書けばフォームの入力欄がまとめて引き継ぎます。識別子を入力する欄に付けてきた長年のおまじないは、仕様に裏付けのある指定になりました。
