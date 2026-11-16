@@ -19,22 +19,22 @@ featureIds:
 
 ## 背景画像に色を重ねる
 
-```html
-<div class="hero">見出し</div>
-
-<style>
-  .hero {
-    height: 200px;
-    color: white;
-    /* 2枚目のグラデーションは写真の代わり。実際は url('photo.jpg') などを書く */
-    background:
-      linear-gradient(rgb(0 0 0 / 50%)),
-      linear-gradient(to right, red, blue);
-  }
-</style>
+```css demo="hero"
+.hero {
+  height: 200px;
+  color: white;
+  /* 2枚目のグラデーションは写真の代わり。実際は url('photo.jpg') などを書く */
+  background:
+    linear-gradient(rgb(0 0 0 / 50%)),
+    linear-gradient(to right, red, blue);
+}
 ```
 
-開くと、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
+```html demo="hero"
+<div class="hero">見出し</div>
+```
+
+結果の欄では、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
 
 ## 1色で書いた値
 
