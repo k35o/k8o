@@ -178,18 +178,6 @@ Iterator.concat(Iterator.from(rawIterator)); // OK
 
 `Iterator.concat()`は呼び出し時にすべての引数に対して`[Symbol.iterator]`メソッドの存在を検証し、反復中に途中終了が起きた場合は現在のイテレータを確実にクローズします。
 
-## TypeScriptの型
-
-TypeScript 7.0.2には、`lib`を`esnext`にしても`Iterator.concat`の型がなく、`Property 'concat' does not exist on type 'IteratorConstructor'`（TS2339）になります。型は、グローバルの`.d.ts`に足せば使えます。次の宣言では、`number[]`と`Set<string>`を渡すと、`number | string`の値を返すイテレータになります。
-
-```ts title="iterator-concat.d.ts"
-interface IteratorConstructor {
-  concat<T extends Iterable<unknown>[]>(
-    ...iterables: T
-  ): IteratorObject<T[number] extends Iterable<infer U> ? U : never, undefined, unknown>;
-}
-```
-
 ## 終わりに
 
 `Iterator.concat()`により、複数のIterableを結合するためにジェネレータ関数を自前で用意したり、配列に変換する必要がなくなりました。
