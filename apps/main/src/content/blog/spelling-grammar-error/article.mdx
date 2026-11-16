@@ -21,13 +21,13 @@ featureIds:
 
 下線の見た目を自分で決めてよいなら、`text-decoration: underline wavy red`のように書けば足ります。ブラウザのエラー表示と同じ見た目にそろえたいときは、下線の形や色がブラウザとOSによって違うので、CSSで書き写せません。そこで使えるのが`spelling-error`と`grammar-error`です。
 
-値はBaseline 2025入りした一方、擬似要素はまだBaselineに達していない先取りの機能です。この記事では使える状態になった値の方から紹介します。
+`text-decoration-line`の値は、Safari 26.2が対応して、Baseline 2025に入りました。擬似要素は、Firefoxが対応しておらず、まだBaselineに入っていません。
 
 ## text-decoration-lineでエラー風の装飾を描く
 
 <BrowserSupportStatus featureId="text-decoration-spelling-grammar" />
 
-`text-decoration-line`の値`spelling-error`と`grammar-error`は、Chrome 121とFirefox 137に続いてSafari 26.2が対応したことで、2025年12月にBaseline 2025入りしました。エラー検出とは無関係に、ブラウザ標準のエラー表示と同じ見た目を任意のテキストへ与えます。
+`spelling-error`と`grammar-error`は、エラーの検出とは関係なく、ブラウザのエラー表示と同じ見た目を任意のテキストに与えます。
 
 ```css
 /* [!og] */
@@ -46,7 +46,7 @@ featureIds:
 - `text-decoration-color`や`text-decoration-style`、`text-decoration-thickness`の指定は無視されます
 - 未対応のブラウザでは装飾が描かれないだけで、他への影響はありません
 
-macOSで2つの値を指定したテキストを描くと、Chrome 156はスペルミスに赤、文法エラーに緑の点線を引きました。Safari 27.2は赤と青の丸い点、Firefox 159は赤と緑の細い点線です。`text-decoration-color: blue`・`text-decoration-style: solid`・`text-decoration-thickness: 6px`を足しても、3つとも描かれる線は1ピクセルも変わりませんでした。`text-decoration-line: underline spelling-error`は、3つとも無効な値として捨てられます。
+macOSで2つの値を指定したテキストを描くと、Chromeはスペルミスに赤、文法エラーに緑の点線を引きます。Safariは赤と青の丸い点、Firefoxは赤と緑の細い点線です。`text-decoration-color: blue`・`text-decoration-style: solid`・`text-decoration-thickness: 6px`を足しても、どのブラウザでも描かれる線は1ピクセルも変わりません。`text-decoration-line: underline spelling-error`は、どのブラウザでも無効な値として捨てられます。
 
 <PlaygroundEmbed
   demo="text-decoration-lineによるエラー風装飾"
@@ -66,7 +66,7 @@ macOSで2つの値を指定したテキストを描くと、Chrome 156はスペ�
 }
 ```
 
-Chrome 156で、`a speling error`の`speling`だけをRangeで選んで`my-spellcheck`に登録すると、その7文字の下にだけスペルミスと同じ赤い点線が引かれました。Firefox 159では、同じ指定で何も引かれませんでした。`::highlight()`に`underline`を指定すると線が引かれ、要素に`spelling-error`を指定すると赤い点線が引かれたので、`::highlight()`と`spelling-error`の組み合わせだけが描かれません。
+Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellcheck`に登録すると、その7文字の下にだけスペルミスと同じ赤い点線が引かれます。Firefoxでは、同じ指定で何も引かれません。`::highlight()`に`underline`を指定すると線が引かれ、要素に`spelling-error`を指定すると赤い点線が引かれるので、`::highlight()`と`spelling-error`の組み合わせだけが描かれません。
 
 なお、この装飾は色と線だけの視覚的な表現です。実際の校正UIで使うときは、指摘の内容をテキストや支援技術にも伝わる形で併記する必要があります。
 
@@ -74,7 +74,7 @@ Chrome 156で、`a speling error`の`speling`だけをRangeで選んで`my-spell
 
 <BrowserSupportStatus featureId="spelling-grammar-error" />
 
-ここからは向きが逆の機能です。擬似要素`::spelling-error`と`::grammar-error`は、ブラウザのスペルチェックによってスペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。まだBaselineに達していないため、先取りの機能として押さえておく位置づけです。
+ここからは向きが逆の機能です。擬似要素`::spelling-error`と`::grammar-error`は、ブラウザのスペルチェックによってスペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。
 
 ### ::spelling-error
 
@@ -97,7 +97,7 @@ Chrome 156で、`a speling error`の`speling`だけをRangeで選んで`my-spell
 - `text-shadow`
 - SVGのテキストに使う`stroke-color`・`fill-color`・`stroke-width`と、カスタムプロパティ
 
-`outline`や`cursor`、`caret-color`は含まれません。Chrome 156とSafari 27.2で、`::spelling-error`にこれらを書いて`getComputedStyle()`で読むと、どれも書いた値になりませんでした（`outline-style`は`none`、`cursor`は`auto`のまま）。
+`outline`や`cursor`、`caret-color`は含まれません。ChromeとSafariで、`::spelling-error`にこれらを書いて`getComputedStyle()`で読むと、どれも書いた値になりません（`outline-style`は`none`、`cursor`は`auto`のまま）。
 
 ### ::grammar-error
 
