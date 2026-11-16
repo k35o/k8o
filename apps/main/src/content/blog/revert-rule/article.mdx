@@ -35,7 +35,7 @@ featureIds:
 
 3つのキーワードは巻き戻す単位が違います。`revert`はオリジン、`revert-layer`はカスケードレイヤー、`revert-rule`はスタイルルールを単位にします。同じ`components`レイヤーに3つのキーワードを書き、背景色がそれぞれどの値になるかをコメントに示します。
 
-```css
+```css demo="keywords"
 @layer base {
   .highlight {
     background-color: lightgray;
@@ -59,13 +59,30 @@ featureIds:
     background-color: revert; /* → transparent */
   }
 }
+
+/* 例の見た目 */
+p {
+  padding: 1rem;
+  background-color: white;
+  color: black;
+}
+span {
+  padding: 0.25rem 0.5rem;
+}
 ```
 
-`revert-rule`だけが同じレイヤーの`.highlight`に戻り、ほかの2つはレイヤーやオリジンごと飛ばします。`revert`の`transparent`は、ブラウザの既定のスタイルで背景を持たない`span`や`div`の場合です。
+```html demo="keywords"
+<p>
+  <span class="highlight">.highlight</span>
+  <span class="highlight rule">revert-rule</span>
+  <span class="highlight layer">revert-layer</span>
+  <span class="highlight origin">revert</span>
+</p>
+```
 
-<PlaygroundEmbed demo="キーワードを切り替えて戻り先を比べる" headingLevel="h4" sectionId="revert-rule" />
+`revert-rule`だけが同じレイヤーの`.highlight`に戻り、ほかの2つはレイヤーやオリジンごと飛ばします。結果の欄では、`revert-rule`の要素は`royalblue`に、`revert-layer`の要素は前のレイヤーの`lightgray`になり、`revert`の要素は背景が無くなります。
 
-`revert-rule`を選ぶと、`.rr-quiet`の付いた要素も`.rr-highlight`と同じ色になります。`revert-layer`では前のレイヤーの色に戻ります。デモの要素は`<mark>`なので、`revert`ではブラウザの既定のスタイルの黄色い背景になります。どのブラウザでも、`<mark>`の`revert`は`rgb(255, 255, 0)`になります。
+`revert`の`transparent`は、ブラウザの既定のスタイルで背景を持たない`span`や`div`の場合です。`<mark>`のように既定のスタイルで背景を持つ要素では、`revert`はその背景に戻り、どのブラウザでも`rgb(255, 255, 0)`の黄色になります。
 
 ## 変数が無いときだけ宣言を取り消す
 
