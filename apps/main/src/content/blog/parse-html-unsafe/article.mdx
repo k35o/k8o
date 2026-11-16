@@ -19,19 +19,26 @@ HTML文字列を解析するだけなら、これまでどおり`DOMParser`の`p
 
 ## DOMParserとの違い
 
-```js
+```html demo="parse"
+<div id="unsafe">parseHTMLUnsafe()：</div>
+<div id="parser">DOMParser：</div>
+```
+
+```js demo="parse"
 // [!og]
 const html =
   '<my-card><template shadowrootmode="open"><p>shadow</p></template>light</my-card>';
 
 const doc = Document.parseHTMLUnsafe(html);
 console.log(doc.querySelector('my-card').shadowRoot.innerHTML); // "<p>shadow</p>"
+document.querySelector('#unsafe').append(doc.querySelector('my-card'));
 
 const old = new DOMParser().parseFromString(html, 'text/html');
 console.log(old.querySelector('my-card').shadowRoot); // null
+document.querySelector('#parser').append(old.querySelector('my-card'));
 ```
 
-DevToolsのコンソールに貼ると、`parseHTMLUnsafe()`の結果には`<p>shadow</p>`を持つシャドウルートができ、`DOMParser`の結果では`<template>`が要素のまま残ります。どのブラウザでも同じです。Chromeは`DOMParser`のときに、`Found declarative shadowrootmode attribute on a template, but declarative Shadow DOM is not being parsed. Use setHTMLUnsafe() or parseHTMLUnsafe() instead.`という警告を出します。要素の中身として入れるなら、`Element.setHTMLUnsafe()`も同じくシャドウルートを作ります（`innerHTML`は作りません）。
+`parseHTMLUnsafe()`の結果には`<p>shadow</p>`を持つシャドウルートができ、`DOMParser`の結果では`<template>`が要素のまま残ります。結果の欄では、`parseHTMLUnsafe()`の行にシャドウルートの`shadow`が、`DOMParser`の行にライトDOMの`light`が表示されます。どのブラウザでも同じです。Chromeは`DOMParser`のときに、`Found declarative shadowrootmode attribute on a template, but declarative Shadow DOM is not being parsed. Use setHTMLUnsafe() or parseHTMLUnsafe() instead.`という警告を出します。要素の中身として入れるなら、`Element.setHTMLUnsafe()`も同じくシャドウルートを作ります（`innerHTML`は作りません）。
 
 ## XSSを防ぐ
 
