@@ -12,14 +12,9 @@ featureIds:
 
 ## はじめに
 
-<Alert
-  tone="info"
-  message="【更新】2026年7月: Baseline 2025入りしたtext-decoration-lineのspelling-error・grammar-errorを軸に記事を再構成しました。以前の版にあった、擬似要素がFirefox 140のリリースでBaseline入りしたという記述は誤りだったため、あわせて修正しています。"
-/>
+`text-decoration-line`の値`spelling-error`と`grammar-error`は、ブラウザがスペルミスや文法エラーの箇所に引く下線と同じ装飾を、任意のテキストに描くCSSの値です。ブラウザが検出した本物のエラーへスタイルを当てる擬似要素`::spelling-error`と`::grammar-error`もあります。
 
-`text-decoration-line`の値`spelling-error`と`grammar-error`は、ブラウザがスペルミスや文法エラーの箇所に引く下線と同じ装飾を、任意のテキストに描くCSSの値です。ブラウザが検出した本物のエラーへスタイルを当てる擬似要素`::spelling-error`と`::grammar-error`もあり、この記事では両方を扱います。
-
-下線の見た目を自分で決めてよいなら、`text-decoration: underline wavy red`のように書けば足ります。ブラウザのエラー表示と同じ見た目にそろえたいときは、下線の形や色がブラウザとOSによって違うので、CSSで書き写せません。そこで使えるのが`spelling-error`と`grammar-error`です。
+下線の見た目を自分で決めてよいなら、`text-decoration: underline wavy red`のように書けば足ります。ブラウザのエラー表示と同じ見た目にそろえたいときは、下線の形や色がブラウザとOSによって違うので、CSSで書き写せません。そのときに`spelling-error`と`grammar-error`を使います。
 
 `text-decoration-line`の値は、Safari 26.2が対応して、Baseline 2025に入りました。擬似要素は、Firefoxが対応しておらず、まだBaselineに入っていません。
 
@@ -40,13 +35,13 @@ featureIds:
 }
 ```
 
-この値を指定したテキストには、そのブラウザがスペルミス・文法エラーの表示に使っているものと同じ装飾が描かれます。見た目は完全にブラウザ任せで、次の特徴があります。
+この値を指定したテキストには、そのブラウザがスペルミスや文法エラーの表示に使う装飾が描かれます。見た目はブラウザが決めるので、次のように振る舞います。
 
 - `underline`など他の線種と組み合わせられない単独の値です
 - `text-decoration-color`や`text-decoration-style`、`text-decoration-thickness`の指定は無視されます
 - 未対応のブラウザでは装飾が描かれないだけで、他への影響はありません
 
-macOSで2つの値を指定したテキストを描くと、Chromeはスペルミスに赤、文法エラーに緑の点線を引きます。Safariは赤と青の丸い点、Firefoxは赤と緑の細い点線です。`text-decoration-color: blue`・`text-decoration-style: solid`・`text-decoration-thickness: 6px`を足しても、どのブラウザでも描かれる線は1ピクセルも変わりません。`text-decoration-line: underline spelling-error`は、どのブラウザでも無効な値として捨てられます。
+macOSで2つの値を指定したテキストを描くと、Chromeはスペルミスに赤、文法エラーに緑の点線を引きます。Safariは赤と青の丸い点、Firefoxは赤と緑の細い点線です。`text-decoration-color: blue`と`text-decoration-style: solid`と`text-decoration-thickness: 6px`を足しても、どのブラウザでも描かれる線は1ピクセルも変わりません。`text-decoration-line: underline spelling-error`は、どのブラウザでも無効な値として捨てられます。
 
 <PlaygroundEmbed
   demo="text-decoration-lineによるエラー風装飾"
@@ -56,9 +51,9 @@ macOSで2つの値を指定したテキストを描くと、Chromeはスペル�
 
 デモでは、日本語の文の2か所に、開いたブラウザがスペルミスと文法エラーに使う下線がそれぞれ引かれます。
 
-ブラウザのスペルチェック（`spellcheck`）は日本語の文章を検出できませんが、この値は検出と切り離された純粋な装飾なので、デモのように日本語のテキストにもエラー風の見た目を与えられます。自前の校正機能を持つエディタで指摘箇所を示すときに、ブラウザのエラー表示と一貫した見た目を実現できます。
+ブラウザのスペルチェック（`spellcheck`）は日本語の文章を検出できませんが、この値は検出と切り離された装飾なので、日本語のテキストにも使えます。自前の校正機能を持つエディタで指摘箇所を示すときに、ブラウザのエラー表示と同じ見た目にそろえられます。
 
-[CSS Custom Highlight APIの記事](/blog/highlight)で紹介した`::highlight()`擬似要素の中では`text-decoration`系のプロパティが使えるため、組み合わせるとDOMを変更せずに自前で検出した誤りへネイティブ同等の装飾を引けます。
+`::highlight()`の中でも`text-decoration`系のプロパティが使えるので、組み合わせるとDOMを変えずに、自前で検出した誤りへブラウザと同じ下線を引けます。`::highlight()`については、[CSS Custom Highlight APIの記事](/blog/highlight)で書いています。
 
 ```css
 ::highlight(my-spellcheck) {
@@ -74,7 +69,7 @@ Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellc
 
 <BrowserSupportStatus featureId="spelling-grammar-error" />
 
-ここからは向きが逆の機能です。擬似要素`::spelling-error`と`::grammar-error`は、ブラウザのスペルチェックによってスペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。
+擬似要素の`::spelling-error`と`::grammar-error`は、向きが逆の機能です。ブラウザのスペルチェックがスペルミスや文法エラーとして印を付けたテキストに、スタイルを当てます。
 
 ### ::spelling-error
 
@@ -93,9 +88,9 @@ Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellc
 `::spelling-error`の中で使えるプロパティは、仕様では次のものに限られます。
 
 - `color`と`background-color`
-- `text-decoration`とその関連プロパティ（`text-decoration-*`・`text-underline-offset`・`text-underline-position`）
+- `text-decoration`とその関連プロパティ（`text-decoration-*`、`text-underline-offset`、`text-underline-position`）
 - `text-shadow`
-- SVGのテキストに使う`stroke-color`・`fill-color`・`stroke-width`と、カスタムプロパティ
+- SVGのテキストに使う`stroke-color`、`fill-color`、`stroke-width`と、カスタムプロパティ
 
 `outline`や`cursor`、`caret-color`は含まれません。ChromeとSafariで、`::spelling-error`にこれらを書いて`getComputedStyle()`で読むと、どれも書いた値になりません（`outline-style`は`none`、`cursor`は`auto`のまま）。
 
@@ -134,6 +129,4 @@ Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellc
 
 ## おわりに
 
-スペルミス・文法エラーの装飾を扱う2つのCSS機能を紹介しました。エラーと同じ見た目を任意のテキストに与える`text-decoration-line`の値はBaseline 2025入りしており、検出された本物のエラーへスタイルを当てる擬似要素はBaseline未達の先取り機能という関係です。
-
-`spellcheck`自体が日本語対応していないので、擬似要素は日本語ユーザーにとってあまり恩恵がないかもしれませんが、`text-decoration-line`の方は検出に依存しない装飾として日本語でも使えるため、校正系のUIを作るときのために覚えておきたいです。
+`text-decoration-line`の`spelling-error`と`grammar-error`は、検出と切り離してブラウザのエラー表示と同じ下線を引けるので、日本語の校正UIでも使えます。擬似要素の`::spelling-error`と`::grammar-error`は、ブラウザが検出したエラーにだけ当たるので、スペルチェックが効かない日本語の文章では出番が少なくなります。
