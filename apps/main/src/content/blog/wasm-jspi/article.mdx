@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-JSPI（JavaScript Promise Integration）は、WebAssemblyから呼んだJavaScriptの関数がPromiseを返したとき、WebAssemblyの実行をその場で止め、Promiseが解決したら続きから再開させる仕組みです。C++やRustから移植した同期的なコードのまま、`fetch()`のような非同期APIを呼べるようになります。
+JSPI（JavaScript Promise Integration）は、WebAssemblyから呼んだJavaScriptの関数がPromiseを返したとき、WebAssemblyの実行をその場で止め、Promiseが解決したら続きから再開させる仕組みです。C++やRustから移植した同期的なコードのまま、`fetch()`のような非同期APIを呼べるようになります。Safari 27が対応して、Baseline 2026に入りました。
 
 WebAssemblyのコードは単体では画面にもネットワークにも触れず、計算とメモリの読み書き以外はJavaScriptからインポートした関数に頼ります。`console.log()`のように値をすぐ返す関数を呼ぶだけなら、JSPIは要りません。困るのは`fetch()`のようにPromiseを返す関数です。C++のコードは`read()`の結果を次の行でそのまま使う同期的な書き方をしていますが、WebAssemblyには待つという概念がないので、Promiseを受け取っても中身を取り出せません。戻り値を数値として受け取る関数なら、Promiseは数値に変換されて`0`になるだけです。
 
@@ -49,9 +49,9 @@ const run = WebAssembly.promising(instance.exports.run);
 console.log(await run()); // 1秒後に42
 ```
 
-ブラウザかNode.js 26で動かすと、まず`1`が出て、1秒後に`42`が出ます。JSPIなしでは非同期関数の返したPromiseが`0`になり、JSPIありでは41を待ってから足しています。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で同じ結果でした。
+ブラウザで動かすと、まず`1`が出て、1秒後に`42`が出ます。JSPIなしでは非同期関数の返したPromiseが`0`になり、JSPIありでは41を待ってから足しています。
 
-JSPIは、この食い違いをブラウザのエンジン側で埋める仕組みです。Chrome 137で先行して使えており、Firefox 153とSafari 27が対応したことでBaseline 2026に加わりました。
+JSPIは、この食い違いをブラウザのエンジン側で埋める仕組みです。
 
 ## WebAssemblyとJavaScriptのつなぎ方
 
@@ -138,7 +138,7 @@ const run = WebAssembly.promising(instance.exports.run);
 const total = await run();
 ```
 
-TypeScript 7.0.2のlibには`WebAssembly.Suspending`と`WebAssembly.promising()`の型が無く、そのまま書くとTS2339になります。
+TypeScriptのlibには`WebAssembly.Suspending`と`WebAssembly.promising()`の型が無く、そのまま書くとTS2339になります。
 
 WebAssembly側は、`fetch_size`が非同期であることをまったく知りません。`console.log()`を呼んでいた`log`と同じ書き方で呼び、戻り値をそのまま使っています。
 
@@ -175,9 +175,9 @@ WebAssembly側は、`fetch_size`が非同期であることをまったく知り
 
 Asyncifyがコードの書き換えで実現していた途中経過の保存と復元を、JSPIではエンジンがスタックごと行います。そのため、WebAssemblyのコードには非同期のための命令が1つも入っていません。
 
-`/one.txt`と`/second.txt`を置いたページでこの2つを動かすと、Chrome 156、Safari 27.2、Firefox 159のどれでも、2つのファイルの大きさの合計が返りました。中断しているあいだもイベントループは止まりません。`Suspending`で包んだ関数で400ms待たせると、そのあいだに50msおきのタイマーが5〜8回動きました。
+`/one.txt`と`/second.txt`を置いたページでこの2つを動かすと、どのブラウザでも、2つのファイルの大きさの合計が返ります。中断しているあいだもイベントループは止まらず、`Suspending`で包んだ関数を待っているあいだも、`setInterval()`のタイマーは動き続けます。
 
-`promising()`で包むのを忘れてエクスポートをそのまま呼ぶと、`Suspending`で包んだインポートに着いたところで`WebAssembly.SuspendError`が投げられます。メッセージは、Chrome 156では`trying to suspend without WebAssembly.promising`、Safari 27.2では`Suspending function called outside of a promising() context`、Firefox 159では`No matching WebAssembly.promising for call to WebAssembly.Promising import.`でした。
+`promising()`で包むのを忘れてエクスポートをそのまま呼ぶと、`Suspending`で包んだインポートに着いたところで`WebAssembly.SuspendError`が投げられます。
 
 C++をEmscriptenでビルドしているなら、リンク時に`-sASYNCIFY`の代わりに`-sJSPI`を付けるとJSPIを使った出力になります。C++のコードに手を入れる必要はありませんが、中断するインポートとエクスポートは`-sJSPI_IMPORTS`と`-sJSPI_EXPORTS`で明示します。ただしJSPIはエンジンの機能なので、対応していないブラウザでは動きません。対応しているかどうかは`'Suspending' in WebAssembly`で判定できます。
 
