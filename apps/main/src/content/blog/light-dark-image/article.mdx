@@ -45,9 +45,38 @@ featureIds:
 
 どのブラウザでも、`getComputedStyle()`の`background-image`を読むと、`light-dark()`ではなく選ばれた側の画像が返ります。`none`が選ばれた要素では`image(rgba(0, 0, 0, 0))`、つまり透明な色の画像です。`light-dark(red, url('/a.png'))`のように色と画像を混ぜると、無効な値になります。
 
-<PlaygroundEmbed demo="color-schemeを切り替えて画像を見る" headingLevel="h4" sectionId="light-dark-image" />
+```css demo="scheme"
+body:has([value='light']:checked) .hero {
+  color-scheme: light;
+}
+body:has([value='dark']:checked) .hero {
+  color-scheme: dark;
+}
 
-枠の`color-scheme`を`dark`にすると、背景が斜めの直線グラデーションから、中心が明るい放射状のグラデーションに変わります。`light dark`ではOSの設定に従います。
+.hero {
+  height: 8rem;
+  background-image: light-dark(
+    linear-gradient(135deg, oklch(92% 0.06 250), oklch(68% 0.16 250)),
+    radial-gradient(
+      circle at 50% 50%,
+      oklch(65% 0.15 250),
+      oklch(35% 0.08 250),
+      oklch(15% 0.02 250) 60%
+    )
+  );
+}
+```
+
+```html demo="scheme"
+<p>
+  <label><input type="radio" name="scheme" value="inherit" checked /> 指定なし</label>
+  <label><input type="radio" name="scheme" value="light" /> light</label>
+  <label><input type="radio" name="scheme" value="dark" /> dark</label>
+</p>
+<div class="hero"></div>
+```
+
+結果の欄で`dark`を選ぶと、背景が斜めの直線グラデーションから、中心が明るい放射状のグラデーションに変わります。指定なしでは、記事のテーマに従います。
 
 ## グラデーションの色をlight-dark()で書く場合との違い
 
