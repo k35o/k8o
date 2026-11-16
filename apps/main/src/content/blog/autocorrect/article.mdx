@@ -40,9 +40,51 @@ featureIds:
 
 JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。このプロパティが返すのは属性の文字列ではなく、その要素で自動修正が働くかを表す真偽値です。`false`になるのは、`autocorrect="off"`の要素と、`type`が`password`か`email`か`url`の`input`と、`off`の`<form>`を引き継いだ要素です。それ以外では`true`です。どのブラウザでも、`<input type="password" autocorrect="on">`は`false`を返します。`false`を代入すると属性は`off`に、`true`なら`on`になります。対応しているかどうかは`'autocorrect' in HTMLElement.prototype`で判定できます。
 
-<PlaygroundEmbed demo="属性の値と反映されるプロパティを見る" headingLevel="h4" sectionId="autocorrect" />
+```html demo="reflect"
+<label>
+  autocorrect属性の値
+  <select id="value">
+    <option value="unset">属性なし</option>
+    <option value="on">on</option>
+    <option value="off">off</option>
+    <option value="">空文字列</option>
+    <option value="yes">yes</option>
+  </select>
+</label>
+<label>
+  ユーザー名
+  <input id="handle" type="text" />
+</label>
+<p>input.autocorrect: <output id="result"></output></p>
+```
 
-属性の値を選び替えると、下の入力欄の`autocorrect`プロパティの値が変わります。`off`のときだけ`false`になり、空文字列や`yes`のような値では`true`のままです。
+```css demo="reflect"
+label {
+  display: block;
+  margin-block-end: 0.5rem;
+}
+```
+
+```js demo="reflect"
+const select = document.querySelector('#value');
+const input = document.querySelector('#handle');
+const result = document.querySelector('#result');
+
+const update = () => {
+  if (select.value === 'unset') {
+    input.removeAttribute('autocorrect');
+  } else {
+    input.setAttribute('autocorrect', select.value);
+  }
+  result.textContent = String(input.autocorrect);
+};
+select.addEventListener('change', update);
+update();
+```
+
+結果の欄で属性の値を選び替えると、ユーザー名の欄の`autocorrect`プロパティの値が変わります。`off`のときだけ`false`になり、空文字列や`yes`のような値では`true`のままです。
+
+置き換えそのものは、MacのSafariで確かめられます。Safariの編集メニューでスペルを自動修正を有効にし、ユーザー名の欄に`teh`と打ってスペースを入れると、属性なしでは`the`に置き換わり、`off`では`teh`のまま残ります。
 
 ## formからの継承
 
