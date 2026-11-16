@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`revert-rule`は、プロパティの値を、自身が書かれたスタイルルールがなかった場合の値に戻すCSSのキーワードです。後から書いたルールの宣言だけを取り消し、前のルールで決めた値に戻せます。
+`revert-rule`は、プロパティの値を、自身が書かれたスタイルルールがなかった場合の値に戻すCSSのキーワードです。後から書いたルールの宣言だけを取り消し、前のルールで決めた値に戻せます。Safari 27が対応して、Baseline 2026に入りました。
 
 取り消したい値が分かっているなら、その値をもう一度書けば足ります。基本のルールを書き換えられるなら、既定値を`var()`のフォールバックに入れておく方法もあります。前のルールの値を知らないまま、後のルールの宣言だけを条件付きで取り消せるのは`revert-rule`です。
 
@@ -30,8 +30,6 @@ featureIds:
 ```
 
 `.button.tinted`の宣言が選ばれた時点で、`.button`の`royalblue`は使われません。`--tint`が無いと値が無効になり、初期値の`transparent`になります。基本のルールを`background-color: var(--tint, royalblue)`と書き換えられるなら、それで足ります。
-
-`revert-rule`は、Firefox 150とChrome 148に続いてSafari 27が対応し、Baseline 2026に加わりました。
 
 ## revert・revert-layerとの違い
 
@@ -67,7 +65,7 @@ featureIds:
 
 <PlaygroundEmbed demo="キーワードを切り替えて戻り先を比べる" headingLevel="h4" sectionId="revert-rule" />
 
-`revert-rule`を選ぶと、`.rr-quiet`の付いた要素も`.rr-highlight`と同じ色になります。`revert-layer`では前のレイヤーの色に戻ります。デモの要素は`<mark>`なので、`revert`ではブラウザの既定のスタイルの黄色い背景になります。Chrome 156、Safari 27.2、Firefox 159で、`<mark>`の`revert`は3つとも`rgb(255, 255, 0)`でした。
+`revert-rule`を選ぶと、`.rr-quiet`の付いた要素も`.rr-highlight`と同じ色になります。`revert-layer`では前のレイヤーの色に戻ります。デモの要素は`<mark>`なので、`revert`ではブラウザの既定のスタイルの黄色い背景になります。どのブラウザでも、`<mark>`の`revert`は`rgb(255, 255, 0)`になります。
 
 ## 変数が無いときだけ宣言を取り消す
 
@@ -84,9 +82,9 @@ featureIds:
 }
 ```
 
-`--tint`が未定義なら、このルールの宣言はなかったことになり、`.button`の`royalblue`が当たります。Chrome 156、Safari 27.2、Firefox 159で、`--tint`の無いボタンは`royalblue`に、`--tint: green`を渡したボタンは緑になりました。
+`--tint`が未定義なら、このルールの宣言はなかったことになり、`.button`の`royalblue`が当たります。どのブラウザでも、`--tint`の無いボタンは`royalblue`に、`--tint: green`を渡したボタンは緑になります。
 
-`--tint: revert-rule`と変数のほうに書くと、戻るのは`--tint`自体なので注意してください。親から`--tint: orange`を継承していると、`--tint`は継承したオレンジに戻り、背景もオレンジになりました。継承する値が無ければ`--tint`は無効になり、背景は`transparent`です。
+`--tint: revert-rule`と変数のほうに書くと、戻るのは`--tint`自体なので注意してください。親から`--tint: orange`を継承していると、`--tint`は継承したオレンジに戻り、背景もオレンジになります。継承する値が無ければ`--tint`は無効になり、背景は`transparent`です。
 
 ## 同じルールの宣言には戻らない
 
@@ -101,7 +99,7 @@ featureIds:
 
 `color`は`red`ではなく前のルールの値になります。[仕様](https://drafts.csswg.org/css-cascade-5/#revert-rule-keyword)では、そのスタイルルールが存在しなかったものとして値を計算し直すからです。
 
-入れ子のルールは別のスタイルルールとして数えられます。`.highlight.quiet { color: red; & { color: revert-rule; } }`と書くと、3つのブラウザとも外側のルールの`red`に戻りました。`style`属性に`color: revert-rule`と書いた場合も、3つとも`style`属性が無いときの値、つまりスタイルシートのルールの値になりました。
+入れ子のルールは別のスタイルルールとして数えられます。`.highlight.quiet { color: red; & { color: revert-rule; } }`と書くと、どのブラウザでも外側のルールの`red`に戻ります。`style`属性に`color: revert-rule`と書いた場合も、`style`属性が無いときの値、つまりスタイルシートのルールの値になります。
 
 ## おわりに
 
