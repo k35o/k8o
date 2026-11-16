@@ -11,7 +11,7 @@ featureIds:
 
 <BrowserSupportStatus featureId="parse-html-unsafe" />
 
-`Document.parseHTMLUnsafe()`は、HTML文字列か`TrustedHTML`を解析して、新しい`Document`を返す静的メソッドです。Baseline 2025に追加されました。
+`Document.parseHTMLUnsafe()`は、HTML文字列か`TrustedHTML`を解析して、新しい`Document`を返す静的メソッドです。Safari 26が対応して、Baseline 2025に入りました。
 
 HTML文字列を解析するだけなら、これまでどおり`DOMParser`の`parseFromString()`メソッドで足ります。`parseHTMLUnsafe()`でしかできないのは、Declarative Shadow DOM（`<template shadowrootmode>`）をシャドウルートとして解析することです。サーバーが返したWeb Componentsを含むHTMLを、シャドウルートごと取り込めます。
 
@@ -27,11 +27,11 @@ const old = new DOMParser().parseFromString(html, 'text/html');
 console.log(old.querySelector('my-card').shadowRoot); // null
 ```
 
-DevToolsのコンソールに貼ると、`parseHTMLUnsafe()`の結果には`<p>shadow</p>`を持つシャドウルートができ、`DOMParser`の結果では`<template>`が要素のまま残ります。Chrome 156、Safari 27.2、Firefox 159のどれでも同じでした。Chrome 156は`DOMParser`のときに、`Found declarative shadowrootmode attribute on a template, but declarative Shadow DOM is not being parsed. Use setHTMLUnsafe() or parseHTMLUnsafe() instead.`という警告を出します。要素の中身として入れるなら、`Element.setHTMLUnsafe()`も同じくシャドウルートを作ります（`innerHTML`は作りません）。
+DevToolsのコンソールに貼ると、`parseHTMLUnsafe()`の結果には`<p>shadow</p>`を持つシャドウルートができ、`DOMParser`の結果では`<template>`が要素のまま残ります。どのブラウザでも同じです。Chromeは`DOMParser`のときに、`Found declarative shadowrootmode attribute on a template, but declarative Shadow DOM is not being parsed. Use setHTMLUnsafe() or parseHTMLUnsafe() instead.`という警告を出します。要素の中身として入れるなら、`Element.setHTMLUnsafe()`も同じくシャドウルートを作ります（`innerHTML`は作りません）。
 
-名前に`Unsafe`とついている通り、このメソッドはXSSの危険性がある要素や属性を自動的には削除しません。返った`Document`の中では`<img>`は読み込まれず、`onerror`も動きません。ところが、そのノードを今のページに移すと動きます。Chrome 156、Safari 27.2、Firefox 159で、`<img src="/nope.png" onerror="...">`を含む結果を`document.body.append()`で移すと、`onerror`が実行されました（`<script>`は実行されませんでした）。`DOMParser`の結果でも同じです。
+名前に`Unsafe`とついている通り、このメソッドはXSSの危険性がある要素や属性を自動的には削除しません。返った`Document`の中では`<img>`は読み込まれず、`onerror`も動きません。ところが、そのノードを今のページに移すと動きます。どのブラウザでも、`<img src="/nope.png" onerror="...">`を含む結果を`document.body.append()`で移すと、`onerror`が実行されます（`<script>`は実行されません）。`DOMParser`の結果でも同じです。
 
-信頼できないHTMLを扱うときの対策は2つあります。1つは、第2引数の`sanitizer`オプションで取り除く方法です。Chrome 156とFirefox 159では次のコードで`<script>`と`onclick`属性が取り除かれ、`<b>b</b>`だけが残りました。Safari 27.2はこのオプションを無視し、何も取り除きませんでした。
+信頼できないHTMLを扱うときの対策は2つあります。1つは、第2引数の`sanitizer`オプションで取り除く方法です。ChromeとFirefoxでは、次のコードで`<script>`と`onclick`属性が取り除かれ、`<b>b</b>`だけが残ります。Safariはこのオプションを無視し、何も取り除きません。
 
 ```js
 const sanitized = Document.parseHTMLUnsafe(
@@ -41,9 +41,9 @@ const sanitized = Document.parseHTMLUnsafe(
 console.log(sanitized.body.innerHTML); // "<b>b</b>"
 ```
 
-安全性を重視した`Document.parseHTML()`は、オプションを渡さなくても同じように取り除きます。Chrome 156とFirefox 159は実装していますが、Safari 27.2にはまだありません。また、`parseHTML()`は既定の設定でカスタム要素の`<my-card>`も取り除いたので、Declarative Shadow DOMを使うWeb Componentsの解析には使えませんでした。
+安全性を重視した`Document.parseHTML()`は、オプションを渡さなくても同じように取り除きます。ChromeとFirefoxは実装していますが、Safariにはまだありません。また、`parseHTML()`は既定の設定でカスタム要素の`<my-card>`も取り除くので、Declarative Shadow DOMを使うWeb Componentsの解析には使えません。
 
-もう1つは、Trusted Typesのポリシーで作った`TrustedHTML`を渡す方法です。CSPで`require-trusted-types-for 'script'`を指定したページでは、`parseHTMLUnsafe()`に文字列を渡すと`TypeError`になり、ポリシーを通した値だけが通ります。Chrome 156、Safari 27.2、Firefox 159のどれでも、この動きになりました。
+もう1つは、Trusted Typesのポリシーで作った`TrustedHTML`を渡す方法です。CSPで`require-trusted-types-for 'script'`を指定したページでは、`parseHTMLUnsafe()`に文字列を渡すと`TypeError`になり、ポリシーを通した値だけが通ります。どのブラウザでも、この動きになります。
 
 ```js
 const policy = trustedTypes.createPolicy('myPolicy', {
