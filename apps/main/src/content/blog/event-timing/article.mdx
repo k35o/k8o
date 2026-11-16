@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-Event Timing API（Performance Event Timing API）は、クリックやキー入力などのイベントが起きてから、ハンドラが動いて次に画面が描かれるまでの時間を、イベントごとに返すAPIです。Core Web VitalsのINP（Interaction to Next Paint）は、この時間から求めます。
+Event Timing API（Performance Event Timing API）は、クリックやキー入力などのイベントが起きてから、ハンドラが動いて次に画面が描かれるまでの時間を、イベントごとに返すAPIです。Core Web VitalsのINP（Interaction to Next Paint）は、この時間から求めます。Safari 26.2が対応して、Baseline 2025に入りました。
 
 ハンドラの処理にかかった時間だけなら、`performance.now()`で前後を測れば足ります。ただ、ユーザーが感じる遅さには、ハンドラが動き出すまでの待ちと、ハンドラの後に画面が描かれるまでの時間も入ります。この2つまで含めて測るときに、Event Timing APIを使います。
 
@@ -81,11 +81,11 @@ for (const entries of interactions.values()) {
 }
 ```
 
-1つ目のコードをコンソールに貼ってからページのボタンをクリックし、続けて2つ目のコードを貼ると、クリックの`duration`と内訳が出ます。Chrome 156で50msかかる`click`のハンドラを持つボタンを押すと、`pointerup・click: 56ms`と出て、内訳は入力遅延0.3ms・処理時間50.8ms・描画遅延4.7msでした。
+1つ目のコードをコンソールに貼ってからページのボタンをクリックし、続けて2つ目のコードを貼ると、クリックの`duration`と内訳が出ます。50msかかる`click`のハンドラを持つボタンなら、処理時間は約50msになります。
 
-1回のクリックでは、`pointerup`と`click`が同じ描画の前に処理され、どちらの`duration`も同じ値になります。`duration`が一番長い`entry`を1つだけ選んで内訳を出すと、先に届く`pointerup`が選ばれ、`click`のハンドラの時間が描画遅延に数えられます。Chrome 156とFirefox 159で、押してから100ms後に離すクリックで50msかかる`click`のハンドラを動かすと、そのように選んだ内訳は処理時間が0ms、描画遅延が約48msでした。同じ描画で終わった`entry`の処理をまとめると、処理時間は約50msになります。
+1回のクリックでは、`pointerup`と`click`が同じ描画の前に処理され、どちらの`duration`も同じ値になります。`duration`が一番長い`entry`を1つだけ選んで内訳を出すと、先に届く`pointerup`が選ばれ、`click`のハンドラの時間が描画遅延に数えられます。押してから100ms後に離すクリックで50msかかる`click`のハンドラを動かすと、どのブラウザでも、そのように選んだ内訳は処理時間が0ms、描画遅延が約48msになります。同じ描画で終わった`entry`の処理をまとめると、処理時間は約50msになります。
 
-TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as PerformanceEventTiming[]`で絞ります。TypeScript 7.0.2の`PerformanceObserverInit`には`durationThreshold`が無く、そのまま書くとTS2353になります。
+TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as PerformanceEventTiming[]`で絞ります。TypeScriptの`PerformanceObserverInit`には`durationThreshold`が無く、そのまま書くとTS2353になります。
 
 <PlaygroundEmbed demo="イベントタイミング計測" headingLevel="h5" sectionId="event-timing" />
 
@@ -101,7 +101,7 @@ TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as Perform
 
 #### duration
 
-イベントが発生して（`startTime`）から次の描画までの時間をミリ秒単位で返します。値は8の倍数に丸められます。Chrome 156、Safari 27.2、Firefox 159で、60msかかる`input`のハンドラの`duration`は64ms、130msかかるものは128msでした。そのため、`duration`からハンドラの時間を引くと、負になることがあります。
+イベントが発生して（`startTime`）から次の描画までの時間をミリ秒単位で返します。値は8ms単位に丸められます。130msかかるハンドラの`duration`が128msになることもあるので、`duration`からハンドラの時間を引くと、負になることがあります。
 
 #### entryType
 
@@ -137,7 +137,7 @@ TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as Perform
 
 ユーザーのインタラクションを識別するための一意なIDを返します。
 
-ほとんどのイベントは識別の必要がないので0を返します。1回の操作で起きる`pointerdown`・`pointerup`・`click`や、`keydown`・`keypress`・`keyup`は、同じ`interactionId`を共有します。Chrome 156とFirefox 159でクリックすると、この3つが同じ値で、`mousedown`と`mouseup`は0でした。
+ほとんどのイベントは識別の必要がないので0を返します。1回の操作で起きる`pointerdown`・`pointerup`・`click`や、`keydown`・`keypress`・`keyup`は、同じ`interactionId`を共有します。どのブラウザでも、クリックではこの3つが同じ値で、`mousedown`と`mouseup`は0です。
 
 #### processingStart
 
@@ -155,7 +155,7 @@ TypeScriptでは`getEntries()`の型が`PerformanceEntry`なので、`as Perform
 
 #### target
 
-イベントのターゲット要素を返します。ターゲットがDOMから削除された場合は`null`を返します。Shadow DOMの中の要素で起きたイベントでは、Shadow DOMを持つホストの要素を返します。Chrome 156とFirefox 159で、Shadow DOMの中のボタンをクリックすると、`target`はホストの`div`でした。
+イベントのターゲット要素を返します。ターゲットがDOMから削除された場合は`null`を返します。Shadow DOMの中の要素で起きたイベントでは、Shadow DOMを持つホストの要素を返します。どのブラウザでも、Shadow DOMの中のボタンをクリックすると、`target`はホストの`div`になります。
 
 ## INP
 
@@ -195,4 +195,4 @@ FIDの計測なので、上記のコードではユーザーが最初にペー�
 
 Event Timing APIを使うと、クリックやキー入力から次の描画までの時間を、入力遅延・処理時間・描画遅延に分けて測れます。1回の操作で起きるイベントは同じ`interactionId`でまとめ、同じ描画で終わった`entry`の処理を合わせて内訳を出します。
 
-INPも、集めた`duration`の一番長いものとして求められます。Baseline 2025で主要なブラウザに揃ったので、実際のユーザーの環境で遅い操作を見つけるのに使えます。
+INPも、集めた`duration`の一番長いものとして求められます。
