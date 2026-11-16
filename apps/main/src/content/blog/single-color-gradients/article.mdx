@@ -11,9 +11,13 @@ featureIds:
 
 <BrowserSupportStatus featureId="single-color-gradients"></BrowserSupportStatus>
 
-`linear-gradient()`・`radial-gradient()`・`conic-gradient()`は、色を1つだけ渡しても書けます。`linear-gradient(red)`は、赤一色で塗った画像になります。Chrome 135が対応して、Baseline 2025に入りました。
+## はじめに
+
+`linear-gradient()`、`radial-gradient()`、`conic-gradient()`は、色を1つだけ渡しても書けます。`linear-gradient(red)`は、赤一色で塗った画像になります。Chrome 135が対応して、Baseline 2025に入りました。
 
 背景を1色で塗るだけなら、`background-color`で足ります。ただし`background-color`は背景の一番下にしか置けないので、背景画像の上に色を重ねるには、色を画像として書く必要があります。これまで`linear-gradient(red, red)`のように同じ色を2回書いていたところを、1回で書けるようになりました。
+
+## 背景画像に色を重ねる
 
 ```html
 <div class="hero">見出し</div>
@@ -32,12 +36,12 @@ featureIds:
 
 開くと、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
 
+## 1色で書いた値
+
 どのブラウザでも、`linear-gradient(red)`と`linear-gradient(red, red)`は同じ赤一色に描かれ、半透明の黒を1色で重ねても2色で重ねても同じ見た目になります。計算値を読むと、`linear-gradient(red)`は`linear-gradient(rgb(255, 0, 0))`のままです。以前から受け付けられていた`linear-gradient(red 0 100%)`は、どのブラウザでも`linear-gradient(rgb(255, 0, 0) 0px, rgb(255, 0, 0) 100%)`と2つの色に分けて返されます。
 
-<LinkCard href="https://github.com/w3c/csswg-drafts/issues/10092" />
+以前の[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様は、グラデーションに2つ以上の色を求めていました。ブラウザは`linear-gradient(red 0% 100%)`のように位置を2つ持つ1色を受け付けていたので、仕様は色が1つだけの書き方を、位置が0個でも1個でも認める形に広げました。
 
-これまでの[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様は、グラデーションに2つ以上の色を求め、色が1つだけのグラデーションを構文で認めていませんでした。一方で主要なブラウザは、`linear-gradient(red 0% 100%)`のように位置を2つ持つ色を1つだけ書いた形を受け付けていて、仕様と実装が食い違っていました。
+## おわりに
 
-この食い違いを受けて、CSS Images 4は、色が1つだけなら位置が0個でも1個でも書けるように構文を広げました。実装に合わせたのではなく、実装より緩めた形です。提案では、意味の無い位置を書かずに済み意図が読み取りやすくなることや、色ごとに有効か無効かが決まりスクリプトで扱いやすくなることが利点に挙げられています。
-
-これにより、`linear-gradient(red 0%, red 100%)`や`conic-gradient(red 0deg, red 360deg)`のように記述していた単色のグラデーションは、`linear-gradient(red)`や`conic-gradient(red)`のようにより簡潔に記述できるようになります。
+グラデーションの関数に色を1つだけ渡すと、その色で塗った画像になります。背景画像に半透明の色を重ねるときに、同じ色を2回書かずに済みます。
