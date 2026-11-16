@@ -14,7 +14,7 @@ featureIds:
 
 ## はじめに
 
-Readable Byte Streamsは、`type: 'bytes'`を指定して作る、バイト列のための`ReadableStream`です。BYOBリーダーを使うと、読み取り側が確保したバッファにデータを直接書き込ませられます。Safari 26.4の対応で、Baseline 2026に加わりました。
+Readable Byte Streamsは、`type: 'bytes'`を指定して作る、バイト列のための`ReadableStream`です。BYOBリーダーを使うと、読み取り側が確保したバッファにデータを直接書き込ませられます。Safari 26.4が対応して、Baseline 2026に入りました。
 
 レスポンスやファイルの全体を1つの`ArrayBuffer`にするだけなら、`response.arrayBuffer()`や`blob.arrayBuffer()`で足ります。先頭の数バイトだけを読む、決まった大きさのバッファを使い回して大きなデータを最後まで読む、といった読む量と置き場所を自分で決めたい場面でBYOBリーダーを使います。`fetch()`のレスポンスの`body`と`Blob`の`stream()`はバイトストリームなので、そのままBYOBリーダーを取れます。
 
@@ -25,7 +25,7 @@ const { value } = await reader.read(new Uint8Array(15));
 console.log(new TextDecoder().decode(value));
 ```
 
-ブラウザで動かすと、そのページのHTMLの先頭15バイトを受け取り、`<!doctype html>`で始まるページなら`<!doctype html>`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。1回の`read()`では`view`の一部しか埋まらないこともあり、`read(view, { min: 15 })`と書くと15バイト揃うまで待ちます。`min`も3つのブラウザで使えました。
+ブラウザで動かすと、そのページのHTMLの先頭15バイトを受け取り、`<!doctype html>`で始まるページなら`<!doctype html>`が出ます。どのブラウザでも同じです。1回の`read()`では`view`の一部しか埋まらないこともあり、`read(view, { min: 15 })`と書くと15バイト揃うまで待ちます。`min`もどのブラウザでも使えます。
 
 `new ReadableStream()`のコンストラクタにデータの供給方法を定義すれば、ストリームを自分で作ることもできます。この記事ではデータを供給する側をデータソース側、リーダーで読む側を読み取り側と呼びます。
 
@@ -108,11 +108,11 @@ const stream = new ReadableStream({
 });
 ```
 
-データの終端で`close()`を呼んだら、続けて`byobRequest.respond(0)`で0バイト書き込んだことを伝えます。BYOBリーダーの`read()`が待っているところで`close()`だけを呼ぶと、その`read()`はいつまでも終わりません。Chrome 156、Safari 27.2、Firefox 159のどれでも、`respond(0)`を足すと`done: true`が返りました。
+データの終端で`close()`を呼んだら、続けて`byobRequest.respond(0)`で0バイト書き込んだことを伝えます。BYOBリーダーの`read()`が待っているところで`close()`だけを呼ぶと、その`read()`はいつまでも終わりません。どのブラウザでも、`respond(0)`を足すと`done: true`が返ります。
 
 読み取り側では`getReader({ mode: 'byob' })`でBYOBリーダーを取得します。通常の`read()`と異なり、BYOBリーダーの`read()`には書き込み先のメモリ領域を`Uint8Array`で指定します。データソースはそのメモリ領域に直接データを書き込みます。
 
-以下はデータの総サイズが事前にわかっている場合の例です。1つのバッファを確保し、未使用部分を順番に渡していきます。バッファが埋まったら、`done`を待たずにループを抜けます。埋まったあとに長さ0の`view`で`read()`を呼ぶと、Chrome 156では`This readable stream reader cannot be used to read as the view has byte length equal to 0`という`TypeError`になりました。Safari 27.2とFirefox 159も`TypeError`です。
+以下はデータの総サイズが事前にわかっている場合の例です。1つのバッファを確保し、未使用部分を順番に渡していきます。バッファが埋まったら、`done`を待たずにループを抜けます。埋まったあとに長さ0の`view`で`read()`を呼ぶと、どのブラウザでも`TypeError`になります。
 
 ```ts
 const reader = stream.getReader({ mode: 'byob' });
@@ -213,7 +213,7 @@ const { value } = await reader.read(view);
 console.log(value[0]);
 ```
 
-データソース側でも同様に、`byobRequest.respond()`を呼んだ時点で、取り出しておいた`byobRequest.view`はdetachedになり、`controller.byobRequest`は`null`に戻ります。Chrome 156、Safari 27.2、Firefox 159で、`read(view)`を呼んだ直後の`view.byteLength`も、`respond()`の後の`view.byteLength`も0でした。
+データソース側でも同様に、`byobRequest.respond()`を呼んだ時点で、取り出しておいた`byobRequest.view`はdetachedになり、`controller.byobRequest`は`null`に戻ります。どのブラウザでも、`read(view)`を呼んだ直後の`view.byteLength`も、`respond()`の後の`view.byteLength`も0になります。
 
 `value.buffer`は渡したバッファと同じ大きさのまま戻ってくるので、次の`read()`にそれを渡せば、1つのバッファを使い回して大きなファイルを最後まで読めます。
 
@@ -235,7 +235,7 @@ while (true) {
 console.log(total);
 ```
 
-1MBの`File`を64KBのバッファで読むと、3つのブラウザのどれでも16回の`read()`で読み終わり、`value.buffer`は毎回64KBのままでした。手元のサーバーが返す1MBの`fetch()`のレスポンスを同じように読んでも、回数と大きさは同じでした。
+1MBの`File`を64KBのバッファで読むと、どのブラウザでも16回の`read()`で読み終わり、`value.buffer`は毎回64KBのままです。
 
 ## autoAllocateChunkSize
 
