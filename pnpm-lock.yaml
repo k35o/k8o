@@ -243,8 +243,8 @@ catalogs:
       specifier: 1.7.18
       version: 1.7.18
     chromatic:
-      specifier: 18.14.2
-      version: 18.14.2
+      specifier: 18.14.3
+      version: 18.14.3
     drizzle-kit:
       specifier: 0.31.11
       version: 0.31.11
@@ -637,7 +637,7 @@ importers:
         version: 5.1.0(msw@3.0.4(@types/node@26.6.6)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.6(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(playwright@1.65.0)(vite@8.3.6(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.1.0)
       chromatic:
         specifier: 'catalog:'
-        version: 18.14.2
+        version: 18.14.3
       msw:
         specifier: 3.0.4
         version: 3.0.4(@types/node@26.6.6)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.6(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -4290,8 +4290,8 @@ packages:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
 
-  chromatic@18.14.2:
-    resolution: {integrity: sha512-snDe/CcyGnPWwIv69/SnUtzx602u74YNCwQq8sSZR4993YowUSjcQKRG0Fj0+GtxVwNVPfNaqdJq+3cMApZqxg==}
+  chromatic@18.14.3:
+    resolution: {integrity: sha512-xseyRMvmHGLC2AV99Ub1CMKMhwMFmlGY96Fy4uO5exyavp0hCixnb0ZhZMfbjS3PqVIzHhxyZ7NstCPhDXMdtA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
     peerDependencies:
@@ -8866,7 +8866,7 @@ snapshots:
     dependencies:
       readdirp: 5.1.1
 
-  chromatic@18.14.2:
+  chromatic@18.14.3:
     dependencies:
       semver: 7.8.6
 
