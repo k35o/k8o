@@ -13,11 +13,9 @@ featureIds:
 
 ## はじめに
 
-Name-only container queriesは、`@container sidebar`のように名前だけを書くコンテナクエリです。`container-name`で`sidebar`と名付けた祖先の中にある要素にだけスタイルが当たり、`container-type`もサイズの条件も要りません。
+Name-only container queriesは、`@container sidebar`のように名前だけを書くコンテナクエリです。`container-name`で`sidebar`と名付けた祖先の中にある要素にだけスタイルが当たり、`container-type`もサイズの条件も要りません。Chrome 148が対応して、Baseline 2026に入りました。
 
 同じカードでも、本文の中では横並びに、サイドバーの中では縦積みにしたいことがあります。コンポーネントの見た目を、置かれた場所に応じて変える場面です。配置先が決まっていて、そのクラス名をコンポーネントのCSSに書いてもよいなら、`.sidebar .card`のような子孫セレクタで足ります。配置先を名前だけで指したいときは、これまで`@container sidebar (width >= 0px)`のように必ず真になる条件を付け、使わない条件のためだけに`container-type`を指定していました。
-
-Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に加わりました。
 
 ## 書き方
 
@@ -55,7 +53,7 @@ Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に�
 
 親の名前を`sidebar`にすると、カードはアバターの下に名前と説明が並ぶ縦積みになります。`footer`にすると説明が消え、上下の余白が詰まります。
 
-なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されていて、Firefox 159でもまだ直っていません。Firefox 159で親にクラスを足して`container-name: sidebar`を当てると、中のカードは横並びのままで、カードのクラスを変えても変わりませんでした。カードを作り直すと、縦積みになります。上のデモも、名前を変えるたびに親の要素ごと作り直しています。Chrome 156とSafari 27.2では、名前を変えるとすぐにスタイルが変わりました。
+なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されています。親にクラスを足して`container-name: sidebar`を当てても、中のカードは横並びのままで、カードのクラスを変えても変わりません。カードを作り直すと、縦積みになります。上のデモも、名前を変えるたびに親の要素ごと作り直しています。ChromeとSafariでは、名前を変えるとすぐにスタイルが変わります。
 
 ## 子孫セレクタとの違い
 
@@ -107,7 +105,7 @@ Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に�
 </aside>
 ```
 
-Chrome 156、Safari 27.2、Firefox 159で試すと、shadow treeの中に書いた`@container sidebar`は外の`.sidebar`の中で縦積みになり、同じ場所に書いた`.sidebar .card`は当たりませんでした。
+どのブラウザでも、shadow treeの中に書いた`@container sidebar`は外の`.sidebar`の中で縦積みになり、同じ場所に書いた`.sidebar .card`は当たりません。
 
 ## サイズクエリと併用するとき
 
@@ -155,4 +153,4 @@ Chrome 156、Safari 27.2、Firefox 159で試すと、shadow treeの中に書い�
 
 ## おわりに
 
-Name-only container queriesで、配置先に付けた名前だけを条件にスタイルを書けるようになりました。`container-type`も、必ず真になる条件も要りません。Firefox 149、Safari 26.4、Chrome 148が対応し、主要ブラウザで使えます。
+Name-only container queriesで、配置先に付けた名前だけを条件にスタイルを書けるようになりました。`container-type`も、必ず真になる条件も要りません。
