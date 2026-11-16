@@ -43,7 +43,7 @@ panel.addEventListener('transitionrun', (event) => {
 });
 ```
 
-`transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。どのブラウザでも、トランジションの3つのイベントの`event.animation`を`===`で比べると、どれも同じです。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つことも可能です。
+`transitionrun`で受け取った`CSSTransition`は、同じトランジションの`transitionstart`や`transitionend`で受け取るものと同じオブジェクトです。1本のアニメーションの`animationstart`と`animationiteration`、`animationend`でも同様です。どのブラウザでも、トランジションの3つのイベントの`event.animation`を`===`で比べると、どれも同じです。`animationiteration`で周回を数え、決めた回数で`pause()`を呼ぶといった使い方ができます。`event.animation.finished`を`await`すれば、終わるまで待つこともできます。
 
 ```html
 <div id="badge">●</div>
@@ -109,4 +109,4 @@ const event = new AnimationEvent('animationend', { animationName: 'fade' });
 
 ## おわりに
 
-Animation accessorsによって、アニメーションのイベントから発火元の`Animation`をそのまま受け取れるようになりました。`getAnimations()`から名前で探す必要も、同じ名前の2本を区別する工夫も要りません。
+`event.animation`を使うと、アニメーションのイベントから発火元の`Animation`をそのまま受け取れます。`getAnimations()`から名前で探す必要も、同じ名前の2本を区別する工夫も要りません。
