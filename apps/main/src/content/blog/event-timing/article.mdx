@@ -17,11 +17,7 @@ Event Timing API（Performance Event Timing API）は、クリックやキー入
 
 ハンドラの処理にかかった時間だけなら、`performance.now()`で前後を測れば足ります。ただ、ユーザーが感じる遅さには、ハンドラが動き出すまでの待ちと、ハンドラの後に画面が描かれるまでの時間も入ります。この2つまで含めて測るときに、Event Timing APIを使います。
 
-## Performance Event Timing API
-
-Performance Event Timing APIは、ユーザーの操作で発生したイベントの待ち時間の分析結果を`PerformanceEventTiming`インターフェースで提供します。
-
-### 基本的な使い方
+## 基本的な使い方
 
 `PerformanceEventTiming`は、`PerformanceObserver`で受け取ります。
 
@@ -87,73 +83,36 @@ TypeScriptでは、`getEntries()`の型が`PerformanceEntry[]`なので、`as Pe
 
 <PlaygroundEmbed demo="イベントタイミング計測" headingLevel="h5" sectionId="event-timing" />
 
-### PerformanceEntryから継承したプロパティ
+## 対象のイベントとプロパティ
 
-`PerformanceEventTiming`は`PerformanceEntry`を継承しており、`startTime`・`duration`・`entryType`・`name`のプロパティを持ちます。
+`PerformanceEventTiming`が届くイベントは、次のとおりです。
 
-#### startTime
+- クリック：`auxclick`、`click`、`contextmenu`、`dblclick`
+- コンポジション：`compositionend`、`compositionstart`、`compositionupdate`
+- ドラッグ：`dragend`、`dragenter`、`dragleave`、`dragover`、`dragstart`、`drop`
+- 入力：`beforeinput`、`input`
+- キーボード：`keydown`、`keypress`、`keyup`
+- マウス：`mousedown`、`mouseenter`、`mouseleave`、`mouseout`、`mouseover`、`mouseup`
+- ポインター：`pointerover`、`pointerenter`、`pointerdown`、`pointerup`、`pointercancel`、`pointerout`、`pointerleave`、`gotpointercapture`、`lostpointercapture`
+- タッチ：`touchstart`、`touchend`、`touchcancel`
 
-ユーザーの操作が行われた時間、イベントが発生した時刻を記録した値です。
+`PerformanceEventTiming`のプロパティは、次のとおりです。
 
-計測の基準に使われる頻出のプロパティです。
+- `startTime`：操作が起きた時刻
+- `duration`：`startTime`から次の描画までの時間
+- `name`：イベントの種類
+- `entryType`：`type: 'event'`で受け取ると`event`、`type: 'first-input'`で受け取ると`first-input`
+- `interactionId`：同じ操作で起きたイベントに共通のID。操作に結び付かないイベントでは0
+- `processingStart`：ハンドラが動き出した時刻
+- `processingEnd`：ハンドラが終わった時刻。ハンドラが無ければ`processingStart`と同じ
+- `cancelable`：イベントの`cancelable`と同じ値
+- `target`：イベントが起きた要素。DOMから外されると`null`
 
-#### duration
+`duration`は8ms単位に丸められます。130msかかるハンドラの`duration`が128msになることもあるので、`duration`からハンドラの時間を引くと、負になることがあります。
 
-イベントが発生して（`startTime`）から次の描画までの時間をミリ秒単位で返します。値は8ms単位に丸められます。130msかかるハンドラの`duration`が128msになることもあるので、`duration`からハンドラの時間を引くと、負になることがあります。
+`interactionId`は、1回のクリックで起きる`pointerdown`と`pointerup`と`click`や、1回のキー入力で起きる`keydown`と`keypress`と`keyup`で同じ値になります。どのブラウザでも、クリックの`mousedown`と`mouseup`は0です。
 
-#### entryType
-
-`PerformanceEventTiming`の場合は、すべてのイベントの待ち時間を対象にするときは`"event"`、最初の入力イベントのみを対象にするときは`"first-input"`が返されます。
-
-#### name
-
-イベントの種別を返します。
-
-`PerformanceEventTiming`が利用可能なイベントは以下の通りです。
-
-- クリック: `auxclick`, `click`, `contextmenu`, `dblclick`
-- コンポジション: `compositionend`, `compositionstart`, `compositionupdate`
-- ドラッグ: `dragend`, `dragenter`, `dragleave`, `dragover`, `dragstart`, `drop`
-- 入力: `beforeinput`, `input`
-- キーボード: `keydown`, `keypress`, `keyup`
-- マウス: `mousedown`, `mouseenter`, `mouseleave`, `mouseout`, `mouseover`, `mouseup`
-- ポインター: `pointerover`, `pointerenter`, `pointerdown`, `pointerup`, `pointercancel`, `pointerout`, `pointerleave`, `gotpointercapture`, `lostpointercapture`
-- タッチ: `touchstart`, `touchend`, `touchcancel`
-
-### PerformanceEventTiming独自のプロパティ
-
-また、独自のプロパティとして`cancelable`・`interactionId`・`processingEnd`・`processingStart`・`target`を持ちます。
-
-#### cancelable
-
-イベントを取り消し可能かどうかを示す真偽値です。
-
-取消可能とは、`Event.preventDefault()`を呼び出してイベントのデフォルト動作を防止できることを意味します。
-つまりこの値は、計測中のイベントの`Event.cancelable`と同じ値を返します。
-
-#### interactionId
-
-ユーザーのインタラクションを識別するための一意なIDを返します。
-
-ほとんどのイベントは識別の必要がないので0を返します。1回の操作で起きる`pointerdown`・`pointerup`・`click`や、`keydown`・`keypress`・`keyup`は、同じ`interactionId`を共有します。どのブラウザでも、クリックではこの3つが同じ値で、`mousedown`と`mouseup`は0です。
-
-#### processingStart
-
-イベントハンドラの実行が開始された時刻を返します。
-
-`startTime`との差をとることで、ユーザー操作からイベントハンドラの実行が開始されるまでの時間を取得できます。
-
-#### processingEnd
-
-イベントハンドラの実行が完了した時刻を返します。
-
-登録されているイベントハンドラがない場合は、`processingStart`と同じ値になります。
-
-`processingStart`との差をとることで、イベントハンドラの処理時間を取得できます。
-
-#### target
-
-イベントのターゲット要素を返します。ターゲットがDOMから削除された場合は`null`を返します。Shadow DOMの中の要素で起きたイベントでは、Shadow DOMを持つホストの要素を返します。どのブラウザでも、Shadow DOMの中のボタンをクリックすると、`target`はホストの`div`になります。
+Shadow DOMの中の要素で起きたイベントでは、どのブラウザでも`target`はShadow DOMを持つホストの要素になります。
 
 ## INP
 
