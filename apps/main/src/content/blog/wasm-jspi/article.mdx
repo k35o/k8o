@@ -55,8 +55,6 @@ JSPIは、この食い違いをブラウザのエンジン側で埋める仕組�
 
 ## WebAssemblyとJavaScriptのつなぎ方
 
-JSPIの説明に入る前に、WebAssemblyとJavaScriptがどうやりとりするかを押さえておきます。
-
 WebAssemblyのバイナリ（`.wasm`ファイル）は、JavaScriptから`WebAssembly.instantiateStreaming()`で読み込みます。読み込むときにJavaScriptの関数を渡しておくと、WebAssemblyの中からその関数を呼べます。これをインポートと呼びます。反対に、WebAssemblyの関数をJavaScriptから呼べるように公開することをエクスポートと呼びます。
 
 ```js
@@ -74,7 +72,7 @@ const { instance } = await WebAssembly.instantiateStreaming(
 instance.exports.run();
 ```
 
-WebAssembly側からはどう見えるかも確認します。`.wasm`はバイナリなので、説明にはWATというテキスト形式を使います。実務ではC++やRustのコンパイラが出力するので手で書くことはほぼありませんが、何が起きているかを見るにはWATが一番短く書けます。
+WebAssembly側からの見え方は、次のとおりです。`.wasm`はバイナリなので、説明にはWATというテキスト形式を使います。実務ではC++やRustのコンパイラが出力するので手で書くことはほぼありませんが、何が起きているかを見るにはWATが一番短く書けます。
 
 ```wasm
 (module
@@ -93,7 +91,7 @@ WebAssembly側からはどう見えるかも確認します。`.wasm`はバイ�
 
 問題になるのは、この`log`が`console.log()`ではなく`fetch()`だった場合です。`call $fetch`で戻り値のPromiseを受け取ろうにも、WebAssemblyの数値型にはPromiseを入れられません。仮に参照として受け取れても、解決を待つ命令がないので先に進めません。
 
-## これまでの回避策と、その代償
+## Asyncifyによる回避策
 
 この問題を回避するために、Emscripten（C++をWebAssemblyに変換するツールチェイン）にはAsyncifyという機能が用意されていました。Asyncifyはコンパイル時にWebAssemblyのコード全体を書き換えて、次の仕掛けを埋め込みます。非同期の呼び出しに差しかかったら途中経過をメモリに書き出していったん関数から抜け、Promiseが解決したらメモリから読み戻して続きを実行するというものです。
 
@@ -106,7 +104,7 @@ JSPIでは、この途中経過の保存と復元をブラウザのエンジン�
 - `WebAssembly.Suspending`：Promiseを返すJavaScript関数をインポートするときに包む。WebAssemblyがこの関数を呼ぶと、Promiseが解決するまで実行が中断される
 - `WebAssembly.promising()`：中断が起きうるWebAssembly関数をJavaScriptから呼ぶときに包む。包んだ関数はPromiseを返すようになり、`await`で結果を受け取れる
 
-先ほどの例の`log`を、URLから取得した内容のバイト数を返す関数`fetch_size`に置き換えてインポートしてみます。
+先ほどの例の`log`を、URLから取得した内容のバイト数を返す関数`fetch_size`に置き換えてインポートします。
 
 ```js
 // [!og]
@@ -183,4 +181,4 @@ C++をEmscriptenでビルドしているなら、リンク時に`-sASYNCIFY`の�
 
 ## おわりに
 
-WebAssemblyは計算しかできないので、外の世界とのやりとりはJavaScriptからインポートした関数に頼ります。これまでは、その関数がPromiseを返すと、待つ手段のないWebAssemblyはそこで行き詰まっていました。JSPIでは、`WebAssembly.Suspending`で包んだインポートが呼ばれるとエンジンが実行を中断し、Promiseが解決したら再開します。エクスポート側を`WebAssembly.promising()`で包めば、JavaScriptからは普通の非同期関数として呼べます。包み忘れたエクスポートから中断しようとすると`WebAssembly.SuspendError`になるので、中断が起きうるエクスポートはすべて包みます。C++やRustの同期的なコードを書き換えずに、ブラウザの非同期APIへつなげられるようになりました。
+JSPIでは、`WebAssembly.Suspending`で包んだインポートが呼ばれるとエンジンが実行を中断し、Promiseが解決したら再開します。中断が起きうるエクスポートを`WebAssembly.promising()`で包めば、C++やRustの同期的なコードを書き換えずに、ブラウザの非同期APIへつなげられます。
