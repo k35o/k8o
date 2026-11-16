@@ -24,7 +24,7 @@ featureIds:
 
 `spelling-error`と`grammar-error`は、エラーの検出とは関係なく、ブラウザのエラー表示と同じ見た目を任意のテキストに与えます。
 
-```css
+```css demo="decoration"
 /* [!og] */
 .custom-spelling {
   text-decoration-line: spelling-error;
@@ -35,6 +35,14 @@ featureIds:
 }
 ```
 
+```html demo="decoration"
+<p lang="ja">
+  この文章では<span class="custom-spelling">誤字っぽく見せたい部分</span>と<span class="custom-grammar">文法が怪しく見せたい部分</span>を、ブラウザのエラー表示と同じ装飾で描いています。
+</p>
+```
+
+結果の欄では、日本語の文の2か所に、開いたブラウザがスペルミスと文法エラーに使う下線が引かれます。
+
 この値を指定したテキストには、そのブラウザがスペルミスや文法エラーの表示に使う装飾が描かれます。見た目はブラウザが決めるので、次のように振る舞います。
 
 - `underline`など他の線種と組み合わせられない単独の値です
@@ -42,14 +50,6 @@ featureIds:
 - 未対応のブラウザでは装飾が描かれないだけで、他への影響はありません
 
 macOSで2つの値を指定したテキストを描くと、Chromeはスペルミスに赤、文法エラーに緑の点線を引きます。Safariは赤と青の丸い点、Firefoxは赤と緑の細い点線です。`text-decoration-color: blue`と`text-decoration-style: solid`と`text-decoration-thickness: 6px`を足しても、どのブラウザでも描かれる線は1ピクセルも変わりません。`text-decoration-line: underline spelling-error`は、どのブラウザでも無効な値として捨てられます。
-
-<PlaygroundEmbed
-  demo="text-decoration-lineによるエラー風装飾"
-  headingLevel="h4"
-  sectionId="spelling-grammar-error"
-/>
-
-デモでは、日本語の文の2か所に、開いたブラウザがスペルミスと文法エラーに使う下線がそれぞれ引かれます。
 
 ブラウザのスペルチェック（`spellcheck`）は日本語の文章を検出できませんが、この値は検出と切り離された装飾なので、日本語のテキストにも使えます。自前の校正機能を持つエディタで指摘箇所を示すときに、ブラウザのエラー表示と同じ見た目にそろえられます。
 
@@ -71,11 +71,7 @@ Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellc
 
 擬似要素の`::spelling-error`と`::grammar-error`は、向きが逆の機能です。ブラウザのスペルチェックがスペルミスや文法エラーとして印を付けたテキストに、スタイルを当てます。
 
-### ::spelling-error
-
-スペルミスとしてフラグ付けされたテキストに対するスタイルを定義します。
-
-```css
+```css demo="spellcheck"
 ::spelling-error {
   background-color: #ffcccc;
   color: #d8000c;
@@ -83,9 +79,36 @@ Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellc
   text-decoration-style: wavy;
   text-decoration-color: red;
 }
+
+::grammar-error {
+  color: #d8000c;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: red;
+}
+
+[contenteditable] {
+  padding: 0.5rem;
+  border: 1px solid gray;
+}
 ```
 
-`::spelling-error`の中で使えるプロパティは、仕様では次のものに限られます。
+```html demo="spellcheck"
+<p>下の文をクリックすると、スペルチェックが働きます。</p>
+<p lang="en" contenteditable="plaintext-only" spellcheck="true">
+  Check a speling error and an grammar error.
+</p>
+```
+
+`contenteditable`と`spellcheck`で、編集できてスペルチェックが働く段落にしています。`plaintext-only`は、[別の記事](/blog/contenteditable-plaintextonly)で書いています。
+
+結果の欄の英文をクリックすると、`speling`がスペルミスとして検出され、背景色と赤い波線が付きます。検出されないときは、文の一部を書き換えると確かめ直されます。
+
+一方、`an grammar`の`an`に期待している文法エラーの装飾は、多くの環境で表示されません。`::grammar-error`が当たるのはブラウザが文法エラーとしてフラグ付けしたテキストだけですが、Chromeは現状Webページのテキストに対する文法チェックを持たず、SafariもmacOSの文法チェックを有効にした場合に限られるためです。セレクタに対応していることと、それが当たるテキストをブラウザが作れることは別の問題です。
+
+文法エラーの装飾がどんな見た目になるかは、最初の例の`text-decoration-line: grammar-error`で確認できます。
+
+`::spelling-error`と`::grammar-error`の中で使えるプロパティは、仕様では次のものに限られます。
 
 - `color`と`background-color`
 - `text-decoration`とその関連プロパティ（`text-decoration-*`、`text-underline-offset`、`text-underline-position`）
@@ -93,39 +116,6 @@ Chromeでは、`a speling error`の`speling`だけをRangeで選んで`my-spellc
 - SVGのテキストに使う`stroke-color`、`fill-color`、`stroke-width`と、カスタムプロパティ
 
 `outline`や`cursor`、`caret-color`は含まれません。ChromeとSafariで、`::spelling-error`にこれらを書いて`getComputedStyle()`で読むと、どれも書いた値になりません（`outline-style`は`none`、`cursor`は`auto`のまま）。
-
-### ::grammar-error
-
-文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。
-
-```css
-::grammar-error {
-  color: #d8000c;
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: red;
-}
-```
-
-`::grammar-error`も`::spelling-error`と同様のプロパティしか定義できません。
-
-### spellcheckに検出させて試す
-
-`contenteditable`属性で編集可能なテキストエリアを準備しました。`spellcheck`属性が`true`のため、ブラウザのスペルチェックが働き、検出されたエラーが`::spelling-error`と`::grammar-error`でスタイリングされます。
-
-この例では`contenteditable`属性の値を`plaintext-only`にすることでテキストの入力しか行えないようにしています。[`plaintext-only`についても記事](/blog/contenteditable-plaintextonly)を書いているので良ければ読んでください。
-
-<PlaygroundEmbed
-  demo="スペル・文法エラースタイリング"
-  headingLevel="h5"
-  sectionId="spelling-grammar-error"
-/>
-
-そのままでは`spellcheck`の確認が行われず、見た目の変化がないことがあります。その場合は、テキストの一部を編集して再確認させると、`speling`がスペルミスとして検出されます。
-
-一方、`an grammar`の`an`に期待している文法エラーの装飾は、多くの環境で表示されません。`::grammar-error`が当たるのはブラウザが文法エラーとしてフラグ付けしたテキストだけですが、Chromeは現状Webページのテキストに対する文法チェックを持たず、SafariもmacOSの文法チェックを有効にした場合に限られるためです。セレクタに対応していることと、それが当たるテキストをブラウザが作れることは別の問題です。
-
-文法エラーの装飾がどんな見た目になるかは、最初のデモの`text-decoration-line: grammar-error`で確認できます。
 
 ## おわりに
 
