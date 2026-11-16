@@ -13,9 +13,9 @@ featureIds:
 
 ## はじめに
 
-`light-dark()`は、ライト用とダーク用の2つの値を渡すと、要素に適用されている`color-scheme`に応じてどちらかを返すCSSの関数です。色だけでなく`url()`やグラデーションの画像も渡せるので、ダークモードで背景画像やアイコンを差し替える指定を1つの宣言で書けます。
+`light-dark()`は、ライト用とダーク用の2つの値を渡すと、要素に適用されている`color-scheme`に応じてどちらかを返すCSSの関数です。色だけでなく`url()`やグラデーションの画像も渡せるので、ダークモードで背景画像やアイコンを差し替える指定を1つの宣言で書けます。画像を渡す書き方は、Safari 27が対応して、Baseline 2026に入りました。
 
-グラデーションの色だけを変えるなら、色を渡す`light-dark()`をグラデーションの中に書けば足ります。グラデーションの形や画像のファイルそのものを替えるには、これまで`prefers-color-scheme`のメディアクエリで宣言を丸ごと書き直していました。画像を渡す書き方はChrome 150とFirefox 150、Safari 27で揃い、Baseline 2026に加わりました。
+グラデーションの色だけを変えるなら、色を渡す`light-dark()`をグラデーションの中に書けば足ります。グラデーションの形や画像のファイルそのものを替えるには、これまで`prefers-color-scheme`のメディアクエリで宣言を丸ごと書き直していました。
 
 ## 画像を渡す
 
@@ -39,11 +39,11 @@ featureIds:
 }
 ```
 
-`:root`の`color-scheme: light dark`を書き忘れると、OSがダークでもライト側の画像が出たままになります。`light-dark()`がOSの設定に従って切り替わるのは、`color-scheme`に`light`と`dark`の両方を書いた要素の中だけだからです。この条件は色を渡す場合と変わりません。macOSをダークにしたままSafari 27.2とFirefox 159で試すと、`color-scheme`を書かない要素ではライト側の画像が使われました。
+`:root`の`color-scheme: light dark`を書き忘れると、OSがダークでもライト側の画像が出たままになります。`light-dark()`がOSの設定に従って切り替わるのは、`color-scheme`に`light`と`dark`の両方を書いた要素の中だけだからです。この条件は色を渡す場合と変わりません。どのブラウザでも、OSをダークにしたまま`color-scheme`を書かない要素では、ライト側の画像が使われます。
 
 片方だけ画像を出したいときは`none`を渡します。ダークテーマでは背景の装飾を消したいなら、`light-dark(url('/pattern.svg'), none)`と書けます。`none`は透明な画像として扱われるので、`background-size`などの指定が残っていても崩れません。
 
-Chrome 156、Safari 27.2、Firefox 159で`getComputedStyle()`の`background-image`を読むと、`light-dark()`ではなく選ばれた側の画像が返りました。`none`が選ばれた要素では`image(rgba(0, 0, 0, 0))`、つまり透明な色の画像です。`light-dark(red, url('/a.png'))`のように色と画像を混ぜると、3つとも無効な値になりました。
+どのブラウザでも、`getComputedStyle()`の`background-image`を読むと、`light-dark()`ではなく選ばれた側の画像が返ります。`none`が選ばれた要素では`image(rgba(0, 0, 0, 0))`、つまり透明な色の画像です。`light-dark(red, url('/a.png'))`のように色と画像を混ぜると、無効な値になります。
 
 <PlaygroundEmbed demo="color-schemeを切り替えて画像を見る" headingLevel="h4" sectionId="light-dark-image" />
 
