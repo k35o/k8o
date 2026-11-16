@@ -21,34 +21,24 @@ Event Timing API（Performance Event Timing API）は、クリックやキー入
 
 `PerformanceEventTiming`は、`PerformanceObserver`で受け取ります。
 
-```js
-// [!og]
-const interactions = new Map();
-
-const observer = new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    // interactionIdがないイベントはスキップ
-    if (!entry.interactionId) continue;
-
-    // 1回の操作で起きたイベント（pointerupとclickなど）のentryをまとめる
-    const entries = interactions.get(entry.interactionId) ?? [];
-    entries.push(entry);
-    interactions.set(entry.interactionId, entries);
-  }
-});
-
-observer.observe({
-  type: 'event',
-  buffered: true,
-  // 16ms以上のentryを受け取る。既定の104msでは、ふつうの操作がほとんど届かない
-  durationThreshold: 16,
-});
+```html demo="timing"
+<button type="button">クリックして計測</button>
+<pre id="result">ボタンを押すと、ここに内訳が出ます</pre>
 ```
 
-集めた`entry`から、操作ごとの内訳を計算できます。
+```js demo="timing"
+// [!og]
+// 50msかかるclickのハンドラ
+document.querySelector('button').addEventListener('click', () => {
+  const start = performance.now();
+  while (performance.now() - start < 50) {}
+});
 
-```js
-for (const entries of interactions.values()) {
+const result = document.querySelector('#result');
+const interactions = new Map();
+
+// 1回の操作のentryから、内訳を出す
+const show = (entries) => {
   // durationが一番長いentryと、同じ描画で終わったentry
   // durationは8ms単位に丸められるので、終わりが8ms以内なら同じ描画とみなす
   const longest = entries.reduce((a, b) => (b.duration > a.duration ? b : a));
@@ -68,20 +58,40 @@ for (const entries of interactions.values()) {
   // 描画遅延: ハンドラ実行完了から次の描画まで（丸めで負になる分は0にする）
   const presentationDelay = Math.max(0, paintTime - processingEnd);
 
-  console.log(`${sameFrame.map((entry) => entry.name).join('・')}: ${longest.duration}ms`);
-  console.log(`入力遅延: ${inputDelay}ms`);
-  console.log(`処理時間: ${processingTime}ms`);
-  console.log(`描画遅延: ${presentationDelay}ms`);
-}
+  result.textContent = [
+    `${sameFrame.map((entry) => entry.name).join(', ')}: ${longest.duration}ms`,
+    `入力遅延: ${inputDelay.toFixed(1)}ms`,
+    `処理時間: ${processingTime.toFixed(1)}ms`,
+    `描画遅延: ${presentationDelay.toFixed(1)}ms`,
+  ].join('\n');
+};
+
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    // interactionIdがないイベントはスキップ
+    if (!entry.interactionId) continue;
+
+    // 1回の操作で起きたイベント（pointerupとclickなど）のentryをまとめる
+    const entries = interactions.get(entry.interactionId) ?? [];
+    entries.push(entry);
+    interactions.set(entry.interactionId, entries);
+    show(entries);
+  }
+});
+
+observer.observe({
+  type: 'event',
+  buffered: true,
+  // 16ms以上のentryを受け取る。既定の104msでは、ふつうの操作がほとんど届かない
+  durationThreshold: 16,
+});
 ```
 
-1つ目のコードをコンソールに貼ってからページのボタンをクリックし、続けて2つ目のコードを貼ると、クリックの`duration`と内訳が出ます。50msかかる`click`のハンドラを持つボタンなら、処理時間は約50msになります。
+ボタンを押すと、クリックの`duration`と内訳が出ます。`click`のハンドラが50msかかるので、処理時間は約50msになります。
 
 1回のクリックでは、`pointerup`と`click`が同じ描画の前に処理され、どちらの`duration`も同じ値になります。`duration`が一番長い`entry`を1つだけ選んで内訳を出すと、先に届く`pointerup`が選ばれ、`click`のハンドラの時間が描画遅延に数えられます。押してから100ms後に離すクリックで50msかかる`click`のハンドラを動かすと、どのブラウザでも、そのように選んだ内訳は処理時間が0ms、描画遅延が約48msになります。同じ描画で終わった`entry`の処理をまとめると、処理時間は約50msになります。
 
 TypeScriptでは、`getEntries()`の型が`PerformanceEntry[]`なので、`as PerformanceEventTiming[]`で絞ります。`PerformanceObserverInit`の型には`durationThreshold`が無く、そのまま書くとTS2353になります。
-
-<PlaygroundEmbed demo="イベントタイミング計測" headingLevel="h5" sectionId="event-timing" />
 
 ## 対象のイベントとプロパティ
 
