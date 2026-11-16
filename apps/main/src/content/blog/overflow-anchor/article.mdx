@@ -28,9 +28,62 @@ featureIds:
 
 補正が行われない条件もあります。スクロール位置が0のときは補正されないので、一番上を見ているときに上へ要素が追加されれば、追加された要素がそのまま見えます。また、アンカーノードからスクロールコンテナまでの経路にある要素で`top`や`margin`や`transform`や`position`の計算値が変わった場合も補正されません。その変更は意図的なレイアウト変更だとみなされ、補正が抑制されます。
 
-<PlaygroundEmbed demo="表示領域より上に要素を足したときの補正を見る" headingLevel="h4" sectionId="overflow-anchor" />
+```css demo="prepend"
+.log {
+  height: 12rem;
+  overflow-y: auto;
+  border: 1px solid gray;
+}
+.log.none {
+  overflow-anchor: none;
+}
+.log p {
+  margin: 0;
+  padding: 0.75rem;
+  border-bottom: 1px solid lightgray;
+}
+.log .added {
+  background-color: light-dark(lightyellow, darkolivegreen);
+}
+```
 
-途中までスクロールしたリストに、先頭に要素を追加のボタンで要素を足せます。`auto`のままなら見えているアイテムは動かず、右の帯で見えている範囲を表す枠が下へずれます。スイッチを切って`none`にすると、枠は動かず、見えていたアイテムが足した高さのぶん下へ押し出されます。
+```html demo="prepend"
+<label><input type="checkbox" id="none" /> overflow-anchor: none</label>
+<button type="button" id="add">先頭に要素を追加</button>
+<p id="position"></p>
+<div class="log"></div>
+```
+
+```js demo="prepend"
+const log = document.querySelector('.log');
+const position = document.querySelector('#position');
+for (let i = 1; i <= 12; i++) {
+  const item = document.createElement('p');
+  item.textContent = `アイテム ${i}`;
+  log.append(item);
+}
+// 位置が0だと補正されないので、途中までスクロールしておく
+log.scrollTop = 150;
+
+const show = () => {
+  position.textContent = `scrollTop: ${Math.round(log.scrollTop)}`;
+};
+show();
+log.addEventListener('scroll', show);
+
+document.querySelector('#none').addEventListener('change', (event) => {
+  log.classList.toggle('none', event.target.checked);
+});
+document.querySelector('#add').addEventListener('click', () => {
+  const added = document.createElement('p');
+  added.className = 'added';
+  added.textContent = '足した要素';
+  log.prepend(added);
+  show();
+});
+```
+
+先頭に要素を追加を押すと、`auto`のままなら見えているアイテムは動かず、`scrollTop`が足した高さのぶん増えます。`overflow-anchor: none`にチェックを入れてから押すと、`scrollTop`は変わらず、見えていたアイテムが下へ押し出されます。
 
 ## 補正を外す場面
 
@@ -77,9 +130,62 @@ function prependMessages(elements) {
 
 どのブラウザでも、上端を12pxまたいだ高さ96pxのスケルトンを192pxに伸ばすと、何も付けなければ直後のアイテムが96px押し出されます。スケルトンに`overflow-anchor: none`を付けると、`scrollTop`が96増えてアイテムはその場に留まります。
 
-要素が消えるだけなら、この指定は要りません。アンカーノードがDOMから外れるとブラウザが選び直すので、下の内容はその場に留まります。効くのは、要素が残ったまま高さだけ変わる場面です。
+```css demo="skeleton"
+.list {
+  position: relative;
+  height: 12rem;
+  overflow-y: auto;
+  border: 1px solid gray;
+}
+.list p {
+  margin: 0;
+  padding: 0.75rem;
+  border-bottom: 1px solid lightgray;
+}
+.skeleton {
+  height: 6rem;
+  background-color: light-dark(gainsboro, dimgray);
+}
+.skeleton.loaded {
+  height: 12rem;
+}
+.skeleton.none {
+  overflow-anchor: none;
+}
+```
 
-<PlaygroundEmbed demo="高さが変わる要素を候補から外す" headingLevel="h4" sectionId="overflow-anchor" />
+```html demo="skeleton"
+<label><input type="checkbox" id="none" /> スケルトンに overflow-anchor: none</label>
+<button type="button" id="load">読み込みを完了させる</button>
+<div class="list"></div>
+```
+
+```js demo="skeleton"
+const list = document.querySelector('.list');
+const skeleton = document.createElement('p');
+skeleton.className = 'skeleton';
+skeleton.textContent = '読み込み中';
+for (let i = 1; i <= 8; i++) {
+  const item = document.createElement('p');
+  item.textContent = `アイテム ${i}`;
+  list.append(item);
+  if (i === 3) list.append(skeleton);
+}
+// スケルトンが表示領域の上端を少しまたぐ位置までスクロールする
+list.scrollTop = skeleton.offsetTop + 12;
+
+document.querySelector('#none').addEventListener('change', (event) => {
+  skeleton.classList.toggle('none', event.target.checked);
+});
+document.querySelector('#load').addEventListener('click', () => {
+  skeleton.classList.add('loaded');
+  skeleton.textContent = '読み込みが終わった本文';
+});
+```
+
+読み込みを完了させるを押すと、何も付けなければアイテム 4が下へ押し出されます。スケルトンに`overflow-anchor: none`のチェックを入れてから押すと、アイテム 4はその場に留まります。
+
+要素が消えるだけなら、この指定は要りません。アンカーノードがDOMから外れるとブラウザが選び直すので、下の内容はその場に留まります。効くのは、要素が残ったまま高さだけ変わる場面です。
 
 `overflow-anchor: none`の子孫でスクロールアンカリングを再度有効にする方法はありません。ただし子孫にあるスクロールコンテナは、自身のスクロールボックスについては再び候補を選び始めます。
 
