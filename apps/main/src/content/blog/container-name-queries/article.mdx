@@ -45,15 +45,64 @@ Name-only container queriesは、`@container sidebar`のように名前だけを
 
 `container-name`には空白区切りで複数の名前を書けます。`container-name: sidebar panel`とした要素は、`@container sidebar`と`@container panel`のどちらの対象にもなります。
 
-<PlaygroundEmbed
-  demo="コンテナの名前でカードのレイアウトを切り替える"
-  headingLevel="h4"
-  sectionId="container-name-queries"
-/>
+```css demo="places"
+.sidebar {
+  container-name: sidebar;
+}
+.footer {
+  container-name: footer;
+}
 
-親の名前を`sidebar`にすると、カードはアバターの下に名前と説明が並ぶ縦積みになります。`footer`にすると説明が消え、上下の余白が詰まります。
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
 
-なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されています。親にクラスを足して`container-name: sidebar`を当てても、中のカードは横並びのままで、カードのクラスを変えても変わりません。カードを作り直すと、縦積みになります。上のデモも、名前を変えるたびに親の要素ごと作り直しています。ChromeとSafariでは、名前を変えるとすぐにスタイルが変わります。
+@container sidebar {
+  .card {
+    flex-direction: column;
+  }
+}
+
+@container footer {
+  .card {
+    padding-block: 0.25rem;
+  }
+  .description {
+    display: none;
+  }
+}
+
+/* 例の見た目 */
+section {
+  margin-block-end: 0.5rem;
+  border: 1px solid gray;
+}
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: steelblue;
+}
+```
+
+```html demo="places"
+<section>
+  <div class="card"><span class="avatar"></span><p>k8o <small class="description">Webエンジニア</small></p></div>
+</section>
+<section class="sidebar">
+  <div class="card"><span class="avatar"></span><p>k8o <small class="description">Webエンジニア</small></p></div>
+</section>
+<section class="footer">
+  <div class="card"><span class="avatar"></span><p>k8o <small class="description">Webエンジニア</small></p></div>
+</section>
+```
+
+結果の欄では、同じカードを名前の無い枠、`sidebar`の枠、`footer`の枠に置いています。`sidebar`の中ではアバターの下に名前が並ぶ縦積みになり、`footer`の中では説明が消えて上下の余白が詰まります。
+
+なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されています。親にクラスを足して`container-name: sidebar`を当てても、中のカードは横並びのままで、カードのクラスを変えても変わりません。カードを作り直すと、縦積みになります。ChromeとSafariでは、名前を変えるとすぐにスタイルが変わります。
 
 ## 子孫セレクタとの違い
 
