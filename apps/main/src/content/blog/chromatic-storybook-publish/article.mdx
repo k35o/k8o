@@ -13,7 +13,7 @@ import compositionSidebar from './_images/composition-sidebar.avif';
 
 [Chromatic](https://www.chromatic.com/)はStorybookのメンテナーが提供するクラウドサービスで、Storybookの公開やビジュアルテスト、UIレビューなど多くの機能を備えています。`@storybook/addon-mcp`を入れたStorybookをChromaticにPublishすると、公開したURLの末尾に`/mcp`を付けたアドレスが、AIエージェントにコンポーネントの情報を渡すMCPサーバーになります。
 
-コンポーネントを見せるだけなら、`storybook build`の出力をどの静的ホスティングに置いても足ります。Storybookの開発サーバーを立てずにAIエージェントからコンポーネントの情報を引きたいときに、ChromaticへのPublishが効いてきます。Chromaticのパーマリンクは、別のリポジトリのStorybookをまとめて表示するStorybook Compositionの参照先にもそのまま使えます。
+`storybook build`の出力は、どの静的ホスティングに置いてもコンポーネントを見せられます。Storybookの開発サーバーを立てずにAIエージェントからコンポーネントの情報を引きたいときに、ChromaticへのPublishが効いてきます。Chromaticのパーマリンクは、別のリポジトリのStorybookをまとめて表示するStorybook Compositionの参照先にもそのまま使えます。
 
 たとえば、このサイトで使っているデザインシステム@k8ordo/uiのStorybookは公開設定がPublicなので、Claude Codeの`.mcp.json`に次のように書くだけで使えます。
 
