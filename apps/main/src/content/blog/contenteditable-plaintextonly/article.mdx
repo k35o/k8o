@@ -17,7 +17,7 @@ import sample from './_images/sample.avif';
 
 `contenteditable`は、付けた要素の中身をページの上でそのまま編集できるようにするHTMLのグローバル属性です。値を`plaintext-only`にすると、貼り付けた太字や背景色などの書式を受け付けず、テキストだけを編集させられます。Firefox 136が対応して、Baseline 2025に入りました。
 
-フォームに文字を入力させるだけなら、`textarea`や`input`で足ります。`contenteditable`が要るのは、見出しや段落のようなページの中の要素を、その見た目のまま編集させたいときです。`contenteditable="true"`では貼り付けた書式も入るため、テキストだけに限るには`paste`イベントで書式を落とす処理を書いていました。`plaintext-only`なら、属性だけでテキストに限れます。
+フォームの文字の入力には、`textarea`や`input`を使います。`contenteditable`が要るのは、見出しや段落のようなページの中の要素を、その見た目のまま編集させたいときです。`contenteditable="true"`では貼り付けた書式も入るため、テキストだけに限るには`paste`イベントで書式を落とす処理を書いていました。`plaintext-only`なら、属性だけでテキストに限れます。
 
 ## contenteditable
 
@@ -96,4 +96,4 @@ document.querySelector('#title').addEventListener('input', (event) => {
 
 ## おわりに
 
-`contenteditable="true"`では、貼り付けた書式まで入ることを考えて実装する必要がありました。`plaintext-only`ならテキストだけを受け付けるので、リッチテキストを扱わない場面では、属性を1つ書くだけで書式の心配が要らなくなります。
+`contenteditable="plaintext-only"`を使うと、ページの中の要素をその見た目のまま、テキストだけを受け付ける編集欄にできます。リッチテキストを扱わない場面では、貼り付けた書式も属性だけで落とせます。
