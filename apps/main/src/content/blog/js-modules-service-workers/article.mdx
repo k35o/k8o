@@ -15,7 +15,7 @@ featureIds:
 
 Service WorkerのES Modules対応は、`navigator.serviceWorker.register()`に`type: 'module'`を渡すと、Service Workerのスクリプトで`import`文を使えるようにするものです。ページと同じESモジュールのファイルを、Service Workerからもそのまま読み込めます。Firefox 147が対応して、Baseline 2026に入りました。
 
-ビルドツールでService Workerを1つのファイルにまとめているなら、これまでどおりの書き方で足ります。ビルドせずに、ページと同じモジュールをService Workerから読みたいときに`type: 'module'`が要ります。
+ビルドツールでService Workerを1つのファイルにまとめているときは、これまでどおりの書き方で動きます。ビルドせずに、ページと同じモジュールをService Workerから読みたいときに`type: 'module'`が要ります。
 
 Service Workerで外部のスクリプトを読み込むには、これまで`importScripts()`を使う必要がありました。
 
