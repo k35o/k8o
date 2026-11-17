@@ -13,11 +13,9 @@ featureIds:
 
 ## はじめに
 
-`ReadableStream`は非同期イテラブルなので、`for await...of`にそのまま渡すと、届いたチャンクを1つずつ順に読めます。ストリームが閉じればループも終わり、リーダーの取得と解放はループが受け持ちます。
+`ReadableStream`は非同期イテラブルなので、`for await...of`にそのまま渡すと、届いたチャンクを1つずつ順に読めます。ストリームが閉じればループも終わり、リーダーの取得と解放はループが受け持ちます。Safari 27が対応して、Baseline 2026に入りました。
 
 レスポンスを全部受け取ってから使うなら、`response.text()`や`response.json()`で足ります。`fetch()`のレスポンスを届いた分から少しずつ処理したいとき、これまでは`response.body.getReader()`でリーダーを取り、`read()`が`done: true`を返すまで`while (true)`で回す書き方が定番でした。動きはしますが、ループの終了条件は自分で書く必要があり、途中で抜けるときは`releaseLock()`や`cancel()`の呼び分けも引き受けることになります。
-
-Streams APIの仕様には、`ReadableStream`を非同期イテラブルとして扱う定義が2019年から入っています。Firefox 110とChrome 124が実装したあとも、`for await`で書いたコードがSafariでだけ`TypeError`になる状態が長く続きました。Safari 27の対応により、非同期イテラブルなストリームはBaseline 2026に加わりました。
 
 ```js
 let count = 0;
@@ -34,7 +32,7 @@ for await (const chunk of stream) console.log(chunk);
 console.log('読み終わった');
 ```
 
-ブラウザで動かすと、コンソールに`1回目`・`2回目`・`3回目`が1秒おきに出て、`close()`の後に`読み終わった`が出ます。Chrome 156、Safari 27.2、Firefox 159で同じでした。
+ブラウザで動かすと、コンソールに`1回目`・`2回目`・`3回目`が1秒おきに出て、`close()`の後に`読み終わった`が出ます。
 
 ## リーダーのループを置き換える
 
@@ -56,11 +54,11 @@ for await (const chunk of response.body) {
 }
 ```
 
-ループの実行中に別の場所から`getReader()`を呼ぶと`TypeError`になります。ループの中ではストリームが内部でリーダーにロックされているためで、ロックはループを抜けた時点で解放されます。メッセージは、Chrome 156が`ReadableStreamDefaultReader constructor can only accept readable streams that are not yet locked to a reader`、Safari 27.2が`ReadableStream is locked`、Firefox 159が`Cannot get a new reader for a readable stream already locked by another reader.`でした。ストリームがエラーで終わったときは`await`の位置でそのエラーが投げられるので、`try...catch`でループごと囲めば受け取れます。
+ループの実行中に別の場所から`getReader()`を呼ぶと`TypeError`になります。ループの中ではストリームが内部でリーダーにロックされているためで、ロックはループを抜けた時点で解放されます。メッセージは、Chromeが`ReadableStreamDefaultReader constructor can only accept readable streams that are not yet locked to a reader`、Safariが`ReadableStream is locked`、Firefoxが`Cannot get a new reader for a readable stream already locked by another reader.`です。ストリームがエラーで終わったときは`await`の位置でそのエラーが投げられるので、`try...catch`でループごと囲めば受け取れます。
 
 ## ループを抜けるとストリームはキャンセルされる
 
-`for await...of`を`break`や`return`、例外で途中終了すると、既定ではストリームがキャンセルされます。データソースには`cancel()`が伝わり、以降そのストリームからは読めません。`break`・`return`・例外のどの抜け方でも、Chrome 156、Safari 27.2、Firefox 159でデータソースの`cancel()`が理由`undefined`で呼ばれました。先頭の数チャンクだけ見てあとは捨てるなら既定のままで十分ですが、続きを別のリーダーで読みたいときは行き詰まります。
+`for await...of`を`break`や`return`、例外で途中終了すると、既定ではストリームがキャンセルされます。データソースには`cancel()`が伝わり、以降そのストリームからは読めません。`break`、`return`、例外のどの抜け方でも、データソースの`cancel()`は理由`undefined`で呼ばれます。先頭の数チャンクだけ見てあとは捨てるなら既定のままで十分ですが、続きを別のリーダーで読みたいときは行き詰まります。
 
 続きを読みたいなら、`values()`に`preventCancel: true`を渡します。`values()`は`for await`が内部で呼んでいる非同期イテレータを返すメソッドで、オプションを付けたいときに明示的に呼びます。
 
@@ -105,8 +103,6 @@ if (rest !== '') handle(JSON.parse(rest));
 
 `rest`には前のチャンクで完結しなかった行の先頭部分が入っていて、次のチャンクの先頭とつないでから改行で分割します。分割結果の最後の要素は次のチャンクへ持ち越し、それ以外は完結した行として処理します。ストリームが終わったあとに`rest`に残っているものは、改行で終わらなかった最後の行です。
 
-1行のJSONを2回に分けて送るサーバーから4行を読むと、Chrome 156、Safari 27.2、Firefox 159のどれでもチャンクは8つに分かれて届き、4行とも1回ずつ処理されました。
-
 途中で読むのをやめたいときは、`AbortController`で`fetch()`を中断します。ストリームがエラー状態になり、`for await`の`await`で`AbortError`が投げられるので、中断を正常終了として扱うならループを`try...catch`で囲んで`AbortError`だけ握りつぶします。
 
 ```js
@@ -123,7 +119,7 @@ try {
 }
 ```
 
-投げられるのは3つのブラウザとも`AbortError`の`DOMException`で、メッセージはChrome 156が`signal is aborted without reason`、Safari 27.2が`Fetch is aborted`、Firefox 159が`The operation was aborted.`でした。
+投げられるのは3つのブラウザとも`AbortError`の`DOMException`で、メッセージはChromeが`signal is aborted without reason`、Safariが`Fetch is aborted`、Firefoxが`The operation was aborted.`です。
 
 ## おわりに
 
