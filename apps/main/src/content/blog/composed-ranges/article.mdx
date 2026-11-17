@@ -15,7 +15,7 @@ featureIds:
 
 `getComposedRanges`メソッドは、ユーザーが選択した範囲を、Shadow DOMの中のノードの位置まで含めて返す`Selection`オブジェクトのメソッドです。中を見てよい`ShadowRoot`を渡すと、その中のテキストノードと文字の位置が`StaticRange`で返ります。Firefox 142が対応して、Baseline 2025に入りました。
 
-選択範囲がふつうのDOMの中だけなら、これまでの`getRangeAt(0)`で足ります。Shadow DOMの中を選んだときや、外から中へまたいで選んだときは、`getRangeAt(0)`が返す範囲がブラウザによって違い、Shadow DOMの中の位置が分からないことがあります。たとえばChromeでマウスを使って外から中へ選ぶと、`getRangeAt(0)`の終わりはホスト要素の位置になり、`toString()`の結果にもShadow DOMの中の文字が入りません。`getComposedRanges`メソッドなら、どのブラウザでも中の位置まで取れます。
+選択範囲がふつうのDOMの中にあるときは、`getRangeAt(0)`で範囲が取れます。Shadow DOMの中を選んだときや、外から中へまたいで選んだときは、`getRangeAt(0)`が返す範囲がブラウザによって違い、Shadow DOMの中の位置が分からないことがあります。たとえばChromeでマウスを使って外から中へ選ぶと、`getRangeAt(0)`の終わりはホスト要素の位置になり、`toString()`の結果にもShadow DOMの中の文字が入りません。`getComposedRanges`メソッドなら、どのブラウザでも中の位置まで取れます。
 
 ```html
 <p id="host"></p>
