@@ -13,7 +13,7 @@ featureIds:
 
 `JSON.rawJSON`は、渡したテキストを`JSON.stringify`の出力にそのまま埋め込む値を作るメソッドです。`JSON.parse`のreviverに渡る`context.source`と合わせて、JSON source text accessと呼ばれます。JSONとJavaScriptの値を行き来すると丸められる数値を、元のテキストのまま扱えます。Safari 18.4が対応して、Baseline 2025に入りました。
 
-扱う整数が`Number.MAX_SAFE_INTEGER`以下なら、これまでの`JSON.parse`と`JSON.stringify`で足ります。それを超える64ビット整数のIDを、1桁も変えずに`BigInt`で読み書きするときに、この機能が要ります。
+扱う整数が`Number.MAX_SAFE_INTEGER`以下のときは、`JSON.parse`と`JSON.stringify`でそのまま読み書きできます。それを超える64ビット整数のIDを、1桁も変えずに`BigInt`で読み書きするときに、この機能が要ります。
 
 ## JSONの数値とJavaScriptの数値のずれ
 
