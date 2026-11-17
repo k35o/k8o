@@ -99,7 +99,7 @@ WebAssembly側からの見え方は、次のとおりです。`.wasm`はバイ�
 
 ## JSPIの仕組み
 
-JSPIでは、この途中経過の保存と復元をブラウザのエンジンが引き受けます。コードを書き換える必要はなく、JavaScript側で2つのラッパーを使うだけです。
+JSPIでは、この途中経過の保存と復元をブラウザのエンジンが引き受けます。コードはそのままで、JavaScript側で2つのラッパーを使います。
 
 - `WebAssembly.Suspending`：Promiseを返すJavaScript関数をインポートするときに包む。WebAssemblyがこの関数を呼ぶと、Promiseが解決するまで実行が中断される
 - `WebAssembly.promising()`：中断が起きうるWebAssembly関数をJavaScriptから呼ぶときに包む。包んだ関数はPromiseを返すようになり、`await`で結果を受け取れる
@@ -177,7 +177,7 @@ Asyncifyがコードの書き換えで実現していた途中経過の保存と
 
 `promising()`で包むのを忘れてエクスポートをそのまま呼ぶと、`Suspending`で包んだインポートに着いたところで`WebAssembly.SuspendError`が投げられます。
 
-C++をEmscriptenでビルドしているなら、リンク時に`-sASYNCIFY`の代わりに`-sJSPI`を付けるとJSPIを使った出力になります。C++のコードに手を入れる必要はありませんが、中断するインポートとエクスポートは`-sJSPI_IMPORTS`と`-sJSPI_EXPORTS`で明示します。ただしJSPIはエンジンの機能なので、対応していないブラウザでは動きません。対応しているかどうかは`'Suspending' in WebAssembly`で判定できます。
+C++をEmscriptenでビルドしているなら、リンク時に`-sASYNCIFY`の代わりに`-sJSPI`を付けるとJSPIを使った出力になります。C++のコードはそのままで、中断するインポートとエクスポートを`-sJSPI_IMPORTS`と`-sJSPI_EXPORTS`で明示します。ただしJSPIはエンジンの機能なので、対応していないブラウザでは動きません。対応しているかどうかは`'Suspending' in WebAssembly`で判定できます。
 
 ## おわりに
 
