@@ -15,7 +15,7 @@ featureIds:
 
 Readable Byte Streamsは、`type: 'bytes'`を指定して作る、バイト列のための`ReadableStream`です。BYOBリーダーを使うと、読み取り側が確保したバッファにデータを直接書き込ませられます。Safari 26.4が対応して、Baseline 2026に入りました。
 
-レスポンスやファイルの全体を1つの`ArrayBuffer`にするだけなら、`response.arrayBuffer()`や`blob.arrayBuffer()`で足ります。先頭の数バイトだけを読む、決まった大きさのバッファを使い回して大きなデータを最後まで読む、といった読む量と置き場所を自分で決めたい場面でBYOBリーダーを使います。`fetch()`のレスポンスの`body`と`Blob`の`stream()`はバイトストリームなので、そのままBYOBリーダーを取れます。
+レスポンスやファイルの全体を1つの`ArrayBuffer`にするときは、`response.arrayBuffer()`や`blob.arrayBuffer()`を使います。先頭の数バイトだけを読む、決まった大きさのバッファを使い回して大きなデータを最後まで読む、といった読む量と置き場所を自分で決めたい場面でBYOBリーダーを使います。`fetch()`のレスポンスの`body`と`Blob`の`stream()`はバイトストリームなので、そのままBYOBリーダーを取れます。
 
 ```js
 const response = await fetch(location.href);
@@ -28,7 +28,7 @@ console.log(new TextDecoder().decode(value));
 
 `new ReadableStream()`のコンストラクタにデータの供給方法を定義すれば、ストリームを自分で作ることもできます。以下では、データを供給する側をデータソース側、リーダーで読む側を読み取り側と呼びます。
 
-通常の`ReadableStream`ではチャンクは内部キューを経由して読み取り側に届きます。テキストデータであればこれで十分ですが、大きなバイナリデータを扱う場合はキューの経由がオーバーヘッドになることがあります。Readable Byte Streamsは、条件が揃えば内部キューを経由せず読み取り側のバッファに直接データを書き込む経路を提供します。
+通常の`ReadableStream`ではチャンクは内部キューを経由して読み取り側に届きます。大きなバイナリデータを扱う場合は、キューの経由がオーバーヘッドになることがあります。Readable Byte Streamsは、条件が揃えば内部キューを経由せず読み取り側のバッファに直接データを書き込む経路を提供します。
 
 ## 通常のストリームでバイナリデータを読む
 
