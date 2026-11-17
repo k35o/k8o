@@ -17,7 +17,7 @@ import { TransformPipeline } from './_components/transform-pipeline';
 
 WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エンコードした後やデコードする前のフレームの段階でWorkerに渡し、データを書き換えられるようにする機能です。送信側で暗号化して受信側で復号すれば、通信を中継するサーバーにも中身が読めないE2EE（End-to-End Encryption）を実装できます。Chrome 141が対応して、Baseline 2025に入りました。
 
-1対1でつなぐだけなら、WebRTCが通信をDTLS-SRTPで暗号化するので、これまでの書き方で足ります。SFUのようなメディアサーバーを経由する通信では、サーバーで一度復号されます。サーバーにも読めないように暗号化したいときに、Encoded Transformが要ります。
+1対1でつなぐ通信は、WebRTCがDTLS-SRTPで暗号化します。SFUのようなメディアサーバーを経由する通信では、サーバーで一度復号されます。サーバーにも読めないように暗号化したいときに、Encoded Transformが要ります。
 
 同じページで2つの`RTCPeerConnection`をつなぐと、外のサーバーなしで試せます。
 
