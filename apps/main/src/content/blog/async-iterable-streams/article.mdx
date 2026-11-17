@@ -15,7 +15,14 @@ featureIds:
 
 `ReadableStream`は非同期イテラブルなので、`for await...of`にそのまま渡すと、届いたチャンクを1つずつ順に読めます。ストリームが閉じればループも終わり、リーダーの取得と解放はループが受け持ちます。Safari 27が対応して、Baseline 2026に入りました。
 
-```js
+```js demo="chunks"
+const log = document.querySelector('#log');
+const print = (text) => {
+  const item = document.createElement('li');
+  item.textContent = text;
+  log.append(item);
+};
+
 let count = 0;
 const stream = new ReadableStream({
   async pull(controller) {
@@ -26,11 +33,15 @@ const stream = new ReadableStream({
   },
 });
 
-for await (const chunk of stream) console.log(chunk);
-console.log('読み終わった');
+for await (const chunk of stream) print(chunk);
+print('読み終わった');
 ```
 
-ブラウザで動かすと、コンソールに`1回目`、`2回目`、`3回目`が1秒おきに出て、`close()`の後に`読み終わった`が出ます。
+```html demo="chunks"
+<ul id="log"></ul>
+```
+
+結果の欄に`1回目`、`2回目`、`3回目`が1秒おきに出て、`close()`の後に`読み終わった`が出ます。
 
 ## リーダーのループを置き換える
 
