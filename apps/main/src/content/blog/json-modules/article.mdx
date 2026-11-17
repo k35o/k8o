@@ -15,7 +15,7 @@ featureIds:
 
 JSONモジュールは、`import`に`with { type: 'json' }`を付けて、JSONファイルをJavaScriptのオブジェクトとして読み込む仕組みです。`with`以降をImport Attributesと呼びます。Firefox 138が対応して、Baseline 2025に入りました。
 
-読むたびにサーバーから最新の内容を取り直すなら、これまでどおり`fetch()`と`response.json()`で足ります。JSONモジュールは、同じURLを何度インポートしても最初に読んだオブジェクトを返します。設定や辞書のように、コードと一緒に読み込んで`await`なしで使いたいJSONを、ブラウザでもNode.jsでも同じ`import`文で読めるのがJSONモジュールです。
+読むたびにサーバーから最新の内容を取り直すときは、`fetch()`と`response.json()`を使います。JSONモジュールは、同じURLを何度インポートしても最初に読んだオブジェクトを返します。設定や辞書のように、コードと一緒に読み込んで`await`なしで使いたいJSONを、ブラウザでもNode.jsでも同じ`import`文で読めるのがJSONモジュールです。
 
 ## Import Attributesの書き方
 
@@ -45,7 +45,7 @@ Node.jsで動かすと、コメントのとおりに出ます。`data`は、data
 
 > Failed to load module script: Expected a JSON module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
 
-`text/javascript`を返すURLを読み込んでも、どのブラウザでも読み込みは失敗し、中のコードは実行されません。属性を付けずに読み込めば、返ってきたJavaScriptはモジュールとして実行されます。JSONを返すはずのURLがJavaScriptを返しても、属性があればページで動かずに済みます。
+`text/javascript`を返すURLを読み込んでも、どのブラウザでも読み込みは失敗し、中のコードは実行されません。属性を付けずに読み込めば、返ってきたJavaScriptはモジュールとして実行されます。JSONを返すはずのURLがJavaScriptを返しても、属性があればそのコードはページで動きません。
 
 ## おわりに
 
