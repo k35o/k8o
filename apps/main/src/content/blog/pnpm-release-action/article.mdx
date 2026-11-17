@@ -11,7 +11,7 @@ updatedAt: 2026-11-09
 
 `pnpm-release-action`は、pnpm本体のリリース管理（`pnpm change`と`pnpm version -r`）をGitHub Actionsにつなぐアクションです。変更の意図が溜まったらリリースPRを開き、マージされたらnpmへの公開とタグ付け、GitHub Releaseの作成まで進めます。
 
-手元で`pnpm version -r`と`pnpm publish -r`を打ってリリースするなら、pnpmだけで足ります。pnpmはコミットもタグも作らないので、リリースPRからGitHub Releaseまでを自動にしたいときに、このアクションを使います。
+手元で`pnpm version -r`と`pnpm publish -r`を打ってリリースするときは、pnpmのコマンドだけを使います。pnpmはコミットもタグも作らないので、リリースPRからGitHub Releaseまでを自動にしたいときに、このアクションを使います。
 
 <LinkCard href="https://github.com/k35o/pnpm-release-action" />
 
