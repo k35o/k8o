@@ -15,7 +15,7 @@ featureIds:
 
 `event.animation`は、`animationstart`や`transitionend`などのイベントを発火させた、CSSアニメーションやトランジションの`Animation`を指すプロパティです。イベントで受け取ったアニメーションを、そのまま止めたり速めたりできます。Safari 27が対応して、Baseline 2026に入りました。
 
-どのアニメーションの節目かを知るだけなら、`animationName`や`propertyName`と`elapsedTime`で足ります。途中で止めたり速度を変えたりするには`Animation`オブジェクトが要り、これまでは`getAnimations()`で要素のアニメーションを一覧にして、名前の一致するものを探していました。
+どのアニメーションの節目かは、`animationName`や`propertyName`と`elapsedTime`で分かります。途中で止めたり速度を変えたりするには`Animation`オブジェクトが要り、これまでは`getAnimations()`で要素のアニメーションを一覧にして、名前の一致するものを探していました。
 
 ```js
 element.addEventListener('animationstart', (event) => {
@@ -25,7 +25,7 @@ element.addEventListener('animationstart', (event) => {
 });
 ```
 
-`AnimationEvent`と`TransitionEvent`に`animation`プロパティが加わり、この探し方をしなくても済むようになりました。この2つのプロパティは、BaselineではAnimation accessorsとまとめて呼ばれています。
+`AnimationEvent`と`TransitionEvent`に加わった`animation`プロパティは、イベントを発火させた`Animation`を直接指します。この2つのプロパティは、BaselineではAnimation accessorsとまとめて呼ばれています。
 
 ## 書き方
 
