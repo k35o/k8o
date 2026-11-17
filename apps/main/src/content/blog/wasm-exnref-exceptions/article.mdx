@@ -13,9 +13,7 @@ featureIds:
 
 ## はじめに
 
-exnrefは、WebAssemblyの中で捕まえた例外を指す値の型です。今の形式の例外処理では、`try_table`で捕まえた例外を`exnref`として受け取り、変数に取っておいて、後始末の後に`throw_ref`で投げ直せます。
-
-WebAssemblyの例外処理は、2022年に主要ブラウザで使えるようになりました。ただ、最初の形式では捕まえた例外そのものを手に持てなかったため、提案が改定されて例外を値として扱える形式に置き換わりました。新形式はChrome 137、Firefox 131、Safari 18.4で揃い、Baseline 2025に加わっています。
+exnrefは、WebAssemblyの中で捕まえた例外を指す値の型です。今の形式の例外処理では、`try_table`で捕まえた例外を`exnref`として受け取り、変数に取っておいて、後始末の後に`throw_ref`で投げ直せます。Chrome 137が対応して、Baseline 2025に入りました。
 
 C++の`throw`と`catch`や、Rustのパニックを再現するには、WebAssembly側にも例外を投げて捕まえる仕組みが要ります。例外を投げるだけ、または捕まえて既定値を返すだけなら、旧形式の`try`と`catch`でも書けます。捕まえた例外そのものを変数に取っておき、`try`を抜けた後で投げ直すような処理は、`exnref`を使う新形式でしか書けません。
 
@@ -59,7 +57,7 @@ try {
 }
 ```
 
-ブラウザかNode.js 26で動かすと、`error code 42`と出ます。WebAssemblyが投げた例外が、JavaScriptの`catch`に`WebAssembly.Exception`として届き、タグで判定してペイロードの42を取り出しています。Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0で同じ結果でした。ここではバイト列を埋め込んでいますが、実際には`.wasm`ファイルを`WebAssembly.instantiateStreaming()`で読み込みます。
+ブラウザかNode.jsで動かすと、`error code 42`と出ます。WebAssemblyが投げた例外が、JavaScriptの`catch`に`WebAssembly.Exception`として届き、タグで判定してペイロードの42を取り出しています。ここではバイト列を埋め込んでいますが、実際には`.wasm`ファイルを`WebAssembly.instantiateStreaming()`で読み込みます。
 
 WebAssembly側では、インポートしたタグを`throw`命令に渡して例外を投げます。上のバイト列は、次のWATを変換したものです。
 
@@ -186,17 +184,17 @@ end
 
 `catch_all_ref`はタグを問わないので、JavaScriptから投げられた例外も受け取れます。受け取った`exnref`をそのまま`throw_ref`で投げ直せば、例外はWebAssemblyを素通りしてJavaScript側の`catch`に届きます。
 
-`throw_ref`で投げ直した例外は、JavaScript側には元の値のまま届きます。WebAssemblyが投げたものなら同じ`WebAssembly.Exception`、JavaScriptが投げたものなら元の`Error`オブジェクトです。`$work`から`Error`・文字列・`WebAssembly.Exception`を投げると、Chrome 156、Safari 27.2、Firefox 159、Node.js 26.13.0のどれでも、新形式の`$with_cleanup`は`$cleanup`を1回呼びました。JavaScriptが受け取った値は、元の値と`===`で一致しました。旧形式の`$with_cleanup`も同じ結果で、まだどのブラウザでも動きます。
+`throw_ref`で投げ直した例外は、JavaScript側には元の値のまま届きます。WebAssemblyが投げたものなら同じ`WebAssembly.Exception`、JavaScriptが投げたものなら元の`Error`オブジェクトです。`$work`から`Error`と文字列、`WebAssembly.Exception`のどれを投げても、`$with_cleanup`は`$cleanup`を1回呼び、JavaScriptが受け取る値は元の値と`===`で一致します。旧形式の`$with_cleanup`も同じです。
 
-`exnref`はWebAssemblyの中だけの型で、JavaScriptには公開されません。`exnref`を返す関数をエクスポートしてJavaScriptから呼ぶと、3つのブラウザで`TypeError`になりました（Chrome 156は`type incompatibility when transforming from/to JS`）。そのため新形式に移行しても、タグの節で示したJavaScript側のコードは書き換えずに済みます。
+`exnref`はWebAssemblyの中だけの型で、JavaScriptには公開されません。`exnref`を返す関数をエクスポートしてJavaScriptから呼ぶと`TypeError`になります。Chromeのメッセージは`type incompatibility when transforming from/to JS`です。そのため新形式に移行しても、タグの節で示したJavaScript側のコードは書き換えずに済みます。
 
 ## ツールチェインの対応
 
 WATを手で書く場面は少ないので、実際に気にするのはコンパイラがどちらの形式を出力するかです。
 
 - Emscripten：`-fwasm-exceptions`でWebAssemblyの例外を有効にすると、既定では旧形式が出力される。新形式にするには`-sWASM_LEGACY_EXCEPTIONS=0`も指定する
-- Binaryen：`wasm-opt`の`--enable-exception-handling`で例外処理を有効にする。旧形式のバイナリは`--translate-to-exnref`で新形式に変換できる。変換するときは`--enable-reference-types`も付ける。binaryen 132では`--enable-exception-handling`だけだと、出力の`exnref`が許されずに検証で落ちた
-- wabt：1.0.42からの`wat2wasm`は既定で`try_table`と`throw_ref`を受け付ける。それより前の版では`--enable-exceptions`を付ける。npmのwabtは1.0.39で、付けないと`tag not allowed`などのエラーになった
+- Binaryen：`wasm-opt`の`--enable-exception-handling`で例外処理を有効にする。旧形式のバイナリは`--translate-to-exnref`で新形式に変換できる。変換するときは`--enable-reference-types`も付ける。`--enable-exception-handling`だけだと、出力の`exnref`が許されずに検証で落ちる
+- wabt：1.0.42からの`wat2wasm`は既定で`try_table`と`throw_ref`を受け付ける。それより前の版では`--enable-exceptions`を付ける。付けないと`tag not allowed`などのエラーになる
 
 新形式のバイナリは、対応していない古いブラウザでは読み込みに失敗します。対象のブラウザがすべて新形式に対応しているなら新形式を選び、既存の旧形式のバイナリはBinaryenで変換しておきます。旧形式も互換性のためにブラウザに残っていますが、標準になったのは新形式で、旧形式はレガシー扱いです。
 
