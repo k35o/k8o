@@ -16,7 +16,7 @@ import { WebkitDirectoryInputExample } from './_components/file-input-examples';
 ## はじめに
 `webkitdirectory`は、`<input type="file">`でファイルの代わりにフォルダ（ディレクトリ）を選ばせる属性です。選んだフォルダの中のファイルがサブフォルダの中まで`files`に入り、各ファイルの`webkitRelativePath`には、選んだフォルダの名前から始まるパスが入ります。Firefox Androidが対応して、Baseline 2025に入りました。
 
-ファイルを1つ、または`multiple`で複数選ばせるなら、これまでの`type="file"`で足ります。`<input>`でフォルダを丸ごと選ばせて、どのファイルがどのサブフォルダにあったかまで受け取るのは、`webkitdirectory`でしかできません。
+ファイルを1つ、または`multiple`で複数選ばせるのは、`type="file"`でできます。`<input>`でフォルダを丸ごと選ばせて、どのファイルがどのサブフォルダにあったかまで受け取るのは、`webkitdirectory`でしかできません。
 
 ```html
 <!-- [!og] -->
