@@ -15,7 +15,7 @@ featureIds:
 
 Reporting APIは、CSP違反のようにブラウザが検知した問題を、レポートとしてサーバーに送らせたり、JavaScriptで受け取ったりする仕組みです。Firefox 149が対応して、Baseline 2026に入りました。レポートの種類は仕様ごとに決まっていて、Baselineに入っているのはCSPの違反（`csp-violation`）のレポートです。
 
-JavaScriptの例外なら、`window.onerror`で拾って`fetch`で送れば足ります。CSPの違反は、ブラウザが検知してもページの例外にならないので、Reporting APIで受け取ります。ユーザーのブラウザで起きた、開発環境では気づきにくい問題を集められます。
+JavaScriptの例外は、`window.onerror`で拾って`fetch`で送れます。CSPの違反は、ブラウザが検知してもページの例外にならないので、Reporting APIで受け取ります。ユーザーのブラウザで起きた、開発環境では気づきにくい問題を集められます。
 
 レポートを受け取る方法は2つあります。
 
