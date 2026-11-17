@@ -1,0 +1,17 @@
+.root {
+  display: grid;
+  gap: calc(var(--spacing) * 2);
+}
+
+.item {
+  padding-block: calc(var(--spacing) * 2);
+  padding-inline: calc(var(--spacing) * 4);
+  /* better-css-modules-disable-next-line tokens/color -- 記事のコード例と同じ紺にし、印刷で背景が省かれるかを見せる */
+  background-color: navy;
+  /* better-css-modules-disable-next-line tokens/color -- 記事のコード例と同じ白にし、印刷で文字色が変わるかを見せる */
+  color: white;
+
+  &[data-print-color-adjust='exact'] {
+    print-color-adjust: exact;
+  }
+}

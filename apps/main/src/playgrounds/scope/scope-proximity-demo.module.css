@@ -49,7 +49,12 @@
   line-height: var(--line-height-sm);
 }
 
+.codes {
+  display: grid;
+}
+
 .code {
+  grid-area: 1 / 1;
   overflow-x: auto;
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -58,5 +63,9 @@
   @media (width >= 40rem) {
     font-size: var(--font-size-md);
     line-height: var(--line-height-md);
+  }
+
+  &[data-active='false'] {
+    visibility: hidden;
   }
 }

@@ -1,21 +1,38 @@
 ---
-title: 'Top-level awaitでモジュールの評価を非同期処理の完了まで待たせる'
-description: 'Top-level awaitは、ESモジュールのトップレベルでawaitを書けるようにする構文です。Chrome 89とFirefox 89では2021年から使えていましたが、Safariに残っていた不具合がSafari 27で解消され、Baseline 2026に加わりました。モジュールグラフの評価がどう変わるか、使いどころと避けるべき場面はどこかを整理します。'
+title: 'Top-level awaitでasync関数の外にawaitを書く'
+description: 'Top-level awaitは、ESモジュールのトップレベルでawaitを書ける構文です。設定の取得やWebAssemblyの初期化を待ってから値をexportできます。循環参照やService Workerでの注意点も説明します。'
 createdAt: 2026-09-26
-updatedAt: 2026-09-26
+updatedAt: 2026-11-09
 featureIds:
   - top-level-await
 ---
 
-# Top-level awaitでモジュールの評価を非同期処理の完了まで待たせる
+# Top-level awaitでasync関数の外にawaitを書く
 
 <BrowserSupportStatus featureId="top-level-await" />
 
 ## はじめに
 
-ES2017で`await`が導入されたとき、書ける場所は`async`関数の中だけと決められました。モジュールの初期化で設定ファイルを取りに行きたい、WebAssemblyのインスタンス化を待ってからエクスポートしたい、といった場面では回り道を強いられます。`async`関数で包んで即時実行し、結果をPromiseとしてエクスポートするしかありませんでした。
+Top-level awaitは、ESモジュールのトップレベル、つまり関数の外に`await`を書ける構文です。`await`が終わるまでそのモジュールの評価が止まり、それを`import`している側の本体は終わるのを待ってから実行されます。Safari 27で残っていた不具合が直り、Baseline 2026に入りました。
 
-Top-level awaitは、ESモジュールのトップレベルで`await`を書けるようにするES2022の構文です。Chrome 89とFirefox 89が2021年に対応し、Safariも15で実装しましたが、同じモジュールを複数の場所から同時に`import`したときの不具合が残っていました。Safari 27でこれが解消され、Baseline 2026に加わりました。
+`await`は`async`関数の中に書くものなので、モジュールを読み込んだ時点で設定ファイルを取りに行くには工夫が要りました。`async`関数で包んで即時実行し、結果をPromiseのまま`export`して、使う側でも`await`する形です。Top-level awaitを使うと、取得し終えた値をそのまま`export`できます。
+
+```js title="config.mjs"
+console.log('config: 読み込み開始');
+await new Promise((resolve) => setTimeout(resolve, 1000));
+export const config = { apiBase: 'https://example.com' };
+console.log('config: 1秒待った');
+```
+
+```js title="main.mjs"
+import { config } from './config.mjs';
+
+console.log('main:', config.apiBase);
+```
+
+`main.mjs`を動かすと、`config: 読み込み開始`のあと1秒おいて`config: 1秒待った`が出て、最後に`main: https://example.com`が出ます。
+
+Top-level awaitはES2022の構文です。Safariは15から実装していましたが、同じモジュールを複数の場所から同時に`import`したときの不具合が、27まで残っていました。
 
 ## 書き方と評価の流れ
 
@@ -33,10 +50,14 @@ export const configPromise = (async () => {
 // app.ts
 import { configPromise } from './config.ts';
 
-const config = await configPromise;
+async function main() {
+  const config = await configPromise;
+  console.log(config.apiBase);
+}
+main();
 ```
 
-Top-level awaitでは、モジュールのトップレベルに`await`を書くだけで済みます。`async`関数で包む必要はなく、`export`する値に`await`の結果をそのまま使えます。
+Top-level awaitで書くと、次のようになります。
 
 ```ts
 // [!og]
@@ -55,15 +76,15 @@ import { config } from './config.ts';
 console.log(config.apiBase);
 ```
 
-モジュールが`await`を含むと、そのモジュールの評価は非同期になり、依存している親モジュールの評価は子の完了を待ちます。ただし待つのは評価だけです。モジュールの取得と解析は並行して進むので、`app.ts`が`config.ts`のほかに`utils.ts`も`import`していれば、`utils.ts`の読み込みは`config.ts`の`fetch`を待たずに進み、両方が揃ってから`app.ts`の本体が実行されます。
+モジュールが`await`を含むと、そのモジュールの評価は非同期になり、依存している親モジュールの評価は子の完了を待ちます。ただし待つのは親だけです。`app.ts`が`config.ts`のほかに`utils.ts`も`import`していれば、`utils.ts`は`config.ts`の`fetch`を待たずに評価まで進み、両方が終わってから`app.ts`の本体が実行されます。どのブラウザでも、`utils.ts`のログは`config.ts`が`await`で止まっている間に出て、`app.ts`の本体のログは最後に出ます。
 
-同じモジュールを複数の親が`import`している場合、評価は1回だけ行われ、すべての親がその完了を待ちます。Safariに不具合が残っていたのはこの経路です。複数の親が同時に待つ状況では子の評価が終わる前に親が動き出し、読み込んだ値を参照した時点で`ReferenceError`になることがありました。
+同じモジュールを複数の親が`import`している場合、評価は1回だけ行われ、すべての親がその完了を待ちます。Safariに不具合が残っていたのはこの経路です。複数の親が同時に待つ状況では子の評価が終わる前に親が動き出し、読み込んだ値を参照した時点で`ReferenceError`になることがありました。今のSafariでは、`await`を含む同じモジュールを読む2つのモジュールを`Promise.all()`で同時に`import()`しても、どちらも値を受け取れ、`await`を含むモジュールの評価も1回だけです。
 
 ## 使いどころ
 
-Top-level awaitが向いているのは、モジュールの初期化そのものが非同期で、初期化が終わるまでモジュールを使う意味がない場面です。
+モジュールの初期化そのものが非同期で、終わるまで使う意味がないなら、Top-level awaitで待ちます。
 
-代表的なのは、環境に応じて実装を選ぶ場面です。動的`import()`と組み合わせれば、条件によって読み込むモジュールを変え、その結果をそのままエクスポートできます。
+たとえば動的`import()`と組み合わせると、環境に応じて読み込むモジュールを変え、その結果をそのまま`export`できます。
 
 ```ts
 // 対応していれば標準の実装、なければポリフィルを使う
@@ -96,12 +117,14 @@ export const { messages } = await import(`./locales/${lang}.ts`);
 
 エントリーポイントから辿れる位置にあるモジュールで大きなリソースを待つと、そのリソースが届くまで画面は何も動きません。Top-level awaitは親モジュールの評価を止めるので、`await`が長引いた分だけアプリケーション全体の起動が遅れます。初期化に時間のかかる処理は、モジュールの評価で待つのをやめ、必要になった時点で`async`関数から呼ぶ形に寄せると起動が軽くなります。
 
-循環参照との組み合わせにも注意が必要です。`a.ts`と`b.ts`が互いに`import`している状態で、`b.ts`が`await`している処理が`a.ts`の実行結果に依存していると、互いに相手を待ったまま進まなくなります。循環参照そのものは実行時エラーになりません。Top-level awaitが入ると例外すら出ないまま止まるので、原因の特定に手間がかかります。
+循環参照との組み合わせにも注意が必要です。`a.ts`と`b.ts`が互いに`import`している状態で、`b.ts`が`await`している処理が`a.ts`の実行結果に依存していると、互いに相手を待ったまま進まなくなります。循環参照で相手のモジュールの値を評価の途中に読めば、`ReferenceError: Cannot access 'value' before initialization`のような例外が出ます。Top-level awaitで相手の実行を待つ形になると、例外すら出ないまま止まるので、原因の特定に手間がかかります。どのブラウザでも、エラーのイベントは起きずに読み込みが終わりません。Node.jsは、決着しない`await`を残したまま終わるときに`Warning: Detected unsettled top-level await`を出し、終了コード13で終わります。
 
-Service Workerでは、モジュール形式で登録してもTop-level awaitを使えず、`await`を含むモジュールは登録の時点で失敗します。Service Workerのスクリプトは、評価が同期的に完了することを前提にしているからです。初期化で待ちたい処理があれば`install`イベントの`waitUntil()`に寄せます。
+Service Workerでは、モジュール形式で登録してもTop-level awaitを使えません。Service Workerのスクリプトは、評価が同期的に完了することを前提にしているからです。ChromeとFirefoxでは、`await`を含むモジュールや、それを`import`しているモジュールを登録すると、`register()`が`TypeError`で失敗します。Safariでは登録でき、`await`の後で足したリスナーも動きますが、ほかのブラウザで動かないので頼れません。初期化で待ちたい処理があれば`install`イベントの`waitUntil()`に寄せます。
 
-CommonJSと通常のスクリプトでも使えません。`<script>`に`type="module"`が付いていなければ構文エラーになります。バンドラーを通すときは出力形式にも左右されます。IIFEやCommonJS形式への変換ではTop-level awaitを表現できないので、ESMで出力するか、バンドラー側の変換プラグインを用意します。
+CommonJSと通常のスクリプトでも使えません。`<script>`に`type="module"`が付いていなければ構文エラーになります。メッセージは、Chromeが`await is only valid in async functions and the top level bodies of modules`、Firefoxが`await is only valid in async functions, async generators and modules`です。Safariは`await`の次の語を指し、`await Promise.resolve()`なら`Unexpected identifier 'Promise'`と出します。Node.jsでは、CommonJSから`require()`で`await`を含むESモジュールを読むと`ERR_REQUIRE_ASYNC_MODULE`になり、`import()`で読む必要があります。
+
+バンドラーを通すときは出力形式にも左右されます。IIFEやCommonJS形式への変換ではTop-level awaitを表現できないので、ESMで出力するか、バンドラー側の変換プラグインを用意します。esbuildで`--format=cjs`を指定すると、`Top-level await is currently not supported with the "cjs" output format`のエラーで止まります。
 
 ## おわりに
 
-Top-level awaitは、モジュールの初期化が非同期であることを構文で表す仕組みです。設定の取得や実装の選択、WebAssemblyのインスタンス化のように、終わるまでモジュールを使う意味がない処理に向いています。一方で親モジュールの評価を止めるため、外してはいけない点が3つあります。エントリーポイントに近い場所で長い処理を待たせないこと、循環参照と組み合わせないこと、Service Workerで使わないことの3点です。ここさえ守れば、Promiseをエクスポートして利用側で`await`させる回りくどさから離れられます。
+Top-level awaitを使うと、設定の取得や実装の選択、WebAssemblyのインスタンス化のような非同期の初期化を待ってから、その結果をそのまま`export`できます。親モジュールの評価を止めるので、エントリーポイントの近くで長く待たせず、循環参照とService Workerでは使わないようにします。

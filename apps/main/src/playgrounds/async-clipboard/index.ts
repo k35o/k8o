@@ -15,7 +15,7 @@ export const asyncClipboardSection: PlaygroundSection = {
       component: ClipboardTextDemo,
       title: 'テキストのコピー・ペースト',
       description:
-        'writeText/readTextで入力欄のテキストをコピー・追記ペーストします。Permission APIで読み書きの権限状態も表示します。',
+        'writeTextとreadTextで、入力欄のテキストをコピーし、クリップボードのテキストを入力欄の末尾に貼り付けます。',
     },
     {
       component: ClipboardImageDemo,

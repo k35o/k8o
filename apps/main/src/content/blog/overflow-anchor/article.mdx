@@ -1,21 +1,21 @@
 ---
-title: 'overflow-anchorでスクロールアンカリングを制御する'
-description: 'スクロールアンカリングは、表示領域より上でコンテンツの高さが変わったときに、見えている要素がずれないようスクロール位置をブラウザが補正する仕組みです。Safari 27の対応でBaseline 2026に揃いました。補正の仕組みと、overflow-anchor: noneで補正を外すべき場面を整理します。'
+title: 'overflow-anchorでスクロール位置の自動補正を外す'
+description: 'overflow-anchorは、表示領域より上で要素が増えたときにブラウザがスクロール位置をずらすスクロールアンカリングを外すCSSプロパティです。チャットのログやスケルトンのように、補正が邪魔になる場面での使い方を説明します。'
 createdAt: 2026-09-23
-updatedAt: 2026-09-23
+updatedAt: 2026-11-09
 featureIds:
   - overflow-anchor
 ---
 
-# overflow-anchorでスクロールアンカリングを制御する
+# overflow-anchorでスクロール位置の自動補正を外す
 
 <BrowserSupportStatus featureId="overflow-anchor" />
 
 ## はじめに
 
-記事を読んでいる途中で、上のほうにある画像や広告が遅れて読み込まれて高さが増え、読んでいた行が下へ押し出される。この体験を防ぐために、ブラウザは表示領域の中にある要素を基準に選び、その要素が動いたぶんだけスクロール位置を補正します。これがスクロールアンカリングで、Chrome 56とFirefox 66では2017年から2019年にかけて既定で有効になっていました。
+`overflow-anchor`は、スクロールアンカリングを外すためのCSSプロパティです。スクロールアンカリングは、表示領域より上で画像や広告が遅れて読み込まれて高さが増えたときに、読んでいた行が下へ押し出されないよう、ブラウザがスクロール位置を補正する仕組みです。Safari 27がスクロールアンカリングと`overflow-anchor`の両方に対応して、Baseline 2026に入りました。
 
-`overflow-anchor`はこの補正を外すためのプロパティです。補正そのものはブラウザが勝手にやるので、何もしなければ恩恵を受けられます。プロパティが必要になるのは、補正が自分のスクロール制御と衝突する場面だけです。Safari 27でスクロールアンカリングと`overflow-anchor`の両方が実装され、Baseline 2026に加わりました。
+補正はブラウザが表示領域の中の要素を基準に選んで行うので、多くのページでは何も書かなくても効きます。`overflow-anchor`が要るのは、補正が自分のスクロール制御と二重にかかる場面と、高さが変わる要素そのものが補正の基準に選ばれてしまう場面です。
 
 ## 補正の仕組み
 
@@ -24,22 +24,88 @@ featureIds:
 1. 表示領域に少しでも見えている要素のうち、DOM順で最初のものをアンカーノードに選ぶ。入れ子になっていれば、その中で最初に見えている子孫まで降りる
 2. レイアウトが変わってアンカーノードのブロック方向の位置が動いたら、その移動量だけスクロール位置をずらす
 
-補正は要素を挿入した直後の同期的な処理の中ではなく、レイアウトの更新に合わせて適用されます。ただし挿入のあとに`scrollTop`などスクロール位置を読むと、その時点で補正が入った値が返ります。補正によるスクロールは通常のスクロールと同じ扱いで、`scroll`イベントも発火します。
+補正は要素を挿入した直後の同期的な処理の中ではなく、レイアウトの更新に合わせて適用されます。ただし挿入のあとに`scrollTop`などスクロール位置を読むと、その時点で補正が入った値が返ります。補正によるスクロールは通常のスクロールと同じ扱いで、`scroll`イベントも発火します。高さ200pxのスクロールコンテナを300pxまでスクロールして先頭に高さ100pxの要素を足すと、どのブラウザでも挿入の直後に読んだ`scrollTop`が400になり、`scroll`イベントが1回発火します。コンテナに`overflow-anchor: none`を付けると、`scrollTop`は300のままでイベントも発火しません。
 
 補正が行われない条件もあります。スクロール位置が0のときは補正されないので、一番上を見ているときに上へ要素が追加されれば、追加された要素がそのまま見えます。また、アンカーノードからスクロールコンテナまでの経路にある要素で`top`や`margin`や`transform`や`position`の計算値が変わった場合も補正されません。その変更は意図的なレイアウト変更だとみなされ、補正が抑制されます。
 
-<PlaygroundEmbed demo="表示領域より上に要素を足したときの補正を見る" headingLevel="h4" sectionId="overflow-anchor" />
+```css demo="prepend"
+.log {
+  height: 12rem;
+  overflow-y: auto;
+  border: 1px solid gray;
+}
+.log.none {
+  overflow-anchor: none;
+}
+.log p {
+  margin: 0;
+  padding: 0.75rem;
+  border-bottom: 1px solid lightgray;
+}
+.log .added {
+  background-color: light-dark(lightyellow, darkolivegreen);
+}
+```
 
-## 補正を外す場面
+```html demo="prepend"
+<label><input type="checkbox" id="none" /> overflow-anchor: none</label>
+<button type="button" id="add">先頭に要素を追加</button>
+<p id="position"></p>
+<div class="log"></div>
+```
 
-`overflow-anchor`は`auto`と`none`の2値で、初期値は`auto`です。`none`を指定した要素とその子孫はアンカーノードの候補から外れます。継承はしませんが、子孫には効くので、実質的にその範囲でアンカリングが止まります。
+```js demo="prepend"
+const log = document.querySelector('.log');
+const position = document.querySelector('#position');
+for (let i = 1; i <= 12; i++) {
+  const item = document.createElement('p');
+  item.textContent = `アイテム ${i}`;
+  log.append(item);
+}
+// 位置が0だと補正されないので、途中までスクロールしておく
+log.scrollTop = 150;
 
-補正が邪魔になる典型は、スクロール位置を自分で管理しているコンポーネントです。
+const show = () => {
+  position.textContent = `scrollTop: ${Math.round(log.scrollTop)}`;
+};
+show();
+log.addEventListener('scroll', show);
 
-- チャットのログのように、上へスクロールしたら古いメッセージを先頭に足す実装で、追加したあとに自分で`scrollTop`を足し戻している場合。補正と自前の調整が二重にかかり、見えている位置が足した高さのぶんずれる
-- 仮想スクロールで、要素の高さを見積もりから実測値に更新するたびにコンテナの高さを付け替える場合。補正がかかるとリストが勝手に動いて見える
+document.querySelector('#none').addEventListener('change', (event) => {
+  log.classList.toggle('none', event.target.checked);
+});
+document.querySelector('#add').addEventListener('click', () => {
+  const added = document.createElement('p');
+  added.className = 'added';
+  added.textContent = '足した要素';
+  log.prepend(added);
+  show();
+});
+```
 
-こうしたコンテナには`overflow-anchor: none`を指定して、スクロール位置の責任を自分のコードに寄せます。
+先頭に要素を追加を押すと、`auto`のままなら見えているアイテムは動かず、`scrollTop`が足した高さのぶん増えます。`overflow-anchor: none`にチェックを入れてから押すと、`scrollTop`は変わらず、見えていたアイテムが下へ押し出されます。
+
+## overflow-anchorの値
+
+`overflow-anchor`は`auto`と`none`の2値で、初期値は`auto`です。`none`を指定した要素とその子孫は、アンカーノードの候補から外れます。継承はしませんが、子孫も候補から外れるので、その範囲ではアンカリングが止まります。子孫でアンカリングを有効に戻す方法はありません。ただし、子孫にあるスクロールコンテナは、自身のスクロールについては再び候補を選びます。
+
+## スクロール位置を自分で決めるコンテナ
+
+チャットのログで、上へスクロールしたら古いメッセージを先頭に足す実装を考えます。足す前後の`scrollHeight`の差だけ`scrollTop`を足し戻して、見えているメッセージを動かさないようにします。
+
+```js
+const log = document.querySelector('.chat-log');
+
+function prependMessages(elements) {
+  const before = log.scrollHeight;
+  log.prepend(...elements);
+  log.scrollTop += log.scrollHeight - before;
+}
+```
+
+`auto`のままでは、ブラウザの補正と自前の足し戻しが二重にかかります。300pxまでスクロールしたコンテナの先頭に100pxの要素を足すと、補正で`scrollTop`が400になり、足し戻しでさらに500になって、見えていたメッセージが100px上へずれます。
+
+スクロール位置を自分で決めるコンテナには、`overflow-anchor: none`を付けて補正を止めます。足し戻しだけが効くので、`scrollTop`は400になり、メッセージは動きません。
 
 ```css
 /* [!og] */
@@ -50,7 +116,15 @@ featureIds:
 }
 ```
 
-要素単位で候補から外す使い方もあります。補正が追うのはアンカーノードの上端だけなので、アンカーノード自身の高さが変わっても補正は入りません。読み込み中のスケルトンや高さが決まっていない広告枠が表示領域の上端にあると、それがアンカーノードに選ばれ、読み込み完了で背が高くなったぶん下の内容が押し出されます。そうした要素に`overflow-anchor: none`を付けておくと候補から外れ、直後の要素がアンカーノードになるので、高さの変化が補正されます。
+仮想スクロールで、要素の高さを見積もりから実測値に更新するたびにコンテナの高さを付け替える場合も同じです。補正がかかると、リストが勝手に動いて見えます。
+
+## 高さが変わる要素をアンカーノードから外す
+
+この使い方では、補正を止めるためではなく、補正を効かせるために`overflow-anchor: none`を付けます。
+
+補正が追うのは、アンカーノードの上端の位置だけです。読み込み中のスケルトンが表示領域の上端をまたいでいると、スケルトンがアンカーノードに選ばれます。読み込みが終わってスケルトンの背が高くなっても、その上端は動かないので補正は入らず、下の内容が押し出されます。
+
+スケルトンや高さが決まっていない広告枠に`overflow-anchor: none`を付けると、アンカーノードの候補から外れ、直後の要素がアンカーノードになります。直後の要素の上端は高さが増えたぶん下へ動くので、補正が入り、下の内容はその場に留まります。
 
 ```css
 .skeleton,
@@ -59,12 +133,63 @@ featureIds:
 }
 ```
 
-要素が消えるだけなら、この指定は要りません。アンカーノードがDOMから外れるとブラウザが選び直すので、下の内容はその場に留まります。効くのは、要素が残ったまま高さだけ変わる場面です。
+```css demo="skeleton"
+.list {
+  position: relative;
+  height: 12rem;
+  overflow-y: auto;
+  border: 1px solid gray;
+}
+.list p {
+  margin: 0;
+  padding: 0.75rem;
+  border-bottom: 1px solid lightgray;
+}
+.skeleton {
+  height: 6rem;
+  background-color: light-dark(gainsboro, dimgray);
+}
+.skeleton.loaded {
+  height: 12rem;
+}
+.skeleton.none {
+  overflow-anchor: none;
+}
+```
 
-<PlaygroundEmbed demo="高さが変わる要素を候補から外す" headingLevel="h4" sectionId="overflow-anchor" />
+```html demo="skeleton"
+<label><input type="checkbox" id="none" /> スケルトンに overflow-anchor: none</label>
+<button type="button" id="load">読み込みを完了させる</button>
+<div class="list"></div>
+```
 
-`overflow-anchor: none`の子孫でスクロールアンカリングを再度有効にする方法はありません。ただし子孫にあるスクロールコンテナは、自身のスクロールボックスについては再び候補を選び始めます。
+```js demo="skeleton"
+const list = document.querySelector('.list');
+const skeleton = document.createElement('p');
+skeleton.className = 'skeleton';
+skeleton.textContent = '読み込み中';
+for (let i = 1; i <= 8; i++) {
+  const item = document.createElement('p');
+  item.textContent = `アイテム ${i}`;
+  list.append(item);
+  if (i === 3) list.append(skeleton);
+}
+// スケルトンが表示領域の上端を少しまたぐ位置までスクロールする
+list.scrollTop = skeleton.offsetTop + 12;
+
+document.querySelector('#none').addEventListener('change', (event) => {
+  skeleton.classList.toggle('none', event.target.checked);
+});
+document.querySelector('#load').addEventListener('click', () => {
+  skeleton.classList.add('loaded');
+  skeleton.textContent = '読み込みが終わった本文';
+});
+```
+
+読み込みを完了させるを押すと、何も付けなければアイテム 4が下へ押し出されます。スケルトンに`overflow-anchor: none`のチェックを入れてから押すと、アイテム 4はその場に留まります。
+
+要素が消えるだけなら、この指定は要りません。アンカーノードがDOMから外れるとブラウザが選び直すので、下の内容はその場に留まります。
 
 ## おわりに
 
-スクロールアンカリングは、表示領域より上でレイアウトが変わったときに見えている要素を固定する補正で、何もしなくても効きます。`overflow-anchor: none`はその補正を外すための手段で、スクロール位置を自分で制御するコンテナや、すぐ消える要素に付けます。Safari 27で補正と`overflow-anchor`の両方が揃ったので、これまでChromeとFirefoxだけを想定していたスクロール制御のコードは、Safariでも同じ前提で動くようになります。
+スクロールアンカリングは、表示領域より上でレイアウトが変わったときに見えている要素を固定する補正で、何もしなくても効きます。`overflow-anchor: none`はその補正を外すプロパティで、スクロール位置を自分で制御するコンテナや、表示領域の上端にあって後から高さが変わる要素に付けます。

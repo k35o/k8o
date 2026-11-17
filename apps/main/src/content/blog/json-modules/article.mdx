@@ -1,67 +1,52 @@
 ---
-title: withキーワードを使用したJSONモジュールのインポート
-description: ESMでwithキーワードを利用してJSONをインポートする方法について解説します。Import Attributeという属性を利用して、JSONモジュールを安全にJavaScriptから利用できるようになりました。
+title: 'Import AttributesでJSONをimportする'
+description: 'importにwith { type: "json" }を付けると、JSONファイルをオブジェクトとして読み込めます。ブラウザとNode.jsで同じ書き方ができ、JSON以外は実行せずにエラーにします。Baseline 2025で使えます。'
 createdAt: 2025-05-21
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - json-modules
 ---
 
-import styles from './article.module.css';
-
-# withキーワードを使用したJSONモジュールのインポート
+# Import AttributesでJSONをimportする
 
 <BrowserSupportStatus featureId="json-modules"></BrowserSupportStatus>
 
 ## はじめに
-ESMモジュールのインポート時に、`with`キーワードを利用してJSONモジュールをインポートする機能がBaseline 2025に追加されました。
-この機能を利用することで、JSONファイルを安全にインポートし、JavaScriptコード内で直接利用できるようになります。
 
-この記事では、機能の元となるImport Attributeの概要と、JSON Import Attributeの使い方について解説します。
+JSONモジュールは、`import`に`with { type: 'json' }`を付けて、JSONファイルをJavaScriptのオブジェクトとして読み込む仕組みです。`with`以降をImport Attributesと呼びます。Firefox 138が対応して、Baseline 2025に入りました。
 
-## Import Attribute
+読むたびにサーバーから最新の内容を取り直すときは、`fetch()`と`response.json()`を使います。JSONモジュールは、同じURLを何度インポートしても最初に読んだオブジェクトを返します。設定や辞書のように、コードと一緒に読み込んで`await`なしで使いたいJSONを、ブラウザでもNode.jsでも同じ`import`文で読めるのがJSONモジュールです。
 
-Import Attributeは、ESMモジュールのインポート時に、モジュールの形式に関する情報をランタイムに伝えるための属性です。
+## Import Attributesの書き方
 
-```ts
+```js title="main.mjs"
 // [!og]
-import json from './data.json' with { type: 'json' };
-import('./data.json', { with: { type: 'json' } });
+import data from './data.json' with { type: 'json' };
+console.log(data); // { name: 'k8o', tags: [ 'css', 'js' ] }
+console.log(data.name); // k8o
+
+const { default: sameData } = await import('./data.json', { with: { type: 'json' } });
+console.log(sameData === data); // true
 ```
 
-`with`キーワードを使って、モジュールの形式を指定します。
+```json title="data.json"
+{ "name": "k8o", "tags": ["css", "js"] }
+```
 
-構文に中括弧`{}`が使われているのは、以下のような理由があります。
+Node.jsで動かすと、コメントのとおりに出ます。`data`は、data.jsonの中身をそのまま持つオブジェクトです。動的な`import()`では、第2引数の`with`に同じ属性を書きます。2回目に読み込んでも、最初に読んだのと同じオブジェクトが返ります。
 
-- 多くのユーザーがオブジェクトの構文に慣れている
-- 末尾のコンマが許可されるため編集が簡単
-- 複数行に分割するときに終わりを明確にするため
+`with { type: 'json' }`を外すと、ブラウザでもNode.jsでも読み込みは失敗します。Node.jsは`ERR_IMPORT_ATTRIBUTE_MISSING`のエラーを出します。ブラウザはJavaScriptのモジュールとして読み込もうとするので、Chromeのコンソールには`Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/json"`と出ます。
 
-現在多くの場所でサポートされているモジュール形式は、`json`だけです。Baseline 2025に追加された構文も`json`だけになります。
+読み込めるのは`default`だけで、`import { name } from './data.json' with { type: 'json' }`のように名前を指定すると`SyntaxError`になります。返るオブジェクトは凍結されていないので、書き換えると、同じJSONをインポートしたほかの場所からも書き換えた値が見えます。以前の書き方の`assert { type: 'json' }`は、今は`SyntaxError`になります。
 
-## JSON Import Attribute
+## JSON以外が返ったとき
 
-`with: { type: 'json' }`を付けて、インポートされたデータをJSONとして解釈するように伝えることができます。
-
-JSONと伝えた状態で、JSON以外のファイルをインポートしたときに下記のようなエラーが発生します（下の引用はChromeで`text/html`なものをインポートしたとき）。
+`with { type: 'json' }`を付けると、ブラウザはレスポンスのMIMEタイプがJSONのものかを確かめます。Chromeで`text/html`を返すURLを読み込むと、コンソールに次のエラーが出ます。
 
 > Failed to load module script: Expected a JSON module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
 
-JSON Import Attributeをつけない場合は、エラーを発生させずにインポートした結果をそのまま利用してしまいます。
-JavaScriptがインポートされたときは、構文解析及びに実行まで行うので、セキュリティ上のリスクになります。
-
-<iframe
-  height="300"
-  className={styles.embed}
-  title="JSON Import Attribute"
-  src="https://codepen.io/kokisakano/embed/dPPBMxz?default-tab=result"
-  loading="lazy"
-/>
-
-上記の例では、取得ボタンを押すとインプットテキストをJSON Import Attribute付きインポートします。
-デフォルトの入力はJSONを返すので問題なくインポートできますが、他の形式を入力するように変えるとコンソールにエラーが発生します。
+`text/javascript`を返すURLを読み込んでも、どのブラウザでも読み込みは失敗し、中のコードは実行されません。属性を付けずに読み込めば、返ってきたJavaScriptはモジュールとして実行されます。JSONを返すはずのURLがJavaScriptを返しても、属性があればそのコードはページで動きません。
 
 ## おわりに
-JSON Import Attributeを紹介しました。この機能を利用することで、ESMモジュールのインポート時に、その対象がJSONであることをランタイムに伝えられるような機能でした。
 
-無秩序にファイルのインポートを行うのは危険ですので、Import Attributeを使って、JSONファイルであることを明示的に伝えるようにしましょう。
+設定や辞書のように取り直す必要の無いJSONは、`with { type: 'json' }`を付けた`import`で読み込めます。ブラウザでもNode.jsでも同じ書き方ができ、JSON以外が返っても実行されません。

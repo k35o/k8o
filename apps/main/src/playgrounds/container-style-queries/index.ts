@@ -12,9 +12,9 @@ export const containerStyleQueriesSection: PlaygroundSection = {
   demos: [
     {
       component: ContainerStyleQueriesDemo,
-      title: 'Container style queriesで親のテーマに追従するカード',
+      title: '名前を付けたクエリと付けないクエリの比較',
       description:
-        'ラジオで親の--csq-themeを切り替えると、途中のラッパーが値を上書きしていても名指しした親の値でカードの配色が変わる様子を確認できます。',
+        '親と途中の要素の--csq-themeを切り替えて、名前を付けたクエリと付けないクエリが、どちらの値を見るかを比べられます。',
     },
   ],
 };

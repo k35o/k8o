@@ -1,21 +1,21 @@
 ---
-title: 'light-dark()でカラースキームに応じて画像を切り替える'
-description: 'light-dark()に色だけでなく画像を渡せるようになりました。グラデーションやurl()をライトとダークで切り替えられ、prefers-color-schemeのメディアクエリと違って要素ごとのcolor-schemeに追従します。Baseline 2026で揃った、light-dark()に画像を渡す書き方と、色を渡す場合との違いを整理します。'
+title: 'light-dark()でダークモードの背景画像を切り替える'
+description: 'light-dark()に画像を2つ渡すと、ダークモードとライトモードで背景のグラデーションやurl()の画像を1つの宣言で切り替えられます。メディアクエリと違い、要素ごとのcolor-schemeにも追従します。'
 createdAt: 2026-09-25
-updatedAt: 2026-09-25
+updatedAt: 2026-11-09
 featureIds:
   - light-dark-image
 ---
 
-# light-dark()でカラースキームに応じて画像を切り替える
+# light-dark()でダークモードの背景画像を切り替える
 
 <BrowserSupportStatus featureId="light-dark-image" />
 
 ## はじめに
 
-`light-dark()`は、ライトとダークの2つの色を渡すと、要素に適用されている`color-scheme`に応じてどちらかを返す関数です。Baseline 2024で揃い、`prefers-color-scheme`のメディアクエリで同じ宣言を2回書かずに済むことから、テーマ対応の定番になりました。
+`light-dark()`は、ライト用とダーク用の2つの値を渡すと、要素に適用されている`color-scheme`に応じてどちらかを返すCSSの関数です。色だけでなく`url()`やグラデーションの画像も渡せるので、ダークモードで背景画像やアイコンを差し替える指定を1つの宣言で書けます。画像を渡す書き方は、Safari 27が対応して、Baseline 2026に入りました。
 
-ただし渡せるのは色だけだったので、背景のグラデーションやアイコンの画像をテーマごとに変えたくなると、そこだけメディアクエリに戻ることになっていました。CSS Color Level 5で`light-dark()`が`<image>`も受け取れるように拡張され、Chrome 150とFirefox 150、Safari 27で揃ってBaseline 2026に加わりました。
+グラデーションの色だけを変えるときは、色を渡す`light-dark()`をグラデーションの中に書きます。グラデーションの形や画像のファイルそのものを替えるには、これまで`prefers-color-scheme`のメディアクエリで宣言を丸ごと書き直していました。
 
 ## 画像を渡す
 
@@ -39,50 +39,22 @@ featureIds:
 }
 ```
 
-`:root`の`color-scheme: light dark`を書き忘れると、OSがダークでもライト側の画像が出たままになります。`light-dark()`が働くのは、`color-scheme`が`light dark`のように両方を許可している範囲だけだからです。この条件は色を渡す場合と変わりません。
+`:root`の`color-scheme: light dark`を書き忘れると、OSがダークでもライト側の画像が出たままになります。`light-dark()`がOSの設定に従って切り替わるのは、`color-scheme`に`light`と`dark`の両方を書いた要素の中だけだからです。この条件は色を渡す場合と変わりません。どのブラウザでも、OSをダークにしたまま`color-scheme`を書かない要素では、ライト側の画像が使われます。
 
-片方だけ画像を出したいときは`none`を渡します。ダークテーマでは背景の装飾を消したいなら、`light-dark(url('/pattern.svg'), none)`と書けます。`none`は自然なサイズを持たない透明な画像として扱われるので、`background-size`などの指定が残っていても崩れません。
+片方だけ画像を出したいときは`none`を渡します。ダークテーマでは背景の装飾を消したいなら、`light-dark(url('/pattern.svg'), none)`と書けます。`none`は透明な画像として扱われるので、`background-size`などの指定が残っていても崩れません。
 
-<PlaygroundEmbed demo="color-schemeを切り替えて画像を見る" headingLevel="h4" sectionId="light-dark-image" />
+どのブラウザでも、`getComputedStyle()`の`background-image`を読むと、`light-dark()`ではなく選ばれた側の画像が返ります。`none`が選ばれた要素では`image(rgba(0, 0, 0, 0))`、つまり透明な色の画像です。`light-dark(red, url('/a.png'))`のように色と画像を混ぜると、無効な値になります。
 
-## グラデーションの色をlight-dark()で書く場合との違い
-
-グラデーションについては、これまでもグラデーションの色ごとに`light-dark()`を書く手が使えました。色の数と角度がライトとダークで同じなら、この書き方で足ります。
-
-```css
-.hero {
-  background-image: linear-gradient(
-    135deg,
-    light-dark(oklch(92% 0.06 250), oklch(35% 0.08 250)),
-    light-dark(oklch(68% 0.16 250), oklch(15% 0.02 250))
-  );
+```css demo="scheme"
+body:has([value='light']:checked) .hero {
+  color-scheme: light;
 }
-```
-
-差が出るのはグラデーションの形そのものを変えるときです。ライトは2色の直線グラデーション、ダークは3色の放射状にしたいとすると、色ごとの`light-dark()`では関数の種類も色の数も揃えられません。これまではメディアクエリで宣言を丸ごと上書きするしかありませんでした。
-
-```css
-.hero {
-  background-image: linear-gradient(135deg, oklch(92% 0.06 250), oklch(68% 0.16 250));
+body:has([value='dark']:checked) .hero {
+  color-scheme: dark;
 }
 
-/* [!callout: 同じセレクタをもう一度書き、色だけでなく宣言全体を差し替える] */
-@media (prefers-color-scheme: dark) {
-  .hero {
-    background-image: radial-gradient(
-      circle at 50% 50%,
-      oklch(65% 0.15 250),
-      oklch(35% 0.08 250),
-      oklch(15% 0.02 250) 60%
-    );
-  }
-}
-```
-
-`light-dark()`に画像を渡せば、この2つを1つの宣言に並べるだけです。
-
-```css
 .hero {
+  height: 8rem;
   background-image: light-dark(
     linear-gradient(135deg, oklch(92% 0.06 250), oklch(68% 0.16 250)),
     radial-gradient(
@@ -95,32 +67,36 @@ featureIds:
 }
 ```
 
-`url()`で画像そのものを差し替えるときも同じで、ライト用とダーク用のファイルを1つの宣言に並べられます。
+```html demo="scheme"
+<p>
+  <label><input type="radio" name="scheme" value="inherit" checked /> 指定なし</label>
+  <label><input type="radio" name="scheme" value="light" /> light</label>
+  <label><input type="radio" name="scheme" value="dark" /> dark</label>
+</p>
+<div class="hero"></div>
+```
 
-ただし、これはメディアクエリ版と同じ結果になる置き換えではありません。`prefers-color-scheme`のメディアクエリが見ているのはOSやブラウザの設定で、`light-dark()`が見ているのは要素に適用されている`color-scheme`の使用値です。ユーザー設定がライトのまま、サイト側のトグルで`html`要素の`color-scheme`を`dark`に書き換えると、メディアクエリ版の放射状グラデーションは出ません。`light-dark()`版は色と同じ基準で切り替わるので、色は暗くなったのに背景画像だけライトのまま残る、という食い違いが起きません。
+結果の欄で`dark`を選ぶと、背景が斜めの直線グラデーションから、中心が明るい放射状のグラデーションに変わります。指定なしでは、記事のテーマに従います。
 
-ページの一部だけ配色を固定するときも同じです。ページ全体はダークテーマのまま、埋め込みプレビューの中だけライトで見せたいとします。同じ`.panel`をページ本体とプレビューの両方で使っていると、メディアクエリ版ではダーク側の分岐からプレビューの中を除外するセレクタが要ります。
+## グラデーションの色をlight-dark()で書く場合との違い
+
+色の数と角度がライトとダークで同じときは、グラデーションの色ごとに`light-dark()`を書きます。
 
 ```css
-.panel {
-  background-image: url('/paper.png');
-}
-
-@media (prefers-color-scheme: dark) {
-  /* [!callout: プレビューの中の .panel はライト用の画像のままにしたいので、ダーク側から除外する] */
-  .panel:not(.preview *) {
-    background-image: url('/slate.png');
-  }
+.hero {
+  background-image: linear-gradient(
+    135deg,
+    light-dark(oklch(92% 0.06 250), oklch(35% 0.08 250)),
+    light-dark(oklch(68% 0.16 250), oklch(15% 0.02 250))
+  );
 }
 ```
 
-`light-dark()`版では、プレビューの要素に`color-scheme: light`を書くだけです。その中の`light-dark()`は色も画像も常にライト側を返すので、`.panel`のセレクタを変える必要がありません。
+上の例のように、ライトは直線、ダークは放射状と形まで変えるには、これまで`prefers-color-scheme`のメディアクエリで宣言を丸ごと書き直していました。画像を渡す`light-dark()`なら、2つを1つの宣言に並べられます。
+
+メディアクエリが見るのはOSやブラウザの設定で、`light-dark()`が見るのは要素の`color-scheme`です。そのため、サイトのトグルで`color-scheme`を書き換えたときや、ページの一部だけ配色を固定したときも、色と背景画像が同じ基準で切り替わります。埋め込みプレビューだけライトで見せるなら、その要素に`color-scheme: light`を書くだけです。
 
 ```css
-:root {
-  color-scheme: light dark;
-}
-
 .panel {
   background-image: light-dark(url('/paper.png'), url('/slate.png'));
 }
@@ -133,4 +109,4 @@ featureIds:
 
 ## おわりに
 
-`light-dark()`が`<image>`を受け取れるようになり、テーマごとに変えたい背景やアイコンをメディアクエリなしで書けるようになりました。色のときと同じ仕組みで動くので、`color-scheme`を上書きした領域にもそのまま追従します。グラデーションの色だけを変えるなら色ごとの`light-dark()`で足り、形や画像そのものを変えるときに画像を渡す書き方が効きます。
+`light-dark()`に画像を渡すと、テーマごとに変えたい背景やアイコンを、メディアクエリなしで書けます。色と同じく`color-scheme`の使用値で切り替わるので、`color-scheme`を上書きした領域にもそのまま追従します。

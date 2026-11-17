@@ -1,41 +1,43 @@
 ---
-title: 'image-rendering: crisp-edgesでドット絵を拡大しても滲ませない'
-description: 'image-rendering: crisp-edgesは、画像を拡大表示するときに最近傍法など色を補間しないアルゴリズムを使うCSS値です。Baseline 2026でChromiumも対応し、ドット絵やQRコード、図版を拡大しても境界がぼやけずに表示できます。'
+title: 'image-renderingでドット絵をぼかさずに拡大する'
+description: 'image-rendering: crisp-edgesやpixelatedを指定すると、ドット絵やQRコードを拡大してもぼやけずに表示できます。2つの値の違いと、-moz-crisp-edgesが今も要るかを説明します。'
 createdAt: 2026-05-16
-updatedAt: 2026-05-16
+updatedAt: 2026-11-09
 featureIds:
   - crisp-edges
 ---
 
-# image-rendering: crisp-edgesでドット絵を拡大しても滲ませない
+import { CheckerboardComparison } from './_components/checkerboard-comparison';
+
+# image-renderingでドット絵をぼかさずに拡大する
 
 <BrowserSupportStatus featureId="crisp-edges" />
 
 ## はじめに
 
-ブラウザは画像を本来のサイズより大きく表示するとき、デフォルトでは色を補間（interpolation）して滑らかに見せようとします。写真ならこれで自然に拡大されますが、ドット絵やピクセルアート、QRコード、ピクセル単位で意味を持つ図版だと、ぼやけて元の絵柄が壊れてしまいます。
+`image-rendering`は、画像を拡大や縮小して表示するときのアルゴリズムを切り替えるCSSプロパティです。`crisp-edges`を指定すると、色を混ぜずにピクセルの境界をはっきり保ったまま拡大でき、ドット絵やQRコードがぼやけません。Chrome 148が`crisp-edges`に対応して、Baseline 2026に入りました。
 
-`image-rendering`プロパティはこの拡大時のアルゴリズムを切り替える指定で、`crisp-edges`は色を補間せず境界をはっきり保つ値です。Firefox / Safariは早くから対応していましたが、Chromiumが長く未実装で、`pixelated`を代用する場面が多くありました。Baseline 2026でChrome 148が対応し、3ブラウザで`crisp-edges`が揃いました。
+ブラウザは画像を本来のサイズより大きく表示するとき、既定では色を補間して滑らかに見せます。写真ならこれで自然に拡大されるので、指定は要りません。ドット絵やQRコードのように、ピクセル単位で意味を持つ画像はぼやけて絵柄が崩れるので、`crisp-edges`か`pixelated`を指定します。
 
 ## image-renderingの値
 
-`image-rendering`は`<img>`、`<canvas>`、`background-image`などラスタ画像をスケールして描画するすべての要素に適用できます。Baseline 2026時点の主な値は以下です。
+`image-rendering`は、`<img>`や`<canvas>`、`background-image`のように、ラスタ画像を拡大や縮小して描くすべての要素に指定できます。主な値は次の3つです。
 
-- `auto`（既定値） - UAに任せる。多くのブラウザは双線形補間など滑らかな拡大を選ぶ
-- `smooth` - 色を補間して滑らかに見せる。auto相当の挙動を明示したいときに使う
-- `crisp-edges` - 色の補間やぼかしを避け、境界とコントラストを保つ。最近傍法（nearest neighbor）または同等のアルゴリズムが使われる
-- `pixelated` - 整数倍までは最近傍法で拡大し、端数分だけ補間する
+- `auto`（既定値）：ブラウザに任せる。多くのブラウザは双線形補間のような滑らかな拡大を選ぶ
+- `crisp-edges`：色の補間やぼかしを避け、境界とコントラストを保つ。最近傍法（nearest neighbor）か同じような手法が使われる
+- `pixelated`：整数倍までは最近傍法で拡大し、端数の分だけ補間する
 
-`crisp-edges`と`pixelated`はどちらも拡大時にピクセル境界をはっきり残す値ですが、[仕様](https://drafts.csswg.org/css-images-3/#valdef-image-rendering-crisp-edges)で求められるアルゴリズムが少し違います。
+`crisp-edges`と`pixelated`はどちらも、拡大してもピクセルの境界をはっきり残す値ですが、[仕様](https://drafts.csswg.org/css-images-3/#valdef-image-rendering-crisp-edges)が求めるアルゴリズムが少し違います。`crisp-edges`は色を混ぜず境界をぼかさないことだけが決まっていて、具体的な手法はブラウザに任されています。`pixelated`は、まず最近傍法で次に大きい整数倍まで拡大し、そのあと補間で目的の大きさに仕上げます。
 
-- `crisp-edges`は色を混ぜず境界をぼかさないアルゴリズムを使うとだけ規定されていて、具体的な手法はUAに任されている
-- `pixelated`はまず最近傍法で次に大きい整数倍まで拡大し、そのあと補間で目的サイズに仕上げる
+仕様の上では、整数倍でない大きさに拡大したとき、`pixelated`だけが境界を少し補間します。ただ、ブラウザはどちらの値でも色を混ぜずに描くので、見た目はほとんど変わりません。次の3つは、4×4の白黒の市松模様を102pxに拡大したものです。
 
-実装上の見た目はほとんど同じですが、画像のサイズが整数倍ぴったりでないときに`pixelated`の方が境界がやや滑らかになる場面があります。
+<CheckerboardComparison />
+
+`auto`は境界がぼやけて灰色が混ざり、`crisp-edges`と`pixelated`は白と黒の2色だけで描かれます。
 
 ## 使い方
 
-ドット絵風の小さな画像を`<img>`で拡大表示する例です。
+ドット絵風の小さな画像を`<img>`で拡大して表示する例です。
 
 ```css
 /* [!og] */
@@ -45,7 +47,7 @@ img.pixel-art {
 }
 ```
 
-`background-image`で背景に貼り付ける場合も同じプロパティが効きます。
+`background-image`で背景に貼り付ける場合も、同じプロパティが効きます。
 
 ```css
 .tile {
@@ -54,8 +56,8 @@ img.pixel-art {
 }
 ```
 
-<PlaygroundEmbed demo="image-rendering値の比較" headingLevel="h4" sectionId="crisp-edges" />
+接頭辞の付いた値は、今は要りません。`-moz-crisp-edges`を受け付けるのはFirefoxだけで（計算値は`crisp-edges`）、ChromeとSafariは受け付けません。接頭辞なしの`crisp-edges`は、どのブラウザも受け付けます。
 
 ## おわりに
 
-`crisp-edges`はChromiumに長く欠けていた値で、これまではほぼ同じ役目の`pixelated`で代替していた人が多いと思います。Baseline 2026で揃ったので、仕様の意図に近い`crisp-edges`をそのまま指定する選択肢が取れるようになりました。
+`image-rendering: crisp-edges`を指定すると、ドット絵やQRコードを拡大しても色が混ざらず、ピクセルの境界がはっきり残ります。接頭辞の付いた`-moz-crisp-edges`は要らず、接頭辞なしの`crisp-edges`を書きます。

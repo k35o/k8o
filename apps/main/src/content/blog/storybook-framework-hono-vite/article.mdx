@@ -1,27 +1,157 @@
 ---
-title: Hono JSXで@storybook/react-viteと同じ使い心地を得るためのStorybookフレームワーク storybook-framework-hono-vite を作った
-description: Hono JSXで書いたコンポーネントを@storybook/react-viteと同じ感覚でStorybookに組み込みたくて、storybook-framework-hono-viteを作りました。既存の@storybook/html-viteを流用する方式では毎storyにボイラープレートが必要で、interactionの検証やライフサイクル連動に限界があります。独自のStorybookフレームワークを作った背景と、提供しているものをまとめます。
+title: 'Hono JSXのコンポーネントをStorybookで動かす'
+description: 'Hono JSXのコンポーネントをStorybookに表示し、Vitestでplay関数とa11yチェックを流すためのstorybook-framework-hono-viteを作りました。設定とhtml-viteとの違いを紹介します。'
 createdAt: 2026-04-22
-updatedAt: 2026-04-22
+updatedAt: 2026-11-09
 ---
 
-# Hono JSXで@storybook/react-viteと同じ使い心地を得るためのStorybookフレームワーク storybook-framework-hono-vite を作った
+# Hono JSXのコンポーネントをStorybookで動かす
 
 ## はじめに
 
-私は普段Reactで開発することが多く、コンポーネントのプレビューに加えてinteraction testやa11yテストまで一通り回せる開発体験を気に入っていて、Storybookをよく利用しています。Reactであれば`@storybook/react-vite`や`@storybook/nextjs-vite`が揃っていて、Vitestと統合した開発もそのまま成立します。
+`storybook-framework-hono-vite`は、Hono JSXで書いたコンポーネントをStorybookで表示し、テストするためのStorybookフレームワークです。`@storybook/react-vite`と同じく、storyに`component`を書くだけでHono JSXのランタイムでマウントされ、`useState`などのフックやイベントハンドラが動きます。
 
-最近はHonoを触る機会も増えてきました。Hono JSXである程度の規模のアプリを書こうとすると、Reactで使っていたのと同じようなStorybook環境をこちらでも整えたいという気持ちが出てきます。公式にHono向けのStorybookフレームワークは存在しないため、`@storybook/html-vite`を流用して凌いでいましたが、限界がありました。
-
-そこで、Hono JSX向けのStorybookフレームワーク`storybook-framework-hono-vite`を作りました。`hono/jsx`と`hono/jsx/dom`のどちらのランタイムでも使えるようにしています。
+propsごとの見た目を並べるときは、`@storybook/html-vite`のstoryで`renderToString`の結果を返す方法もあります。クリックで状態が変わるコンポーネントをplay関数で操作したいときや、storyを切り替えたときに`useEffect`のcleanupを呼ばせたいときに、このフレームワークが要ります。`hono/jsx`と`hono/jsx/dom`のどちらのランタイムを使うプロジェクトでも使えます。
 
 <LinkCard href="https://github.com/k35o/storybook-framework-hono-vite" variant="outline" />
 
-この記事では、なぜ既存のStorybookフレームワークでは不十分だったのか、そして独自のStorybookフレームワークとして何を提供しているのかをまとめます。
+普段Reactで書くときは、`@storybook/react-vite`でコンポーネントのプレビューからinteraction testとa11yテストまで回しています。Hono JSXでも同じ環境が欲しくて作りました。この記事では、使い方と、既存のStorybookフレームワークの流用では足りなかった理由をまとめます。
+
+## 独自のStorybookフレームワークを作る
+
+独自のStorybookフレームワークを作るにあたって目指したのは、`@storybook/react-vite`と同じ使い心地です。
+React + `@storybook/react-vite`の環境で慣れ親しんだ書き方・挙動のまま、対象だけHono JSXに差し替えられる、という状態を目標にしました。
+
+具体的には以下です。
+
+- Hono JSXで書いたコンポーネントをstoryの戻り値としてそのまま書ける
+- マウントはHono JSXのランタイムで行い、`useState`などのフックやイベントハンドラが実際に動く状態でプレビューできる
+- `hono/jsx`と`hono/jsx/dom`のどちらを使っているプロジェクトからでも利用できる
+- `@storybook/addon-vitest`と組み合わせて、`@storybook/react-vite`と同じ感覚でinteraction testを書ける
+- `@storybook/addon-a11y`によるアクセシビリティチェックもそのまま有効にする
+
+Storybookのframework APIは、rendererとbuilderを差し替えられるように設計されています。
+`storybook-framework-hono-vite`はViteをbuilderとして利用しつつ、rendererとしてHono JSX用のマウント処理を提供します。
+
+### 使い方
+
+パッケージを入れます。下の例ではアドオンとVitestも一緒に入れています。
+
+```bash
+pnpm add -D storybook-framework-hono-vite storybook vite hono @storybook/addon-vitest @storybook/addon-a11y vitest @vitest/browser-playwright playwright
+```
+
+`.storybook/main.ts`で`framework`にこのパッケージを指定します。`stories`や`addons`はこれまで通りで、`@storybook/react-vite`を使っていたプロジェクトでは`framework.name`を差し替えます。
+
+```ts
+import type { StorybookConfig } from 'storybook-framework-hono-vite';
+
+const config: StorybookConfig = {
+  stories: ['../src/**/*.stories.@(ts|tsx)'],
+  addons: ['@storybook/addon-vitest', '@storybook/addon-a11y'],
+  framework: {
+    name: 'storybook-framework-hono-vite',
+    options: {},
+  },
+};
+
+export default config;
+```
+
+型を効かせるには、`tsconfig.json`の`jsxImportSource`を`hono/jsx`か`hono/jsx/dom`にします。
+
+storyの書き方も`@storybook/react-vite`と同じです。`Meta`と`StoryObj`を`storybook-framework-hono-vite`からimportすれば、Hono JSXコンポーネントに対して型が効き、`play`関数の中でユーザー操作を記述できます。
+
+```tsx
+import type { Meta, StoryObj } from 'storybook-framework-hono-vite';
+import { Counter } from './counter';
+
+const meta = {
+  component: Counter,
+} satisfies Meta<typeof Counter>;
+
+export default meta;
+
+export const Default: StoryObj<typeof meta> = {
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(await canvas.findByRole('button'));
+  },
+};
+```
+
+`useState`で数を持ち、押すと1増えるボタンを`Counter`にして、この設定とstoryを`storybook build`し、ブラウザで開きました。play関数がボタンを1回押し、表示が0から1に変わります。続けて手で押すと2になり、イベントハンドラもHono JSXのランタイムで動いています。
+
+decoratorもそのまま使えます。`Decorator`型を`storybook-framework-hono-vite`からimportし、Hono JSXで包みたい要素を返す関数を定義して、metaやpreviewの`decorators`に渡します。
+
+```tsx
+import type { Decorator, Meta } from 'storybook-framework-hono-vite';
+import { Counter } from './counter';
+
+const withContainer: Decorator = (Story) => (
+  <div style={{ padding: '1rem', maxWidth: '24rem' }}>
+    <Story />
+  </div>
+);
+
+const meta = {
+  component: Counter,
+  decorators: [withContainer],
+} satisfies Meta<typeof Counter>;
+```
+
+interaction testとa11yチェックをVitest経由で回す場合は、`vitest.config.ts`に`@storybook/addon-vitest`のプラグインを仕込みます。Vitestのbrowser modeでstoryを実際のブラウザ上に立ち上げ、play関数を実行する構成です。ここもReact系で書いていたVitest構成と差はありません。以下はPlaywrightのproviderを使う例です。ブラウザのコンテキストの設定（ここでは`reducedMotion`）は`playwright()`の`contextOptions`に渡します。
+
+```ts
+import { fileURLToPath } from 'node:url';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from '@vitest/browser-playwright';
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  plugins: [
+    storybookTest({
+      configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
+      storybookScript: 'pnpm storybook --ci',
+    }),
+  ],
+  test: {
+    browser: {
+      enabled: true,
+      headless: true,
+      provider: playwright({
+        contextOptions: {
+          reducedMotion: 'reduce',
+        },
+      }),
+      instances: [{ browser: 'chromium' }],
+    },
+  },
+});
+```
+
+`instances`の要素に`context`を書くと型エラーになり、実行しても使われません。play関数から`matchMedia('(prefers-reduced-motion: reduce)').matches`を出すと、`instances`の`context`に書いたときは`false`、`contextOptions`に書いたときは`true`になります。
+
+a11yの違反は、そのままではテストを落としません。名前の無いボタンだけを描くstoryを流しても、テストは通ります。違反でテストを落とすには、`.storybook/preview.ts`で`a11y.test`を`'error'`にします。
+
+```ts
+import type { Preview } from 'storybook-framework-hono-vite';
+
+const preview: Preview = {
+  parameters: {
+    a11y: { test: 'error' },
+  },
+};
+
+export default preview;
+```
+
+この設定で同じstoryを流すと、`Buttons must have discernible text (button-name)`で落ちます。
+
+これで、Hono JSXで書いたコンポーネントを`@storybook/react-vite`と同じ感覚でStorybookで確認・テストできます。`useState`を含むインタラクティブな挙動もそのまま動き、interaction testとa11yチェックをVitest経由で回せます。
 
 ## 既存のStorybookフレームワークで代替できるのか
 
-Storybookは[フレームワーク](https://storybook.js.org/docs/get-started/frameworks)単位でrendererを切り替える設計になっています。Hono向けのフレームワークは存在しないので、既存のもので何とかできないかをまず検討しました。
+Storybookは[フレームワーク](https://storybook.js.org/docs/get-started/frameworks)単位でrendererを切り替える設計になっています。Hono向けの公式のフレームワークは無いので、作る前に、既存のもので何とかできないかを検討しました。
 
 ### @storybook/html-viteを流用する場合の限界
 
@@ -65,124 +195,17 @@ export const Primary = {
 
 戻り値が`HTMLElement`の場合、html-viteは中身に触らずその要素をcanvasに差し込むだけなので、`hono/jsx/dom`のランタイムが生きたまま保たれます。`useState`もイベントハンドラも動き、単一storyのinteraction testであれば通せます。
 
-ただし`hono/jsx/dom`には`unmount` APIが存在せず、`render`は`void`を返します。Storybookが古いhostをcanvasから外しても、`hono/jsx/dom`側はそれを検知できず、実行中の`useEffect`のcleanupは呼ばれません。argsが変わるたびに新しいhostを作り直す方式では、古いhostに紐付いたeffectsが残留してしまい、`useEffect`でリスナやタイマーを貼るコンポーネントでは静かに漏れていきます。
+ただし`hono/jsx/dom`の`render`は`void`を返し、描いたものを外す手段を持ちません。Storybookが古いhostをcanvasから外しても、`hono/jsx/dom`側はそれを検知できず、実行中の`useEffect`のcleanupは呼ばれません。argsが変わるたびに新しいhostを作り直す方式では、古いhostに紐付いたeffectsが残留してしまい、`useEffect`でリスナやタイマーを貼るコンポーネントでは静かに漏れていきます。`hono/jsx/dom/client`の`createRoot`なら`unmount`を持つRootを返しますが、html-viteの`render`関数には、hostを外すときに`unmount`を呼ぶ場所がありません。
 
-さらにdecoratorと組み合わせると、storyが返す`HTMLElement`をdecorator側で受け取ってラップする必要が出てきます。html-viteのdecoratorは`HTMLElement | string`を返す想定なので、Hono JSXで`<div><Story /></div>`のように宣言的に包むことができず、`document.createElement`で作ったwrapperに`appendChild`で差し込む、あるいはwrapper自体もHono JSXで別hostにマウントしてさらに入れ子にする、といった手続き的な組み立てが必要になります。decoratorの利点が薄れ、host要素の入れ子管理の手間が増えます。
+さらにdecoratorと組み合わせると、storyが返す`HTMLElement`をdecorator側で受け取ってラップする必要が出てきます。html-viteのdecoratorは`HTMLElement | string`を返す想定なので、Hono JSXで`<div><Story /></div>`のように宣言的に包むことができません。`document.createElement`で作ったwrapperに`appendChild`で差し込むか、wrapper自体もHono JSXで別hostにマウントしてさらに入れ子にするといった、手続き的な組み立てが必要になります。decoratorの利点が薄れ、host要素の入れ子管理の手間が増えます。
 
 #### どちらもstory側にボイラープレートが要る
 
-どちらの方式でも、storyを書くたびに`renderToString(...)`や`host`+`render(...)`のラッパーを`render`プロパティに書く必要があります。`@storybook/react-vite`のように`component: Counter`と書くだけでマウントまで任せられる世界とは距離があり、しかも方式1は静的止まり、方式2はライフサイクル連動が不完全。Hono JSXをある程度の規模で扱うプロジェクトで、この手間とリスクを毎story引き受けるのは現実的ではありませんでした。
+どちらの方式でも、storyを書くたびに`renderToString(...)`や`host`+`render(...)`のラッパーを`render`プロパティに書く必要があります。`@storybook/react-vite`のように`component: Counter`と書くだけでマウントまで任せられる世界とは距離があり、しかも方式1は静的な表示止まりで、方式2はライフサイクルとの連動が不完全です。Hono JSXをある程度の規模で扱うプロジェクトで、この手間とリスクを毎story引き受けるのは現実的ではありませんでした。
 
 ### 参考: @storybook/react-viteに混ぜる方式は成立しない
 
 念のため`@storybook/react-vite`に`jsxImportSource: "hono/jsx"`を指定する方式も検討しました。JSXのトランスパイル自体は通りますが、react-viteのrendererは`ReactDOM.createRoot(...).render()`でReact要素として扱おうとするため、Honoのvnodeが渡った時点で`Objects are not valid as a React child`でクラッシュします。`jsxImportSource`を差し替えるだけでは成立しないため、こちらの方向は早々に諦めました。
-
-## 独自のStorybookフレームワークを作る
-
-独自のStorybookフレームワークを作るにあたって目指したのは、`@storybook/react-vite`と同じ使い心地です。
-React + `@storybook/react-vite`の環境で慣れ親しんだ書き方・挙動のまま、対象だけHono JSXに差し替えられる、という状態を目標にしました。
-
-具体的には以下です。
-
-- Hono JSXで書いたコンポーネントをstoryの戻り値としてそのまま書ける
-- マウントはHono JSXのランタイムで行い、`useState`などのフックやイベントハンドラが実際に動く状態でプレビューできる
-- `hono/jsx`と`hono/jsx/dom`のどちらを使っているプロジェクトからでも利用できる
-- `@storybook/addon-vitest`と組み合わせて、`@storybook/react-vite`と同じ感覚でinteraction testを書ける
-- `@storybook/addon-a11y`によるアクセシビリティチェックもそのまま有効にする
-
-Storybookのframework APIは、rendererとbuilderを差し替えられるように設計されています。
-`storybook-framework-hono-vite`はViteをbuilderとして利用しつつ、rendererとしてHono JSX用のマウント処理を提供します。
-
-### 使い方
-
-`.storybook/main.ts`で`framework`にこのパッケージを指定します。`stories`や`addons`はこれまで通りで、`@storybook/react-vite`を使っていたプロジェクトなら`framework.name`を差し替えるだけで済みます。
-
-```ts
-import type { StorybookConfig } from 'storybook-framework-hono-vite';
-
-const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(ts|tsx)'],
-  addons: ['@storybook/addon-vitest', '@storybook/addon-a11y'],
-  framework: {
-    name: 'storybook-framework-hono-vite',
-    options: {},
-  },
-};
-
-export default config;
-```
-
-storyの書き方も`@storybook/react-vite`と同じです。`Meta`と`StoryObj`を`storybook-framework-hono-vite`からimportすれば、Hono JSXコンポーネントに対して型が効き、`play`関数の中でユーザー操作を記述できます。
-
-```tsx
-import type { Meta, StoryObj } from 'storybook-framework-hono-vite';
-import { Counter } from './counter';
-
-const meta = {
-  component: Counter,
-} satisfies Meta<typeof Counter>;
-
-export default meta;
-
-export const Default: StoryObj<typeof meta> = {
-  play: async ({ canvas, userEvent }) => {
-    await userEvent.click(await canvas.findByRole('button'));
-  },
-};
-```
-
-decoratorもそのまま使えます。`Decorator`型を`storybook-framework-hono-vite`からimportし、Hono JSXで包みたい要素を返す関数を定義して、metaやpreviewの`decorators`に渡します。
-
-```tsx
-import type { Decorator, Meta } from 'storybook-framework-hono-vite';
-import { Counter } from './counter';
-
-const withContainer: Decorator = (Story) => (
-  <div style={{ padding: '1rem', maxWidth: '24rem' }}>
-    <Story />
-  </div>
-);
-
-const meta = {
-  component: Counter,
-  decorators: [withContainer],
-} satisfies Meta<typeof Counter>;
-```
-
-interaction testとa11yチェックをVitest経由で回す場合は、`vitest.config.ts`に`@storybook/addon-vitest`のプラグインを仕込みます。Vitestのbrowser modeでstoryを実際のブラウザ上に立ち上げ、play関数を実行する構成です。ここもReact系で書いていたVitest構成と差はありません。以下はPlaywrightのproviderを使う例です。
-
-```ts
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig({
-  plugins: [
-    storybookTest({
-      configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
-      storybookScript: 'pnpm storybook --ci',
-    }),
-  ],
-  test: {
-    browser: {
-      enabled: true,
-      headless: true,
-      provider: playwright(),
-      instances: [
-        {
-          browser: 'chromium',
-          context: {
-            reducedMotion: 'reduce',
-          },
-        },
-      ],
-    },
-  },
-});
-```
-
-これで、Hono JSXで書いたコンポーネントを`@storybook/react-vite`と同じ感覚でStorybookで確認・テストできます。`useState`を含むインタラクティブな挙動もそのまま動き、interaction testとa11yチェックをVitest経由で回せます。
 
 ## おわりに
 

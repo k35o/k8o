@@ -1,35 +1,22 @@
 ---
-title: input要素でディレクトリを扱うwebkitdirectory属性
-description: input要素のwebkitdirectory属性がBaseline 2025に追加されました。webkitdirectory属性を利用することで、input要素のtype="file"でディレクトリを選択できるようになります。
+title: 'webkitdirectoryでinputからフォルダを選択する'
+description: 'webkitdirectory属性を付けると、input type="file"でファイルの代わりにフォルダを選ばせ、サブフォルダの中のファイルまで受け取れます。webkitRelativePathで各ファイルの相対パスも分かります。'
 createdAt: 2025-11-08
-updatedAt: 2025-11-08
+updatedAt: 2026-11-09
 featureIds:
   - input-file-webkitdirectory
 ---
 
-import {
-  BasicFileInputExamples,
-  WebkitDirectoryInputExample,
-} from './_components/file-input-examples';
+import { WebkitDirectoryInputExample } from './_components/file-input-examples';
 
-# input要素でディレクトリを扱うwebkitdirectory属性
+# webkitdirectoryでinputからフォルダを選択する
 
 <BrowserSupportStatus featureId="input-file-webkitdirectory" />
 
 ## はじめに
-`<input>`要素に`type="file"`を付与すると、ファイルを入力するための要素になります。
+`webkitdirectory`は、`<input type="file">`でファイルの代わりにフォルダ（ディレクトリ）を選ばせる属性です。選んだフォルダの中のファイルがサブフォルダの中まで`files`に入り、各ファイルの`webkitRelativePath`には、選んだフォルダの名前から始まるパスが入ります。Firefox Androidが対応して、Baseline 2025に入りました。
 
-```html
-<!-- 単一ファイル選択 -->
-<input type="file" />
-
-<!-- 複数ファイル選択 -->
-<input type="file" multiple />
-```
-
-<BasicFileInputExamples />
-
-この機能に加えて、ディレクトリごと選択させる`webkitdirectory`属性が、Firefox Androidの対応によってBaseline 2025に追加されました。
+ファイルを1つ、または`multiple`で複数選ばせるのは、`type="file"`でできます。`<input>`でフォルダを丸ごと選ばせて、どのファイルがどのサブフォルダにあったかまで受け取るのは、`webkitdirectory`でしかできません。
 
 ```html
 <!-- [!og] -->
@@ -39,12 +26,14 @@ import {
 
 <WebkitDirectoryInputExample />
 
+ボタンを押すと、ファイルではなくフォルダを選ぶダイアログが開きます。フォルダを選ぶと、中のファイルがまとめて`files`に入ります。
+
 ## webkitdirectory属性
-`webkitdirectory`属性にはユーザーにディレクトリの選択をさせるときに`true`、ファイルを選択するときは`false`を渡します。
-デフォルトは挙動からもわかる通り`false`です。
+`webkitdirectory`は真偽値の属性で、付けるとディレクトリの選択になり、付けなければファイルの選択になります。
+値は見ないので、`webkitdirectory="false"`と書いてもディレクトリの選択になります。JavaScriptから切り替えるときは、プロパティに`true`か`false`を入れると属性が付け外しされます。
 
 ### ファイルの取得
-`webkitdirectory`属性を付与した`<input>`要素で選択したファイルの取得は、`multiple`属性を指定した時の取得方法と同じように`files`プロパティから取得します。
+`webkitdirectory`属性を付けた`<input>`要素で選んだファイルも、`multiple`属性を付けたときと同じく`files`プロパティから取り出します。
 
 `files`プロパティは`FileList`オブジェクトまたは`null`を返します。
 
@@ -76,11 +65,26 @@ for (const file of files ?? []) {
 }
 ```
 
+Chromeで、`a.txt`と`.hidden`のほかにサブフォルダと空のフォルダを置いた`photos`フォルダを選ぶと、上のコードは次の4行を出しました。
+
+```txt
+photos/.hidden
+photos/a.txt
+photos/sub/b.txt
+photos/sub/deeper/c.txt
+```
+
+パスは選んだフォルダの名前から始まり、`.`で始まるファイルも入りますが、空のフォルダ（`photos/empty`）は入りません。`multiple`属性を付けなくても、サブフォルダの中のファイルまで入ります。そのままフォームで送ると、multipartの`filename`にも`photos/sub/b.txt`のようなパスが入ります。
+
+テストで`DataTransfer`を使って`files`に`File`を入れても、`webkitRelativePath`は空文字のままです。`webkitRelativePath`を使う処理をテストするときは、Playwrightの`setInputFiles()`にフォルダのパスを渡して、ブラウザにフォルダを選ばせます。
+
 下記の例では渡したディレクトリに含まれるファイルの`webkitRelativePath`プロパティを表示しています。
 
 <PlaygroundEmbed demo="webkitRelativePathの例" headingLevel="h5" sectionId="input-file-webkitdirectory" />
 
-`input`要素が持つ複数のファイルを扱う別の方法として`webkitEntries`プロパティがありますが、このプロパティはいくつかのブラウザで`webkitdirectory`属性と併用できないようなので注意してください。
+ボタンを押してフォルダを選ぶと、中の各ファイルが`webkitRelativePath`のパスと一緒に一覧になります。
+
+`input`要素で複数のファイルを扱う別の方法に`webkitEntries`プロパティがありますが、Chromeでは`webkitdirectory`属性を付けると`webkitEntries`が空の配列になります。
 
 > INTEROP: In Chrome, if webkitdirectory is specified on a HTMLInputElement, webkitEntries is not populated; the files collection and webkitRelativePath properties must be used instead to reconstruct the directory structure. Should we fix this so it is always populated?
 
@@ -89,6 +93,6 @@ for (const file of files ?? []) {
 <LinkCard href="https://wicg.github.io/entries-api/#html-forms" />
 
 ## おわりに
-`input`要素でファイルを扱う際に、`webkitRelativePath`属性を利用することでディレクトリごと選択可能になり、より高度なファイル操作が可能になりました。
+`input`要素でファイルを扱う際に、`webkitdirectory`属性を利用することでディレクトリごと選択可能になり、中のファイルを`webkitRelativePath`のパスと一緒に受け取れるようになりました。
 
 `webkitdirectory`属性のような`webkit`prefixがついている機能は利用を躊躇いますが、Baseline 2025に追加されたことで安心して利用できるようになったのではないでしょうか。

@@ -1,17 +1,21 @@
 ---
-title: 'zstd（Zstandard）でウェブ通信を効率よく圧縮する'
-description: 'zstd（Zstandard）はMetaが開発した可逆圧縮アルゴリズムです。高い圧縮率と高速な展開速度を持ち、Baseline 2026でブラウザの通信でも利用できるようになりました。'
+title: 'zstd（Zstandard）でHTTPのレスポンスを圧縮する'
+description: 'zstd（Zstandard）はMetaが開発した可逆圧縮アルゴリズムで、Brotliと同程度まで小さく圧縮でき、より速く展開できます。Content-Encoding: zstdで圧縮する仕組みと、Node.jsで返す方法を説明します。'
 createdAt: 2026-03-02
-updatedAt: 2026-03-02
+updatedAt: 2026-11-09
 featureIds:
   - zstd
-  - compression-dictionary-transport
 ---
 
+# zstd（Zstandard）でHTTPのレスポンスを圧縮する
 
-# zstd（Zstandard）でウェブ通信を効率よく圧縮する
+<BrowserSupportStatus featureId="zstd" />
 
 ## はじめに
+
+`zstd`（Zstandard）は、Metaが開発した可逆圧縮のアルゴリズムです。HTTPではレスポンスの圧縮形式の1つとして使え、ブラウザは`Content-Encoding: zstd`で返されたレスポンスを展開します。Safari 26.3が対応して、Baseline 2026に入りました。
+
+`zstd`は、`gzip`より短い時間で圧縮と展開ができます。リクエストのたびに圧縮するレスポンスでは、この速さが効きます。
 
 レスポンスボディは、`Accept-Encoding`リクエストヘッダーと`Content-Encoding`レスポンスヘッダーを使って圧縮できます。
 
@@ -29,7 +33,7 @@ Accept-Encoding: gzip, deflate, br
 Accept-Encoding: gzip;q=0.8, br;q=1.0
 ```
 
-優先度を指定しない場合は`1.0`として扱われます。`q=0`は「受け入れない」を意味します。
+優先度を指定しない場合は`1.0`として扱われます。`q=0`は、その形式を受け入れないという意味です。
 
 ### Content-Encoding
 
@@ -43,25 +47,20 @@ Content-Encoding: br
 
 なお、サーバーが圧縮に対応していない場合や、クライアントが送った`Accept-Encoding`の中に対応形式がなかった場合は、`Content-Encoding`ヘッダーなしで非圧縮のまま返されます。
 
-ただし、`identity;q=0`等で非圧縮も明示的に拒否している場合は、`406 Not Acceptable`が返されます。
-
-`zstd`はこの仕組みに乗っかる形で、Baseline 2026で新たに加わった圧縮形式です。
+`zstd`も、この仕組みで使える圧縮形式の1つです。
 
 ## zstd
 
-`zstd`（Zstandard）はMetaが開発した可逆圧縮アルゴリズムで、[RFC 8878](https://www.rfc-editor.org/rfc/rfc8878)で標準化されています。
-`zlib`レベルの圧縮率を保ちつつリアルタイム圧縮が可能なことを目標に設計されています。
+`zstd`は[RFC 8878](https://www.rfc-editor.org/rfc/rfc8878)で標準化されていて、`zlib`レベルの圧縮率を保ちつつリアルタイム圧縮が可能なことを目標に設計されています。
 
-[ベンチマーク](https://github.com/facebook/zstd?tab=readme-ov-file#benchmarks)によれば、`gzip(zlib)`を上回る圧縮率を誇り、`Brotli`と同等のサイズを維持しながら、数倍速い展開速度を実現しています。
-これにより、クライアント側のCPU負荷を抑えつつ高速なページロードが可能です。
+[ベンチマーク](https://github.com/facebook/zstd?tab=readme-ov-file#benchmarks)では、`gzip(zlib)`より圧縮率が高く、`Brotli`と同じくらいの大きさまで縮めたうえで、展開は数倍速くなっています。
 
 また、圧縮速度と圧縮率はトレードオフの関係にありますが、圧縮レベルを細かく調整することでそのバランスを柔軟に変えられます。
 
+Node.jsの`node:zlib`で、この記事のHTMLを圧縮して比べると、`zstd`（既定のレベル3）は`gzip`（レベル6）より速く、小さくなります。最も小さくなるのは`Brotli`（品質11）ですが、圧縮には`gzip`の数十倍の時間がかかります。react-domの本番用のJSでは、レベル3の`zstd`は`gzip`より大きくなり、レベル9で`gzip`より速く小さくなります。展開は、どちらのファイルでも`zstd`が`Brotli`より速く終わります。
+
 ### ブラウザでの利用
 
-<BrowserSupportStatus featureId="zstd" />
-
-Baseline 2026に加わったことで、主要なブラウザで`zstd`が利用できるようになりました。
 対応したブラウザでは、`Accept-Encoding`ヘッダーに`zstd`が自動的に追加されます。
 
 ```http
@@ -74,31 +73,37 @@ Accept-Encoding: gzip, deflate, br, zstd
 Content-Encoding: zstd
 ```
 
-実際に`zstd`に対応したブラウザでこのページの通信を確認すると、`Content-Encoding: zstd`でレスポンスが返ってきていることがわかります。
+Node.jsでは、`node:zlib`の`zstdCompressSync`で圧縮して返せます。
 
-このサイトはVercelで配信しており、アプリ側で特別な設定をしなくても、Vercelのエッジネットワークがzstdをサポートしているため自動的に有効になっています。
+```js title="server.mjs"
+import { createServer } from 'node:http';
+import { zstdCompressSync } from 'node:zlib';
 
-### 圧縮辞書転送
-
-<BrowserSupportStatus featureId="compression-dictionary-transport" />
-
-`zstd`はさらに、圧縮辞書を用いた圧縮辞書転送（[RFC 9842](https://www.rfc-editor.org/rfc/rfc9842)）にも対応しています。
-通常の圧縮はレスポンス内の冗長性を検出して圧縮しますが、圧縮辞書転送ではあらかじめ用意した辞書を参照することで、さらに効率的な圧縮が可能です。
-
-たとえば、ライブラリの旧バージョンを辞書として使うと、新バージョンとの差分だけを圧縮して転送できるため、転送サイズを大幅に削減できます。
-辞書圧縮が利用可能な場合は `Accept-Encoding` に `dcz`（dictionary-compressed Zstandard）が追加されます。
-
-```http
-Accept-Encoding: gzip, br, zstd, dcb, dcz
-Available-Dictionary: :pZGm1Av0IEBKARczz7exkNYsZb8LzaMrV7J32a2fFG4=:
+createServer((req, res) => {
+  const acceptEncoding = req.headers['accept-encoding'] ?? '';
+  console.log(acceptEncoding);
+  const body = Buffer.from('<h1>Hello, zstd!</h1>');
+  if (acceptEncoding.includes('zstd')) {
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Content-Encoding': 'zstd',
+      Vary: 'Accept-Encoding',
+    });
+    res.end(zstdCompressSync(body));
+    return;
+  }
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    Vary: 'Accept-Encoding',
+  });
+  res.end(body);
+}).listen(3000);
 ```
 
-`Available-Dictionary`は保持している辞書の識別子を伝えます。`dcz`の他に`dcb`（dictionary-compressed Brotli）もあります。
+ChromeかFirefoxで`http://localhost:3000`を開くと、ターミナルに`gzip, deflate, br, zstd`と出て、`zstd`で圧縮した見出しが表示されます。Safariでは`gzip, deflate`とだけ出て、圧縮していない見出しが表示されます。Safariは`zstd`で返したレスポンスも展開できますが、`http`の`localhost`へのリクエストには`zstd`を付けません。`https`で開いたページでは、ページの読み込みにも`fetch()`にも`gzip, deflate, br, zstd`を付けます。
 
-現時点ではまだ Baseline には達していませんが、今後対応が広がることが期待されます。
+ただし、ブラウザが`zstd`を送っても、サーバーが`zstd`を選ぶとは限りません。どの形式で返すかはサーバーやCDNが決めるので、`zstd`で配信したいときは、DevToolsのネットワークパネルで`Content-Encoding`を見て、配信側が対応しているかを確かめます。
 
 ## おわりに
 
-`zstd`がBaseline 2026で追加され、`gzip`・`Brotli`に並ぶ圧縮形式の選択肢として使えるようになりました。
-
-ブラウザ側での対応は自動で行われるため、サーバー側で`zstd`圧縮を有効化するだけで恩恵を受けられます。高い圧縮率と展開速度を兼ね備えた`zstd`への対応を検討してみてください。
+対応したブラウザは`Accept-Encoding`に`zstd`を自動で付けるので、サーバーかCDNが`zstd`で返せば使われます。事前に圧縮して置ける静的なファイルは時間をかけた`Brotli`が最も小さくなり、リクエストのたびに圧縮するレスポンスは`zstd`で`gzip`より速く小さくできます。

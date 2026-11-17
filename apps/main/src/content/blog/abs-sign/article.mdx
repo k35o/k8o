@@ -1,23 +1,28 @@
 ---
-title: CSSのabs()とsign()関数で数値の符号を使ったスタイリングを行う
-description: 数値の符号を扱うCSS 値関数abs()とsign()がChrome138・Edge138でBaseline 2025に追加されました。absは絶対値の取得、signは符号の判定ができる便利な関数です。
+title: 'abs()とsign()でCSSの値の絶対値と符号を求める'
+description: 'abs()は絶対値を、sign()は正なら1・負なら-1・0なら0を返すCSSの数学関数です。中心からの距離でアニメーションの遅れを決めたり、値の正負で色や向きを切り替えたりする書き方を、デモと合わせて説明します。'
 createdAt: 2025-06-26
-updatedAt: 2025-06-26
+updatedAt: 2026-11-09
 featureIds:
   - abs-sign
 ---
 
-# CSSのabs()とsign()関数で数値の符号を使ったスタイリングを行う
+import { ChangeExamples } from './_components/change-examples';
+import { DotsFromCenter } from './_components/dots-from-center';
+
+# abs()とsign()でCSSの値の絶対値と符号を求める
 
 <BrowserSupportStatus featureId="abs-sign"></BrowserSupportStatus>
 
 ## はじめに
 
-Chrome138・Edge138でBaseline 2025に追加された新しいCSS値関数で符号に関する計算を行う`abs()`と`sign()`について解説します。
+`abs()`と`sign()`は、`calc()`と同じように値を計算するCSSの数学関数です。`abs()`は値の絶対値を返し、`sign()`は値が正なら`1`、負なら`-1`、0なら`0`を返します。Chrome 138が対応して、Baseline 2025に入りました。
 
-## abs()関数
+絶対値は、これまでも`max(var(--x), -1 * var(--x))`のように書けば求められ、`abs()`はそれを短く書けるだけです。正か負かで色や向きを切り替えるときは、`sign()`が返す`-1`か`0`か`1`を掛ければ、1つの式で書けます。
 
-`abs()`関数は絶対値を返す関数です。負の数を正の数に変換し、正の数はそのまま返します。
+## abs()
+
+`abs()`は、負の値を正の値にし、正の値はそのまま返します。
 
 ```css
 /* [!og] */
@@ -30,13 +35,47 @@ Chrome138・Edge138でBaseline 2025に追加された新しいCSS値関数で符
 }
 ```
 
-## sign()関数
+`%`を含む式も渡せます。幅200pxの親の中で`width: abs(50% - 300px)`とすると、`%`が100pxに解決されてから絶対値が取られ、幅は200pxになります。
 
-`sign()`関数は数値の符号を判定し、以下の値を返します。
+中心からの距離を使うと、並んだ要素を真ん中から外側へ順に出すアニメーションを書けます。
 
-- 正の数の場合：`1`
-- 負の数の場合：`-1`
-- ゼロの場合：`0`（ゼロのネガポジは引き継ぐ）
+```html
+<ul class="dots">
+  <li style="--i: 0"></li>
+  <li style="--i: 1"></li>
+  <li style="--i: 2"></li>
+  <li style="--i: 3"></li>
+  <li style="--i: 4"></li>
+  <li style="--i: 5"></li>
+  <li style="--i: 6"></li>
+</ul>
+```
+
+```css
+@keyframes pop {
+  from {
+    scale: 0;
+  }
+}
+
+.dots li {
+  animation: pop 0.4s both;
+  /* 真ん中の--i: 3から離れるほど遅れて出る */
+  animation-delay: calc(abs(var(--i) - 3) * 50ms);
+}
+```
+
+<DotsFromCenter />
+
+`animation-delay`は、端の0.15sから0.05sずつ短くなって真ん中で0sになり、反対の端に向かってまた0.05sずつ長くなります。
+
+## sign()
+
+`sign()`は、値の符号に応じて次の数を返します。
+
+- 正の値：`1`
+- 負の値：`-1`
+- ゼロ：`0`（`-0px`のような負のゼロには`-0`）
 
 ```css
 .element {
@@ -46,14 +85,30 @@ Chrome138・Edge138でBaseline 2025に追加された新しいCSS値関数で符
 }
 ```
 
-## 例
+`sign()`が返すのは単位の無い数なので、色相や角度に掛けて使います。前日比のような増減を`--delta`に入れると、増えたら緑の上向き、減ったら赤の下向き、変わらなければ黄色の右向きの矢印になります。
 
-`abs()`と`sign()`を利用した例を用意しました。
+```html
+<span class="change" style="--delta: -2.5">-2.5%</span>
+```
 
-<PlaygroundEmbed demo="CSS数学関数デモ" headingLevel="h4" sectionId="abs-sign" />
+```css
+.change {
+  /* sign()が-1、0、1のとき、色相は0、60、120 */
+  color: hsl(calc(sign(var(--delta)) * 60 + 60) 70% 40%);
+}
+
+.change::before {
+  content: '▲';
+  display: inline-block;
+  /* sign()が-1、0、1のとき、180deg、90deg、0deg */
+  rotate: calc((1 - sign(var(--delta))) * 90deg);
+}
+```
+
+`--delta`を-2.5、0、1.2にすると、次のように表示されます。
+
+<ChangeExamples />
 
 ## おわりに
 
-`abs()`と`sign()`関数の追加により、CSSでの符号に関する計算が行えるようになりました。
-
-CSSだけで符号に基づくスタイリングが可能になるため、JavaScriptに頼らない柔軟なデザインが実現できるようになって嬉しいです。
+中心からの距離で遅れや大きさを決めるときは`abs()`を、値の正負で色や向きを切り替えるときは`sign()`を使うと、JavaScriptでクラスを付け替えずにCSSだけで書けます。

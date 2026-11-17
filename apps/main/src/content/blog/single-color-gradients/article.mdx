@@ -1,30 +1,45 @@
 ---
-title: CSS グラデーションの新仕様：単色カラーストップの導入
-description:
+title: 'linear-gradientを1色で書いて背景画像に色を重ねる'
+description: 'linear-gradient()などのグラデーションの関数に色を1つだけ渡すと、その色で塗った画像になります。背景画像の上に半透明の黒を重ねて暗くするときに使えます。Baseline 2025の書き方です。'
 createdAt: 2025-04-21
-updatedAt: 2025-04-21
+updatedAt: 2026-11-09
 featureIds:
   - single-color-gradients
 ---
 
-# CSS グラデーションの新仕様：単色カラーストップの導入
+# linear-gradientを1色で書いて背景画像に色を重ねる
 
-<BrowserSupportStatus featureId="single-color-gradients"></BrowserSupportStatus>
+## はじめに
 
-Baseline 2025に、グラデーションを表現するCSS関数である`liner-gradient`・`radial-gradient`・`conic-gradient`において、単色のカラーストップを持つグラデーションの記法が追加されました。
+`linear-gradient()`、`radial-gradient()`、`conic-gradient()`は、色を1つだけ渡しても書けます。`linear-gradient(red)`は、赤一色で塗った画像になります。Chrome 135が対応して、Baseline 2025に入りました。
 
-<LinkCard href="https://github.com/w3c/csswg-drafts/issues/10092" />
+背景を1色で塗るときは、`background-color`を使います。ただし`background-color`は背景の一番下にしか置けないので、背景画像の上に色を重ねるには、色を画像として書く必要があります。これまで`linear-gradient(red, red)`のように同じ色を2回書いていたところを、1回で書けるようになりました。
 
-これまでは、「グラデーションは少なくとも2つの色間の移行を意味する」という従来の[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様と、実際には単色グラデーションを実装している主要なブラウザとの間に矛盾が存在していました。
+## 背景画像に色を重ねる
 
-この矛盾を解決するため、CSS Images 4の仕様がブラウザ側の実装サイドの仕様に変更されました。
-変更された背景にある、単一のカラーストップを許可する利点は以下が挙げられます。
+```css demo="hero"
+.hero {
+  height: 200px;
+  color: white;
+  /* 2枚目のグラデーションは写真の代わり。実際は url('photo.jpg') などを書く */
+  background:
+    linear-gradient(rgb(0 0 0 / 50%)),
+    linear-gradient(to right, red, blue);
+}
+```
 
-- CSS の開発体験の向上
-- 冗長性の軽減
-- 可読性の向上
-- 他の記法との独立性
-- 特別な文法を導入するなどの欠点がない
-- 既存のCSSとの互換性
+```html demo="hero"
+<div class="hero">見出し</div>
+```
 
-これにより、`linear-gradient(red 0%, red 100%)`や`conic-gradient(red 0deg, red 360deg)`のように記述していた単色のグラデーションは、`linear-gradient(red)`や`conic-gradient(red)`のようにより簡潔に記述できるようになります。
+結果の欄では、赤から青へのグラデーションの上に半透明の黒が重なり、全体が半分ほどの明るさになります。1枚目の`linear-gradient(rgb(0 0 0 / 50%))`を消すと、元の明るさに戻ります。
+
+## 1色で書いた値
+
+どのブラウザでも、`linear-gradient(red)`と`linear-gradient(red, red)`は同じ赤一色に描かれ、半透明の黒を1色で重ねても2色で重ねても同じ見た目になります。計算値を読むと、`linear-gradient(red)`は`linear-gradient(rgb(255, 0, 0))`のままです。以前から受け付けられていた`linear-gradient(red 0 100%)`は、どのブラウザでも`linear-gradient(rgb(255, 0, 0) 0px, rgb(255, 0, 0) 100%)`と2つの色に分けて返されます。
+
+以前の[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様は、グラデーションに2つ以上の色を求めていました。ブラウザは`linear-gradient(red 0% 100%)`のように位置を2つ持つ1色を受け付けていたので、仕様は色が1つだけの書き方を、位置が0個でも1個でも認める形に広げました。
+
+## おわりに
+
+グラデーションの関数に色を1つだけ渡すと、その色で塗った画像になります。背景画像に半透明の色を重ねるときに使えます。

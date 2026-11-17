@@ -1,11 +1,11 @@
 ---
-title: 複数のSuspenseの表示を制御するSuspenseList
-description: React18の実験的機能SuspenseListを使って複数のSuspenseの読み込み順序と表示パターンを制御する方法を解説します。レイアウトシフトの削減とUX向上を実現するコンポーネントです。
+title: 'SuspenseListで複数のSuspenseの表示順を制御する'
+description: 'ReactのSuspenseListは、並べた複数のSuspenseを上から順に、または全部そろってから表示させるコンポーネントです。revealOrderとtailの値ごとの見え方と、実験版のReactで変わった既定値を確かめます。'
 createdAt: 2025-06-21 19:30:00.000000+09
-updatedAt: 2026-08-25 11:57:00.000000+09
+updatedAt: 2026-11-09
 ---
 
-# 複数のSuspenseの表示を制御するSuspenseList
+# SuspenseListで複数のSuspenseの表示順を制御する
 
 <Alert
   tone="warning"
@@ -14,24 +14,42 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 ## はじめに
 
-2025年の4月23日に[Reactのブログ](https://ja.react.dev/blog/2025/04/23/react-labs-view-transitions-activity-and-more)で実験的な機能として`unstable_ViewTransition`と`unstable_Activity`が紹介されました。
+`SuspenseList`は、並べた複数の`Suspense`を、読み込みが終わった順ではなく上から順に、または全部そろってから表示させるReactのコンポーネントです。Reactの実験版でだけ、`unstable_SuspenseList`という名前で使えます（以後は`SuspenseList`と呼びます）。
 
-これらの新しい実験的機能はとてもパワフルで目が惹かれました。これらの他にあるReactの実験機能も気になりますよね！
-
-[`ed07719`のコミット](https://github.com/facebook/react/tree/ed077194b5b76df6f8fdbf805e1b895e2deb5a07)時点で他の実験的な機能を探してみると、`unstable_LegacyHidden`、`unstable_Activity`、`unstable_Scope`、`unstable_SuspenseList`、`unstable_TracingMarker`、`unstable_ViewTransition`、`unstable_addTransitionType`、`unstable_getCacheForType`、`unstable_useCacheRefresh`の9種類の機能が提供されていそうでした（[参考](https://github.com/facebook/react/blob/ed077194b5b76df6f8fdbf805e1b895e2deb5a07/packages/react/index.js#L49-L57)）。
-
-この記事は、そのうちの一つである`unstable_SuspenseList`の基本的な使い方とその利点について解説します（以後記事では`unstable_SuspenseList`を単に`SuspenseList`と呼びます）。
+それぞれの`Suspense`を読み込めたものから表示するときは、`Suspense`を並べます。全部そろってから表示するだけなら、外側を1つの`Suspense`で包んでも同じです。読み込みの速さに関わらず上から順に表示したいときや、次に表示するものだけにフォールバックUIを出したいときに、`SuspenseList`が要ります。
 
 ## SuspenseListとは
 
-`SuspenseList`は、React18で実験的機能として導入されたコンポーネントで、複数の`Suspense`の読み込み順序や表示パターンを制御できる機能です。
-複数の非同期処理が同時に発生する場面で、UXを向上させるために使用されます。
+`SuspenseList`は2019年に実験的な機能として追加され、今も実験版（`react@experimental`）にだけあります。安定版とcanary版のReactには含まれていません。
 
-<LinkCard href="https://github.com/facebook/react/pull/15902" />
+次のコンポーネントは、読み込みに1.5秒、2秒、0.5秒、1秒かかる4つの`Suspense`を並べています。
+
+```jsx
+import { Suspense, unstable_SuspenseList as SuspenseList, use } from 'react';
+
+const wait = (ms) => new Promise((resolve) => setTimeout(() => resolve(ms), ms));
+const items = [1500, 2000, 500, 1000].map(wait);
+
+const Item = ({ promise }) => <p>{use(promise)}ms</p>;
+
+export default function App() {
+  return (
+    <SuspenseList revealOrder="forwards" tail="collapsed">
+      {items.map((promise, i) => (
+        <Suspense key={i} fallback={<p>Loading {i + 1}...</p>}>
+          <Item promise={promise} />
+        </Suspense>
+      ))}
+    </SuspenseList>
+  );
+}
+```
+
+実験版のReactで動かすと、最初は`Loading 1...`だけが出ます。1.5秒ほどで`1500ms`と`Loading 2...`に変わり、2秒ほどで4つがそろって表示されます。0.5秒で読み込みが終わる3つ目も、上の2つが表示されるまで待ちます。`SuspenseList`を外すと、3つ目が0.5秒ほどで先に表示されます。
 
 ## 基本的な使い方
 
-`SuspenseList`は`revealOrder`と`tail`のpropsを使用して、子要素の表示順序を制御します。
+`SuspenseList`は、`revealOrder`と`tail`の2つのpropsで子要素の表示順を決めます。
 
 ```jsx
 <SuspenseList revealOrder="forwards" tail="collapsed">
@@ -49,7 +67,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 ### revealOrder
 
-`revealOrder`は、子要素の表示順序を制御します。
+`revealOrder`は、子要素を表示する順を決めます。省くと`forwards`になります。
 
 #### forwards（順次表示）
 
@@ -63,13 +81,15 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 #### backwards（逆順表示）
 
-子要素を下から順番に表示します。最後の要素から逆順で表示されます。
+子要素を逆の順に並べて、下から順番に表示します。最初の子要素がいちばん下に置かれ、そこから上へ表示されます。
 
 ```jsx
 <SuspenseList revealOrder="backwards" tail="hidden">
-  {/* 最後の要素から逆順で表示 */}
+  {/* 最初の子要素をいちばん下に置き、下から順に表示 */}
 </SuspenseList>
 ```
+
+先ほどの4つの`Suspense`を`backwards`で並べると、画面には4つ目が上、1つ目がいちばん下に並び、その1つ目から表示されます。並びを変えずに最後の要素から表示する以前の`backwards`は、`unstable_legacy-backwards`という値に残っています。こちらは上から1つ目、2つ目の順に並んだまま、4つ目と3つ目が先に表示されます。
 
 #### together（同時表示）
 
@@ -83,7 +103,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 #### independent（独立表示）
 
-すべての子要素が独立して表示されます。各要素は他の要素の読み込み状態に影響されません。つまり、`SuspenseList`が存在しない時と同じ動きをします。
+子要素は、ほかの子要素の読み込みに関わらず、読み込めたものから表示されます。`SuspenseList`が無いときと同じ動きです。
 
 ```jsx
 <SuspenseList revealOrder="independent">
@@ -91,22 +111,15 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 </SuspenseList>
 ```
 
-`independent`は執筆当時のReactの最新版19.1では動きません。下の対応が追加されることで利用が可能になります。
-
-<LinkCard href="https://github.com/facebook/react/pull/33424" />
-
-この対応に追従する[`@types/react`側の対応](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/72949)が先に完了しているので、最新の`@types/react`を用いている場合は`independent`を付与しても型エラーが発生しないことに注意してください。
-
-[React側の変更](https://github.com/facebook/react/pull/33424)では`revealOrder`を渡さなかったときの動作を`independent`という値を渡した時に動くようにして、デフォルト値を渡せないようにしています。
-そのため、最新のReactと`@types/react`を使用している場合は、`independent`相当の動作を起こせないのに注意してください（この動作を実現したい時は`SuspenseList`を使う必要がないのですぐに気にする必要はなさそうです）。
+`independent`は、以前は`revealOrder`を省いたときの動作でした。今は値として渡せ、`revealOrder`の既定値は`forwards`に変わっています。
 
 ### tail
 
-`tail`は準備前の子要素のフォールバックUIに関する表示を制御します。`revealOrder`に`forwards`と`backwards`を指定した場合でのみ指定が可能です。
+`tail`は、まだ表示していない子要素のフォールバックUIをどう出すかを決めます。`revealOrder`が`forwards`か`backwards`のときだけ効き、省くと`hidden`になります。`together`に`tail`を渡すと、開発用のビルドでは`<SuspenseList tail="collapsed" /> is only valid if revealOrder is "forwards" (default) or "backwards".`という警告がコンソールに出て、`tail`は無視されます。
 
 #### collapsed
 
-次の子要素のフォールバックUIだけを表示します。`forwards`であれば最初は1番目の要素のフォールバックUIのみが表示されます。
+次に表示する子要素のフォールバックUIだけを出します。`forwards`なら、最初は1番目のフォールバックUIだけが出ます。
 
 ```jsx
 <SuspenseList revealOrder="forwards" tail="collapsed">
@@ -116,7 +129,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 #### hidden
 
-すべての子要素のフォールバックUIを非表示にします。
+まだ表示していない子要素のフォールバックUIを出しません。前の子要素が表示されるまで、その下には何も出ません。
 
 ```jsx
 <SuspenseList revealOrder="forwards" tail="hidden">
@@ -131,7 +144,7 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 
 #### visible
 
-すべての子要素のフォールバックUIを表示します。
+まだ表示していない子要素のフォールバックUIを、すべて出します。
 
 ```jsx
 <SuspenseList revealOrder="forwards" tail="visible">
@@ -144,14 +157,14 @@ updatedAt: 2026-08-25 11:57:00.000000+09
 </SuspenseList>
 ```
 
-この値も`revealOrder`の`independent`と同様に、執筆当時のReactの最新版19.1では動きません。対応を待ちましょう。
+`visible`は、以前は`tail`を省いたときの動作でした。今は値として渡せます。
 
 ## SuspenseListの利点
 
-`SuspenseList`を使用することで、以下のような利点があります：
+`SuspenseList`には、次の利点があります。
 
-- レイアウトシフトの削減: 順次表示されるので、読み込みの順番によるレイアウトの変更を抑制できます。
-- UXの向上: ユーザーが期待する順序でコンテンツが表示されるため、体感的な読み込み速度が向上します（子要素のデータの読み込み時間に大きな差がない事を仮定しています）。
+- レイアウトシフトが減る：上から順に表示するので、読み込みの終わった順でレイアウトが動くことがありません。
+- 待ち時間が短く感じられる：読む人が思う順に内容が出るので、子要素の読み込み時間に大きな差がなければ、速く読み込めたように感じられます。
 
 ## SuspenseListを使わずに並べた場合
 
@@ -228,18 +241,6 @@ export default function App() {
 }
 ```
 
-`SuspenseList`が安定版のReactに入ったら、`revealOrder`と`tail`を試せる例に替える予定です。
-
 ## おわりに
 
-`SuspenseList`は複数の非同期コンポーネントの表示を制御する強力な機能です。適切に使用することで、UXを大幅に向上させることができます。
-
-Reactのブログで紹介された`ViewTransition`・`addTransitionType`・`Activity`、今回紹介した`SuspenseList`の他にも実験的な機能は5つもあります。
-
-- `unstable_LegacyHidden`
-- `unstable_Scope`
-- `unstable_TracingMarker`
-- `unstable_getCacheForType`
-- `unstable_useCacheRefresh`
-
-興味がある機能があれば触ってみるのはいかがでしょうか。新たな世界を体験できるかもしれません。
+`SuspenseList`を使うと、並べた`Suspense`を上から順に、または全部そろってから表示できます。今も実験版にだけあり、既定値や`backwards`の意味も変わっているので、使うときは入れた実験版で`revealOrder`と`tail`の動きを確かめます。

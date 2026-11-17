@@ -1,23 +1,36 @@
 ---
-title: ChromaticにStorybookをPublishすることで広がる恩恵
-description: ChromaticにStorybookをPublishすると、静的なホスティングにとどまらず、MCPサーバーとしてAIエージェントにコンポーネント情報を提供したり、Storybook Compositionで別リポジトリのStorybookを統合したりできます。このサイトでの実例を交えて紹介します。
+title: 'ChromaticでStorybookを公開しMCPサーバーにする'
+description: 'ChromaticにStorybookを公開すると、URLの末尾に/mcpを付けるだけでAIエージェント向けのMCPサーバーになり、別のリポジトリのStorybookもCompositionでまとめられます。設定と今の制限を紹介します。'
 createdAt: 2026-04-07
-updatedAt: 2026-04-07
+updatedAt: 2026-11-09
 ---
 
 import compositionSidebar from './_images/composition-sidebar.avif';
 
-# ChromaticにStorybookをPublishすることで広がる恩恵
+# ChromaticでStorybookを公開しMCPサーバーにする
 
 ## はじめに
 
-[Chromatic](https://www.chromatic.com/)はStorybookのメンテナーが提供するクラウドサービスで、Storybookの公開やビジュアルテスト、UIレビューなど多くの機能を備えています。
+[Chromatic](https://www.chromatic.com/)はStorybookのメンテナーが提供するクラウドサービスで、Storybookの公開やビジュアルテスト、UIレビューなど多くの機能を備えています。`@storybook/addon-mcp`を入れたStorybookをChromaticにPublishすると、公開したURLの末尾に`/mcp`を付けたアドレスが、AIエージェントにコンポーネントの情報を渡すMCPサーバーになります。
 
-この記事ではその中でもStorybookをChromaticにPublishすることに焦点を当て、公開することで得られる恩恵を紹介します。
-UI TestsやUI Reviewといったテスト・レビュー機能には触れず、Publishそのものがもたらすメリットに絞って解説します。
+`storybook build`の出力は、どの静的ホスティングに置いてもコンポーネントを見せられます。Storybookの開発サーバーを立てずにAIエージェントからコンポーネントの情報を引きたいときに、ChromaticへのPublishが効いてきます。Chromaticのパーマリンクは、別のリポジトリのStorybookをまとめて表示するStorybook Compositionの参照先にもそのまま使えます。
 
-このサイトでも以前からStorybookをChromaticにPublishしていますが、MCPサーバーやStorybook Compositionといった機能が登場したことで、公開していることの恩恵がさらに広がりました。
-この記事では、[公開しているStorybook](https://main--647acebb9da23d6c605c4afd.chromatic.com)を例に、その恩恵を紹介していきます。
+たとえば、このサイトで使っているデザインシステム@k8ordo/uiのStorybookは公開設定がPublicなので、Claude Codeの`.mcp.json`に次のように書くだけで使えます。
+
+```json
+{
+  "mcpServers": {
+    "storybook-mcp": {
+      "url": "https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp",
+      "type": "http"
+    }
+  }
+}
+```
+
+エージェントから`docs-list`を呼ぶと、ボタンやフォームなどのコンポーネントの一覧が返ります。`docs-show`に`components-buttons-button`を渡すと、Buttonのストーリーのコードと、`size`や`variant`などのpropsの型が返ります。
+
+この記事では、Chromaticの機能のうちStorybookのPublishに絞り、MCPサーバーとStorybook Compositionで何ができるかを、このサイトの[公開しているStorybook](https://main--647acebb9da23d6c605c4afd.chromatic.com)を例に紹介します。UI TestsやUI Reviewといったテスト・レビュー機能には触れません。
 
 ## StorybookをChromaticにPublishする
 
@@ -58,20 +71,9 @@ ChromaticにPublishすると、リモートのMCPサーバーとして常時利�
 通常通りChromaticにビルドをPublishするだけで、リモートMCPサーバーのURLが生成されます。
 公開するStorybookのURLが`https://main--687a213c85e2e4589d8db1bb.chromatic.com`であれば、MCPサーバーのURLは[https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp](https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp)です。
 
-```json
-{
-  "mcpServers": {
-    "storybook-mcp": {
-      "url": "https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp",
-      "type": "http"
-    }
-  }
-}
-```
+はじめにの設定のように、利用するエージェントのMCP設定にURLを登録しておけば、ローカルのStorybookを起動していなくてもコンポーネント情報を参照できます。
 
-上記のように利用するエージェントのMCP設定にURLを登録しておけば、ローカルのStorybookを起動していなくてもコンポーネント情報を参照できます。
-
-Storybookの公開設定がPrivateの場合は、`oauth`の設定を追加する必要があります。`clientId`はChromatic共通の値です。
+Storybookの公開設定がPrivateの場合は、認証の設定を追加する必要があります。Claude Codeでは`oauth`の`clientId`に、Chromatic共通の値を書きます（Cursorでは`auth.client_id`、Codexでは`auth.CLIENT_ID`に書きます）。
 
 ```json
 {
@@ -99,18 +101,18 @@ Storybook MCPサーバーはDocs、Development、Testingの3つの[ツールセ�
 
 Docsツールセットには以下のツールが含まれます。
 
-- `list-all-documentation`: 利用可能なコンポーネントとドキュメントの一覧を取得する
-- `get-documentation`: 個別のコンポーネントの詳細（Props情報、ストーリー、使用例など）を参照する
-- `get-documentation-for-story`: 特定のストーリーのコードとドキュメントを取得する
+- `docs-list`: 利用可能なコンポーネントとドキュメントの一覧を取得する
+- `docs-show`: 個別のコンポーネントの詳細（Props情報、ストーリー、使用例など）を参照する
+- `docs-show-story`: 特定のストーリーのコードとドキュメントを取得する
 
-`list-all-documentation`で利用可能なコンポーネントを探り、`get-documentation`で詳細を確認し、`get-documentation-for-story`でユースケースを深掘りする、というように段階的にコンテキストを深めていく形で利用します。
+`docs-list`で利用可能なコンポーネントを探り、`docs-show`で詳細を確認し、`docs-show-story`でユースケースを深掘りする、というように段階的にコンテキストを深めていく形で利用します。
 
 ローカルではこれに加えて、ストーリーの書き方ガイドやプレビューを提供するDevelopmentツールセットや、ストーリーのテスト実行とアクセシビリティチェックを行うTestingツールセットも利用できます。これらがリモートMCPサーバーでも使えるようになると嬉しいのですが、現状はローカル限定なのが残念です。
 
 ### MCPサーバーから提供する情報の制御
 
 Storybookは[マニフェスト](https://storybook.js.org/docs/ai/manifests)と呼ばれるJSON形式のメタデータを自動生成します。
-CSFファイルの静的分析やコンポーネントのProps型抽出から、コンポーネント名、Props情報、使用例などが含まれたメタデータが作られ、Docsツールセットは主にこれをもとにコンポーネント情報を提供します。
+CSFファイルの静的分析やコンポーネントのProps型抽出から、コンポーネント名やProps情報、使用例などを含むメタデータが作られます。Docsツールセットは、主にこれをもとにコンポーネント情報を提供します。
 
 デフォルトではすべてのストーリーがマニフェストに含まれますが、`!manifest`タグを指定することで特定のコンポーネントやストーリーを除外できます。
 
@@ -131,30 +133,28 @@ Storybook Compositionは、複数のStorybookを1つのStorybookのUIに統合�
 
 デザインシステムやコンポーネントライブラリが別リポジトリで管理されている場合、そのStorybookをChromaticにPublishしておくと、自分のStorybookから参照して統合表示できます。
 
-`.storybook/main.ts`に`refs`を追加して、外部のStorybookを参照します。このサイトでは、デザインシステムである[ArteOdyssey](https://main--687a213c85e2e4589d8db1bb.chromatic.com/)のStorybookをCompositionで統合しています。実際の設定は以下のようになっています。
+`.storybook/main.ts`に`refs`を追加して、外部のStorybookを参照します。このサイトでは、デザインシステムである[@k8ordo/ui](https://main--687a213c85e2e4589d8db1bb.chromatic.com/)のStorybookをCompositionで統合しています。実際の設定は以下のようになっています。
 
 ```ts
-import type { StorybookConfig } from '@storybook/nextjs-vite';
+import { defineMain } from '@storybook/react-vite/node';
 
-const config: StorybookConfig = {
+export default defineMain({
   // ...
   refs: {
-    'arte-odyssey': {
-      title: 'ArteOdyssey',
+    'k8ordo-ui': {
+      title: '@k8ordo/ui',
       url: 'https://main--687a213c85e2e4589d8db1bb.chromatic.com',
     },
   },
-};
-
-export default config;
+});
 ```
 
-Storybookを起動すると、サイドバーにArteOdysseyのコンポーネントが並列表示されます。
+Storybookを起動すると、サイドバーに@k8ordo/uiのコンポーネントが並列表示されます。
 
 <Image
   src={compositionSidebar}
-  alt="Storybookのサイドバーに自分のプロジェクトのコンポーネントとArteOdysseyのコンポーネントが並列表示されている"
-  width={586}
+  alt="Storybookのサイドバーに自分のプロジェクトのコンポーネントと@k8ordo/uiのコンポーネントが並列表示されている"
+  width={598}
   height={1594}
 />
 
@@ -162,9 +162,11 @@ Storybookを起動すると、サイドバーにArteOdysseyのコンポーネン
 
 ### MCPサーバーとの連携
 
-ローカルのMCPサーバーであれば、Storybook Compositionと組み合わせることもできます。外部のStorybookがマニフェストを生成している場合、`refs`に登録しておくことで、MCPサーバーが外部のコンポーネント情報もまとめて提供します。AIエージェントが`list-all-documentation`を実行すると、自分のプロジェクトのコンポーネントだけでなく、Compositionで統合した外部のコンポーネント情報も取得できます。
+MCPサーバーは、Storybook Compositionと組み合わせることもできます。外部のStorybookがマニフェストを生成している場合、`refs`に登録しておくことで、MCPサーバーが外部のコンポーネント情報もまとめて提供します。AIエージェントが`docs-list`を実行すると、自分のプロジェクトのコンポーネントだけでなく、Compositionで統合した外部のコンポーネント情報も取得できます。ソースが複数になると、`docs-show`と`docs-show-story`には、どのStorybookかを表す`storybookId`（自分のものは`local`、外部のものは`refs`のキー）を渡します。
 
-ただし、現状ではMCP Compositionはローカルのみ対応しており、ChromaticにPublishしたリモートMCPサーバーでは自身のStorybookのコンポーネント情報のみが提供されます。なお、マニフェストの生成は現状Reactプロジェクトが中心です。
+このサイトのStorybookで試すと、ローカルの開発サーバーのMCPサーバーでも、ChromaticにPublishしたリモートMCPサーバーでも、`docs-list`は自分のコンポーネントと@k8ordo/uiのコンポーネントをまとめて返します。`storybookId`に`k8ordo-ui`を渡した`docs-show`では、@k8ordo/uiのButtonの詳細が取れます。
+
+なお、ChromaticのドキュメントではMCPサーバーにStorybook 10.3以上とReactが要るとされています。
 
 ## おわりに
 
@@ -172,6 +174,6 @@ Storybookを起動すると、サイドバーにArteOdysseyのコンポーネン
 
 しかし、MCPサーバーの登場によってAIエージェントにコンポーネント情報を提供できるようになり、Storybook Compositionによって別リポジトリのデザインシステムも統合して扱えるようになりました。Storybookの静的なホスティングにとどまらず、PublishしたStorybookを起点にした動的な機能が使えるようになっているのは嬉しいです。
 
-現状ではDevelopment・TestingツールセットやMCP Compositionなど、ローカルのStorybook開発サーバーでしか利用できない機能もあります。これらがリモートMCPサーバーでも利用できるようになる日が楽しみです。
+現状ではDevelopment・Testingツールセットなど、ローカルのStorybook開発サーバーでしか利用できない機能もあります。これらがリモートMCPサーバーでも利用できるようになる日が楽しみです。
 
 Chromaticはビジュアルテストやレビュー機能が注目されがちですが、Publishするだけでもこれだけの価値があります。まだ試していない方はぜひ導入を検討してみてください。

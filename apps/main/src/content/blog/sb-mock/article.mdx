@@ -1,19 +1,17 @@
 ---
-title: sb.mockでStorybookで利用するモジュールをモックしよう！
-description: Storybook v9.1.0で新たに導入されたsb.mock機能により、モジュールのモックがこれまで以上に簡単に行えるようになりました。sb.mockはStorybookを活用したテストの取り組みやすさを大幅に向上させる画期的な新機能です。ぜひ活用してみてください。
+title: 'Storybookのsb.mockでモジュールをモックする'
+description: 'Storybookのsb.mockは、preview.tsに書くだけで、コンポーネントが読むモジュールをモック関数に置き換えます。mockedで戻り値を変えたり、spyで元の処理を動かしたり、__mocks__で差し替えたりできます。'
 createdAt: 2025-08-04
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 ---
 
-# sb.mockでStorybookで利用するモジュールをモックしよう！
+# Storybookのsb.mockでモジュールをモックする
 
 ## はじめに
 
-Storybookのv9.1.0で`sb.mock`を用いてモジュールをモックする`Automocking`という機能が追加されました。
+`sb.mock`は、Storybookのストーリーが読み込むモジュールを、モック関数に置き換える関数です。`.storybook/preview.ts`に書いたモジュールはどのストーリーでもモックになり、戻り値をストーリーごとに変えられます。Storybookのv9.1.0で、`Automocking`という機能として追加されました。
 
-<LinkCard href="https://github.com/storybookjs/storybook/releases/tag/v9.1.0" />
-
-従来のStorybookで主流だった、サブパスインポートや`Vite`・`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
+コンポーネントが直接importする関数（データベースやAPIを呼ぶ関数など）の戻り値をストーリーごとに変えたいときに、モジュールのモックが要ります。従来のStorybookで主流だった、サブパスインポートや`Vite`や`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
 
 ## sb.mockを使ってみる
 
@@ -23,67 +21,73 @@ Storybookのv9.1.0で`sb.mock`を用いてモジュールをモックする`Auto
 import { sb } from 'storybook/test';
 ```
 
-v9.1.0時点では`mock`メソッドのみが公開されています。
+`sb`で公開されているのは`mock`メソッドだけです。
 
-`mock`メソッドは第一引数にモックするモジュールのパス、第二引数にオプションをオブジェクトで指定します。
+`mock`メソッドは第一引数にモックするモジュールのパス、第二引数にオプションをオブジェクトで指定します。パスは`.storybook/preview.ts`からの相対パスで、拡張子まで書きます。
 
 ```ts
 // オプション無し
-sb.mock('./src/services/users');
+sb.mock('../src/services/users.ts');
 // オプション有り
-sb.mock('./src/services/users', {
+sb.mock('../src/services/users.ts', {
   spy: true,
 });
 ```
 
-オプションはv9.1.0時点では`spy`のみがサポートされています。
+拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、`Cannot find module`のエラーでビルドが失敗します。
+
+オプションは`spy`だけがサポートされています。
 
 ### mockしてみる
 
 `sb.mock`の第一引数に渡したモジュールをモックします。
 
 ```ts
-// preview.ts
-sb.mock('./src/services/users');
+// .storybook/preview.ts
+import { sb } from 'storybook/test';
+
+sb.mock('../src/services/users.ts');
 ```
 
-`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。
+この行を足すと、`src/services/users.ts`の`getUser`を呼ぶコンポーネントのストーリーでは、`getUser`の戻り値が`undefined`になります。戻り値の決め方は後で紹介します。
+
+`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。ストーリーのファイルに`sb.mock`を書いても、エラーにはならず、モジュールもモックされません。
 
 `import()`構文を用いてより確実にモジュールをモックすることも可能です。
-```ts
-// preview.ts
-sb.mock(import('./src/services/users'));
-```
 
+```ts
+// .storybook/preview.ts
+sb.mock(import('../src/services/users.ts'));
+```
 
 #### デフォルトの挙動
 
 デフォルトの状態、またはspyをfalseに設定した場合、モックしたモジュールのメソッドを呼び出しても、そのメソッドの実際の処理は実行されません。
 
 ```ts
-// preview.ts
-sb.mock('./src/services/users', {
+// .storybook/preview.ts
+sb.mock('../src/services/users.ts', {
   spy: false,
 });
 
 // src/services/users.ts
 console.log('これは呼ばれちゃいます');
-export const getUser = () => {
-  return { id: '1', name: 'John Doe' };
+export const getUser = async (id: number) => {
+  return { id, name: 'John Doe' };
 };
 ```
 
-上記のように定義されている場合、Storyに表示するコンポーネント内で`getUser`メソッドを呼び出しても、`users.ts`に定義された元の`getUser`は実行されません。代わりに`fn()`が返されます。
+上記のように定義されている場合、Storyに表示するコンポーネント内で`getUser`メソッドを呼び出しても、`users.ts`に定義された元の`getUser`は実行されません。`getUser`はモック関数に置き換わり、呼ぶと`undefined`を返します。元の`getUser`は`async`の関数ですが、モックはPromiseも返しません。
 
-ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。
+ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。ストーリーを開くと、モックしていても開発者ツールのコンソールに`users.ts`の`console.log`が出ます。
 
 #### モックしたモジュールのメソッドをspyする
 
 `spy`を`true`に設定すると、モックしたモジュールのメソッドを呼び出した際に、元の関数の処理が実際に実行されます。
 
 ```ts
-// preview.ts
-sb.mock('./src/services/users', {
+// .storybook/preview.ts
+sb.mock('../src/services/users.ts', {
   spy: true,
 });
 
@@ -103,22 +107,23 @@ export const getUser = async (id: number) => {
 
 ### モックしたモジュールのメソッドを検証する
 
-デフォルトの挙動ではメソッドの戻り値がないため、何かしらの値を返すようにしたことが多いです。spyした場合であっても（そうでなくても）、検証のためにモックしたメソッドを制御したいです。
+デフォルトの挙動ではメソッドの戻り値がないため、何かしらの値を返すようにしたいことが多いです。spyした場合であっても（そうでなくても）、検証のためにモックしたメソッドを制御したいです。
 
 そのような場合はストーリーの`beforeEach`で`mocked`関数を用いて制御できます。
 
-```ts
-import { Meta, StoryObj } from '@storybook/react-vite';
+```tsx
+// src/user.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, mocked } from 'storybook/test';
+import { getUser } from './services/users';
 import { User } from './user';
-import { getUser } from '@/services/users';
 
 const meta = {
   title: 'user',
   component: User,
   beforeEach: async () => {
     mocked(getUser).mockResolvedValue({
-      id: '1',
+      id: 1,
       name: 'John Doe',
     });
   },
@@ -128,8 +133,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  play: async () => {
-    expect(getUser).toHaveBeenCalledWith(1);
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByText('John Doe')).toBeInTheDocument();
+    await expect(getUser).toHaveBeenCalledWith(1);
   },
 };
 
@@ -137,15 +143,15 @@ export const NotFound: Story = {
   beforeEach: async () => {
     mocked(getUser).mockResolvedValue(null);
   },
-  play: async ({ canvas, userEvent }) => {
-    expect(getUser).toHaveBeenCalledWith(1);
-
-    // ...
-    // ...
-    expect(user).toBeNull();
+  play: async ({ canvas }) => {
+    await expect(
+      await canvas.findByText('ユーザーが見つかりません'),
+    ).toBeInTheDocument();
   },
 };
 ```
+
+`User`は、`getUser(1)`の結果の名前を表示し、`null`なら`ユーザーが見つかりません`と表示するコンポーネントです。
 
 `storybook/test`の`mocked`関数にモックしたモジュールのメソッドを渡すことで、モックしたメソッドを制御できます。
 [Storybookの`beforeEach`](https://storybook.js.org/docs/writing-tests/interaction-testing#beforeeach)の単位で制御できるので便利ですね。
@@ -161,9 +167,12 @@ export const NotFound: Story = {
 
 #### 手元のファイルのモック
 
-`src/services/users.ts`のような手元のファイルをモックしたい場合は、`src/services/__mocks__/users.ts`のように同一の階層に`__mocks__`ディレクトリを作成し、その中にモックしたいファイルと同じ名前のファイルを作成します。
+`src/services/users.ts`のような手元のファイルをモックしたい場合は、`src/services/__mocks__/users.ts`のように同一の階層に`__mocks__`ディレクトリを作成し、その中にモックしたいファイルと同じ名前のファイルを作成します。`preview.ts`の`sb.mock`はそのまま残します。`sb.mock`を書かずに`__mocks__`のファイルを置いても、元のファイルが使われます。
 
 ```ts
+// .storybook/preview.ts
+sb.mock('../src/services/users.ts');
+
 // src/services/users.ts
 console.log('呼ばれなくなりました');
 export const getUser = async (id: number) => {
@@ -176,22 +185,30 @@ export const getUser = async (id: number) => {
 };
 
 // src/services/__mocks__/users.ts
-export const getUser = () => {
-  return { id: '1', name: 'Mocked User' };
-};
+import { fn } from 'storybook/test';
+
+export const getUser = fn(async (id: number) => {
+  return { id, name: 'Mocked User' };
+});
 ```
+
+`__mocks__`のファイルが書き出した関数は、そのままではモック関数になりません。`mocked(getUser).mockResolvedValue()`で戻り値を変えたり、呼ばれた回数を検証したりするときは、`fn()`で包みます。
 
 #### ライブラリのモック
 
-`node_modules`から呼び出すようなパッケージのモジュールをモックしたい場合は、プロジェクトのルートに`__mocks__`ディレクトリを作成し、その中にモックしたいファイルと同じ名前のファイルを作成します。
+`node_modules`から呼び出すようなパッケージのモジュールをモックしたい場合は、プロジェクトのルートに`__mocks__`ディレクトリを作成し、その中にパッケージと同じ名前のファイルを作成します。`sb.mock`にはパッケージ名を渡します。
+
+たとえば`uuid`の`v4`は呼ぶたびに違うIDを返すので、IDを表示するストーリーは開くたびに見た目が変わります。固定のIDを返すモックに置き換えれば、スクリーンショットを比べるテストでも毎回同じ見た目になります。
 
 ```ts
-// __mocks__/react.ts
-import { FC, PropsWithChildren } from 'react';
+// .storybook/preview.ts
+sb.mock('uuid');
 
-export const ViewTransition: FC<PropsWithChildren> = ({ children }) =>
-  children;
+// __mocks__/uuid.ts
+export const v4 = () => '00000000-0000-4000-8000-000000000000';
 ```
+
+`__mocks__`のファイルはパッケージをまるごと置き換えるので、使う関数はすべて書き出します。
 
 プロジェクトのルートは`.git`がある位置がデフォルトです。`STORYBOOK_PROJECT_ROOT`環境変数を設定することで、プロジェクトのルートを変更できます。
 

@@ -1,20 +1,21 @@
 ---
-title: Intl.DurationFormatで期間をlocaleに基づいて表現する
-description: Intl.DurationFormatはlocaleに応じた形式で期間を表現するIntlの新機能で、Baseline 2025で利用可能です。formatメソッドで文字列として期間を取得でき、formatToPartsメソッドでは各部分をオブジェクトの配列として取得できます。言語による期間の表現の違いを標準に従って簡単扱いましょう。
+title: 'Intl.DurationFormatで経過時間を多言語で表示する'
+description: 'Intl.DurationFormatは、時間や分、秒を組み合わせた長さを、言語に合わせた文字列や1:05:00の形にします。動画の再生時間や経過時間の表示に使えます。Baseline 2025で使えます。'
 createdAt: 2025-03-14
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - intl-duration-format
 ---
 
-# Intl.DurationFormatで期間をlocaleに基づいて表現する
+# Intl.DurationFormatで経過時間を多言語で表示する
 
 <BrowserSupportStatus featureId="intl-duration-format"></BrowserSupportStatus>
 
 ## はじめに
 
-Firefox 136.0のリリースで`Intl`の`DurationFormat`がBaseline 2025に追加されました。
-`Intl.DurationFormat`は`locale`に基づいた書式設定で期間を表現するものです。
+`Intl.DurationFormat`は、`{ hours: 1, minutes: 5 }`のような時間の長さを、言語に合わせた文字列にするオブジェクトです。Firefox 136が対応して、Baseline 2025に入りました。
+
+単位が1つだけなら、`Intl.NumberFormat`の`style: 'unit'`で`3 時間`のように書けます。時間と分のように複数の単位を並べると、言語ごとに区切り方が変わるので、`Intl.DurationFormat`が要ります。`style: 'long'`にすると、英語は`1 hour, 5 minutes, 6 seconds`、ドイツ語は`1 Stunde, 5 Minuten und 6 Sekunden`のように、接続詞の有無まで変わります。
 
 ```js
 // [!og]
@@ -28,20 +29,15 @@ const duration = {
   seconds: 6,
 };
 
-new Intl.DurationFormat('ja').format(duration);
+console.log(new Intl.DurationFormat('ja').format(duration));
 // 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒
 ```
 
-<LinkCard href="https://github.com/tc39/proposal-intl-duration-format" />
+コンソールに貼ると、7つの単位が日本語で並びます。ChromeとFirefoxでは数字と単位の間に空白が入り、Safariでは`1年 2か月 3週間 3日 4時間 5分 6秒`と、単位の区切りにだけ空白が入ります。
 
-## Intl.DurationFormat
+## 作り方とオプション
 
-`Intl.DurationFormat`は`locale`に応じた書式の期間を表示するためのオブジェクトです。
-他の`Intl`オブジェクトと同じように静的メソッドとして`supportedLocalesOf()`やインスタンスメソッド`resolvedOptions()`を持っています。
-
-`locale`に応じた期間の出力は`Intl.DurationFormat`オブジェクトを作成して、`format`及びに`formatToParts`メソッドで行います。
-
-`locale`や書式設定は`Intl.DurationFormat`オブジェクトを作成するタイミングで設定します。
+`Intl.DurationFormat`は、ほかの`Intl`のオブジェクトと同じく、静的メソッドの`supportedLocalesOf()`と、インスタンスメソッドの`resolvedOptions()`を持ちます。言語と書式は作るときに決め、`format()`か`formatToParts()`で文字列にします。
 
 ```js
 new Intl.DurationFormat('ja-JP', {
@@ -49,11 +45,9 @@ new Intl.DurationFormat('ja-JP', {
 });
 ```
 
-第一引数に`locale`を文字列や配列で渡し、第二引数でその他のオプションをオブジェクト形式で渡します。
+第1引数に言語を文字列か配列で渡し、第2引数にオプションのオブジェクトを渡します。主なオプションは、表示の形式を決める`style`と、単位ごとの形式を決める`years`や`months`、0の単位を出すかを決める`yearsDisplay`や`monthsDisplay`です。
 
-オプションの全ては説明しませんが、`style`で表示する期間の長さ、`years`・`months`等で個別の`style`を決定、`yearsDisplay`・`monthsDisplay`などで0の時の表示を決めます。
-
-`style`には`long`と`short`と`narrow`と`digital`の4つがあります。`locale`が`ja`の場合、以下のような表示になります。
+`style`は`long`、`short`、`narrow`、`digital`の4つで、指定しなければ`short`です。言語を`ja`にして、冒頭の`duration`に`milliseconds: 7`と`microseconds: 8`、`nanoseconds: 9`を足して渡すと、次のように表示されます。
 
 ```js
 // long 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒 7 ミリ秒 8 マイクロ秒 9 ナノ秒
@@ -62,10 +56,13 @@ new Intl.DurationFormat('ja-JP', {
 // digital 1 年 2 か月 3 週間 3 日 4:05:06.007008009
 ```
 
+上の表示はChromeとFirefoxのものです。Safariは`long`でも数字と単位の間に空白を入れず、`narrow`は`1y2m3w3日4時間5分6秒7ms8μs9ns`と、日から秒までが日本語になります。
+
+TypeScriptでは、TypeScript 6以降で`lib`に`es2025`以降を含めると型が付きます。`es2024`までだと`Property 'DurationFormat' does not exist on type 'typeof Intl'`（TS2550）になります。
+
 ## format
 
-作成した`Intl.DurationFormat`オブジェクトに対して`format`メソッドを呼び出すことで期間を表示します。
-`format`は対応している期間をオブジェクト形式で受け取ります。
+`format()`は、長さを単位ごとの数を持つオブジェクトで受け取り、文字列を返します。
 
 ```js
 const duration = {
@@ -79,13 +76,31 @@ new Intl.DurationFormat('ja').format(duration);
 // 1 年 2 か月 4 時間 6 秒
 ```
 
-全ての期間を含める必要はありません。
+すべての単位を入れる必要はありません。キーに使える単位は、`years`、`months`、`weeks`、`days`、`hours`、`minutes`、`seconds`、`milliseconds`、`microseconds`、`nanoseconds`の10個です。
 
-言い忘れましたが、期間は`years`、`months`、`weeks`、`days`、`hours`、`minutes`、`seconds`、`milliseconds`、`microseconds`、`nanoseconds`の9つに対応しています。これらを`format`に渡すオブジェクトのキーとして利用できます。
+`format`は単位を繰り上げません。`{ seconds: 3725 }`は`1 時間 2 分 5 秒`ではなく`3,725 秒`になります。値は整数でなければならず、`{ seconds: 1.5 }`は`RangeError`になります。経過時間をミリ秒で持っているときは、自分で時と分と秒に分けてから渡します。
+
+```js
+const toDuration = (ms) => {
+  const seconds = Math.floor(ms / 1000);
+  return {
+    hours: Math.floor(seconds / 3600),
+    minutes: Math.floor(seconds / 60) % 60,
+    seconds: seconds % 60,
+  };
+};
+
+console.log(new Intl.DurationFormat('ja').format(toDuration(3_725_000)));
+// 1 時間 2 分 5 秒
+console.log(new Intl.DurationFormat('ja', { style: 'digital' }).format(toDuration(3_725_000)));
+// 1:02:05
+```
+
+動画の再生時間のように`1:02:05`の形で出すときは、`style: 'digital'`を使います。
 
 ## formatToParts
 
-`formatToParts`メソッドは`format`メソッドと同じように期間を表示しますが、`format`メソッドが文字列を返すのに対して、`formatToParts`メソッドはオブジェクトの配列を返します。
+`formatToParts()`は、`format()`と同じ内容を、文字列ではなく部品ごとのオブジェクトの配列で返します。
 
 ```js
 const duration = {
@@ -97,88 +112,36 @@ const duration = {
 
 new Intl.DurationFormat('ja').formatToParts(duration);
 // [
-//     {
-//         "type": "integer",
-//         "value": "1",
-//         "unit": "year"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " ",
-//         "unit": "year"
-//     },
-//     {
-//         "type": "unit",
-//         "value": "年",
-//         "unit": "year"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " "
-//     },
-//     {
-//         "type": "integer",
-//         "value": "2",
-//         "unit": "month"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " ",
-//         "unit": "month"
-//     },
-//     {
-//         "type": "unit",
-//         "value": "か月",
-//         "unit": "month"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " "
-//     },
-//     {
-//         "type": "integer",
-//         "value": "4",
-//         "unit": "hour"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " ",
-//         "unit": "hour"
-//     },
-//     {
-//         "type": "unit",
-//         "value": "時間",
-//         "unit": "hour"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " "
-//     },
-//     {
-//         "type": "integer",
-//         "value": "6",
-//         "unit": "second"
-//     },
-//     {
-//         "type": "literal",
-//         "value": " ",
-//         "unit": "second"
-//     },
-//     {
-//         "type": "unit",
-//         "value": "秒",
-//         "unit": "second"
-//     }
+//   { type: 'integer', value: '1', unit: 'year' },
+//   { type: 'literal', value: ' ', unit: 'year' },
+//   { type: 'unit', value: '年', unit: 'year' },
+//   { type: 'literal', value: ' ' },
+//   { type: 'integer', value: '2', unit: 'month' },
+//   { type: 'literal', value: ' ', unit: 'month' },
+//   { type: 'unit', value: 'か月', unit: 'month' },
+//   { type: 'literal', value: ' ' },
+//   { type: 'integer', value: '4', unit: 'hour' },
+//   { type: 'literal', value: ' ', unit: 'hour' },
+//   { type: 'unit', value: '時間', unit: 'hour' },
+//   { type: 'literal', value: ' ' },
+//   { type: 'integer', value: '6', unit: 'second' },
+//   { type: 'literal', value: ' ', unit: 'second' },
+//   { type: 'unit', value: '秒', unit: 'second' },
 // ]
 ```
 
-期間を元に自分なりの表示を作成する場合はこちらが便利です。
-日本語で`format`した場合スペースが気になるので、こちらを利用した方が見栄えが良いかもしれません。
+上の配列はChromeとFirefoxのものです。Safariは数字と単位の間の`literal`を返さず、11個の要素になります。
+
+自分で表示を組み立てるときに使います。日本語の空白をそろえたいときは、`literal`を除いてつなぐと、どのブラウザでも空白の無い表示になります。
+
+```js
+const parts = new Intl.DurationFormat('ja').formatToParts({ hours: 1, minutes: 5, seconds: 6 });
+console.log(parts.filter((part) => part.type !== 'literal').map((part) => part.value).join(''));
+// 1時間5分6秒
+```
+
+単位の区切りも消えるので、英語のように単位の間に区切りが要る言語には使えません。
 
 ## おわりに
-Baseline 2025に追加された`Intl.DurationFormat`を紹介しました。
 
-`locale`に基づいた期間の表現は、かなり実装が大変で、ライブラリを利用した場合でも満足が得られる結果を簡単に得ることはできませんでした。
-そのため、`Intl.DurationFormat`によって、これらの表現を簡単にできるようになったことはとても嬉しいです。
-
-`Intl`系の機能は日本・日本語であることによって、困っていた点を解決してくれるので今後の追加も楽しみです。
+`Intl.DurationFormat`を使うと、時間や分、秒を組み合わせた長さを、言語に合わせた文字列や`1:02:05`の形にできます。単位は繰り上げないので、秒やミリ秒の数から表示するときは時と分と秒に分けて渡し、日本語の空白をそろえたいときは`formatToParts()`で組み立てます。

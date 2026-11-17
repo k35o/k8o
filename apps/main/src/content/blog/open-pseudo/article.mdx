@@ -1,8 +1,8 @@
 ---
 title: ':open疑似クラスで開いている要素をまとめてスタイリングする'
-description: ':openはdialog、details、select、ピッカー付きのinputといった開閉できる要素が開いている間にマッチするCSS疑似クラスです。Baseline 2026で揃ったので、dialog[open]やdetails[open]といった要素別の属性セレクタを横断して一本化できます。'
+description: ':openは、dialog・details・select・ピッカー付きのinputが開いているあいだマッチする疑似クラスです。dialog[open]などをまとめて書けるほか、selectのドロップダウンが開いた状態も装飾できます。'
 createdAt: 2026-05-23
-updatedAt: 2026-05-23
+updatedAt: 2026-11-09
 featureIds:
   - open-pseudo
 ---
@@ -13,29 +13,42 @@ featureIds:
 
 ## はじめに
 
-HTMLには開閉できる要素が複数あります。`<dialog>`、`<details>`、`<select>`、ピッカーUIを持つ`<input>`などです。これまでは開いているときに当てるCSSはそれぞれ別のセレクタが必要でした。
+`:open`疑似クラスは、開いている`<dialog>`と`<details>`、`<select>`、ピッカーを持つ`<input>`にマッチするセレクタです。`<select>`なら選択肢の一覧を、`<input type="color">`なら色を選ぶ画面を開いているあいだ当たります。Safari 26.5が対応して、Baseline 2026に入りました。
 
-- `<dialog>` → `dialog[open]`
-- `<details>` → `details[open]`
-- `<select>` → 専用セレクタなし
-- `<input type="color">`などのピッカー → 専用セレクタなし
+`<dialog>`と`<details>`の開いた状態は、`dialog[open]`や`details[open]`のように、`open`属性のセレクタで選べます。`<select>`や`<input>`のピッカーには、開いている状態を選ぶセレクタがありませんでした。`:open`は、これらをまとめて表せます。
 
-Baseline 2026で揃った`:open`疑似クラスは、これらをまとめて表せるセレクタです。なお、`popover`属性を持つ要素は別系統で`:popover-open`が用意されており、`:open`の対象には含まれません。
+```html
+<style>
+  :open {
+    outline: 2px solid red;
+  }
+</style>
+<details>
+  <summary>開く</summary>
+  中身
+</details>
+<select>
+  <option>選択肢1</option>
+  <option>選択肢2</option>
+</select>
+```
+
+detailsを開くと赤い枠が付き、閉じると消えます。selectは、選択肢の一覧を開いているあいだだけ枠が付きます。
 
 ## マッチする要素
 
-`:open`は現在開いている状態の要素にマッチします。仕様上、対象になるのは以下です。
+`:open`の対象になるのは、次の要素です。
 
-- `<dialog>` - `open`属性が付いているとき
-- `<details>` - `open`属性が付いているとき
-- `<select>` - ピッカー（ドロップダウン）が開いているとき
-- `<input>`のうちピッカーUIを持つ型（`color`、`date`、`file`など） - ピッカーが開いているとき
+- `<dialog>`：`open`属性が付いているとき
+- `<details>`：`open`属性が付いているとき
+- `<select>`：選択肢の一覧が開いているとき
+- ピッカーを持つ`<input>`（`color`や`date`など）：ピッカーが開いているとき
 
-`popover`属性を持つ要素は`:open`ではなく`:popover-open`で扱います。
+`<dialog>`は、`show()`で開いても`showModal()`で開いてもマッチします。`<select>`はクリックして一覧を開くとマッチし、一覧を出さない`multiple`付きの`<select>`はクリックしてもマッチしません。`<input type="color">`は色を選ぶ画面を、`<input type="date">`はカレンダーを開いているあいだマッチします。`popover`属性を持つ要素は`:open`には当たらず、`:popover-open`で選びます。
 
 ## 使い方
 
-開いた瞬間だけ枠線を強調したい、開いているトリガーボタンとそろえて色を変えたい、といったケースで一本のセレクタで書けます。
+開いている要素に枠線を付けるだけなら、`:open`の1つで書けます。
 
 ```css
 :open {
@@ -45,7 +58,7 @@ Baseline 2026で揃った`:open`疑似クラスは、これらをまとめて表
 }
 ```
 
-要素を絞りたいときは普通のセレクタと組み合わせます。
+要素を絞るときは、要素のセレクタと組み合わせます。
 
 ```css
 /* [!og] */
@@ -61,6 +74,15 @@ select:open {
 }
 ```
 
+`<select>`や`<input>`のピッカーは要素に重なって開くので、要素に付けた枠線は見えにくくなります。下のデモでは、親に`:has(:open)`で背景色を付けて、開いていることが分かるようにしています。
+
+```css
+/* ピッカーが開いているあいだ、親の背景に色を付ける */
+section:has(:open) {
+  background-color: var(--color-accent-subtle);
+}
+```
+
 <PlaygroundEmbed
   demo=":openで開いている要素を一括スタイリング"
   headingLevel="h4"
@@ -69,4 +91,4 @@ select:open {
 
 ## おわりに
 
-`:open`の本当の価値は`<select>`やピッカー付き`<input>`（`color`、`date`、`file`など）にスタイリングできることにあります。`<dialog>`や`<details>`は元から属性セレクタで取れていたので`:open`はそれを横断的にまとめる書き方でしかないですが、これらネイティブピッカーの開閉に追従するCSSはこれまで書きようがなく、`:open`が唯一無二の手段として加わった形です。Baseline 2026で主要ブラウザに揃ったことで、ネイティブUIに踏み込んだスタイリングが現実的に書けるようになりました。
+`<dialog>`と`<details>`は`open`属性のセレクタでも選べますが、`<select>`とピッカーを持つ`<input>`が開いている状態を選べるのは`:open`だけです。要素を絞るときは`select:open`のように組み合わせ、ピッカーが要素に重なるときは親に`:has(:open)`を付けます。

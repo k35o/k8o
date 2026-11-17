@@ -1,27 +1,29 @@
 ---
-title: 16bit浮動小数点が使える！Float16Array
-description: Float16ArrayがBaselineに追加されたことで、16bitの浮動小数点を扱えるようになりました。機械学習やグラフィックス用途などで威力を発揮する新しいTypedArrayについて解説します。
+title: 'Float16Arrayで16bit浮動小数点数を扱うときの範囲と精度'
+description: 'Float16Arrayは、16bit（半精度）の浮動小数点数を1要素2バイトで持つTypedArrayです。扱える範囲は±65,504で、精度はFloat32Arrayより落ちます。WebGPUや機械学習で使うときの注意点を説明します。'
 createdAt: 2025-04-13
-updatedAt: 2025-04-13
+updatedAt: 2026-11-09
 featureIds:
   - float16array
 ---
 
-
-# 16bit浮動小数点が使える！Float16Array
+# Float16Arrayで16bit浮動小数点数を扱うときの範囲と精度
 
 <BrowserSupportStatus featureId="float16array"></BrowserSupportStatus>
 
-## Float16Array
+## はじめに
 
-`Float32Array`、`Float64Array`のように、浮動小数点数を扱う`TypedArray`として`Float16Array`がBaseline 2025に追加されました。これは、16bit浮動小数点数を扱うための配列です。
+`Float16Array`は、16bit（半精度）の浮動小数点数を1要素2バイトで並べる`TypedArray`です。`Float32Array`や`Float64Array`の16bit版にあたります。Chrome 135が対応して、Baseline 2025に入りました。
 
-`Float16Array`が持つプロパティやメソッドは親メソッドである`TypedArray`と共通しています。
-各要素のサイズは2byteで、-65,504から65,504までの範囲の数値を扱えます。
+JavaScriptの中の計算には、`Float32Array`や`Float64Array`、普通の配列を使います。WebGPUのシェーダーや機械学習のモデルは、16bitの浮動小数点数でデータを受け渡すことがあります。これまでは`Float32Array`で倍のメモリを使うか、`Uint16Array`にビットを自分で組み立てて入れるしかありませんでした。`Float16Array`なら、16bitの浮動小数点数をそのまま読み書きできます。
+
+## 扱える範囲
+
+プロパティやメソッドは、ほかの`TypedArray`と同じです。1要素は2バイトで、-65,504から65,504までの数を扱えます。
 
 ```js
 // [!og]
-// 要素数3のFloat16Arrayを作成 初期値は0
+// 要素数3のFloat16Arrayを作る。初期値は0
 const float16 = new Float16Array(3);
 float16[0] = 1.5;
 float16[1] = 100000;
@@ -32,20 +34,45 @@ console.log(float16.length); // 3
 console.log(float16.BYTES_PER_ELEMENT); // 2
 ```
 
-### 嬉しいこと
+範囲を超えた`100000`は`Infinity`になります。境目では、`65519`は`65504`に丸められ、`65520`は`Infinity`になります。整数をそのまま表せるのは2048までで、`2049`を入れると`2048`になります。
 
-これまで、浮動小数点型の大量データを扱いたい場合は、メモリ効率を重視しても`Float32Array`を使うしかなく最小でも32bitという制約がありました。
-あるいは、どうにか`Uint16Array`などの別の型を使って自前で変換するような工夫が必要でした。
+## WebGPUとWebGLに渡す
 
-その点、`Float16Array`の登場によって浮動小数点型のまま小さなサイズで扱えるのはとても嬉しい進化です。
+WebGPUでは、`Float16Array`を`writeBuffer()`にそのまま渡せます。シェーダーで`f16`を使うには、デバイスを作るときに`shader-f16`の機能を要求します。
 
-特に、WebGPUやWebGL、Stable Diffusionなど、16bit浮動小数点数を扱うことが多い機械学習・グラフィックス等のAPIではこの進化が輝きます。
+```js
+const adapter = await navigator.gpu.requestAdapter();
+const device = await adapter.requestDevice({ requiredFeatures: ['shader-f16'] });
+const input = new Float16Array([0.5, 1.5, -2, 65504]);
+const buffer = device.createBuffer({
+  size: input.byteLength,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+});
+device.queue.writeBuffer(buffer, 0, input);
+```
 
-### 注意すべきこと
+シェーダーの側では`enable f16;`を書き、`array<f16>`で受けます。
 
-`Float16Array`を扱う時の注意点がいくつかあります。
+```wgsl
+enable f16;
+@group(0) @binding(0) var<storage, read> src: array<f16>;
+```
 
-1つは、精度の低さです。16bitの範囲で値を扱うので、`Float32Array`や`Float64Array`で利用していた値をそのまま格納すると、精度が落ちてしまうことがあります。
+この`buffer`を`array<f16>`として読むコンピュートシェーダーで、値を`f32`に写して読み戻すと、`[0.5, 1.5, -2, 65504]`が返ります。
+
+WebGL 2のテクスチャに`HALF_FLOAT`で渡すときは、`Float16Array`をそのまま渡せません。`texImage2D()`に渡すと`INVALID_OPERATION`になり、Chromeのコンソールには`type HALF_FLOAT_OES but ArrayBufferView is not NULL and not Uint16Array`と出ます。同じバッファを`Uint16Array`で包み直せば受け付けられ、読み戻すと入れた値のままです。
+
+```js
+const gl = document.createElement('canvas').getContext('webgl2');
+const pixel = new Float16Array([0.5, 1.5, -2, 65504]);
+gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, 1, 1, 0, gl.RGBA, gl.HALF_FLOAT, new Uint16Array(pixel.buffer));
+console.log(gl.getError() === gl.NO_ERROR); // true
+```
+
+## 精度
+
+16bitで表せる桁は少ないので、`Float32Array`や`Float64Array`の値を入れると、近い値に丸められます。
 
 ```js
 const f64 = new Float64Array([0.3333]);
@@ -56,25 +83,52 @@ const f16 = new Float16Array(f64);
 console.log(f16[0]); // 0.333251953125
 ```
 
-一度落ちた精度は元に戻せないため変換操作には注意が必要です。
+丸められた値は、`Float64Array`に入れ直しても`0.3333`には戻りません。
 
-次に注意すべきは、`Float16`という型が存在しないということです。
-`f16[0]`のように値を取り出した瞬間それはただの`number`型になります。つまり、16bit浮動小数点である保証は失われている状態になります。
+## 取り出した値の型
+
+`Float16Array`から取り出した値は、ただの`number`です。
 
 ```js
 const f16 = new Float16Array([1 / 3]);
 const value = f16[0];
 console.log(value); // 0.333251953125（16bitで丸められた値）
 console.log(typeof value); // 'number'
+console.log(value * 3); // 0.999755859375
 ```
 
-`Float16Array`に格納されている間だけが、16bit浮動小数点数として安全な状態です。`Float16Array`は型ではなく格納形式でしかないという点を意識しておくと安心です。
+取り出したあとの計算は、ほかの`number`と同じく64bitで行われます。16bitに丸められるのは、`Float16Array`に入れたときだけです。
 
-最後に、「精度は低くてもいいからメモリを節約したい」という理由だけで`Float16Array`を使うのは避けましょう。
-万能ではないので、WebGPUのような最適化されたシステムのやり取り以外では、JavaScriptエンジンの高速化の影響を受けられずに逆にパフォーマンスが低下する恐れも考えられます。
+## Math.f16roundとDataView
 
-### おわりに
+同じ機能で、`Math.f16round()`と、`DataView`の`getFloat16()`と`setFloat16()`も入りました。
 
-普段のフロントエンド開発では`Float16Array`を使う機会は多くありませんが、WebGPUやAIモデルの推論処理などをフロントエンドで扱う場合は非常に有効な選択肢になります。
+`Math.f16round()`は、配列を作らずに、数を16bitの浮動小数点数で表せる一番近い値に丸めます。`Float16Array`に入れたときにどの値になるかを、先に確かめられます。
 
-昨今のWebの高性能化とAIの発達が進む中で、このような低レベル最適化の知識も重要になってくると考えられるので周辺の知識を積極的に取り入れていきたいです。
+```js
+console.log(Math.f16round(0.3333)); // 0.333251953125
+console.log(Math.f16round(65520)); // Infinity
+```
+
+`Float16Array`は、バッファの2の倍数のバイト位置からしか作れません。ファイルや通信で受け取ったバイト列の、奇数の位置にある16bitの浮動小数点数は、`DataView`で読みます。
+
+ファイルや通信のバイト列では、2バイト以上の数を並べる順番が形式ごとに決まっています。上位のバイトを先に置くのがビッグエンディアン、下位のバイトを先に置くのがリトルエンディアンで、`1.5`（16bitで`0x3E00`）はそれぞれ`3E 00`と`00 3E`の順に並びます。順番を取り違えると、別の数として読んでしまいます。`DataView`は第3引数を省くとビッグエンディアンで読むので、リトルエンディアンの形式を読むときは`true`を渡します。
+
+```js
+const view = new DataView(new ArrayBuffer(5));
+view.setFloat16(1, 1.5, true); // リトルエンディアンで00 3Eと書く
+console.log(view.getFloat16(1, true)); // 1.5
+console.log(view.getFloat16(1)); // 0.0000036954879760742188（ビッグエンディアンとして読んだ）
+// RangeError（1は2の倍数ではない）
+new Float16Array(view.buffer, 1);
+```
+
+`Float16Array`は、動いている環境の順番で読みます。多くの環境はリトルエンディアンなので、ビッグエンディアンの形式は、位置が2の倍数でも`DataView`で読みます。
+
+## 読み書きの速さ
+
+読み書きの速さは、ブラウザによって分かれます。乱数を入れた500万要素の配列を`for`で読んで足すと、ChromeとSafariでは`Float16Array`の方が`Float32Array`より速く、Firefoxでは遅くなります。JavaScriptの中で計算するために、メモリの節約だけを目当てに`Float16Array`を選ぶと、精度を落としたうえに遅くなることもあります。
+
+## おわりに
+
+`Float16Array`を使うと、WebGPUや機械学習のモデルが16bitの浮動小数点数で受け渡すデータを、ビットを組み立てずに読み書きできます。扱える範囲は±65,504で精度も落ちるので、JavaScriptの中で計算するだけなら`Float32Array`や`Float64Array`を使います。

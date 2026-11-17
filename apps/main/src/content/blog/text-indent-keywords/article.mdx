@@ -1,89 +1,80 @@
 ---
-title: 'text-indentのeach-lineとhangingキーワードでインデントを制御する'
-description: 'CSSのtext-indentプロパティにeach-lineとhangingキーワードが追加され、Baseline 2026で主要ブラウザすべてで利用可能になりました。改行後のインデントやぶら下げインデントを標準的な方法で実現できます。'
+title: 'text-indentのhangingで2行目以降をインデントする'
+description: 'text-indentにhangingを付けると2行目以降が、each-lineを付けると改行した後の行も字下げされます。参考文献や注記のぶら下げインデントを、paddingと負の値を組み合わせずに書けます。'
 createdAt: 2026-03-27
-updatedAt: 2026-03-27
+updatedAt: 2026-11-09
 featureIds:
   - text-indent-each-line
   - text-indent-hanging
 ---
 
-# text-indentのeach-lineとhangingキーワードでインデントを制御する
+import {
+  EachLineExample,
+  HangingEachLineExample,
+  HangingExample,
+} from './_components/text-indent-examples';
+
+# text-indentのhangingで2行目以降をインデントする
 
 ## はじめに
 
-`text-indent`プロパティはブロック要素の最初の行にインデントを設定するおなじみのプロパティです。
-しかし、従来は最初の行にしかインデントを適用できず、`<br>`による改行後の行やぶら下げインデントを実現するにはCSSのワークアラウンドが必要でした。
+`text-indent`は、段落の1行目の先頭に字下げを入れるCSSプロパティです。値に`hanging`を付けると字下げする行が反転して2行目以降が下がり、`each-line`を付けると`<br>`で改行した後の行も1行目と同じように下がります。
 
-Chrome 146のリリースにより、`each-line`と`hanging`の2つのキーワードが主要ブラウザすべてで利用可能になりBaseline 2026に加わりました。
-これらのキーワードを使うことで、こうしたインデントの制御をシンプルに記述できるようになります。
+段落の1行目を下げるときは、`text-indent: 2em`のように長さだけを書きます。2行目以降を下げるぶら下げインデントは、これまで`padding-left`と負の`text-indent`を組み合わせて書いていましたが、`hanging`なら値1つで書けます。要素を分けずに、`<br>`や改行文字で区切った行ごとに字下げするのは、`each-line`でしかできません。
 
-## text-indentプロパティのおさらい
-
-`text-indent`プロパティは、ブロックコンテナの最初の行の先頭にインデント（字下げ）を追加します。
-
-```css
-p {
-  text-indent: 2em;
-}
-```
-
-この指定では、段落の最初の行だけが2em分インデントされます。
+Chrome 146が対応して、`each-line`と`hanging`はどちらもBaseline 2026に入りました。
 
 ## each-lineキーワード
 
 <BrowserSupportStatus featureId="text-indent-each-line"></BrowserSupportStatus>
 
-`each-line`キーワードを指定すると、最初の行に加えて`<br>`などによる改行の後の各行にもインデントが適用されます。
-自動折り返しによる改行には適用されません。
+`each-line`を付けると、1行目に加えて、`<br>`や`white-space: pre-line`で残した改行文字の後の行も下がります。フォームに入力された改行入りの文章をそのまま表示するときに、段落ごとに字下げできます。
 
 ```css
-p {
-  text-indent: 2em each-line;
+.comment {
+  white-space: pre-line;
+  text-indent: 1em each-line;
 }
 ```
 
-これにより、`<br>`で区切られた各段落の先頭にインデントが入るようになります。
+<EachLineExample />
+
+改行で区切った段落ごとに1行目が1文字下がり、折り返した行は左端から始まります。
 
 ## hangingキーワード
 
 <BrowserSupportStatus featureId="text-indent-hanging"></BrowserSupportStatus>
 
-`hanging`キーワードはインデントの対象を反転させます。
-通常は最初の行だけがインデントされますが、`hanging`を指定すると最初の行以外のすべての行がインデントされます。
+`hanging`を付けると、1行目は左端のままで、2行目以降のすべての行が下がります。ぶら下げインデントと呼ばれる組み方で、参考文献や用語集、注記のように1行目の頭を目立たせたいときに使います。
+
+下げる幅は`text-indent`に書いた長さで決まります。日本語のフォントでは全角の文字が1文字1emの幅で描かれるので、頭の記号の文字数と同じemを書くと、2行目以降が記号の次の文字と揃います。`※`は1文字なので1em、`注：`は2文字なので2emを書きます。
 
 ```css
-p {
-  text-indent: 2em hanging;
+.note {
+  text-indent: 1em hanging;
 }
 ```
 
-いわゆる「ぶら下げインデント」と呼ばれるレイアウトで、参考文献リストや用語集などで最初の行を目立たせたい場合に活用できます。
+<HangingExample />
+
+2行目以降の頭が`※`の次の文字と揃い、これまでの`padding-left: 1em; text-indent: -1em;`で書いたときと同じ位置に並びます。
 
 ## キーワードの組み合わせ
 
-`each-line`と`hanging`は組み合わせて使用できます。
+`each-line`と`hanging`を組み合わせると、1行目と改行した直後の行が左端に出て、それ以外の行が下がります。改行で区切って入力された注記を、1つずつぶら下げて表示できます。
 
 ```css
 /* [!og] */
-p {
-  text-indent: 2em hanging each-line;
+.notes {
+  white-space: pre-line;
+  text-indent: 1em hanging each-line;
 }
 ```
 
-この場合、最初の行と`<br>`による改行直後の行以外のすべての行にインデントが適用されます。
+<HangingEachLineExample />
 
-## デモ
-
-<PlaygroundEmbed
-  demo="text-indent each-line / hanging"
-  headingLevel="h4"
-  sectionId="text-indent-keywords"
-/>
+注記ごとに`※`が左端に出て、折り返した行は`※`の次の文字と揃います。キーワードと長さは順番を問わず、`each-line 1em hanging`や`hanging 1em`とも書けます。
 
 ## おわりに
 
-`text-indent`の`each-line`と`hanging`キーワードを紹介しました。
-
-従来、ぶら下げインデントを実現するには`padding-left`と`text-indent`の負の値を組み合わせるなどのテクニックが必要でした。
-`hanging`キーワードにより、意図が明確なシンプルな記述で同じレイアウトを実現できるようになりました。
+ぶら下げインデントは`hanging`を付けた値1つで書け、`<br>`や改行文字で区切った段落ごとの字下げは`each-line`で付けられます。参考文献や注記、フォームに入力された文章の表示に使ってみてください。

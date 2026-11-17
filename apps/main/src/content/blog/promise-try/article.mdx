@@ -1,27 +1,38 @@
 ---
-title: 関数の同期・非同期を気にせず処理するPromise.tryとは
-description: Promise.tryは、同期・非同期関数を区別せず手続きを進めさせるBaseline 2025で追加されたメソッドです。同期・非同期が混在する処理に有効で、キャッシュを利用する関数などで一貫したPromiseの形で結果を扱えます。同期・非同期が混在する関数の複雑さとは別れを告げましょう。
+title: 'Promise.tryで同期関数の例外もcatchで受け取る'
+description: 'Promise.tryは、関数をその場で呼んで結果をPromiseに包むメソッドです。同期関数が投げた例外も拒否になるので、同期・非同期が混ざる関数の結果と例外をthenとcatchでまとめて扱えます。Baseline 2025で使えます。'
 createdAt: 2025-03-08
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - promise-try
 ---
 
-# 関数の同期・非同期を気にせず処理するPromise.tryとは
+# Promise.tryで同期関数の例外もcatchで受け取る
 
 <BrowserSupportStatus featureId="promise-try"></BrowserSupportStatus>
 
 ## はじめに
 
-2025年のBaselineに`Promise.try`が追加されました。`Promise.try`は同期的な関数と非同期的な関数を区別せずに手続きを進めさせるメソッドです。
+`Promise.try`は、渡した関数をその場で呼び、結果を`Promise`に包んで返すメソッドです。関数が同期的に例外を投げても、返した`Promise`が拒否されても、`catch`で受け取れます。Firefox 134が対応して、Baseline 2025に入りました。
 
-<LinkCard href="https://github.com/tc39/proposal-promise-try" />
+`async`関数の中なら、`await fn()`を`try...catch`で囲めば、同期の例外も拒否も受け取れます。`Promise.try`が要るのは、`then`と`catch`をつなぐ書き方で、同期的に例外を投げるかもしれない関数を扱うときです。`Promise.resolve(fn())`では同期の例外が`catch`に届かず、`Promise.resolve().then(fn)`では`fn`の呼び出しが後回しになります。
 
-この記事では`Promise.try`の使い方と、有効な場面について解説します。
+```js
+const parse = (text) => JSON.parse(text);
+
+Promise.try(parse, '{').catch((error) =>
+  console.log('catchで受け取った', error.name),
+);
+Promise.resolve(parse('{')).catch((error) =>
+  console.log('catchで受け取った', error.name),
+);
+```
+
+`Promise.try`のほうは`catchで受け取った SyntaxError`を出し、`Promise.resolve`のほうは`catch`に届かずに`Uncaught SyntaxError`になります。
 
 ## Promise.tryとは
 
-`Promise.try`は引数に与えた関数の同期・非同期に関わらず、結果を`Promise`に包んでから返すメソッドです。
+`Promise.try`は`Promise`を返すので、`then`や`catch`、`finally`をつなげて使います。
 
 ```js
 Promise.try(callback)
@@ -30,7 +41,7 @@ Promise.try(callback)
   .finally(() => console.log('settled'));
 ```
 
-`Promise`で包まれた結果が渡ってくるので、非同期に書かれた`asyncFn`だけではなく、`syncFn`の結果も`then`を通して取り出せます。
+同期の`syncFn`の結果も、非同期の`asyncFn`と同じように`then`で取り出せます。
 
 ```js
 const syncFn = () => {
@@ -41,14 +52,14 @@ const asyncFn = async () => {
   return 'async';
 };
 
-console.log(Promise.try(syncFn)); // Promise {<fulfilled>: 'sync'}
-console.log(Promise.try(asyncFn)); // Promise {<pending>}
+console.log(Promise.try(syncFn)); // Promise {<fulfilled>: 'sync'}
+console.log(Promise.try(asyncFn)); // Promise {<pending>}
 
 Promise.try(syncFn).then(console.log); // sync
 Promise.try(asyncFn).then(console.log); // async
 ```
 
-例外の処理も`try...catch`を利用するのではなく、`catch`を通して行います。
+例外も、`try...catch`ではなく`catch`で受け取ります。
 
 ```js
 const syncFn = () => {
@@ -59,8 +70,8 @@ const asyncFn = async () => {
   throw 'async';
 };
 
-console.log(Promise.try(syncFn)); // Promise {<rejected>: 'sync'}
-console.log(Promise.try(asyncFn)); // Promise {<pending>}
+console.log(Promise.try(syncFn)); // Promise {<rejected>: 'sync'}
+console.log(Promise.try(asyncFn)); // Promise {<pending>}
 
 Promise.try(syncFn).catch(console.log); // sync
 Promise.try(asyncFn).catch(console.log); // async
@@ -68,7 +79,7 @@ Promise.try(asyncFn).catch(console.log); // async
 
 ### Promise.tryで引数付きの関数を呼び出す
 
-`Promise.try`を使用する際に関数へ引数を渡す方法として、直接第2引数以降に渡す方法と、新たに関数を作成して渡す方法の2つがあります。
+関数に引数を渡すには、`Promise.try`の第2引数以降に渡すか、引数を渡して呼ぶ関数で包みます。
 
 ```js
 // [!og]
@@ -80,63 +91,66 @@ Promise.try(fn, 1, 2).then(console.log); // 3
 Promise.try(() => fn(1, 2)).then(console.log); // 3
 ```
 
-TypeScriptでは`Promise.try`の型が以下の様に定義されているので、どちらの方法でも型安全に引数を渡すことができます。
+TypeScriptでは`Promise.try`の型が次のように定義されていて、どちらの書き方でも引数の型が確かめられます。
 
 ```ts
-try<T, U extends unknown[]>(callbackFn: (...args: U) => T | PromiseLike<T>, ...args: U): Promise<Awaited<T>>;
+try<T, U extends unknown[]>(
+  callbackFn: (...args: U) => T | PromiseLike<T>,
+  ...args: U
+): Promise<Awaited<T>>;
 ```
+
+この型は、`lib`に`es2025`か`esnext`を指定すると使えます。`es2024`のままでは、`Property 'try' does not exist on type 'PromiseConstructor'`のエラーになります。
 
 ## Promise.tryが使えない場合
 
-`Promise.try`が使えない時代では、`Promise.try`と同じことをするために`new Promise`を用いて以下のように実装されていました。
+`Promise.try`が無かったころは、`new Promise`で同じことを書いていました。
 
 ```js
-const try = (callback, ...args) => {
-  return new Promise((resolve) => callback(...args));
+const promiseTry = (callback, ...args) => {
+  return new Promise((resolve) => resolve(callback(...args)));
 };
 ```
 
-記述は複雑になってしまい、知らない人からすると何をしているかが読み取りづらいです。`Promise.try`があればこのような実装なしに簡単に利用できるのでとても便利です。
+関数名を`promiseTry`にしたのは、`try`が予約語で使えないためです。`new Promise`に渡した関数の中で投げられた例外は拒否として扱われるので、`callback`が同期的に投げても`catch`で受け取れます。`callback`が`Promise`を返したときは、`resolve`がその結果を引き継ぎます。
+
+この書き方は、知らない人には何をしているかが読み取りにくく、`Promise.try`ならこの実装が要りません。
 
 ## Promise.tryが有効な場面
 
-`Promise.try`は同期的な関数と非同期的な関数が入り乱れたものを取り扱う時に便利です。
-以下の例を考えてみましょう。
+`Promise.try`は、同期で値を返すときと非同期で返すときがある関数を扱うときに役立ちます。
 
 ```js
+import { readFile } from 'node:fs/promises';
+
 const cache = new Map();
 
-const readFileWithCache = (path): string => {
+const readFileWithCache = (path) => {
   if (cache.has(path)) {
     return cache.get(path);
   }
 
-  return fs.readFile(path, 'utf8').then((data) => {
+  return readFile(path, 'utf8').then((data) => {
     cache.set(path, data);
     return data;
   });
 };
 ```
 
-上記の`readFileWithCache`関数は`path`に存在するファイルを読み込む関数です。
-初回の読み込みは`fs.readFile`を用いて非同期に値を取り出しますが、2回目以降は`cache`に保存された値を返します。
-
-この関数を実行してみると、1度目の読み込みは`Promise<Buffer>`が返されますが、それ以降は`Buffer`を返すようになっています。キャッシュしてくれるのは嬉しいですが、取り出した値を利用する視点ではとても不便です。
+`readFileWithCache`は、初回は`readFile`で非同期にファイルを読み、2回目以降は`cache`に保存した値をそのまま返します。そのため戻り値は、初回は`Promise<string>`、2回目以降は`string`になり、呼び出す側は2つの場合を扱わなければなりません。
 
 ```js
-console.log(readFileWithCache('path/to/file')); // Promise {<pending>} or Buffer
+console.log(readFileWithCache('path/to/file')); // 初回はPromise {<pending>}、2回目以降はファイルの中身の文字列
 ```
 
-このような関数は`Promise.try`を使うことで、初回と2回目以降の呼び出しで同じように`Promise<Buffer>`を返すようにできます。
+`Promise.try`で包むと、何回目の呼び出しでも`Promise<string>`が返ります。
 
 ```js
-console.log(Promise.try(() => readFileWithCache('path/to/file'))); // Promise {<pending>}
+console.log(Promise.try(() => readFileWithCache('path/to/file'))); // 何回目でもPromise
 ```
 
-この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、Promise.tryを活用することで、同期・非同期を意識せず統一的に扱えるメリットがよく分かるのではないでしょうか。
-適切に活用することで、コードの可読性や保守性を向上させることができます。
+この例は、`readFileWithCache`がキャッシュした値も`Promise.resolve`で包んで返すように直せば、戻り値を`Promise`にそろえられます。しかし、`Promise.try`なら、`readFileWithCache`に手を入れずに、呼ぶ側で包むだけで同期と非同期を同じように扱えます。
 
 ## おわりに
-`Promise.try`の登場で、同期的な値を返すか非同期的な値を返すかを気にせずに関数の結果を扱えるようになりました。
 
-同期・非同期が混在する関数を扱う際には、`Promise.try`を活用してコードの可読性と保守性を向上させましょう。
+`Promise.try`を使うと、関数が同期で返すか非同期で返すかを気にせずに結果を扱え、同期で投げられた例外も`catch`で受け取れます。同期と非同期が混ざる関数を扱うときに使ってみてください。

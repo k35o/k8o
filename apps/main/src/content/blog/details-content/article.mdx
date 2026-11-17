@@ -1,20 +1,25 @@
 ---
-title: details要素に命を吹き込む::details-content擬似要素の登場
-description: details要素のコンテンツ部分にスタイルを適用できる::details-content擬似要素がBaseline 2025に加わりました。details要素を用いたスタイリングの守備範囲が広がっただけではなく、アニメーションの適用も容易になりました。
+title: '::details-contentでdetailsの開閉アニメーション'
+description: '::details-contentは、details要素のsummary以外の中身を選ぶ擬似要素です。opacityのtransitionで開閉をアニメーションさせる書き方と、中身の枠や背景をCSSで装飾する方法を説明します。'
 createdAt: 2025-10-26
-updatedAt: 2025-10-26
+updatedAt: 2026-11-09
 featureIds:
   - details-content
 ---
 
 import detailsSlot from './_images/details-slot.avif';
 
-# details要素に命を吹き込む::details-content擬似要素の登場
+# ::details-contentでdetailsの開閉アニメーション
 
 <BrowserSupportStatus featureId="details-content" />
 
-`details`要素に関する新たなCSS擬似要素`::details-content`が導入されました。
-`::details-content`擬似要素を使用することで、`details`要素内のコンテンツ部分に対してスタイルを適用できます。
+## はじめに
+
+`::details-content`は、`details`要素のうち`summary`以外の中身、つまり開閉する部分を選ぶCSSの擬似要素です。中身全体に枠や背景を付けたり、開閉にアニメーションを付けたりできます。
+
+中身の子要素を1つずつ装飾したり、開くときにアニメーションを付けたりするのは、`details > :not(summary)`のようなセレクターと`@keyframes`でできます。子要素に手を入れずに中身全体を1つの箱として装飾することはできず、閉じるときは中身がすぐに消えるのでアニメーションも付けられません。この2つは、`::details-content`でしかできません。
+
+## 中身全体を装飾する
 
 `details`要素は、アコーディオンのように折りたたみ可能なコンテンツを作成するためのHTML要素です。
 `summary`要素と組み合わせて使用され、ユーザーのアクションに合わせてコンテンツが開閉するUIを提供します。
@@ -28,7 +33,7 @@ import detailsSlot from './_images/details-slot.avif';
 
 上記のhtmlは、以下のように表示されます。
 
-<Playground headingLevel="h3" title="details要素とsummary要素を使った例">
+<Playground headingLevel="h4" title="details要素とsummary要素を使った例">
   <details>
     <summary>詳細を見る</summary>
     <p>ここに詳細が記述されます。</p>
@@ -46,7 +51,7 @@ import detailsSlot from './_images/details-slot.avif';
 
 `::details-content`擬似要素は、この`slot`要素に対してスタイルを付与できます。
 
-<PlaygroundEmbed demo="スタイリング例" headingLevel="h3" sectionId="details-content" />
+<PlaygroundEmbed demo="スタイリング例" headingLevel="h4" sectionId="details-content" />
 
 上記の例は`details`の子要素（`summary`要素を除いたもの）に対してスタイルを適用した場合（前者）と、`::details-content`擬似要素に対してスタイルを適用した場合（後者）の違いを示しています。
 
@@ -66,35 +71,67 @@ details::details-content {
 
 ここから、`details`の子要素に依存せずに、`details`のコンテンツ部分にスタイルを付与できる`::details-content`擬似要素の強力さが読み取れます。
 
-後者のケースは`slot`要素に対するスタイルなので、閉じている時にも装飾が行われます。
-展開中の時のみスタイルを付与したいときは`[open]`を利用して以下のように書きます。
+### 開いているときだけ装飾する
+
+後者のケースは`slot`要素に対するスタイルなので、閉じている時にも装飾が行われます。上の2pxの枠を付けると、閉じた`details`でも`summary`の下に枠の線が残りました。
+展開中の時のみスタイルを付与したいときは`[open]`を利用して以下のように書きます。背景も同じように付けられます。
 
 ```css
 /* 後者 */
 details[open]::details-content {
   border: 2px solid var(--color-primary-border);
+  background-color: var(--color-primary-bg-mute);
 }
 ```
 
-また、`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
+こう書くと、閉じた`details`には枠の線が出なくなります。
+
+## 開閉にアニメーションを付ける
+
+`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
 
 `details`要素が持つ`[open]`という状態は、即座に変化するため、アニメーションを適用するのは困難でした。
-しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`に引っ張られずにそれ自身の大きさ等をトリガーにアニメーションを適用できます。
+しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`の切り替えに合わせて、中身の見た目にトランジションを付けられます。
 
-<PlaygroundEmbed demo="アニメーション実装パターン" headingLevel="h3" sectionId="details-content" />
+<PlaygroundEmbed demo="アニメーション実装パターン" headingLevel="h4" sectionId="details-content" />
 
 ```css
 details::details-content {
-  interpolate-size: allow-keywords;
-  transition: height 0.5s ease, content-visibility 0.5s ease allow-discrete;
-  height: 0;
-  overflow: clip;
+  opacity: 0;
+  transition: opacity 0.5s, content-visibility 0.5s allow-discrete;
 }
 
 details[open]::details-content {
-  height: auto;
+  opacity: 1;
 }
 ```
 
-以上が、`details`要素に命を吹き込む`::details-content`擬似要素の紹介です。
-Baseline 2025で導入され、主要なブラウザはすでに利用可能です。ぜひ利用してみてください。
+どのブラウザでも、開くときは中身が少しずつ現れ、閉じるときは少しずつ消えていきました。なめらかに変わるのは中身の`opacity`だけで、`details`の高さは一度に切り替わります。
+
+`content-visibility`にも`allow-discrete`でトランジションを付けると、閉じるときに中身が消えるのを`opacity`が0になるまで待ちます。付けないと、閉じた直後に中身が消えます。
+
+### 動きを減らす設定に合わせる
+
+デモの注記のとおり、この例は動きを減らす設定（`prefers-reduced-motion`）に対応していません。対応するには、`transition`だけをメディアクエリの中に移します。
+
+```css
+details::details-content {
+  opacity: 0;
+}
+
+details[open]::details-content {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  details::details-content {
+    transition: opacity 0.5s, content-visibility 0.5s allow-discrete;
+  }
+}
+```
+
+動きを減らす設定にすると、開閉は一瞬で切り替わります。設定が無いときは、上と同じようにアニメーションします。
+
+## おわりに
+
+`::details-content`擬似要素はBaseline 2025で導入され、主要なブラウザで利用できます。中身の装飾や開閉のアニメーションに使ってみてください。

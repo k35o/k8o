@@ -1,0 +1,23 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 6);
+  padding-block: calc(var(--spacing) * 3);
+  padding-inline: calc(var(--spacing) * 4);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--radius-md);
+  /* better-css-modules-disable-next-line tokens/color -- 記事のコード例の明度40%の文字色が、ダークモードでも読める白い面に置く */
+  background-color: white;
+  font-size: var(--font-size-lg);
+}
+
+.change {
+  /* better-css-modules-disable-next-line tokens/color -- 記事のコード例と同じ式で、増減の符号から色相を決める */
+  color: hsl(calc(sign(var(--delta)) * 60 + 60) 70% 40%);
+
+  &::before {
+    content: '▲';
+    display: inline-block;
+    rotate: calc((1 - sign(var(--delta))) * 90deg);
+  }
+}

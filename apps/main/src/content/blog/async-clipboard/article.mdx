@@ -1,192 +1,98 @@
 ---
-title: 任意のデータをコピー&ペーストするClipboard API
-description: Clipboard APIは、navigator.clipboardを通じてクリップボードへの読み書きを非同期で行うAPIです。テキストや画像のコピー・貼り付けに対応し、ClipboardItemを使えばMIMEタイプ別のデータ操作も可能です。
+title: 'Clipboard APIでテキストや画像をコピー・ペーストする'
+description: 'Clipboard APIは、navigator.clipboardからクリップボードを読み書きするAPIです。writeTextとreadTextでテキストを、ClipboardItemでPNG画像をコピーして貼り付ける方法を説明します。'
 createdAt: 2025-04-06
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - async-clipboard
   - clipboard-supports
 ---
 
-# 任意のデータをコピー&ペーストするClipboard API
-
-## はじめに
-`ClipboardItem.supports()`がBaseline 2025に追加されました。
-この機能はユーザーの環境で特定のMIMEタイプがClipboard APIでサポートされていることを確認するためのものです。
-
-この記事では、Clipboard APIの使い方を最初に確認してから、`ClipboardItem.supports()`について紹介します。
-
-## Clipboard API
+# Clipboard APIでテキストや画像をコピー・ペーストする
 
 <BrowserSupportStatus featureId="async-clipboard"></BrowserSupportStatus>
 
-Clipboard APIは、クリップボードにアクセスするためのAPIです。これを使うことで、ユーザーが選択したテキストや画像などをクリップボードにコピーしたり、クリップボードからデータを取得したりすることができます。
+## はじめに
 
-Clipboard APIは`Clipboard`インターフェースにより実装されており、`navigator.clipboard`を通じてアクセスできます。
+Clipboard APIは、`navigator.clipboard`からクリップボードを読み書きするJavaScriptのAPIです。テキストは`writeText()`と`readText()`で、画像は`ClipboardItem`に包んで`write()`と`read()`でコピーと貼り付けをします。画像で、どのブラウザでも書き込めるのはPNGだけです。Firefox 127が対応して、Baseline 2024に入りました。
 
-`Clipboard`インターフェースは、以下の非同期なメソッドを提供しています。
+ユーザーがキーボードやメニューでコピーや貼り付けをしたときの中身は、`copy`と`paste`イベントの`clipboardData`で差し替えられます。ボタンを押したときのコピーや、ボタンからのクリップボードの読み取りのように、ユーザーのコピー操作を待たない読み書きはClipboard APIで書きます。ボタンからのコピーには以前`document.execCommand('copy')`を使っていましたが、非推奨です。読み取りの`document.execCommand('paste')`は、`false`を返して何も貼り付けません。
 
-- `readText()`: クリップボードからテキストデータを読みとる
-- `writeText()`: クリップボードにテキストデータを書き込む
-- `read()`: クリップボードからデータを読みとる
-- `write()`: クリップボードにデータを書き込む
+## Clipboard API
+
+`navigator.clipboard`は、次の4つのメソッドを持ちます。どれも非同期で、`Promise`を返します。
+
+- `readText()`：クリップボードのテキストを読む
+- `writeText()`：クリップボードにテキストを書き込む
+- `read()`：クリップボードの中身を`ClipboardItem`の配列で読む
+- `write()`：`ClipboardItem`の配列をクリップボードに書き込む
+
+テキストは、`readText()`と`writeText()`で読み書きします。画像のようなテキスト以外の中身は、後で説明する`ClipboardItem`を通して`read()`と`write()`で扱います。
 
 ```js
-// readText
-navigator.clipboard.readText().then(console.log);
+// クリップボードのテキストを読む
+const text = await navigator.clipboard.readText();
 
-// writeText
-navigator.clipboard
-  .writeText('Hello, world!')
-  .then(() => console.log('Text copied to clipboard!'));
-
-// read
-navigator.clipboard.read().then((clipboardItems) => {
-  for (const clipboardItem of clipboardItems) {
-    for (const type of clipboardItem.types) {
-      const blob = clipboardItem.getType(type);
-      console.log(blob);
-    }
-  }
-});
-
-// write
-const item = new ClipboardItem({
-  'image/png': new Blob(['...'], { type: 'image/png' }),
-});
-navigator.clipboard
-  .write([item])
-  .then(() => console.log('Image copied to clipboard!'));
+// クリップボードにテキストを書き込む
+await navigator.clipboard.writeText('Hello, world!');
 ```
-
-`readText`と`writeText`は、テキストデータを扱うための簡単なメソッドです。`read`と`write`もベースは同じですが、テキスト以外のコンテンツも扱うため少し複雑です。こちらについては後ほど詳しく紹介します。
 
 ### 権限
 
-Clipboard APIはセキュリティ上の都合で実行に対する制限がかけられています。
+クリップボードにはほかのアプリでコピーした中身も入るので、読み取りには制限があります。Chromeは、初めて読み取るときにユーザーに許可を求めます。SafariとFirefoxでは、ユーザーの操作を挟まずに`readText()`を呼ぶと、`NotAllowedError`で拒否されます。読み取りは、ボタンを押したときのようなユーザーの操作の中で呼びます。
 
-制限はブラウザによって異なります。例えばChromeでは読み込みと書き込みをPermissions APIを使って、`clipboard-read`と`clipboard-write`で確認できます。
+### テキストのコピーと貼り付け
 
-```js
-const readPermission = await navigator.permissions.query({
-  name: 'clipboard-read',
-});
-
-readPermission.state === 'granted'; // クリップボードの読み取りが許可されている
-readPermission.state === 'prompt'; // ユーザーに許可を求める
-readPermission.state === 'denied'; // クリップボードの読み取りが拒否されている
-
-const writePermission = await navigator.permissions.query({
-  name: 'clipboard-write',
-});
-
-writePermission.state === 'granted'; // クリップボードの書き込みが許可されている
-writePermission.state === 'prompt'; // ユーザーに許可を求める
-writePermission.state === 'denied'; // クリップボードの書き込みが拒否されている
-```
-
-これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。FirefoxやSafariはオリジン間の読み込みは許可されていますが、異なるオリジンで読み込むことは許可されていません(書き込みはデフォルトで許可されています)。
-
-> Safariで発生するエラー: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
-
-### 権限チェックとテキストの読み書き
-
-Permission APIと合わせて、`readText`と`writeText`を用いた例を下に示します。
+ボタンから`writeText()`と`readText()`を呼ぶデモです。
 
 <PlaygroundEmbed demo="テキストのコピー・ペースト" headingLevel="h5" sectionId="async-clipboard" />
 
-Permission APIを使って権限判定を行なっています。SafariやFirefoxを利用の方は利用できないです🙏。
+入力欄に文字を入れてコピーのボタンを押すと、その文字がクリップボードに入ります。ペーストのボタンを押すと、クリップボードのテキストが入力欄の末尾に足されます。
 
 ## ClipboardItem
 
-`ClipboardItem`は、クリップボードに書き込むデータを表すオブジェクトです。先ほど上げた`Clipboard`インターフェースで利用できる`read`と`write`で使われます。
-`read`はクリップボードから読み取ったデータを`ClipboardItem`の配列で解決し、`write`は引数に渡した`ClipboardItem`の配列をクリップボードに書き込みます。
+`ClipboardItem`は、クリップボードの中身1つ分を、MIMEタイプごとのデータで表すオブジェクトです。`read()`は読み取った中身を`ClipboardItem`の配列で返し、`write()`は渡した`ClipboardItem`の配列をクリップボードに書き込みます。
 
-```ts
-// read
-navigator.clipboard.read().then((clipboardItems: ClipboardItem) => {
-  for (const clipboardItem of clipboardItems) {
-    for (const type of clipboardItem.types) {
-      const blob = clipboardItem.getType(type);
-      console.log(blob);
-    }
-  }
-});
+コンストラクタには、MIMEタイプをキーに、データを値にしたオブジェクトを渡します。値には、文字列か`Blob`、またはそれらで解決する`Promise`を渡せます。
 
-// write
+```js
 const item = new ClipboardItem({
-  'image/png': new Blob(['...'], { type: 'image/png' }),
-});
-navigator.clipboard
-  .write([item])
-  .then(() => console.log('Image copied to clipboard!'));
-```
-
-`ClipboardItem`は2つの引数によって組み立てられます。
-
-1つ目の引数はオブジェクトをデータで渡します。`MIME`タイプをキーに、Blobや文字列、これらをPromiseでラップしたものを値に持つオブジェクトを渡します。
-
-```js
-{
-  'image/png': new Blob(['...'], { type: 'image/png' }),
   'text/plain': 'Hello, world!',
-}
+  'text/html': '<b>Hello, world!</b>',
+});
+await navigator.clipboard.write([item]);
 ```
 
-2つ目の引数はオブジェクトでオプションを渡します。現在は`presentationStyle`をサポートしています。値には`unspecified`、`inline`、`attachment`を渡せます。デフォルト値は `unspecified`です。
-コンテンツを貼り付ける際に、貼り付け位置に適切な表現をインラインで表示する`inline`と添付ファイルとして扱う`attachment`があります。
-
-```ts
-new ClipboardItem(
-  { 'text/plain': 'Hello, world!', },
-  { presentationStyle: 'unspecified' },
-);
-new ClipboardItem(
-  { 'text/plain': 'Hello, world!', },
-  { presentationStyle: 'inline' },
-);
-new ClipboardItem(
-  { 'text/plain': 'Hello, world!', },
-  { presentationStyle: 'attachment' },
-);
-```
-
-作成された`ClipboardItem`インスタンスは、`types`プロパティ、`getType()`メソッドを持ちます（Baselineで対応しているものだけを紹介しています）。
-`types`は利用可能なMIMEタイプを配列で返し、`getType()`は第一引数に渡したMIMEタイプをもとにPromiseで解決したBlobを返します。
+`ClipboardItem`の`types`は、持っているMIMEタイプの配列です。`getType()`は、渡したMIMEタイプのデータを`Blob`で返す`Promise`を返し、持っていないMIMEタイプを渡すと`NotFoundError`で拒否されます。
 
 ```js
-const item = new ClipboardItem(
-  {
-    'image/png': new Blob(['...'], { type: 'image/png' }),
-    'text/plain': 'Hello, world!',
-  },
-  { presentationStyle: 'inline' },
-);
-console.log(item.types); // ['image/png', 'text/plain']
-for (const type of item.types) {
-  item.getType(type).then((blob) => {
-    // Blob {size: 3, type: 'image/png'}
-    // Blob {size: 13, type: 'text/plain'}
-    console.log(blob);
-  });
-}
-item.getType('text/html').catch((err) => {
-  // NotFoundError: Failed to execute 'getType' on 'ClipboardItem': The type was not found
-  console.error(err);
-});
+console.log(item.types); // ['text/plain', 'text/html']
+
+const blob = await item.getType('text/html');
+console.log(await blob.text()); // <b>Hello, world!</b>
+
+await item.getType('image/png'); // NotFoundError
 ```
 
-### ClipboardItem supports
+`read()`で読んだ中身も、同じように`types`と`getType()`で取り出します。
+
+```js
+const items = await navigator.clipboard.read();
+for (const item of items) {
+  for (const type of item.types) {
+    const blob = await item.getType(type);
+    console.log(type, blob);
+  }
+}
+```
+
+### ClipboardItem.supports()
 
 <BrowserSupportStatus featureId="clipboard-supports"></BrowserSupportStatus>
 
-`ClipboardItem.supports`はClipboard APIとして、特定のMIMEタイプがサポートされていることを確認するためのものです。
+`ClipboardItem.supports()`は、渡したMIMEタイプのデータをクリップボードに書き込めるかを、`true`か`false`で返す静的メソッドです。Safari 18.4が対応して、Baseline 2025に入りました。
 
-`text/plain`、`text/html`、`image/png`は常にサポートされていますが、`text/uri-list`、`image/svg+xml`と`web `で始めるカスタムMIMEタイプは、ブラウザやOSによって結果が異なります。
-
-<LinkCard href="https://w3c.github.io/clipboard-apis/#dom-clipboarditem-supports" />
-
-サポートされていれば`true`、サポートされていなければ`false`を返します。
+`text/plain`と`text/html`、`image/png`は、どのブラウザでも`true`です。`text/uri-list`と`image/svg+xml`、`web `で始まる独自のMIMEタイプは、ブラウザによって結果が違います。
 
 ```js
 // [!og]
@@ -201,17 +107,23 @@ ClipboardItem.supports('web image/png'); // true or false
 ClipboardItem.supports('application/json'); // false
 ```
 
+結果が分かれる3つは、Chromeでは`image/svg+xml`と`web `で始まるタイプが`true`、`text/uri-list`が`false`です。Safariでは`text/uri-list`だけが`true`で、Firefoxでは3つとも`false`です。
+
+画像のMIMEタイプで、どのブラウザでも`true`になるのは`image/png`だけです。JPEGやWebPの画像は、次の節のようにcanvasでPNGにしてから書き込みます。
+
 ### PNG画像のコピーと貼り付け
 
-ClipboardItemを利用してPNG画像のコピーと貼り付けを行う例を作成しました。
+選んだ画像をPNGでクリップボードにコピーし、クリップボードのPNG画像を貼り付けるデモです。
 
 <PlaygroundEmbed demo="画像のコピー・ペースト" headingLevel="h5" sectionId="async-clipboard" />
 
-コピーを行う関数と貼り付けを行う関数は以下のようになっています。
+画像を選んでコピーのボタンを押すと、その画像がPNGとしてクリップボードに入ります。表示のボタンを押すと、クリップボードにあるPNG画像がペーストされた画像の欄に出ます。
+
+コピーする`copyImage`は、画像をcanvasに描き、`toBlob()`でPNGの`Blob`にしてから書き込みます。貼り付ける`pasteImage`は、`read()`で読んだ中身から`image/png`のデータを探して表示します。
 
 ```ts
 const copyImage = async () => {
-  const img = document.getElementById(xxx) as HTMLImageElement | null;
+  const img = document.getElementById('source') as HTMLImageElement | null;
   if (!img) return;
   const canvas = document.createElement('canvas');
   canvas.width = img.naturalWidth;
@@ -219,21 +131,22 @@ const copyImage = async () => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   ctx.drawImage(img, 0, 0);
-  const blob = await new Promise<Blob>((resolve) => {
+  const blob = await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
-        throw new Error('Blobが取得できませんでした');
+        reject(new Error('Blobが取得できませんでした'));
+        return;
       }
       resolve(blob);
     });
   });
-  const file = new File([blob], 'xxx.png', { type: 'image/png' });
+  const file = new File([blob], 'image.png', { type: 'image/png' });
   const data = [new ClipboardItem({ 'image/png': file })];
   await navigator.clipboard.write(data);
 };
 
 const pasteImage = async () => {
-  const img = document.getElementById(xxx) as HTMLImageElement | null;
+  const img = document.getElementById('pasted') as HTMLImageElement | null;
   if (!img) return;
   const items = await navigator.clipboard.read();
   for (const item of items) {
@@ -248,10 +161,8 @@ const pasteImage = async () => {
 };
 ```
 
-### おわりに
+幅と高さが0のcanvasでは、`toBlob()`のコールバックに`null`が渡ります。このときコールバックの中で`throw`すると、Promiseは拒否されずに待ち続け、エラーは`window`の`error`イベントに出ます。そのため、コールバックの中では`reject`を呼びます。
 
-Clipboard APIは、クリップボードにアクセスするためのAPIです。
-これを使うことで、ユーザーが選択したテキストや画像などをクリップボードへコピーしたり、クリップボードからデータを貼り付けられます。
+## おわりに
 
-過去には`execCommand()`を利用していましたが、Clipboard APIを利用することで、より簡単に安全にクリップボードにアクセスできるようになりました。
-`execCommand()`は非推奨なので、今後はClipboard APIを利用するようにしましょう。
+Clipboard APIを使うと、ボタンを押したときのようなユーザーの操作から、クリップボードを読み書きできます。テキストは`writeText()`と`readText()`で、画像は`ClipboardItem`に包んで`write()`と`read()`で扱い、書き込めるMIMEタイプは`ClipboardItem.supports()`で確かめられます。

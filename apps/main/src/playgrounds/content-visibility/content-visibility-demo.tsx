@@ -30,21 +30,17 @@ export const ContentVisibilityDemo: FC = () => {
               {showHidden ? 'visible' : 'hidden'}に変更する
             </Button>
           </div>
-          <div className={styles.box}>
-            <div
-              style={{
-                contentVisibility: showHidden ? 'hidden' : 'visible',
-              }}
-            >
-              <Heading className={styles.heading}>サンプルコンテンツ</Heading>
-              <p className={styles.text}>
-                このコンテンツは<Code>content-visibility: hidden</Code>
-                によって制御されています。非表示の場合、レンダリング処理が行われず、スクリーンリーダーやブラウザ検索からもアクセスできません。
-              </p>
-              <Button>
-                content-visibilityがhiddenなボタン（何も起きません）
-              </Button>
-            </div>
+          <div
+            className={styles.box}
+            style={{
+              contentVisibility: showHidden ? 'hidden' : 'visible',
+            }}
+          >
+            <Heading className={styles.heading}>サンプルコンテンツ</Heading>
+            <p>
+              この見出しと文が、<Code>content-visibility</Code>
+              で描かれたり省かれたりする中身です。
+            </p>
           </div>
         </div>
         <div className={styles.column}>
@@ -61,21 +57,17 @@ export const ContentVisibilityDemo: FC = () => {
               {showAuto ? 'visible' : 'auto'}に変更する
             </Button>
           </div>
-          <div className={styles.box}>
-            <div
-              style={{
-                contentVisibility: showAuto ? 'auto' : 'visible',
-              }}
-            >
-              <Heading className={styles.heading}>サンプルコンテンツ</Heading>
-              <p className={styles.text}>
-                このコンテンツは<Code>content-visibility: auto</Code>
-                によって制御されています。ビューポート外の要素のレンダリング処理を必要なタイミングまでスキップできます。
-              </p>
-              <Button>
-                content-visibilityがautoなボタン（何も起きません）
-              </Button>
-            </div>
+          <div
+            className={styles.box}
+            style={{
+              contentVisibility: showAuto ? 'auto' : 'visible',
+            }}
+          >
+            <Heading className={styles.heading}>サンプルコンテンツ</Heading>
+            <p>
+              この見出しと文が、<Code>content-visibility</Code>
+              で描かれたり省かれたりする中身です。
+            </p>
           </div>
         </div>
       </div>

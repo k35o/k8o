@@ -1,24 +1,70 @@
 ---
-title: parseHtmlUnsafeでHTMLをDocumentに変換する
-description:
+title: 'parseHTMLUnsafeでHTML文字列をパースする'
+description: 'Document.parseHTMLUnsafe()は、HTML文字列を解析して新しいDocumentを返します。DOMParserと違い、Declarative Shadow DOMもシャドウルートにします。XSSの防ぎ方も説明します。'
 createdAt: 2025-10-11
-updatedAt: 2025-10-11
+updatedAt: 2026-11-09
 featureIds:
   - parse-html-unsafe
 ---
 
-# parseHtmlUnsafeでHTMLをDocumentに変換する
+# parseHTMLUnsafeでHTML文字列をパースする
 
 <BrowserSupportStatus featureId="parse-html-unsafe" />
 
-`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`parseHtmlUnsafe()`関数がBaseline 2025に追加されました。
+## はじめに
 
-名前に`Unsafe`とついている通り、このメソッドはXSSの危険性がある要素を自動的には削除しません。
-安全性を重視した`parseHTML()`メソッドも存在しますが、こちらは多くのブラウザでまだ実装されていないため、現時点では`parseHTMLUnsafe()`が主に使用されています。
+`Document.parseHTMLUnsafe()`は、HTML文字列か`TrustedHTML`を解析して、新しい`Document`を返す静的メソッドです。Safari 26が対応して、Baseline 2025に入りました。
 
-`Unsafe`な状況を軽減するため、いくつかの対策が用意されています。
-変換元の値として`TrustedHTML`を使用する方法や、第2引数のオプションで`sanitizer`を指定する方法などです。ただし、`TrustedHTML`は本記事執筆時点ではFirefoxでサポートされておらず、`sanitizer`オプションも多くのブラウザで未対応という状況です。
+HTML文字列の解析は、`DOMParser`の`parseFromString()`メソッドでもできます。`parseHTMLUnsafe()`でしかできないのは、Declarative Shadow DOM（`<template shadowrootmode>`）をシャドウルートとして解析することです。サーバーが返したWeb Componentsを含むHTMLを、シャドウルートごと取り込めます。
 
-この機能はDeclarative Shadow DOMを扱う際に特に有効です。
-似た機能を持つ`DOMParser.parseFromString()`プロパティを使ってDeclarative Shadow DOMを用いたWeb Componentsを含むHTMLレスポンスを解析しても、`parseFromString`はDeclarative Shadow DOMを解析できません。
-一方、`parseHTMLUnsafe()`はDeclarative Shadow DOMも解析できるため、これらのコンポーネントを正しく解析することが可能です。
+## DOMParserとの違い
+
+```html demo="parse"
+<div id="unsafe">parseHTMLUnsafe()：</div>
+<div id="parser">DOMParser：</div>
+```
+
+```js demo="parse"
+// [!og]
+const html =
+  '<my-card><template shadowrootmode="open"><p>shadow</p></template>light</my-card>';
+
+const doc = Document.parseHTMLUnsafe(html);
+console.log(doc.querySelector('my-card').shadowRoot.innerHTML); // "<p>shadow</p>"
+document.querySelector('#unsafe').append(doc.querySelector('my-card'));
+
+const old = new DOMParser().parseFromString(html, 'text/html');
+console.log(old.querySelector('my-card').shadowRoot); // null
+document.querySelector('#parser').append(old.querySelector('my-card'));
+```
+
+`parseHTMLUnsafe()`の結果には`<p>shadow</p>`を持つシャドウルートができ、`DOMParser`の結果では`<template>`が要素のまま残ります。結果の欄では、`parseHTMLUnsafe()`の行にシャドウルートの`shadow`が、`DOMParser`の行にライトDOMの`light`が表示されます。どのブラウザでも同じです。Chromeは`DOMParser`のときに、`Found declarative shadowrootmode attribute on a template, but declarative Shadow DOM is not being parsed. Use setHTMLUnsafe() or parseHTMLUnsafe() instead.`という警告を出します。要素の中身として入れるなら、`Element.setHTMLUnsafe()`も同じくシャドウルートを作ります（`innerHTML`は作りません）。
+
+## XSSを防ぐ
+
+名前に`Unsafe`と付くとおり、このメソッドはXSSにつながる要素や属性を取り除きません。返った`Document`の中では`<img>`は読み込まれず、`onerror`も動きません。ところが、そのノードを今のページに移すと動きます。どのブラウザでも、`<img src="/nope.png" onerror="...">`を含む結果を`document.body.append()`で移すと、`onerror`が実行されます（`<script>`は実行されません）。`DOMParser`の結果でも同じです。
+
+信頼できないHTMLを扱うときの対策は2つあります。1つは、第2引数の`sanitizer`オプションで取り除く方法です。ChromeとFirefoxでは、次のコードで`<script>`と`onclick`属性が取り除かれ、`<b>b</b>`だけが残ります。Safariはこのオプションを無視し、何も取り除きません。
+
+```js
+const sanitized = Document.parseHTMLUnsafe(
+  '<b onclick="alert(1)">b</b><script>alert(1)</script>',
+  { sanitizer: 'default' },
+);
+console.log(sanitized.body.innerHTML); // "<b>b</b>"
+```
+
+安全側に倒した`Document.parseHTML()`は、オプションを渡さなくても同じように取り除きます。ChromeとFirefoxは実装していますが、Safariにはまだありません。また、`parseHTML()`は既定の設定でカスタム要素の`<my-card>`も取り除くので、Declarative Shadow DOMを使うWeb Componentsの解析には使えません。
+
+もう1つは、Trusted Typesのポリシーで作った`TrustedHTML`を渡す方法です。CSPで`require-trusted-types-for 'script'`を指定したページでは、`parseHTMLUnsafe()`に文字列を渡すと`TypeError`になり、ポリシーを通した値だけが通ります。どのブラウザでも、この動きになります。
+
+```js
+const policy = trustedTypes.createPolicy('myPolicy', {
+  createHTML: (input) => DOMPurify.sanitize(input),
+});
+const trusted = Document.parseHTMLUnsafe(policy.createHTML(html));
+```
+
+## おわりに
+
+`Document.parseHTMLUnsafe()`を使うと、Declarative Shadow DOMを含むHTML文字列を、シャドウルートごと`Document`に解析できます。結果はそのままでは安全ではないので、信頼できないHTMLは`sanitizer`オプションか`TrustedHTML`を通してから扱います。

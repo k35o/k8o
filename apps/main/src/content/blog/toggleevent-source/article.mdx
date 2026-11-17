@@ -1,47 +1,67 @@
 ---
-title: ToggleEvent.sourceでポップオーバーを開いた要素を特定する
-description: ToggleEvent.sourceはBaseline 2026で追加された、toggle / beforetoggleイベントに発火元の要素を載せて渡すプロパティです。同じポップオーバーを複数のボタンから開くケースで、どのボタンから開かれたかをリスナー側で素直に判定できます。
+title: 'ToggleEvent.sourceでpopoverを開いた要素を特定'
+description: 'ToggleEvent.sourceは、popoverやdialogを開閉したボタンをtoggleイベントから読めるプロパティです。1つのpopoverを複数のボタンで開くとき、押されたボタンに合わせて中身を切り替えられます。'
 createdAt: 2026-05-23
-updatedAt: 2026-05-23
+updatedAt: 2026-11-09
 featureIds:
   - toggleevent-source
 ---
 
-# ToggleEvent.sourceでポップオーバーを開いた要素を特定する
+# ToggleEvent.sourceでpopoverを開いた要素を特定
 
 <BrowserSupportStatus featureId="toggleevent-source" />
 
 ## はじめに
 
-Popover APIや`<details>`、`<dialog>`では、開閉のたびに`beforetoggle` / `toggle`イベントが発火します。複数のトリガーから1つのポップオーバーを開くようなUIでは、リスナーの中で今回はどのボタンから開かれたのかを知りたい場面が出てきます。
+`ToggleEvent.source`は、ポップオーバーや`<dialog>`を開閉したボタンを、`toggle`と`beforetoggle`のイベントから読めるプロパティです。開いたか閉じたかに加えて、どのボタンで開閉したかが同じイベントで分かります。Safari 26.5が対応して、Baseline 2026に入りました。
 
-これまでは、各ボタンに別々のイベントを張って状態を別管理する、データ属性を見て分岐する、といった工夫が必要でした。Baseline 2026で追加された`ToggleEvent.source`は、その発火元を`ToggleEvent`自体に載せて渡してくれるプロパティです。
+ボタンが1つのときは、そのボタンの`click`イベントで分かります。複数のボタンから1つのポップオーバーを開くUIでは、これまで各ボタンの`click`で押されたボタンを変数に覚え、ポップオーバーの側でそれを読んでいました。`source`なら、ポップオーバーの`toggle`イベントのリスナー1つで、押されたボタンが分かります。
 
-## どんなプロパティか
+```js demo="toggle-source"
+const log = document.getElementById('log');
 
-`toggle` / `beforetoggle`イベントは`ToggleEvent`インターフェースを持ちます。これまでは`newState` / `oldState`で閉→開・開→閉の遷移だけが分かりましたが、`source`が追加されたことで遷移を引き起こした要素も同じイベントから取れるようになりました。
+document.getElementById('menu').addEventListener('toggle', (event) => {
+  // [!hl]
+  log.textContent = `${event.newState} ${event.source?.id ?? null}`;
+});
+```
 
-### `source`に何が入るか
+```html demo="toggle-source"
+<button popovertarget="menu" id="a">A</button>
+<button popovertarget="menu" id="b">B</button>
+<div id="menu" popover>メニュー</div>
+<p id="log"></p>
+```
 
-`source`にはイベントを引き起こした呼び出し元が入ります。呼び出し元として拾われるのは次の3パターンで、開く方向でも閉じる方向でも同じです。
+Aを押すと結果の欄に`open a`、もう一度Aを押すと`closed a`が出ます。Bで開けば`open b`で、外側をクリックして閉じると`closed null`です。
+
+## sourceに入る値
+
+`toggle`と`beforetoggle`のイベントは`ToggleEvent`です。`newState`と`oldState`で開いたか閉じたかが分かり、`source`で開閉した要素が分かります。
+
+### 呼び出し元の要素
+
+呼び出し元として`source`に入るのは、次の3つです。
 
 - `popovertarget`属性を持つボタン
-- `commandfor` + `command="show-popover"` / `"hide-popover"` / `"toggle-popover"`が指定されたボタン
-- スクリプトから`showPopover({ source })` / `togglePopover({ source })`の`source`オプションで渡した要素
+- `commandfor`と、`command="show-popover"`か`"hide-popover"`、`"toggle-popover"`を書いたボタン
+- スクリプトで`showPopover({ source })`や`togglePopover({ source })`に渡した要素
 
-### `source`が`null`になるケース
+ボタンの2つは、開く方向でも閉じる方向でも押したボタンが入ります。`<dialog>`も、`commandfor`と`command="show-modal"`や`"close"`のボタンで開閉すると、そのボタンが入ります。`<details>`の`toggle`イベントでは`null`です。`togglePopover({ source })`で閉じたときは、ChromeとFirefoxでは`null`、Safariでは渡した要素が入ります。
 
-呼び出し元を介さない経路で開閉した場合は`null`になります。
+### nullになる場合
+
+呼び出し元を通さずに開閉すると、`null`になります。
 
 - `hidePopover()`をスクリプトから呼ぶ（`hidePopover`は`source`オプションを取らない）
-- `showPopover()` / `togglePopover()`を`source`オプションを取らずに呼ぶ
-- ESCキーや外側クリックによるlight-dismissで閉じる
+- `showPopover()`や`togglePopover()`を、`source`オプションを渡さずに呼ぶ
+- ESCキーや外側のクリックで閉じる（light dismiss）
 
-ユーザー操作起点の発火と区別できるので、リスナー側で分岐させる材料にも使えます。
+ボタンで開閉したかどうかを、リスナーで見分けるのにも使えます。
 
 ## 使い方
 
-メンバー一覧の「詳細」ボタンを押すと、共通のポップオーバーが押されたメンバーの情報に切り替わって表示されます。
+メンバー一覧の詳細ボタンを押すと、共通のポップオーバーが押されたメンバーの情報に切り替わって表示されます。
 
 <PlaygroundEmbed
   demo="event.sourceで発火元のボタンを取得"
@@ -49,7 +69,7 @@ Popover APIや`<details>`、`<dialog>`では、開閉のたびに`beforetoggle` 
   sectionId="toggleevent-source"
 />
 
-このUIは、ボタン側に`popovertarget`属性で共通ポップオーバーを指定し、`data-member-id`でどのメンバーかを持たせる構成です。開く操作はブラウザに任せられるので、HTMLは次のように書けます。
+ボタンには`popovertarget`で共通のポップオーバーを指定し、`data-member-id`でどのメンバーかを持たせます。開く操作はブラウザに任せられるので、HTMLは次のように書けます。
 
 ```html
 <button popovertarget="member-card" data-member-id="alice">詳細</button>
@@ -59,7 +79,7 @@ Popover APIや`<details>`、`<dialog>`では、開閉のたびに`beforetoggle` 
 <div id="member-card" popover></div>
 ```
 
-JS側はポップオーバーに`toggle`リスナーを1つ張るだけです。`event.source`が押されたボタンを返してくれるので、その`data-member-id`から表示すべき中身を組み立てます。
+JavaScriptは、ポップオーバーに`toggle`のリスナーを1つ付けるだけです。`event.source`が押されたボタンなので、その`data-member-id`から中身を組み立てます。
 
 ```js
 const popover = document.getElementById('member-card');
@@ -74,12 +94,18 @@ popover.addEventListener('toggle', (event) => {
   const trigger = event.source;
   if (!(trigger instanceof HTMLElement)) return;
 
-  popover.replaceChildren(renderMember(trigger.dataset.memberId));
+  popover.textContent = `${trigger.dataset.memberId}の詳細`;
 });
 ```
 
-ボタンごとに個別のリスナーを張ったり、最後に押されたボタンを別途状態として持ち回したりする必要がなくなり、ポップオーバー側の1か所で発火元を判定できるのが`event.source`の効きどころです。
+aliceのボタンを押すと、ポップオーバーにaliceの詳細と出ます。ボタンごとにリスナーを付けたり、最後に押されたボタンを覚えておいたりせずに、ポップオーバーの1か所で押されたボタンが分かります。
+
+ただし、`popovertarget`の既定の動き（`toggle`）では、ポップオーバーを開いたまま別のメンバーの詳細を押すと、切り替わらずに閉じます。どのブラウザでも、そのときの`toggle`イベントは`newState`が`closed`で、`source`は後から押したボタンです。`popovertargetaction="show"`にすると、開いているあいだは押しても何も起きず、イベントも届きません。
+
+デモでは、ボタンの`click`で`hidePopover()`と`showPopover({ source })`を続けて呼び、開いたまま中身を切り替えています。このとき`beforetoggle`は閉じる向きと開く向きの2回届き、`toggle`は`oldState`も`newState`も`open`の1回にまとまります。
+
+Reactの`onToggle`で受け取る合成イベントにも、実行時には`source`が入ります。ただし@types/reactの型には`source`が無いので、TypeScriptでは`event.nativeEvent.source`から読みます。デモもこの書き方です。
 
 ## おわりに
 
-`ToggleEvent.source`はやっていることは小さいですが、複数トリガーが1つのポップオーバーを共有するUIでは効きの大きい機能です。Baseline 2026で揃ったことで、ボタンごとにリスナーを分けたり、開いたボタンをグローバルに記録したりといった回避策が一段整理できます。Popover APIや`commandfor`を組み合わせた宣言的なUIと相性がよく、合わせて使うときに覚えておきたい一手です。
+`ToggleEvent.source`を使うと、1つのポップオーバーを複数のボタンで開くUIで、押されたボタンをポップオーバーの`toggle`イベントから読めます。開いたまま別のボタンで中身を切り替えるときは、`hidePopover()`と`showPopover({ source })`を続けて呼びます。

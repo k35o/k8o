@@ -1,23 +1,21 @@
 ---
-title: 'Name-only container queriesでコンテナの名前だけを条件にスタイルを当てる'
-description: 'Name-only container queriesは、@containerに条件を書かず名前だけを指定するコンテナクエリです。Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に加わりました。書き方、子孫セレクタとの違い、サイズクエリと併用するときの注意を整理します。'
+title: '@containerの名前だけで親要素に応じてスタイルを変える'
+description: '@containerに条件を書かず、container-nameで付けた名前だけを書くと、その名前の祖先の中にある要素にだけスタイルを当てられます。置かれた場所でカードの並びを変える書き方と、子孫セレクタとの違いを説明します。'
 createdAt: 2026-09-28
-updatedAt: 2026-09-28
+updatedAt: 2026-11-09
 featureIds:
   - container-name-queries
 ---
 
-# Name-only container queriesでコンテナの名前だけを条件にスタイルを当てる
+# @containerの名前だけで親要素に応じてスタイルを変える
 
 <BrowserSupportStatus featureId="container-name-queries" />
 
 ## はじめに
 
-同じカードでも、本文の中では横並びに、サイドバーの中では縦積みにしたいことがあります。コンポーネントの見た目を、置かれた場所に応じて変える場面です。
+Name-only container queriesは、`@container sidebar`のように名前だけを書くコンテナクエリです。`container-name`で`sidebar`と名付けた祖先の中にある要素にだけスタイルが当たり、`container-type`もサイズの条件も要りません。Chrome 148が対応して、Baseline 2026に入りました。
 
-これまでは、`.sidebar .card`のような子孫セレクタを使うか、`@container sidebar (width >= 0px)`のように必ず真になる条件を付けたコンテナクエリを使っていました。子孫セレクタでは、配置先のクラス名がコンポーネントのCSSに入り込みます。コンテナクエリでは、使わない条件のためだけに`container-type`を指定することになります。
-
-Name-only container queriesは、`@container sidebar`のように名前だけを書くコンテナクエリです。Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に加わりました。
+同じカードでも、本文の中では横並びに、サイドバーの中では縦積みにしたいことがあります。コンポーネントの見た目を、置かれた場所に応じて変える場面です。配置先のクラス名をコンポーネントのCSSに書いてよければ、`.sidebar .card`のような子孫セレクタでも書けます。配置先を名前だけで指したいときは、これまで`@container sidebar (width >= 0px)`のように必ず真になる条件を付け、使わない条件のためだけに`container-type`を指定していました。
 
 ## 書き方
 
@@ -47,13 +45,64 @@ Name-only container queriesは、`@container sidebar`のように名前だけを
 
 `container-name`には空白区切りで複数の名前を書けます。`container-name: sidebar panel`とした要素は、`@container sidebar`と`@container panel`のどちらの対象にもなります。
 
-<PlaygroundEmbed
-  demo="コンテナの名前でカードのレイアウトを切り替える"
-  headingLevel="h4"
-  sectionId="container-name-queries"
-/>
+```css demo="places"
+.sidebar {
+  container-name: sidebar;
+}
+.footer {
+  container-name: footer;
+}
 
-なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されていますが、2026年9月時点のFirefox 156でも直っていません。
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+@container sidebar {
+  .card {
+    flex-direction: column;
+  }
+}
+
+@container footer {
+  .card {
+    padding-block: 0.25rem;
+  }
+  .description {
+    display: none;
+  }
+}
+
+/* 例の見た目 */
+section {
+  margin-block-end: 0.5rem;
+  border: 1px solid gray;
+}
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: steelblue;
+}
+```
+
+```html demo="places"
+<section>
+  <div class="card"><span class="avatar"></span><p>k8o <small class="description">Webエンジニア</small></p></div>
+</section>
+<section class="sidebar">
+  <div class="card"><span class="avatar"></span><p>k8o <small class="description">Webエンジニア</small></p></div>
+</section>
+<section class="footer">
+  <div class="card"><span class="avatar"></span><p>k8o <small class="description">Webエンジニア</small></p></div>
+</section>
+```
+
+結果の欄では、同じカードを名前の無い枠、`sidebar`の枠、`footer`の枠に置いています。`sidebar`の中ではアバターの下に名前が並ぶ縦積みになり、`footer`の中では説明が消えて上下の余白が詰まります。
+
+なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されています。親にクラスを足して`container-name: sidebar`を当てても、中のカードは横並びのままで、カードのクラスを変えても変わりません。カードを作り直すと、縦積みになります。ChromeとSafariでは、名前を変えるとすぐにスタイルが変わります。
 
 ## 子孫セレクタとの違い
 
@@ -79,7 +128,7 @@ Name-only container queriesは、`@container sidebar`のように名前だけを
 }
 ```
 
-2つ目は、配置先のセレクタを知らなくて済むことです。コンポーネントのCSSには`sidebar`という名前しか出てきません。配置先が`<aside>`でも`.drawer`でも、`container-name: sidebar`を付ければ同じスタイルが当たります。
+2つ目は、コンポーネントのCSSに配置先のセレクタが出てこないことです。出てくるのは`sidebar`という名前だけです。配置先が`<aside>`でも`.drawer`でも、`container-name: sidebar`を付ければ同じスタイルが当たります。
 
 3つ目はShadow DOMです。shadow treeの中に書いた子孫セレクタは、shadow hostより外側の要素にはマッチしません。`@container sidebar`なら、shadow treeの中に書いても外側の`sidebar`を見つけられます。コンテナはflat treeの祖先から探されるためです。
 
@@ -104,6 +153,8 @@ Name-only container queriesは、`@container sidebar`のように名前だけを
   </user-card>
 </aside>
 ```
+
+どのブラウザでも、shadow treeの中に書いた`@container sidebar`は外の`.sidebar`の中で縦積みになり、同じ場所に書いた`.sidebar .card`は当たりません。
 
 ## サイズクエリと併用するとき
 
@@ -151,4 +202,4 @@ Name-only container queriesは、`@container sidebar`のように名前だけを
 
 ## おわりに
 
-Name-only container queriesで、配置先に付けた名前だけを条件にスタイルを書けるようになりました。`container-type`も、必ず真になる条件も要りません。Firefox 149、Safari 26.4、Chrome 148が対応し、主要ブラウザで使えます。
+Name-only container queriesを使うと、配置先に付けた名前だけを条件にスタイルを書けます。`container-type`も、必ず真になる条件も要りません。

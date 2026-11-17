@@ -1,24 +1,23 @@
 ---
-title: 'CSP violation reportsでContent Security Policyの違反を検知する'
-description: 'Content Security Policyに違反するリソースの読み込みやスクリプトの実行は、CSP violation reportsとして収集できます。report-toディレクティブによるサーバー送信とsecuritypolicyviolationイベントによるクライアントサイド検知、2つの方法でCSPの違反を可視化する方法を解説します。'
+title: 'CSP違反をReport-Onlyとreport-toで検知する'
+description: 'CSPに違反した読み込みや実行を、report-toでサーバーに集め、securitypolicyviolationイベントでページ内から検知します。Report-Onlyでポリシーを強制せずに試す方法と、届くレポートの形も説明します。'
 createdAt: 2026-05-15
-updatedAt: 2026-05-15
+updatedAt: 2026-11-09
 featureIds:
   - reporting-csp-violations
 ---
 
-
-# CSP violation reportsでContent Security Policyの違反を検知する
+# CSP違反をReport-Onlyとreport-toで検知する
 
 <BrowserSupportStatus featureId="reporting-csp-violations" />
 
 ## はじめに
 
-Content Security Policy（CSP）はクロスサイトスクリプティングやデータインジェクションを防ぐためのセキュリティレイヤーですが、いきなり厳しいポリシーを本番に投入すると、サードパーティスクリプトや古いコードが思わぬ場所で動作を止めてしまうことがあります。
+CSP violation reportsは、Content Security Policy（CSP）に違反したリソースの読み込みやスクリプトの実行を、ブラウザがレポートとして知らせる仕組みです。`report-to`ディレクティブでサーバーに送らせるか、`securitypolicyviolation`イベントでページ内から受け取ります。Firefox 149が対応して、Baseline 2026に入りました。
 
-Baseline 2026に追加されたCSP violation reportsを使うと、ポリシーに違反したリソースの読み込みやスクリプトの実行を収集し、ポリシーの過不足を可視化できます。Reporting APIに基づくサーバー送信と、`securitypolicyviolation`イベントによるクライアントサイド検知の2つのアプローチがあり、組み合わせて運用できます。
+自分のブラウザで起きた違反は、DevToolsのコンソールに出るエラーで確かめられます。ユーザーのブラウザで起きた違反を集めるには、この仕組みが要ります。いきなり厳しいポリシーを本番に入れると、サードパーティのスクリプトや古いコードが思わぬ場所で止まることがあります。違反を集めれば、ポリシーの過不足を本番の違反から確かめながら締めていけます。
 
-Reporting API全体については[Reporting APIでブラウザのレポートを収集する](/blog/reporting)を参照してください。
+Reporting API全体については[Reporting APIでCSP違反などのレポートをサーバーに集める](/blog/reporting)を参照してください。
 
 ## report-toディレクティブによるサーバー送信
 
@@ -29,15 +28,44 @@ Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports"
 Content-Security-Policy: default-src 'self'; report-to csp-endpoint
 ```
 
-`Reporting-Endpoints`ヘッダーで定義したエンドポイント名を`report-to`の引数として渡すことで、CSP違反のレポートがそのエンドポイントに送信されます。エンドポイントのURLはHTTPSである必要があります。
+`Reporting-Endpoints`ヘッダーで定義したエンドポイント名を`report-to`の引数として渡すことで、CSP違反のレポートがそのエンドポイントに送信されます。エンドポイントのURLはHTTPSにします。手元で試すときは、`http://localhost`のURLにも届きます。
 
-ブラウザはレポートを即時には送信せず、バッチ処理でまとめて送信します。送信タイミングはブラウザに委ねられており、配信が保証されないことに注意してください。
+次のコードのページは、別のオリジンの画像を読もうとし、`img-src 'self'`に違反します。
 
-レポートはJSON形式でPOSTされ、`type`は`csp-violation`、`body`には違反したリソースのURLやディレクティブ、ポリシー文字列などが入ります。送信形式の全体像は[Reporting APIでブラウザのレポートを収集する](/blog/reporting)を参照してください。
+```js title="server.mjs"
+import { createServer } from 'node:http';
+
+createServer((req, res) => {
+  if (req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => (body += chunk));
+    req.on('end', () => {
+      console.log(req.headers['content-type'], body);
+      res.writeHead(204).end();
+    });
+    return;
+  }
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Reporting-Endpoints': 'csp-endpoint="http://localhost:3000/csp-reports"',
+    'Content-Security-Policy': "img-src 'self'; report-to csp-endpoint",
+  });
+  res.end('<img src="https://example.com/a.png">');
+}).listen(3000);
+```
+
+`http://localhost:3000`を開くと画像は表示されず、ターミナルに`effectiveDirective`が`img-src`のレポートが出ます。FirefoxとSafariでは、届くものの形が違います。
+
+- Firefox：`Content-Type`は`application/reports+json`で、レポートの配列が届く。レポートは`age`と`type`、`url`、`user_agent`、`body`を持つ
+- Safari：`Content-Type`は`application/csp-report`で、レポートが1件ずつ届く。レポートは`type`と`url`、`body`だけを持ち、`blockedURL`は`https://example.com:443/a.png`のようにポート番号が付く
+
+どちらも`type`は`csp-violation`で、`body`には違反したリソースのURLやディレクティブ、ポリシー文字列などが入ります。受け取るサーバーは、配列と1件のオブジェクトの両方を扱えるようにしておきます。
+
+いつ送るかはブラウザに委ねられていて、届くことも保証されません。Firefoxは数秒のうちに複数のレポートを1つの配列にまとめて送り、Safariは違反のたびに1件ずつすぐ送ります。
 
 ## securitypolicyviolationイベント
 
-JavaScriptからCSP違反を検知するには、`securitypolicyviolation`イベントを使います。サーバー側のエンドポイントを持たない場合や、違反発生時にクライアント側で何かしらの処理を行いたい場合に便利です。
+JavaScriptからCSP違反を検知するには、`securitypolicyviolation`イベントを使います。サーバーにエンドポイントを持たないときや、違反が起きたその場でページの中で何かしたいときに使います。
 
 ```js
 document.addEventListener('securitypolicyviolation', (event) => {
@@ -47,44 +75,42 @@ document.addEventListener('securitypolicyviolation', (event) => {
 });
 ```
 
-イベントは`Document`、`Element`、`WorkerGlobalScope`で発火します。Web Worker内でもイベントリスナーを登録できます。
+イベントは`Document`と`Element`、`WorkerGlobalScope`で発火するので、Web Workerの中でも受け取れます。
 
 ### イベントオブジェクトのプロパティ
 
-`SecurityPolicyViolationEvent`は、HTTPレポートのbodyとほぼ同じ情報をプロパティとして持ちます。
+`SecurityPolicyViolationEvent`は、HTTPのレポートの`body`とほぼ同じ情報をプロパティに持ちます。
 
-- `blockedURI` - ブロックされたリソースのURI（レポートでは`blockedURL`）
-- `violatedDirective` - 違反したディレクティブ（`effectiveDirective`の歴史的な別名）
-- `effectiveDirective` - 違反を検出したディレクティブ
-- `originalPolicy` - 違反したCSPポリシー文字列
-- `documentURI` - 違反が発生したドキュメントのURI（レポートでは`documentURL`）
-- `sourceFile` / `lineNumber` / `columnNumber` - 違反を起こしたスクリプトの位置情報
-- `sample` - 違反した内容のスニペット（`'report-sample'`が指定されている場合のみ）
-- `disposition` - `"enforce"`または`"report"`
-- `statusCode` - ドキュメントのHTTPステータスコード
-- `referrer` - 違反が発生したドキュメントのリファラー
+- `blockedURI`：ブロックされたリソースのURI（レポートでは`blockedURL`）
+- `violatedDirective`：違反したディレクティブ（`effectiveDirective`の古い別名）
+- `effectiveDirective`：違反を検出したディレクティブ
+- `originalPolicy`：違反したCSPのポリシーの文字列
+- `documentURI`：違反が起きたドキュメントのURI（レポートでは`documentURL`）
+- `sourceFile`と`lineNumber`、`columnNumber`：違反を起こしたスクリプトの位置
+- `sample`：違反した内容の先頭40文字。インラインのスクリプトや`eval()`の違反では`'report-sample'`を指定したときだけ入り、Trusted Typesの違反では指定しなくても入る
+- `disposition`：`"enforce"`か`"report"`
+- `statusCode`：ドキュメントのHTTPステータスコード
+- `referrer`：違反が起きたドキュメントのリファラー
 
-プロパティ名がHTTPレポート側の名前と微妙に違う点に注意してください。`blockedURI`と`blockedURL`、`documentURI`と`documentURL`が代表例です。
+HTTPのレポートとは、`blockedURI`と`blockedURL`、`documentURI`と`documentURL`のように、名前が少し違うプロパティがあります。
 
 ## Report-Onlyモードによる段階的な導入
 
-新しいCSPを本番に投入する際、いきなり強制モードで動かすと、想定外の場所でリソースの読み込みやスクリプトの実行が止まってしまう恐れがあります。`Content-Security-Policy-Report-Only`ヘッダーを使うと、ポリシーを強制せずにレポートだけ収集できます。
+`Content-Security-Policy-Report-Only`ヘッダーを使うと、ポリシーを強制せずに、違反のレポートだけを集められます。
 
 ```http
 Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports"
 Content-Security-Policy-Report-Only: default-src 'self'; report-to csp-endpoint
 ```
 
-Report-Onlyモードのレポートは`disposition`が`"report"`になります。強制モードのレポートと混在させず、ポリシーの開発段階で違反箇所を可視化するために使います。
+Report-Onlyで違反した`eval()`はそのまま実行され、レポートと`securitypolicyviolation`イベントの`disposition`は`"report"`になります。`disposition`を見れば、強制しているポリシーの違反と、試しているポリシーの違反を分けられます。
 
-実運用では、以下の流れで段階的にポリシーを厳しくしていくのが安全です。
+本番では、次の流れでポリシーを締めていきます。
 
-1. Report-Onlyで違反状況を観測し、ポリシーの粒度を調整する
-2. 違反がほぼなくなったら強制モードに切り替える
-3. 強制モードに移行した後も`report-to`は残し、本番でのリグレッションを継続的に監視する
+1. Report-Onlyで違反を集め、ポリシーの許可する範囲を調整する
+2. 違反がほとんど無くなったら、`Content-Security-Policy`で強制する
+3. 強制した後も`report-to`は残し、新しく起きる違反を見続ける
 
 ## おわりに
 
-CSP violation reportsは、ポリシーをただ書いて適用するだけでは見えない、本番環境での実際の挙動を把握する手がかりになります。`report-to`によるサーバー側での集計と`securitypolicyviolation`によるクライアント側での即時応答を組み合わせれば、CSPの開発から運用までを違反データに基づいて回せます。
-
-まずはReport-Onlyモードでレポートを集めるところから始めてみてください。
+CSP violation reportsを使うと、ポリシーを書いただけでは見えない、ユーザーのブラウザで起きた違反を集められます。`report-to`でサーバーに集め、`securitypolicyviolation`でページの中で受け取りながら、Report-Onlyで強制せずにポリシーを締めていけます。

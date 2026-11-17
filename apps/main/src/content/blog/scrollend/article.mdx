@@ -1,8 +1,8 @@
 ---
 title: 'scrollendイベントでスクロール終了を検知する'
-description: 'scrollendイベントはスクロール操作が完了したときに発火するイベントです。Baseline 2025で主要ブラウザすべてで利用可能になりました。従来のscrollイベントとsetTimeoutを組み合わせた方法と比べて、正確なタイミングでスクロール終了を検知できるようになりました。'
+description: 'scrollendイベントは、スクロールが止まったときに1回だけ発火するイベントです。scrollイベントとsetTimeoutで終了を推し量っていた処理を置き換えられます。発火する条件と、止まった位置をURLに残す例も説明します。'
 createdAt: 2025-12-20
-updatedAt: 2025-12-20
+updatedAt: 2026-11-09
 featureIds:
   - scrollend
 ---
@@ -13,15 +13,27 @@ featureIds:
 
 ## はじめに
 
-スクロールが終了したタイミングを検知したいケースがあります。例えば、スクロールが止まった位置をURLに反映したり、スクロール終了後にアニメーションを開始したりする場合です。
+`scrollend`イベントは、スクロールが止まったときに1回だけ発火するイベントです。指やホイール、キーボードでのスクロールでも、`scrollTo()`やscroll-snapによる移動でも、位置が動き終わった時点で届きます。Safari 26.2が対応して、Baseline 2025に入りました。
 
-しかし、今まではブラウザにスクロールが終了したことを検知するイベントがなく、`scroll`イベントを監視して擬似的に終了のタイミングを測ることしかできませんでした。
+スクロール中の位置に合わせて表示を変えるときは、`scroll`イベントを使います。一方で、止まった位置をURLに反映するといった、止まったときに1回だけ行う処理には、終了を知らせるイベントがありませんでした。`scroll`イベントから、止まったころあいを推し量るしかありませんでした。
 
-`scrollend`イベントは、この問題を解決するためにスクロール操作が完了したときに発火してくれるイベントです。Baseline 2025として主要ブラウザすべてで利用可能になりました。
+```html
+<div id="list" style="height: 120px; overflow: auto">
+  <div style="height: 1000px">スクロールしてください</div>
+</div>
+<script>
+  const list = document.getElementById('list');
+  list.addEventListener('scrollend', () => {
+    console.log('止まった位置', list.scrollTop);
+  });
+</script>
+```
 
-## 従来の手法
+枠の中をスクロールして止めると、止まったところでコンソールに位置が出ます。
 
-従来はスクロール終了を検知するために、`scroll`イベントと`setTimeout`を組み合わせる方法が一般的でした。
+## setTimeoutで推し量る書き方
+
+これまでは、`scroll`イベントと`setTimeout`を組み合わせて、スクロールの終わりを推し量っていました。
 
 ```ts
 let scrollTimeout;
@@ -37,15 +49,11 @@ element.addEventListener('scroll', () => {
 });
 ```
 
-しかし、この方法ではタイムアウト値の調整が難しいという課題があります。
-値が短すぎるとスクロール中に誤検知し、長すぎると反応が遅くなります。
-
-また、タッチデバイスとマウスホイールではスクロールの特性が異なるため、デバイスによって最適な値が変わってきます。
-特にモバイルの慣性スクロールでは、指を離した後もスクロールが続くため、タイマーが切れて誤検知してしまう可能性があります。
+待つ時間を短くすると、スクロールの途中で終わったと判定し、長くすると反応が遅れます。指とホイールではスクロールの動き方が違うので、ちょうどよい時間は入力の仕方でも変わります。指で押さえたまま動きを止めると、`scroll`イベントが途切れてタイマーが切れ、まだ指を離していないのに終わったと判定します。
 
 ## scrollendイベント
 
-`scrollend`イベントを使うと、ブラウザがスクロールの終了を正確に検知してくれます。
+`scrollend`イベントなら、スクロールが終わったかをブラウザが判定します。指で操作しているときは、指を離して慣性のスクロールも止まってから届きます。
 
 ```javascript
 // [!og]
@@ -54,22 +62,48 @@ element.addEventListener('scrollend', () => {
 });
 ```
 
-タイムアウト値を気にする必要がなく、シンプルに記述できます。
+待つ時間を決める必要はありません。
 
 <PlaygroundEmbed demo="scrollendイベント" headingLevel="h4" sectionId="scrollend" />
 
 ### 発火条件
 
-`scrollend`イベントは、ユーザーのスクロール操作（タッチ、マウスホイール、キーボード）が完了したときに発火します。また、`scrollTo()`や`scrollBy()`などのAPIによるスクロールや、`scroll-snap`によるスナップ位置への移動が完了したときにも発火します。
-
-一方で、スクロール位置が変化しなかった場合は発火しません。
+`scrollend`イベントは、指やホイール、キーボードでのスクロールが終わったときに発火します。`scrollTo()`や`scrollBy()`による移動や、scroll-snapでスナップ位置へ動き終わったときにも発火します。スクロール位置が変わらなかったときは発火しません。
 
 <PlaygroundEmbed demo="発火条件" headingLevel="h5" sectionId="scrollend" />
 
+要素の`scrollTo({ top: 500, behavior: 'smooth' })`を呼ぶと、`scroll`イベントは何度も届き、`scrollend`イベントは止まったときに1回だけ届きます。`scrollTop`に続けて3回代入したときも、`scroll`と`scrollend`は1回ずつです。すでにその位置にいるときの`scrollTo()`では、どちらも発火しません。
+
+要素の`scrollend`イベントはバブリングしません。`document`に登録したリスナーには、要素のスクロールの`scrollend`イベントは届かず、ページ全体のスクロールのものだけが届きます。要素のスクロールを見るなら、その要素に登録します。
+
+### 止まった位置をURLに残す
+
+scroll-snapで1枚ずつ止まるカルーセルなら、`scrollend`イベントで何枚目に止まったかを求め、URLのハッシュに残せます。
+
+```js
+const carousel = document.querySelector('.carousel');
+
+carousel.addEventListener('scrollend', () => {
+  const index = Math.round(carousel.scrollLeft / carousel.clientWidth);
+  history.replaceState(null, '', `#slide-${index + 1}`);
+});
+```
+
+```css
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.carousel > * {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+}
+```
+
+幅200pxのカルーセルを`scrollTo({ left: 130 })`で途中の位置へ動かすと、`scrollend`イベントはスナップし終えた200pxの位置で1回だけ届き、ハッシュは`#slide-2`になります。
+
 ## おわりに
 
-`scrollend`イベントを紹介しました。
-
-従来の`setTimeout`を使った方法では、適切なタイムアウト値の設定が難しく、デバイスごとの挙動の違いに悩まされることがありました。`scrollend`イベントにより、ブラウザが正確なタイミングでスクロール終了を通知してくれるようになりました。
-
-Baseline 2025として主要ブラウザすべてで利用可能になったので、スクロール終了の検知が必要な場面があれば採用を検討してみてください。
+`scrollend`イベントを使うと、`setTimeout`で待つ時間を決めずに、スクロールが止まったときに1回だけ処理を走らせられます。要素のスクロールを見るときは、`document`ではなくその要素にリスナーを登録します。

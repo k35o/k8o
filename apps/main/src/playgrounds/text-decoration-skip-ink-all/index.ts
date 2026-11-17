@@ -5,7 +5,7 @@ export const textDecorationSkipInkAllSection: PlaygroundSection = {
   id: 'text-decoration-skip-ink-all',
   title: 'text-decoration-skip-ink: all',
   description:
-    'allの値で下線・上線がすべてのグリフのインクと交差する箇所で必ず途切れます。CJK文字でも下線が突き刺さらず、読みやすくなります。',
+    'auto、none、allで、下線が文字と重なる箇所の途切れ方を比べられます。',
   category: 'css',
   type: 'blog',
   slug: 'text-decoration-skip-ink-all',
@@ -14,7 +14,7 @@ export const textDecorationSkipInkAllSection: PlaygroundSection = {
       component: TextDecorationSkipInkDemo,
       title: 'skip-ink値の比較',
       description:
-        'auto・none・allをSelectで切り替え、漢字や「ぐ」「ゆ」の下端で下線がどう途切れるか確かめられます。',
+        'auto、none、allを切り替えて、漢字やかなの下で下線がどう途切れるかを確かめられます。',
     },
   ],
 };

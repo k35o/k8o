@@ -6,7 +6,8 @@ declare module 'react' {
   }
 
   interface InputHTMLAttributes<T> {
-    webkitdirectory?: boolean;
+    // React は知らない属性の true を描かずに捨てるので、空文字で渡させる
+    webkitdirectory?: '';
   }
 
   interface ButtonHTMLAttributes<T> {

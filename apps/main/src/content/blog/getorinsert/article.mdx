@@ -1,20 +1,21 @@
 ---
-title: 'MapのgetOrInsert、getOrInsertComputedで冗長なコードを減らす'
-description: 'Baseline 2026で追加されたMap.prototype.getOrInsertとgetOrInsertComputedを紹介します。キーが存在しない場合にデフォルト値を挿入して返す新しいメソッドで、グループ化やカウントなどの定番パターンを簡潔に書けます。'
+title: 'MapのgetOrInsertComputedでキーが無ければ追加する'
+description: 'MapのgetOrInsertとgetOrInsertComputedは、キーが無ければ値を追加し、あればその値を返します。has・set・getを1行にまとめ、数え上げやグループ化に使えます。Baseline 2026で使えます。'
 createdAt: 2026-03-02
-updatedAt: 2026-03-02
+updatedAt: 2026-11-09
 featureIds:
   - getorinsert
 ---
 
-
-# MapのgetOrInsert、getOrInsertComputedで冗長なコードを減らす
+# MapのgetOrInsertComputedでキーが無ければ追加する
 
 <BrowserSupportStatus featureId="getorinsert" />
 
 ## はじめに
 
-`Map`を使う際に、以下のようなコードを書いたことはないでしょうか。
+`getOrInsert`と`getOrInsertComputed`は、`Map`と`WeakMap`のメソッドです。キーが無ければ値を追加してから返し、キーがあればその値を返します。Chrome 145が対応して、Baseline 2026に入りました。
+
+配列の要素をまとめてグループに分けるときは、`Map.groupBy`を使います。要素があとから1つずつ届き、そのたびにキーの値を取り出して手を加える場面では、これまで次のように書いていました。
 
 ```js
 const map = new Map();
@@ -23,15 +24,10 @@ if (!map.has(key)) {
 }
 return map.get(key) ?? INIT_VALUE;
 ```
-`Map`にキーが存在しない場合は新たに初期値をセットして、存在する場合はその値を返す、というパターンです。
 
-グループ化やカウントなど頻出のパターンですが`has`→`set`→`get`の3ステップが毎回必要で冗長です。
-TypeScriptでは`has`で存在を確認した後でも`get`の返り値が`V | undefined`のままで型が絞り込まれないため、非nullアサーション（`!`）や`??`での対処も必要になります。
+キーが無ければ初期値を入れ、あればその値を返す書き方です。数え上げやグループ化でよく書きますが、毎回`has`と`set`、`get`の3つを呼びます。TypeScriptでは、`has`で確かめたあとも`get`の返り値が`V | undefined`のままなので、`!`や`??`も要ります。
 
-Baseline 2026で追加された`getOrInsert`と`getOrInsertComputed`を使うと、このパターンをすっきり書けるようになります。
-TypeScriptでもv6.0で型定義が追加される予定です（[Announcing TypeScript 6.0 Beta](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0-beta/#new-types-for-%22upsert%22-methods-(a.k.a.-getorinsert))）。
-
-`getOrInsert`と`getOrInsertComputed`は、`Map`の他に`WeakMap`にも同様のメソッドが追加されますが、ここでは説明の便宜上`Map`を例に紹介します。
+`getOrInsert`と`getOrInsertComputed`を使うと、これを1行で書けます。`WeakMap`にも同じメソッドがありますが、ここでは`Map`で説明します。
 
 ## getOrInsert
 
@@ -42,10 +38,10 @@ map.getOrInsert(key: K, defaultValue: V): V
 
 `getOrInsert`は2つの引数を取ります。
 
-- `key`：取得または挿入するキー
-- `defaultValue`：キーが存在しない場合に挿入・返却する値
+- `key`：取り出すキー
+- `defaultValue`：キーが無いときに入れて返す値
 
-キーが存在すれば既存の値をそのまま返し、存在しなければ`defaultValue`を`set`してから返します。
+キーがあればその値をそのまま返し、無ければ`defaultValue`を`set`してから返します。
 
 ```js
 // [!og]
@@ -58,37 +54,45 @@ console.log(map2.getOrInsert('a', 1)); //  1（挿入して返す）
 console.log(map2.getOrInsert('a', 0)); //  1（既存値を返す）
 ```
 
-冒頭に紹介したコードは以下のように簡潔に記述できます。
+コンソールに貼ると、コメントに書いた値が順に出ます。2回目の呼び出しは、渡した値に関わらず1回目に入れた値を返します。
+
+はじめのコードは、次のように書けます。
 
 ```ts
 const map = new Map<string, typeof INIT_VALUE>();
 return map.getOrInsert(key, INIT_VALUE);
 ```
 
-ORMでは`findOrCreate`といった名前で同等の操作がよく提供されています。`getOrInsert`はそれと同じ考え方を`Map`にもたらすものです。
+単語の数を数えるなら、0を初期値にして取り出し、1を足して書き戻します。数値は取り出したあとに書き換えられないので、`set`は残ります。
+
+```js
+const counts = new Map();
+for (const word of ['a', 'b', 'a', 'c', 'a']) {
+  counts.set(word, counts.getOrInsert(word, 0) + 1);
+}
+console.log(counts.get('a')); // 3
+```
 
 ## getOrInsertComputed
 
-実は`getOrInsert`には注意点があります。第2引数はメソッドを呼び出した時点で評価されるため、キーが既に存在する場合でもデフォルト値の式が実行されてしまいます。
+`getOrInsert`の第2引数は、メソッドを呼んだ時点で評価されます。キーがすでにあっても、初期値を作る式は実行されます。
 
 ```js
-//'a'が存在していてもexpensiveCompute()は必ず実行される
+// 'a'があってもexpensiveCompute()は必ず実行される
 map.getOrInsert('a', expensiveCompute());
 ```
 
-デフォルト値の生成コストが高い場合にはこれが問題になります。`getOrInsertComputed`はこの問題を解決するために用意されたメソッドです。
+初期値を作るのに手間がかかるときは、`getOrInsertComputed`を使います。第2引数には、値ではなく関数を渡します。
 
 ```ts
 const map = new Map<K, V>();
 map.getOrInsertComputed(key: K, callbackFn: (key: K) => V): V
 ```
 
-`getOrInsertComputed`の第2引数には値ではなく関数を渡します。
+- `key`：取り出すキー
+- `callbackFn`：キーが無いときだけ呼ばれる関数。`key`を受け取り、入れる値を返す
 
-- `key`: 取得または挿入するキー
-- `callbackFn`: キーが存在しない場合のみ呼ばれる関数。`key`を引数として受け取り、挿入する値を返す
-
-キーが存在すれば`callbackFn`は呼ばれません。存在しない場合のみ`callbackFn(key)`を実行し、その返り値を`set`して返します。
+キーがあれば`callbackFn`は呼ばれません。無いときだけ`callbackFn(key)`を実行し、その返り値を`set`して返します。
 
 ```ts
 const map = new Map<string, number>();
@@ -106,7 +110,33 @@ map.getOrInsertComputed('a', callback);
 // ログなし（キーが既に存在するため呼ばれない）
 ```
 
-コールバックの引数にはキーが渡されるため、キーから値を導出するパターンにも適しています。
+グループ化では、キーごとに空の配列を作って、取り出した配列に要素を足します。`getOrInsert(post.tag, [])`でも結果は同じですが、キーがあっても呼ぶたびに配列を作って捨てることになります。
+
+```js
+const posts = [
+  { tag: 'css', title: 'field-sizing' },
+  { tag: 'js', title: 'Promise.try' },
+  { tag: 'css', title: '@scope' },
+];
+const byTag = new Map();
+for (const post of posts) {
+  byTag.getOrInsertComputed(post.tag, () => []).push(post.title);
+}
+console.log(byTag.get('css')); // ['field-sizing', '@scope']
+```
+
+コールバックの中で同じキーに`set`しても、追加されるのはコールバックが返した値です。次のコードは、どのブラウザでもNode.jsでも`'outer'`を2回出し、`size`は1になります。コールバックで`Map`を書き換えないようにします。
+
+```js
+const map = new Map();
+const value = map.getOrInsertComputed('key', (key) => {
+  map.set(key, 'inner');
+  return 'outer';
+});
+console.log(value, map.get('key'), map.size); // outer outer 1
+```
+
+コールバックはキーを受け取るので、キーから値を作るときにも使えます。
 
 ```js
 // Intl.NumberFormat のインスタンスはコストが高いのでキャッシュしておく
@@ -118,11 +148,9 @@ formatters.getOrInsertComputed('ja-JP', createFormatter);
 formatters.getOrInsertComputed('en-US', createFormatter);
 ```
 
-## TypeScript 6.0での対応
+## TypeScriptの型
 
-執筆当時のTypeScriptの最新バージョン5.9では、`getOrInsert`と`getOrInsertComputed`の型が存在しないことに注意してください。
-
-今の所、[TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0-beta/#new-types-for-%22upsert%22-methods-(a.k.a.-getorinsert))で`esnext`ライブラリに型定義が追加される予定です。
+`getOrInsert`と`getOrInsertComputed`の型は、TypeScript 6.0で`esnext`ライブラリに入りました。型は`esnext`ライブラリにだけあり、`lib`が`es2025`以前だと`Property 'getOrInsert' does not exist on type 'Map<string, number>'`（TS2550）になります。使うときは`lib`に`esnext`を含めます。追加された型は次のとおりです。
 
 ```ts
 interface Map<K, V> {
@@ -136,10 +164,8 @@ interface WeakMap<K extends WeakKey, V> {
 }
 ```
 
-`get`の返り値`V | undefined`に対して、`getOrInsert`と`getOrInsertComputed`は常に`V`を返すことが型レベルで保証されるようになり非常に嬉しいです。
+`get`の返り値は`V | undefined`ですが、`getOrInsert`と`getOrInsertComputed`は`V`を返すので、`!`や`??`が要りません。
 
 ## おわりに
 
-`getOrInsert`と`getOrInsertComputed`は、`Map`で頻出する「なければ初期値を入れてから取得する」パターンを1行で書けるようにするメソッドです。
-
-`getOrInsert`は値を直接渡す即時評価、`getOrInsertComputed`はコールバックによる遅延評価という使い分けを押さえておけば、場面に合わせて適切に選択できます。
+`getOrInsert`と`getOrInsertComputed`を使うと、キーが無ければ初期値を入れてから取り出す処理を1行で書けます。初期値をそのまま渡せるなら`getOrInsert`を、作るのに手間がかかるときや配列のように毎回作るものなら`getOrInsertComputed`を使います。

@@ -1,37 +1,69 @@
 ---
-title: 'WebAssemblyのJSPIで同期的なコードから非同期のJavaScriptを呼ぶ'
-description: 'JSPI（JavaScript Promise Integration）は、WebAssemblyから呼んだJavaScript関数がPromiseを返したとき、呼び出し元の実行を中断して解決後に再開する仕組みです。WebAssemblyとJavaScriptのつなぎ方から順に追い、Baseline 2026で主要ブラウザに揃ったJSPIを使ってC++やRustの同期的なコードからfetch()のような非同期APIを呼べるようになるまでを説明します。'
+title: 'JSPIでWebAssemblyから非同期関数の結果を待つ'
+description: 'JSPIは、WebAssemblyから呼んだJS関数がPromiseを返すと、解決まで実行を止めて待つ仕組みです。C++やRustの同期的なコードから、fetch()などの非同期APIを呼べます。Baseline 2026で使えます。'
 createdAt: 2026-09-27
-updatedAt: 2026-09-27
+updatedAt: 2026-11-09
 featureIds:
   - wasm-jspi
 ---
 
-# WebAssemblyのJSPIで同期的なコードから非同期のJavaScriptを呼ぶ
+# JSPIでWebAssemblyから非同期関数の結果を待つ
 
 <BrowserSupportStatus featureId="wasm-jspi" />
 
 ## はじめに
 
-WebAssemblyは、C++やRustなどで書いたプログラムをブラウザで動かすためのバイナリ形式です。画像処理やゲームエンジン、既存のC++ライブラリの移植のように、JavaScriptで書き直したくないコードをブラウザへ持ち込むときに使われます。
+JSPI（JavaScript Promise Integration）は、WebAssemblyから呼んだJavaScriptの関数がPromiseを返したとき、WebAssemblyの実行をその場で止め、Promiseが解決したら続きから再開させる仕組みです。C++やRustから移植した同期的なコードのまま、`fetch()`のような非同期APIを呼べるようになります。Safari 27が対応して、Baseline 2026に入りました。
 
-ただし、WebAssemblyのコードは単体では画面にもネットワークにも触れません。できるのは計算とメモリの読み書きだけで、それ以外はすべてJavaScriptに頼みます。C++から移植したコードで`fetch()`を呼ぼうとすると、ここでつまずきます。C++のコードは`read()`の結果を次の行でそのまま使う同期的な書き方をしていますが、JavaScriptの`fetch()`はPromiseを返す非同期APIです。WebAssemblyには待つという概念がないので、Promiseを受け取っても中身を取り出せません。戻り値を数値として受け取る関数なら、Promiseは数値に変換されて`0`になるだけです。
+WebAssemblyのコードは単体では画面にもネットワークにも触れず、計算とメモリの読み書き以外はJavaScriptからインポートした関数に頼ります。`console.log()`のように値をすぐ返す関数を呼ぶだけなら、JSPIは要りません。困るのは`fetch()`のようにPromiseを返す関数です。C++のコードは`read()`の結果を次の行でそのまま使う同期的な書き方をしていますが、WebAssemblyには待つという概念がないので、Promiseを受け取っても中身を取り出せません。戻り値を数値として受け取る関数なら、Promiseは数値に変換されて`0`になるだけです。
 
-JSPI（JavaScript Promise Integration）は、この食い違いをブラウザのエンジン側で埋める仕組みです。WebAssemblyがPromiseを返す関数を呼ぶと、エンジンはその場で実行を止め、Promiseが解決したところで続きから再開します。Chrome 137で先行して使えており、Firefox 153とSafari 27が対応したことでBaseline 2026に加わりました。
+```js
+// 次のWATをwat2wasmで変換したバイト列
+// (module
+//   (import "env" "get_value" (func $get_value (result i32)))
+//   (func (export "run") (result i32)
+//     call $get_value
+//     i32.const 1
+//     i32.add))
+const bytes = new Uint8Array([
+  0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 127, 2, 17, 1, 3, 101, 110, 118, 9,
+  103, 101, 116, 95, 118, 97, 108, 117, 101, 0, 0, 3, 2, 1, 0, 7, 7, 1, 3, 114, 117,
+  110, 0, 1, 10, 9, 1, 7, 0, 16, 0, 65, 1, 106, 11,
+]);
+
+// 1秒待ってから41を返す非同期関数
+const getValue = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return 41;
+};
+
+// JSPIなし: 返ったPromiseが0に変換され、0 + 1 で1になる
+const plain = await WebAssembly.instantiate(bytes, { env: { get_value: getValue } });
+console.log(plain.instance.exports.run()); // 1
+
+// JSPIあり: Promiseの解決を待ち、41 + 1 で42になる
+const { instance } = await WebAssembly.instantiate(bytes, {
+  env: { get_value: new WebAssembly.Suspending(getValue) },
+});
+const run = WebAssembly.promising(instance.exports.run);
+console.log(await run()); // 1秒後に42
+```
+
+ブラウザで動かすと、まず`1`が出て、1秒後に`42`が出ます。JSPIなしでは非同期関数の返したPromiseが`0`になり、JSPIありでは41を待ってから足しています。
+
+JSPIは、この食い違いをブラウザのエンジン側で埋める仕組みです。
 
 ## WebAssemblyとJavaScriptのつなぎ方
 
-JSPIの説明に入る前に、WebAssemblyとJavaScriptがどうやりとりするかを押さえておきます。
-
 WebAssemblyのバイナリ（`.wasm`ファイル）は、JavaScriptから`WebAssembly.instantiateStreaming()`で読み込みます。読み込むときにJavaScriptの関数を渡しておくと、WebAssemblyの中からその関数を呼べます。これをインポートと呼びます。反対に、WebAssemblyの関数をJavaScriptから呼べるように公開することをエクスポートと呼びます。
 
-```ts
+```js
 const { instance } = await WebAssembly.instantiateStreaming(
   fetch('/app.wasm'),
   {
     // WebAssemblyの中から呼べる関数を渡す（インポート）
     env: {
-      log: (value: number) => console.log(value),
+      log: (value) => console.log(value),
     },
   },
 );
@@ -40,7 +72,7 @@ const { instance } = await WebAssembly.instantiateStreaming(
 instance.exports.run();
 ```
 
-WebAssembly側からはどう見えるかも確認します。`.wasm`はバイナリなので、説明にはWATというテキスト形式を使います。実務ではC++やRustのコンパイラが出力するので手で書くことはほぼありませんが、何が起きているかを見るにはWATが一番短く書けます。
+WebAssembly側からの見え方は、次のとおりです。`.wasm`はバイナリなので、説明にはWATというテキスト形式を使います。実務ではC++やRustのコンパイラが出力するので手で書くことはほぼありませんが、何が起きているかを見るにはWATが一番短く書けます。
 
 ```wasm
 (module
@@ -59,7 +91,7 @@ WebAssembly側からはどう見えるかも確認します。`.wasm`はバイ�
 
 問題になるのは、この`log`が`console.log()`ではなく`fetch()`だった場合です。`call $fetch`で戻り値のPromiseを受け取ろうにも、WebAssemblyの数値型にはPromiseを入れられません。仮に参照として受け取れても、解決を待つ命令がないので先に進めません。
 
-## これまでの回避策と、その代償
+## Asyncifyによる回避策
 
 この問題を回避するために、Emscripten（C++をWebAssemblyに変換するツールチェイン）にはAsyncifyという機能が用意されていました。Asyncifyはコンパイル時にWebAssemblyのコード全体を書き換えて、次の仕掛けを埋め込みます。非同期の呼び出しに差しかかったら途中経過をメモリに書き出していったん関数から抜け、Promiseが解決したらメモリから読み戻して続きを実行するというものです。
 
@@ -67,18 +99,18 @@ WebAssembly側からはどう見えるかも確認します。`.wasm`はバイ�
 
 ## JSPIの仕組み
 
-JSPIでは、この途中経過の保存と復元をブラウザのエンジンが引き受けます。コードを書き換える必要はなく、JavaScript側で2つのラッパーを使うだけです。
+JSPIでは、この途中経過の保存と復元をブラウザのエンジンが引き受けます。コードはそのままで、JavaScript側で2つのラッパーを使います。
 
 - `WebAssembly.Suspending`：Promiseを返すJavaScript関数をインポートするときに包む。WebAssemblyがこの関数を呼ぶと、Promiseが解決するまで実行が中断される
 - `WebAssembly.promising()`：中断が起きうるWebAssembly関数をJavaScriptから呼ぶときに包む。包んだ関数はPromiseを返すようになり、`await`で結果を受け取れる
 
-先ほどの例の`log`を、URLから取得した内容のバイト数を返す関数`fetch_size`に置き換えてインポートしてみます。
+先ほどの例の`log`を、URLから取得した内容のバイト数を返す関数`fetch_size`に置き換えてインポートします。
 
-```ts
+```js
 // [!og]
-let memory: WebAssembly.Memory;
+let memory;
 
-async function fetchSize(ptr: number, len: number): Promise<number> {
+async function fetchSize(ptr, len) {
   // WebAssemblyのメモリからURLの文字列を取り出す
   const bytes = new Uint8Array(memory.buffer, ptr, len);
   const url = new TextDecoder().decode(bytes);
@@ -97,12 +129,14 @@ const { instance } = await WebAssembly.instantiateStreaming(
   },
 );
 
-memory = instance.exports.memory as WebAssembly.Memory;
+memory = instance.exports.memory;
 
 // [!callout: 中断が起きうるエクスポートは promising() で包み、Promiseとして受け取る]
 const run = WebAssembly.promising(instance.exports.run);
 const total = await run();
 ```
+
+TypeScriptのlibには`WebAssembly.Suspending`と`WebAssembly.promising()`の型が無く、そのまま書くとTS2339になります。
 
 WebAssembly側は、`fetch_size`が非同期であることをまったく知りません。`console.log()`を呼んでいた`log`と同じ書き方で呼び、戻り値をそのまま使っています。
 
@@ -110,15 +144,18 @@ WebAssembly側は、`fetch_size`が非同期であることをまったく知り
 (module
   (import "env" "fetch_size" (func $fetch_size (param i32 i32) (result i32)))
   (memory (export "memory") 1)
+  ;; メモリの0バイト目と16バイト目に、取得するURLを置いておく
+  (data (i32.const 0) "/one.txt")
+  (data (i32.const 16) "/second.txt")
 
   (func (export "run") (result i32)
-    ;; メモリの0バイト目から16バイト分に書かれたURLの大きさを取る。ここで実行が中断される
+    ;; メモリの0バイト目から8バイト分に書かれたURLの大きさを取る。ここで実行が中断される
     i32.const 0
-    i32.const 16
+    i32.const 8
     call $fetch_size
-    ;; メモリの16バイト目から20バイト分に書かれたURLの大きさを取る。ここでも中断される
+    ;; メモリの16バイト目から11バイト分に書かれたURLの大きさを取る。ここでも中断される
     i32.const 16
-    i32.const 20
+    i32.const 11
     call $fetch_size
     ;; 2つの結果が揃ってから足す
     i32.add
@@ -136,8 +173,12 @@ WebAssembly側は、`fetch_size`が非同期であることをまったく知り
 
 Asyncifyがコードの書き換えで実現していた途中経過の保存と復元を、JSPIではエンジンがスタックごと行います。そのため、WebAssemblyのコードには非同期のための命令が1つも入っていません。
 
-C++をEmscriptenでビルドしているなら、リンク時に`-sASYNCIFY`の代わりに`-sJSPI`を付けるとJSPIを使った出力になります。C++のコードに手を入れる必要はありませんが、中断するインポートとエクスポートは`-sJSPI_IMPORTS`と`-sJSPI_EXPORTS`で明示します。ただしJSPIはエンジンの機能なので、対応していないブラウザでは動きません。対応しているかどうかは`'Suspending' in WebAssembly`で判定できます。
+`/one.txt`と`/second.txt`を置いたページでこの2つを動かすと、どのブラウザでも、2つのファイルの大きさの合計が返ります。中断しているあいだもイベントループは止まらず、`Suspending`で包んだ関数を待っているあいだも、`setInterval()`のタイマーは動き続けます。
+
+`promising()`で包むのを忘れてエクスポートをそのまま呼ぶと、`Suspending`で包んだインポートに着いたところで`WebAssembly.SuspendError`が投げられます。
+
+C++をEmscriptenでビルドしているなら、リンク時に`-sASYNCIFY`の代わりに`-sJSPI`を付けるとJSPIを使った出力になります。C++のコードはそのままで、中断するインポートとエクスポートを`-sJSPI_IMPORTS`と`-sJSPI_EXPORTS`で明示します。ただしJSPIはエンジンの機能なので、対応していないブラウザでは動きません。対応しているかどうかは`'Suspending' in WebAssembly`で判定できます。
 
 ## おわりに
 
-WebAssemblyは計算しかできないので、外の世界とのやりとりはJavaScriptからインポートした関数に頼ります。これまでは、その関数がPromiseを返すと、待つ手段のないWebAssemblyはそこで行き詰まっていました。JSPIでは、`WebAssembly.Suspending`で包んだインポートが呼ばれるとエンジンが実行を中断し、Promiseが解決したら再開します。エクスポート側を`WebAssembly.promising()`で包めば、JavaScriptからは普通の非同期関数として呼べます。C++やRustの同期的なコードを書き換えずに、ブラウザの非同期APIへつなげられるようになりました。
+JSPIでは、`WebAssembly.Suspending`で包んだインポートが呼ばれるとエンジンが実行を中断し、Promiseが解決したら再開します。中断が起きうるエクスポートを`WebAssembly.promising()`で包めば、C++やRustの同期的なコードを書き換えずに、ブラウザの非同期APIへつなげられます。

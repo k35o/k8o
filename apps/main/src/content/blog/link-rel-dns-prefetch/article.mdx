@@ -1,34 +1,44 @@
 ---
-title: リソースへのリクエスト前にドメイン名を解決するdns-prefetch
-description: linkタグのrel属性にdns-prefetchを付与すると、リソースへのリクエストの前に対象のドメイン名のDNSルックアップを行うよう指示できます。これにより、実際にそのドメインからリソースを取得する際の待機時間が短縮され、ページのパフォーマンスが向上します。
+title: 'dns-prefetchで外部ドメインのDNS解決を先に済ませる'
+description: '<link rel="dns-prefetch">は、外部ドメインのDNSルックアップを先に済ませておくようブラウザに伝えます。後から読み込む画像やスクリプトの待ち時間を減らせます。preconnectとの違いも説明します。'
 createdAt: 2025-09-21
-updatedAt: 2025-09-21
+updatedAt: 2026-11-09
 featureIds:
   - link-rel-dns-prefetch
 ---
 
-# リソースへのリクエスト前にドメイン名を解決するdns-prefetch
+# dns-prefetchで外部ドメインのDNS解決を先に済ませる
 
 <BrowserSupportStatus featureId="link-rel-dns-prefetch" />
 
-外部のリソースを読み込む際、ブラウザはまずそのリソースのドメイン名をIPアドレスに変換するためにDNSルックアップを行います。
-このプロセスは時間がかかることがあり、リソースの読み込みパフォーマンスに影響を与えることがありました。
+`<link rel="dns-prefetch">`は、ほかのオリジンのDNSルックアップを先に済ませておくよう、ブラウザに伝える指定です。DNSルックアップは、ドメイン名をIPアドレスに変える処理です。リソースを取りに行くときには名前解決が終わっているので、その分だけ待ち時間が短くなります。iOSのSafari 26が対応して、Baseline 2025に入りました。
 
-`link`タグの`rel`属性に`dns-prefetch`を付与すると、リソースへのリクエストの前に対象のドメイン名のDNSルックアップを行うよう指示できます。
-これにより、実際にそのドメインからリソースを取得する際の待機時間が短縮され、ページのパフォーマンスが向上します。
-
-そんな、`<link rel="dns-prefetch">`はBaseline 2025で追加された機能です。
+同じオリジンのリソースなら、ページを開いた時点で名前解決が済んでいるので、指定は要りません。`dns-prefetch`が効くのは、JavaScriptやユーザーの操作で後から読み込む、ほかのオリジンのリソースです。
 
 ```html
 <!-- [!og] -->
-<!-- head内に置く必要があります -->
 <head>
   <!-- example.comに対してDNSルックアップを行う -->
   <link rel="dns-prefetch" href="https://example.com">
 </head>
 ```
 
-`preconnect`と似ていますが、`preconnect`は`dns-prefetch`で行うDNSルックアップに加えて、TCP接続やTLSハンドシェイクを行うところに違いがあります。
+`<link rel="dns-prefetch">`は`<head>`に置くことが多いですが、`<body>`の中にも置けます。`<body>`に置いても、どのブラウザでも名前解決が前倒しされます。
 
-`preconnect`は多くのリソースを消費するので、複数のサイトでリソースの解決を早めたい場合に全て`preconnect`を使うのは避けるべきです。
-重要なリソースに対してのみ、`preconnect`を使用し、その他のリソースに対しては`dns-prefetch`を使用することが推奨されます。
+## 名前解決の時間を測る
+
+ページを開いてから2.5秒後に、ほかのオリジンの画像を読み込んで名前解決の時間を比べると、どのブラウザでも`dns-prefetch`を書いたオリジンは0〜1ミリ秒で済みます。書かなかったオリジンは、数十〜数百ミリ秒かかります。JavaScriptで後から`<link>`を足したオリジンも、0〜1ミリ秒です。
+
+時間は、Resource Timingの`domainLookupEnd`と`domainLookupStart`の差で測れます。次のコードをコンソールに貼ると、読み込んだリソースごとに名前解決の時間が出ます。
+
+```js
+for (const entry of performance.getEntriesByType('resource')) {
+  console.log(entry.name, entry.domainLookupEnd - entry.domainLookupStart);
+}
+```
+
+ほかのオリジンのリソースは、レスポンスに`Timing-Allow-Origin`ヘッダーが無いと、名前解決に時間がかかっていても0になります。
+
+## preconnectとの違い
+
+`preconnect`は、DNSルックアップに加えて、TCP接続とTLSハンドシェイクまで先に済ませます。そのぶんブラウザの資源を多く使うので、多くのオリジンに`preconnect`を書くのは避けます。すぐに使う重要なオリジンには`preconnect`を、それ以外のオリジンには`dns-prefetch`を書きます。

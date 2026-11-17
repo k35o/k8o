@@ -83,8 +83,9 @@ export const KeepsBuildTimeOnFailure = meta.story({
     );
   },
   play: async ({ canvas }) => {
+    // 前の Story が遅れて出したリクエストも同じ handler に届くので、回数は数えず届いたことだけを待つ
     await waitFor(async () => {
-      await expect(requested).toHaveBeenCalledOnce();
+      await expect(requested).toHaveBeenCalled();
     });
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
     await expect(canvas.getByText('Browser Support更新')).toBeInTheDocument();
@@ -130,8 +131,9 @@ export const SkipsNonHttpUrl = meta.story({
     );
   },
   play: async ({ canvas }) => {
+    // 前の Story が遅れて出したリクエストも同じ handler に届くので、回数は数えず届いたことだけを待つ
     await waitFor(async () => {
-      await expect(requested).toHaveBeenCalledOnce();
+      await expect(requested).toHaveBeenCalled();
     });
     await expect(canvas.getByText('フィード取得完了')).toBeInTheDocument();
     await expect(canvas.queryByRole('link')).not.toBeInTheDocument();

@@ -1,5 +1,6 @@
 import type { PlaygroundSection } from '../types';
-import { ViewTransitionBasicDemo } from './view-transition-basic-demo';
+import { ViewTransitionPseudoDemo } from './view-transition-pseudo-demo';
+import { ViewTransitionReverseDemo } from './view-transition-reverse-demo';
 
 export const viewTransitionsSection: PlaygroundSection = {
   id: 'view-transitions',
@@ -10,10 +11,16 @@ export const viewTransitionsSection: PlaygroundSection = {
   slug: 'view-transitions',
   demos: [
     {
-      component: ViewTransitionBasicDemo,
-      title: 'View Transition基本デモ',
+      component: ViewTransitionReverseDemo,
+      title: 'リストの並びを逆にする',
       description:
-        'カードのシャッフル・追加・削除を滑らかに繋げます。ON/OFFの切り替えで効果の違いを比較できます。',
+        'startViewTransitionでリストの並びを逆にし、AとCが互いの位置へ滑るように動くことを確かめます。',
+    },
+    {
+      component: ViewTransitionPseudoDemo,
+      title: '擬似要素を1つずつ見る',
+      description:
+        '1秒かけて動く遷移で、擬似要素を1つずつ目立たせたり隠したりします。',
     },
   ],
 };

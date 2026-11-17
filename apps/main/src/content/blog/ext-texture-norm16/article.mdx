@@ -1,27 +1,31 @@
 ---
-title: 'EXT_texture_norm16で16bitのデータの細かさを保ったままWebGLで描く'
-description: 'EXT_texture_norm16は、WebGL 2に16bitの正規化形式のテクスチャを足す拡張で、Firefox 159の対応でBaseline 2026に加わりました。標高データのような16bitの値を、細かさを落とさずにシェーダーで読めます。WebGLの前提から順に、8bitや浮動小数点数の形式との違いと注意点を整理します。'
+title: 'EXT_texture_norm16で16bit画像をWebGLで描く'
+description: 'EXT_texture_norm16は、16bitの整数を0.0〜1.0の小数として読むテクスチャをWebGL 2で作れる拡張です。標高データなどの16bitの値を、8bitに丸めずにシェーダーで読めます。Baseline 2026です。'
 createdAt: 2026-11-08
-updatedAt: 2026-11-08
+updatedAt: 2026-11-09
 featureIds:
   - ext-texture-norm16
 ---
 
-# EXT_texture_norm16で16bitのデータの細かさを保ったままWebGLで描く
+# EXT_texture_norm16で16bit画像をWebGLで描く
 
 <BrowserSupportStatus featureId="ext-texture-norm16" />
 
 ## はじめに
 
+`EXT_texture_norm16`は、WebGL 2に16bitの正規化形式のテクスチャ（`R16_EXT`など）を足す拡張です。0〜65535の整数を`Uint16Array`のまま渡すと、シェーダーでは0.0〜1.0の小数として読めます。Firefox 159が対応して、Baseline 2026に入りました。
+
 普段使うPNGやJPEGの画像の多くは、1画素の色を赤と緑と青のそれぞれについて0〜255の256段階で持っています。256段階は8bitで表せる数なので、1色あたり8bitの画像です。
 
-一方で、もっと細かく値を持つデータもあります。たとえば標高データは、1画素を16bit、つまり65536段階で持つことがよくあります。値の範囲が広いうえに、その中のわずかな差に意味があるからです。0〜3776m（富士山の高さ）の範囲を256段階に分けると、1段階は約15mになり、数mの堤防や段差は記録できません。65536段階なら1段階は約6cmです。
+一方で、もっと細かく値を持つデータもあります。たとえば標高データは、1画素を16bit、つまり65536段階で持つことがよくあります。値の範囲が広いうえに、その中のわずかな差に意味があるからです。0〜3776m（富士山の高さ）の範囲を256段階に分けると、1段階は約15mになり、数mの堤防や段差は記録できません。65536段階なら1段階は約6cmです。こうした16bitのデータを、細かさを保ったままWebGLで描くときにこの拡張を使います。
 
-ところが、WebGLでこうしたデータを描こうとすると、16bitの細かさを保ったまま扱う手段がこれまで限られていました。`EXT_texture_norm16`は、この不便を解消するWebGL 2の拡張です。ChromeとEdgeは87、Safariは16で対応済みで、Firefox 159が対応したことでBaseline 2026に加わりました。
+<PlaygroundEmbed demo="同じ16bitの高さデータを3つの形式で比べる" headingLevel="h4" sectionId="ext-texture-norm16" />
+
+上の例は、同じ16bitの高さデータを`R8`と`R16F`、`R16_EXT`の3つの形式のテクスチャに入れて描いたものです。`R8`はべた塗り、`R16F`は等高線のような段差になり、`R16_EXT`だけが滑らかな丘とくぼみになります。
 
 ## WebGLで画像を描くしくみ
 
-WebGLでは、画像などのデータをGPUに渡し、GPUが画面の画素ごとに色を計算して描きます。この記事に出てくる言葉を先に押さえておきます。
+WebGLでは、画像などのデータをGPUに渡し、GPUが画面の画素ごとに色を計算して描きます。
 
 - テクスチャ：GPUに渡す画像の入れ物。1画素にいくつの値をどの細かさで持つかを、作るときに形式で決める。たとえば`R8`は、1画素に1つの値を8bitで持つ形式
 - シェーダー：GPUで動く小さなプログラム。GLSLという言語で書く。このうちフラグメントシェーダーは描く範囲の画素ごとに呼ばれ、テクスチャから値を読んでその画素の色を決める
@@ -46,10 +50,12 @@ WebGL 2には、8bitの正規化形式`R8`はありましたが、その16bit版
 
 `EXT_texture_norm16`は、`R8`の16bit版にあたる正規化形式を足します。たとえば`R16_EXT`のテクスチャに入れた0〜65535の整数は、シェーダーでは0.0〜1.0の小数として読めます。正規化も線形補間もGPUがしてくれて、細かさは65536段階のままです。
 
+ただし、Firefoxでは線形補間が効きません。8つの形式のどれも、テクスチャに`LINEAR`を指定するとシェーダーで読んだ値がすべて0になり、`gl.getError()`もエラーを返しません。`NEAREST`にすると値を読めます。ChromeとSafariでは、`LINEAR`のまま読めます。
+
 足される形式は8つあります。
 
-- 符号なし（0〜65535を0.0〜1.0として読む）：`R16_EXT`・`RG16_EXT`・`RGB16_EXT`・`RGBA16_EXT`
-- 符号付き（−32767〜32767を−1.0〜1.0として読む。−32768も−1.0になる）：`R16_SNORM_EXT`・`RG16_SNORM_EXT`・`RGB16_SNORM_EXT`・`RGBA16_SNORM_EXT`
+- 符号なし（0〜65535を0.0〜1.0として読む）：`R16_EXT`、`RG16_EXT`、`RGB16_EXT`、`RGBA16_EXT`
+- 符号付き（−32767〜32767を−1.0〜1.0として読む。−32768も−1.0になる）：`R16_SNORM_EXT`、`RG16_SNORM_EXT`、`RGB16_SNORM_EXT`、`RGBA16_SNORM_EXT`
 
 名前の`R`や`RGBA`は、1画素に持つ値の数を表します。高さのように1画素に1つの値なら`R16_EXT`、色のように赤と緑と青と透明度の4つの値なら`RGBA16_EXT`を使います。
 
@@ -57,7 +63,7 @@ WebGL 2には、8bitの正規化形式`R8`はありましたが、その16bit版
 
 `EXT_texture_norm16`はWebGL 2だけの拡張で、WebGL 1では使えません。形式の定数も`gl`には無く、`getExtension()`が返す拡張のオブジェクトから`ext.R16_EXT`のように取ります。
 
-```ts
+```js
 // [!og]
 const gl = canvas.getContext('webgl2');
 // 拡張を有効にする（対応していなければ null）
@@ -66,7 +72,7 @@ const ext = gl.getExtension('EXT_texture_norm16');
 // テクスチャを作り、これから設定する対象にする
 const texture = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, texture);
-// 縮小・拡大して描くときに線形補間する
+// 縮小や拡大をして描くときに線形補間する
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
@@ -88,11 +94,11 @@ gl.texImage2D(
 
 データは`texImage2D()`の最後の引数に`Uint16Array`で渡し、データの型は最後の引数のすぐ前に`UNSIGNED_SHORT`と書きます。符号付きの形式なら`Int16Array`と`SHORT`です。
 
-[拡張の仕様](https://registry.khronos.org/webgl/extensions/EXT_texture_norm16/)が広げたのは、`Uint16Array`などの型付き配列を受け取る`texImage2D()`などだけです。`<img>`や`ImageBitmap`などの画像を渡すとエラーになるので、16bitのPNGなどは自分でデコードして`Uint16Array`にしてから渡します。
+[拡張の仕様](https://registry.khronos.org/webgl/extensions/EXT_texture_norm16/)が広げたのは、`Uint16Array`などの型付き配列を受け取る`texImage2D()`などだけです。`<img>`や`ImageBitmap`などの画像を渡すとエラーになるので、16bitのPNGなどは自分でデコードして`Uint16Array`にしてから渡します。例外は投げられず、`gl.getError()`がChromeでは`INVALID_ENUM`、SafariとFirefoxでは`INVALID_VALUE`を返します。
 
-テクスチャに入れた値は、シェーダーから読みます。シェーダーはGLSLという言語で書き、JavaScriptからは文字列として渡してWebGLにコンパイルさせます。
+テクスチャに入れた値は、シェーダーから読みます。シェーダーのコードは、JavaScriptから文字列として渡してWebGLにコンパイルさせます。
 
-```ts
+```js
 // GLSLのコードを、そのまま文字列として入れておく
 const fragmentShaderSource = `#version 300 es
 precision highp float;
@@ -105,7 +111,7 @@ gl.shaderSource(shader, fragmentShaderSource);
 gl.compileShader(shader);
 ```
 
-`fragmentShaderSource`に入れるのは、次のフラグメントシェーダーです。描く範囲の画素ごとに呼ばれて、その画素の色を決めます。テクスチャを`sampler2D`という型の変数で受け取り、`texture()`で読むと0.0〜1.0の小数が返ります。この書き方は`R8`のときと変わりません。
+`fragmentShaderSource`に入れるのは、次のフラグメントシェーダーです。テクスチャを`sampler2D`という型の変数で受け取り、`texture()`で読むと0.0〜1.0の小数が返ります。この書き方は`R8`のときと変わりません。
 
 ```glsl
 #version 300 es
@@ -128,18 +134,16 @@ void main() {
 
 実際に描くには、描く位置を決める頂点シェーダーと組み合わせて1つのプログラムにします。その手順は、[WebGL2の基本](https://webgl2fundamentals.org/webgl/lessons/ja/webgl-fundamentals.html)が順を追って説明しています。
 
-GLSLのコードで`sampler2D`と`float`に付けた`highp`は、計算の精度の指定です。GLSLでは変数ごとに精度を`lowp`・`mediump`・`highp`から選べます。[GLSL ES 3.00の仕様](https://registry.khronos.org/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf)では、フラグメントシェーダーの`sampler2D`の既定が8bit相当しか保証されない`lowp`で、`texture()`が返す値もその精度になります。`mediump`も、保証されるのは`R16F`と同じくらいの細かさまでです。手元のMacのChromeでは、`lowp`を指定しても32bitの浮動小数点数と同じ精度だと報告されましたが、端末によっては値が丸められるので、`highp`を明示しておきます。
+GLSLのコードで`sampler2D`と`float`に付けた`highp`は、計算の精度の指定です。GLSLでは変数ごとに精度を`lowp`、`mediump`、`highp`から選べます。[GLSL ES 3.00の仕様](https://registry.khronos.org/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf)では、フラグメントシェーダーの`sampler2D`の既定が8bit相当しか保証されない`lowp`で、`texture()`が返す値もその精度になります。`mediump`も、保証されるのは`R16F`と同じくらいの細かさまでです。GPUによっては`lowp`のままでも丸められませんが、端末によっては値が丸められるので、`highp`を明示しておきます。
 
 ## 3つの形式で比べる
 
-16bitの細かさが効くのは、わずかな差を見分けたいときです。そこで、高さ32768の平らな土地に小さな丘とくぼみがある高さデータを作りました。高さは0〜65535のうち32664〜32918の範囲にあり、起伏は255段階です。
+16bitの細かさが効くのは、わずかな差を見分けたいときです。冒頭の例では、高さ32768の平らな土地に小さな丘とくぼみがある高さデータを使っています。高さは0〜65535のうち32664〜32918の範囲にあり、起伏は255段階です。
 
-同じデータを`R8`・`R16F`・`R16_EXT`の3つの形式のテクスチャに入れ、くぼみの底の32664を黒、丘のてっぺんの32918を白にして描きます。0〜65535の全体を黒から白に割り当てないのは、canvasに描ける濃淡が1色あたり256段階しかないからです。全体を割り当てると、濃淡の1段階に16bitの約257段階分が入ります。255段階の起伏はその1段階より狭く、隣り合う2つの灰色にしかならないので、目では見分けられません。
+同じデータを`R8`と`R16F`、`R16_EXT`の3つの形式のテクスチャに入れ、くぼみの底の32664を黒、丘のてっぺんの32918を白にして描いています。0〜65535の全体を黒から白に割り当てないのは、canvasに描ける濃淡が1色あたり256段階しかないからです。全体を割り当てると、濃淡の1段階に16bitの約257段階分が入ります。255段階の起伏はその1段階より狭く、隣り合う2つの灰色にしかならないので、目では見分けられません。
 
-<PlaygroundEmbed demo="同じ16bitの高さデータを3つの形式で比べる" headingLevel="h4" sectionId="ext-texture-norm16" />
-
-255段階あった起伏は、`R8`では127と128の2段階に、`R16F`では12段階ほどに丸められ、それぞれべた塗りと等高線のような段差になります。255段階を保って滑らかなまま残るのは`R16_EXT`だけです。
+255段階あった起伏は、`R8`では127と128の2段階に、`R16F`では12段階ほどに丸められ、それぞれべた塗りと等高線のような段差になります。255段階を保って滑らかなまま残るのは`R16_EXT`だけです。描いた画素を読み出すと、灰色の段階は`R8`で2つ、`R16F`で12、`R16_EXT`で255です。
 
 ## おわりに
 
-`EXT_texture_norm16`は、8bitの`R8`と同じ使い勝手の16bit版の形式をWebGL 2に足します。16bitのデータを`Uint16Array`のまま渡せば、シェーダーでは0.0〜1.0の小数として、65536段階の細かさのまま線形補間付きで読めます。これまでのように、8bitに丸めて細かさを捨てたり、浮動小数点数の形式の粗さやメモリの多さを受け入れたりする必要はありません。`<img>`などの画像からは渡せない点と、シェーダーに`highp`を書く点に気をつければ、`R8`と同じ書き方で使えます。
+`EXT_texture_norm16`を使うと、16bitのデータを`Uint16Array`のまま渡し、シェーダーで0.0〜1.0の小数として65536段階の細かさのまま読めます。`<img>`などの画像からは渡せない点と、シェーダーに`highp`を書く点に気をつければ、`R8`と同じ書き方で使えます。

@@ -1,58 +1,29 @@
 ---
-title: 'WebTransportでHTTP/3上の双方向通信を実現する'
-description: 'WebTransportはHTTP/3（QUIC）上で動作する双方向通信APIです。1本のコネクション上に独立した複数のストリームを開けたり、再送のない軽量なデータグラムを送受信したりと、WebSocketにはない低遅延な通信が実現できます。Baseline 2026で主要ブラウザすべてで利用可能になりました。'
+title: 'WebTransportでQUIC（HTTP/3）の双方向通信をする'
+description: 'WebTransportは、QUIC（HTTP/3）の上でブラウザとサーバーが双方向にやり取りするAPIです。WebSocketと違い、独立したストリームを複数開け、再送しないデータグラムも送れます。自己署名の証明書でのつなぎ方も説明します。'
 createdAt: 2026-04-07
-updatedAt: 2026-04-07
+updatedAt: 2026-11-09
 featureIds:
   - webtransport
 ---
 
+# WebTransportでQUIC（HTTP/3）の双方向通信をする
 
-# WebTransportでHTTP/3上の双方向通信を実現する
-
-<BrowserSupportStatus featureId="webtransport"></BrowserSupportStatus>
+<BrowserSupportStatus featureId="webtransport" />
 
 ## はじめに
 
-ブラウザとサーバーの間でリアルタイムにデータをやり取りしたい場面では、これまで主にWebSocketが使われてきました。
-しかしWebSocketはTCPの上に作られているため、1つのコネクションが順序付きで信頼性のある単一のメッセージ列として扱われ、独立した複数のストリームを持てないといった制約があります。結果として、一部のデータが遅れるとあとの通信までまとめて待たされることがあります。
+WebTransportは、QUIC（HTTP/3）の上で、ブラウザとサーバーがデータを双方向にやり取りするAPIです。1本の接続に独立したストリームをいくつも開け、届かなくても再送しないデータグラムも送れます。Safari 26.4が対応して、Baseline 2026に入りました。
 
-WebTransportはこれらの問題を解決するために設計された、HTTP/3（QUIC）の上で動く新しい通信APIです。
-Baseline 2026で主要ブラウザすべてで利用可能になりました。
-
-## WebTransportとは
-
-WebTransportはひとことで言うと「ブラウザからHTTP/3の機能を扱えるようにしたAPI」です。HTTP/3はTCPではなくUDP上に作られたQUICというプロトコルを使っており、WebTransportはこのQUICの特徴をそのままWebに持ち込みます。
-
-具体的には以下のような特徴があります。
-
-- 複数ストリーム: 1つのコネクション上に独立したストリームを何本でも開ける
-- 双方向／単方向ストリーム: 用途に応じて選べる
-- データグラム: 順序保証も再送もない、軽量な送受信ができる
-- 常にHTTPS: `crypto.randomUUID()`などと同様、Secure Contextでのみ動作する
-- ネットワーク切り替えに比較的強い: QUICのコネクションマイグレーションにより、Wi-Fiからモバイル回線に切り替わったときもTCPベースよりコネクションを維持しやすい
-
-### WebSocketとの違い
-
-WebSocketと比較すると、WebTransportには次のような違いがあります。
-
-- プロトコル: WebSocketはTCP上で動くのに対し、WebTransportはHTTP/3（QUIC、UDP）上で動く
-- ストリームの本数: WebSocketは順序付き・信頼性のある単一のメッセージ列として扱われ独立したストリームを持てないが、WebTransportは1つのコネクション上に複数本の独立したストリームを開ける
-- Head-of-Line Blocking: WebSocketでは発生するが、WebTransportではストリームごとに独立しているため発生しない
-- 信頼性のない高速送信: WebSocketにはないが、WebTransportはデータグラムで実現できる
-- ネットワーク切り替え: WebSocketはコネクションが切れてしまうが、WebTransportはQUICのコネクションマイグレーションにより維持できる場合がある
-
-とはいえWebSocketを完全に置き換えるものではありません。WebSocketはテキストメッセージをそのまま送受信でき、サーバー側のライブラリやホスティング環境も成熟しているため、チャットや通知のように少量のテキストをやり取りするだけの用途では、今でもWebSocketの方が手軽です。
-
-一方で、低遅延で大量のデータをやり取りするユースケース（ゲーム、ライブ配信、リアルタイムコラボレーションなど）では、WebTransportの複数ストリームやデータグラムが大きな利点になります。
+チャットや通知のような少量のテキストのやり取りには、サーバーのライブラリやホスティングがそろったWebSocketを使います。WebSocketはTCPの上で1本のメッセージ列しか持てないので、一部のデータが遅れると後のデータまで待たされます。遅れたデータを待たずにほかの流れを進めたい通信や、ゲームの座標のように古い値を捨ててよい通信は、WebTransportで書けます。
 
 ## 使い方
 
-WebTransportはHTTPSが必須で、ポート番号も明示する必要があります。Web Workerからも利用できます。
+WebTransportは、HTTPSで配ったページのようなSecure Contextでだけ使え、Web Workerからも使えます。渡すURLは`https`で始めます。`http`のURLや、`#chat`のようなフラグメントの付いたURLを渡すと、コンストラクタが`SyntaxError`を投げます。ポート番号を省くと、`https`の既定の443番につなぎます。
 
 ### コネクションを開く
 
-`WebTransport`コンストラクタにURLを渡し、`ready`プロミスを待つことで接続が確立します。
+`WebTransport`のコンストラクタにURLを渡し、`ready`の`Promise`が解決すると、接続ができます。
 
 ```ts
 const transport = new WebTransport('https://example.com:4433/chat');
@@ -68,16 +39,29 @@ transport.closed
 
 切断したいときは`transport.close()`を呼びます。
 
-### データグラムの送受信
-
-データグラムは順序保証も再送もない、もっとも軽量な送受信方法です。
-最悪届かなくても最新の値で上書きすればよい、チャットの入力状態やキャラクターの座標のようなデータの送受信に向いています。
-
-データグラムの読み書きは`transport.datagrams`の`readable`と`writable`を通して行います。これらは標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+手元のサーバーに開発用の自己署名の証明書でつなぐときは、`serverCertificateHashes`に証明書のSHA-256のハッシュを渡します。渡さないと、`ready`が`WebTransportError`で拒否されます。
 
 ```ts
+const transport = new WebTransport('https://localhost:4433/chat', {
+  serverCertificateHashes: [{ algorithm: 'sha-256', value: certHash }],
+});
+```
+
+`certHash`は、`openssl x509 -in cert.pem -outform der | openssl dgst -sha256 -binary`で出る32バイトを`Uint8Array`にしたものです。仕様では、ハッシュで許す証明書はECDSAの鍵で、有効期間が2週間以内のものに限られます。
+
+### データグラムの送受信
+
+データグラムは、順序も再送も無い、もっとも軽い送受信の方法です。届かなくても次の値で上書きすればよい、入力中の表示やキャラクターの座標のようなデータで使います。
+
+データグラムは`transport.datagrams`の`readable`で受け取り、`createWritable()`で作った書き込み用のストリームで送ります。どちらも標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+
+ただし、Chromeは`createWritable()`を持たず、`writable`だけを持ちます。Safariは逆に`writable`を持たないので、`transport.datagrams.writable.getWriter()`と書くと`TypeError`になります。Firefoxは両方を持ちます。そこで、`createWritable()`が無いときだけ`writable`を使います。
+
+```js
 // 送信
-const writer = transport.datagrams.writable.getWriter();
+const writable =
+  transport.datagrams.createWritable?.() ?? transport.datagrams.writable;
+const writer = writable.getWriter();
 await writer.write(new Uint8Array([1, 2, 3]));
 writer.releaseLock();
 
@@ -90,10 +74,11 @@ while (true) {
 }
 ```
 
+1つのデータグラムで送れる大きさは、`transport.datagrams.maxDatagramSize`で分かります。値はブラウザによって大きく違い、Chromeは1211、Firefoxは1024、Safariは65535を返します。
+
 ### 単方向ストリーム
 
-ストリームはデータグラムと違い、順序が保証され、欠損した場合は再送されます。
-クライアントから一方向にデータを送るだけでよい場合は単方向ストリームが便利です（Unidirectionalは「単方向の」という意味）。
+ストリームはデータグラムと違い、順序が保たれ、欠けたデータは再送されます。一方向に送るだけでよいときは、単方向（Unidirectional）のストリームを使います。
 
 ```ts
 const stream = await transport.createUnidirectionalStream();
@@ -102,7 +87,7 @@ await writer.write(new Uint8Array([10, 20, 30]));
 await writer.close();
 ```
 
-サーバー側から送られてくる単方向ストリームは`transport.incomingUnidirectionalStreams`から受け取れます。
+サーバーから開かれた単方向のストリームは、`transport.incomingUnidirectionalStreams`から受け取ります。
 
 ```ts
 const reader = transport.incomingUnidirectionalStreams.getReader();
@@ -117,10 +102,9 @@ while (true) {
 
 ### 双方向ストリーム
 
-リクエスト・レスポンスのように、両方向にデータをやり取りしたいときは双方向ストリームを使います（Bidirectionalは「双方向の」という意味）。
-1つの`WebTransportBidirectionalStream`が`readable`と`writable`の両方を持っています。
+リクエストとレスポンスのように両方向にやり取りするときは、双方向（Bidirectional）のストリームを使います。1つの`WebTransportBidirectionalStream`が、`readable`と`writable`の両方を持ちます。
 
-送信と受信は独立しているので、次のように並行して動かせます。送信の完了を待たずに受信ループを回せるので、サーバーから届くデータをリアルタイムに処理できます。
+送信と受信は独立しているので、送信の完了を待たずに受信のループを回せます。
 
 ```ts
 // [!og]
@@ -144,13 +128,8 @@ await writer.close();
 await receiveTask;
 ```
 
-複数のストリームを並行して開けるので、たとえばファイル転送と制御メッセージを別々のストリームで流す、といった設計が自然に書けます。
+ストリームはいくつも並行して開けるので、ファイルの転送と制御のメッセージを別々のストリームで流すような設計も書けます。
 
 ## おわりに
 
-WebTransportを簡単に紹介しました。
-
-HTTP/3の特徴をそのままWebに持ち込んだAPIで、複数ストリームの並行処理や、データグラムによる軽量な送信、ネットワーク切り替え時にも維持しやすい接続といった、WebSocketでは難しかった通信が実現できます。
-とはいえWebSocketの手軽さや成熟したエコシステムには今も大きな魅力があるので、用途に応じて使い分けるのが現実的です。
-
-Baseline 2026で主要ブラウザすべてで使えるようになったので、ピッタリな状況があればぜひ使ってみてください。
+WebTransportを使うと、1本の接続に独立したストリームをいくつも開き、再送しないデータグラムも送れます。少量のテキストのやり取りにはWebSocketを使い、遅れを待たせたくない通信や、古い値を捨ててよい通信のときにWebTransportを選びます。

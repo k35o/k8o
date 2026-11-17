@@ -1,8 +1,8 @@
 ---
 title: 'Reactコンポーネントでchildrenに対してpropsを渡す'
-description: 'Reactで子コンポーネントにpropsを渡す2つの方法を紹介します。レガシーなcloneElement APIと、推奨されるrender propパターンの違いを解説し、ツールチップの実装例を通じて実践的な使い方を学びます。'
+description: 'Reactで子コンポーネントにpropsを渡す2つの方法を紹介します。レガシーなcloneElement APIと、推奨されるrender propパターンの違いを解説します。'
 createdAt: 2023-05-20
-updatedAt: 2026-01-16
+updatedAt: 2026-11-09
 ---
 
 # Reactコンポーネントでchildrenに対してpropsを渡す
@@ -24,7 +24,7 @@ const ParentComponent: FC<PropsWithChildren> = ({
 );
 ```
 
-この記事では、これを実現する2つの方法と、それを活用したツールチップの実装例を紹介します。
+この記事では、これを実現する2つの方法を紹介します。
 
 ## cloneElement
 
@@ -54,22 +54,23 @@ const ParentComponent: FC<PropsWithChildren> = ({ children }) => {
 `cloneElement`の第1引数は`ReactElement`を渡したいので、`ReactNode`から`isValidElement`を用いて`ReactElement`を抽出しました。
 `children`が`ReactElement`ではなかった場合は`button`要素で囲んだものを渡すようにしています。
 
-第2引数には上書きしたい`props`をオブジェクトで渡します。ただし、この方法では`children`が元々持っていた`props`が全て置き換えられる点に注意してください。
-元の`props`を保持したい場合は以下のようにします。
+第2引数には上書きしたい`props`をオブジェクトで渡します。上書きされるのは第2引数に渡したキーだけで、`children`が元々持っていたほかの`props`は残ります。ただし、`children`が`onClick`を持っていた場合、その`onClick`は親の`onClick`に置き換わって呼ばれなくなります。
+子の`onClick`も呼びたい場合は、`isValidElement`の型引数で`props`の型を決め、親の`onClick`の中から子の`onClick`を呼びます。
 
-```ts
-const cloneChildren = isValidElement(children)
+```tsx
+const onClick = () => alert('親から付与されたclickイベントです。');
+const cloneChildren = isValidElement<{ onClick?: () => void }>(children)
   ? cloneElement(children, {
-      // この順番だと親のonClickが優先される
-      // 子要素のpropsを優先したい場合は順番を逆にする
-      ...children.props,
-      onClick: () => alert('親から付与されたclickイベントです。'),
+      onClick: () => {
+        // 子のonClickも呼ぶ
+        children.props.onClick?.();
+        onClick();
+      },
     })
-  : cloneElement(<button>{children}</button>, {
-      // ReactElementじゃないときは`button`に対して付与されるので考慮不要
-      onClick: () => alert('親から付与されたclickイベントです。'),
-    });
+  : <button onClick={onClick}>{children}</button>;
 ```
+
+`@types/react` 19の`isValidElement`は、型引数を省くと`props`の型が`unknown`になります。`...children.props`のように広げると、`Spread types may only be created from object types.`という型エラーになります。
 
 ### Slotで隠蔽する
 
@@ -90,11 +91,11 @@ const ParentComponent: FC<PropsWithChildren> = ({ children }) => {
 };
 ```
 
-`Slot`は子要素に自身の`props`をマージして渡します。これにより、`cloneElement`を直接使用するよりも可読性が高く、型安全なコードを書けます。
+`Slot`は子要素に自身の`props`をマージして渡します。これにより、`cloneElement`を直接使用するよりも可読性が高いコードを書けます。
 
 ## render propパターン
 
-続いては[render propパターン](https://ja.react.dev/reference/react/cloneElement#passing-data-with-a-render-prop)呼ばれる`props`を利用した実装です。
+続いては[render propパターン](https://ja.react.dev/reference/react/cloneElement#passing-data-with-a-render-prop)と呼ばれる`props`を利用した実装です。
 親コンポーネントは`renderItem`という関数を`props`として受け取り、渡したい`props`を引数にしてその関数を呼び出します。
 
 ```tsx
@@ -133,4 +134,4 @@ const ParentComponent: FC<Props> = ({ renderItem }) => {
 
 この記事では、`children`にpropsを渡す方法として`cloneElement`とrender propパターンを紹介しました。
 
-`cloneElement`はレガシーAPIのため、直接使用するのではなく`@radix-ui/react-slot`の`Slot`で隠蔽することをおすすめします。また、型安全で明示的なrender propパターンも検討してみてください。
+`cloneElement`はレガシーAPIのため、新しく実装するなら、型安全で明示的なrender propパターンをおすすめします。`children`を受け取る形を保ちたいときは、`cloneElement`を直接使用せずに`@radix-ui/react-slot`の`Slot`で隠蔽してください。

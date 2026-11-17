@@ -1,56 +1,66 @@
 ---
-title: Popover APIを使ってJavaScriptなしでツールチップやドロップダウンメニューを実装する
-description: Popover APIは、ツールチップやドロップダウンメニューをJavaScriptなしで実装できるAPIで、Baseline 2025に追加されました。表示するコンテンツにpopover属性を渡し、その要素をpopovertargetで制御します。シンプルなHTMLとCSSで手軽に機能に富んだポップオーバーを作成する方法を学びます。
+title: 'Popover APIでツールチップやドロップダウンをJSなしで作る'
+description: 'Popover APIは、popover属性とpopovertarget属性だけで、ツールチップやドロップダウンメニューの開閉をJavaScriptなしで書けるAPIです。外側のクリックやESCで閉じる動きと、CSSでの装飾を説明します。'
 createdAt: 2025-03-17
-updatedAt: 2025-11-15
+updatedAt: 2026-11-09
 featureIds:
   - popover
 ---
 
 import { Button } from '@k8ordo/ui';
 
-# Popover APIを使ってJavaScriptなしでツールチップやドロップダウンメニューを実装する
+import styles from './article.module.css';
+
+# Popover APIでツールチップやドロップダウンをJSなしで作る
 
 <BrowserSupportStatus featureId="popover"></BrowserSupportStatus>
 
 ## はじめに
 
-Popover APIがついにBaseline 2025に追加されました。
-Popover APIはツールチップやドロップダウンメニューのようなUIを作成するためのAPIです。
+Popover APIは、`popover`属性を付けた要素を、`popovertarget`属性を付けたボタンで開閉するHTMLの仕組みです。開いた要素はほかの要素より手前に出て、外側のクリックやESCキーで閉じます。2025年にBaselineに入りました。
 
-<PlaygroundEmbed demo="ツールチップ・ドロップダウン" headingLevel="h4" sectionId="popover" />
+ページの流れの中で中身を開閉するときは、`details`要素を使います。ツールチップやドロップダウンメニューのように、ほかの要素の上に重ねて出し、外側のクリックで閉じるUIは、これまでJavaScriptやライブラリで作っていました。Popover APIを使うと、重ねて出すことと閉じることを、HTMLの属性だけで書けます。
 
-Popover APIはこれらのUIが持つ、表示レイヤーの管理やアクセシビリティを考慮した表示を行ってくれます。
-これらの機能は、既存の機能では実装のハードルが高くライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
+```html
+<button popovertarget="hello">開く</button>
+<div id="hello" popover>外側をクリックするかESCキーで閉じます</div>
+```
 
-この記事ではPopover APIの基本的な使い方を紹介します。
+<Playground headingLevel="h4" title="ボタンで開くポップオーバー">
+  <Button popoverTarget="hello">開く</Button>
+  <div className={styles.popover} id="hello" popover="auto">
+    外側をクリックするかESCキーで閉じます
+  </div>
+</Playground>
+
+ボタンを押すと、画面の中央に枠の付いた箱が出ます。外側をクリックするか、ESCキーを押すか、もう一度ボタンを押すと閉じます。
+
+画面の中央に枠付きで出るのは、ブラウザがポップオーバーに当てる既定のスタイル（`margin: auto`と枠）によるものです。すべての要素の`margin`や`border`を0にするリセットのCSSを当てたページでは、左上に枠の無い箱で出ます。上の例では、このページのリセットを打ち消すために`margin: auto`と枠を当て直しています。
 
 ## Popover APIの全体像
 
-Popover APIによって作られたポップオーバーは
+Popover APIで作ったポップオーバーは、次の性質を持ちます。
 
-- その外側をクリックすると閉じられる
-- ESCキーを押すと閉じられる
-- 開いた時にフォーカスが内部に移動する
-- Top layer（重ね合わせコンテキストの最上位のレイヤー）に配置される
+- 外側をクリックすると閉じる
+- ESCキーを押すと閉じる
+- 中の要素に`autofocus`を付けておくと、開いたときにそこへフォーカスが移る
+- Top layer（重ね合わせコンテキストの最上位のレイヤー）に置かれる
 
-の性質を持ちます。
+`autofocus`が無いときは、開いてもフォーカスはポップオーバーを開いたボタンに残ります。
 
-Popover APIは関連する3つのHTMLの属性と2つのCSSの機能が用意されています(それらを管理するJavaScriptの機能も存在しますが、この記事ではHMTLとCSSにだけ注目します)。
-
-HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機能は`::backdrop`と`:popover-open`です。
+Popover APIで使うのは、HTMLの`popover`と`popovertarget`、`popovertargetaction`の3つの属性と、CSSの`::backdrop`と`:popover-open`です。
 
 ### HTML属性
 
-`popover`属性はポップオーバーで表示させたいコンテンツを指定します。
+`popover`属性は、ポップオーバーとして出す要素に付けます。
 
 ```html
 <p id="popover1" popover>ポップオーバーで表示されるコンテンツ</p>
 ```
 
-デフォルトの値は`auto`です(JSXで記述する際は明示的に付与する必要がありそうです)。値を`manual`にするとESCキーの押下や外側のクリックで閉じられなくなります。`manual`は主にJavaScriptを使って制御する場合に使用します。
+値を書かないときは`auto`になります。値を`manual`にすると、ESCキーや外側のクリックでは閉じなくなるので、主にJavaScriptで開閉するときに使います。
 
-ポップオーバーの表示を管理する要素には`popovertarget`属性を付与します。管理するコンテンツを伝えるために、値には`popover`を持たせた要素の`id`を渡します。
+ポップオーバーを開閉するボタンには`popovertarget`属性を付け、値にポップオーバーの要素の`id`を書きます。
 
 ```html
 <!-- [!og] -->
@@ -59,7 +69,7 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 </button>
 ```
 
-`popovertargetaction`は`popovertarget`属性が付与された要素が、ポップオーバーで表示させる要素の管理方法を指定します。
+`popovertargetaction`属性は、ボタンを押したときにポップオーバーをどうするかを決めます。
 
 ```html
 <button popovertarget="popover1" popovertargetaction="show">
@@ -67,11 +77,11 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 </button>
 ```
 
-デフォルトは表示非表示を切り替える`toggle`です。その他にも表示だけさせる`show`と、非表示にするだけの`hide`があります。
+既定は開閉を切り替える`toggle`で、ほかに開くだけの`show`と、閉じるだけの`hide`があります。
 
 ### CSS機能
 
-ポップオーバー要素の後ろには全画面を覆うコンテンツが配置されます。`::backdrop`はそんな背景にスタイルを付与するための擬似要素です。
+ポップオーバーの後ろには、画面全体を覆う`::backdrop`擬似要素が置かれます。これにスタイルを当てると、ポップオーバーの後ろを暗くできます。
 
 ```css
 ::backdrop {
@@ -79,9 +89,9 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 }
 ```
 
-`::backdrop`はPopover API専用の擬似要素ではなく、`dialog`要素のようなTop Layerに配置される要素の背景にスタイルを渡す時に利用されます。
+`::backdrop`はPopover APIだけのものではなく、`dialog`要素のようにTop layerに置かれる要素の背景にも使います。
 
-`:popover-open`はポップオーバーが表示されたときにスタイルを付与する擬似クラスです。
+`:popover-open`擬似クラスは、開いているポップオーバーに当たります。
 
 ```css
 .popover:popover-open {
@@ -91,8 +101,7 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 
 ### サンプル
 
-Popover APIを使った簡単な例を紹介します。3つのボタンがあり、それぞれ異なる`popovertargetaction`を持っています。
-表示されるコンテンツは`:popover-open`を利用して、開閉時のアニメーションを付与しています。
+次の例では、3つのボタンにそれぞれ別の`popovertargetaction`を付け、`:popover-open`と`@starting-style`で、開くときに少しずつ現れるようにしています。
 
 <PlaygroundEmbed demo="基本的なポップオーバー" headingLevel="h5" sectionId="popover" />
 
@@ -146,11 +155,7 @@ Popover APIを使った簡単な例を紹介します。3つのボタンがあ�
 ```
 
 ## おわりに
-この記事ではPopover APIの基本的な使い方を紹介しました。
 
-Popover APIは表示するポップオーバーを`popover`属性で表し、その表示を管理する要素に`popovertarget`属性を渡すことで利用できます。
-従来はJavaScriptで実装する必要があったツールチップやドロップダウンメニューの表示非表示を、HTMLとCSSだけで簡単に実装できるようになったのは大きな進歩でした。
+Popover APIでは、ポップオーバーにする要素に`popover`属性を、開閉するボタンに`popovertarget`属性を付けるだけで、外側のクリックやESCキーで閉じるツールチップやドロップダウンメニューをJavaScriptなしで作れます。
 
-サンプルで画面の中央にポップオーバーを表示していたように、まだ表示位置を制御する方法は提供されていません。
-[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)が利用可能になると、HTMLとCSSだけでポップオーバーやツールチップの位置を制御できるようになるので、表示を誘発する要素の側にポップオーバーを表示することが可能になります。
-Popover APIの登場がとてもありがたいと同時に、`CSS Anchor Positioning`への期待も高まりますね。
+CSS Anchor PositioningがBaselineに入れば、ボタンのそばに出すところまでCSSだけで書けるようになります。その日が来るのを楽しみにしています。

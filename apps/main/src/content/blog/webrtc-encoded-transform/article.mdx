@@ -1,124 +1,204 @@
 ---
-title: WebRTC Encoded TransformでWebRTCの一連の処理にメスを入れる
-description: WebRTC Encoded Transformは、WebRTCの送信・受信パイプラインにカスタム変換処理を挿入できる機能です。RTCRtpScriptTransformを使用してWorkerスレッドでエンコード済みフレームを直接操作し、E2EEやカスタムエフェクトを実装できます。
+title: 'WebRTC Encoded TransformでE2EEを実装する'
+description: 'WebRTC Encoded Transformは、エンコード済みの映像や音声のフレームをWorkerで書き換えてから送受信する仕組みです。RTCRtpScriptTransformで暗号化と復号を挟み、E2EEを実装します。'
 createdAt: 2025-10-25
-updatedAt: 2025-10-25
+updatedAt: 2026-11-09
 featureIds:
   - webrtc-encoded-transform
 ---
 
+import { TransformPipeline } from './_components/transform-pipeline';
 
-# WebRTC Encoded TransformでWebRTCの一連の処理にメスを入れる
+# WebRTC Encoded TransformでE2EEを実装する
 
 <BrowserSupportStatus featureId="webrtc-encoded-transform" />
 
 ## はじめに
 
-WebRTCの登場によって、あらゆるデバイスが共通のプラットフォーム上で簡単に直接通信できるようになりました。
+WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エンコードした後やデコードする前のフレームの段階でWorkerに渡し、データを書き換えられるようにする機能です。送信側で暗号化して受信側で復号すれば、通信を中継するサーバーにも中身が読めないE2EE（End-to-End Encryption）を実装できます。Chrome 141が対応して、Baseline 2025に入りました。
 
-そして、Chrome 141（Edge 141）からはBaselineのすべてのブラウザにて、WebRTC Encoded Transformという機能が利用可能になりました（Chromeでは2020年から初期バージョンは利用可能でしたが、仕様変更後の実装が行われていませんでした）。
-WebRTC Encoded Transformにより、より高度なメディア処理が可能となり、リアルタイムコミュニケーションの質が向上します。
+1対1でつなぐ通信は、WebRTCがDTLS-SRTPで暗号化します。SFUのようなメディアサーバーを経由する通信では、サーバーで一度復号されます。サーバーにも読めないように暗号化したいときに、Encoded Transformが要ります。
 
-この記事では、WebRTC Encoded Transformの簡単な使い方を解説します。
+同じページで2つの`RTCPeerConnection`をつなぐと、外のサーバーなしで試せます。
 
-## WebRTCとは
+```html title="index.html"
+<!doctype html>
+<canvas width="320" height="240"></canvas>
+<video autoplay muted playsinline></video>
+<script type="module">
+  // 色が変わり続けるcanvasを送る映像にする
+  const canvas = document.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  let n = 0;
+  setInterval(() => {
+    ctx.fillStyle = `hsl(${n++ * 5} 80% 50%)`;
+    ctx.fillRect(0, 0, 320, 240);
+  }, 33);
+  const stream = canvas.captureStream(30);
 
-[WebRTC（Web Real-Time Communication）](https://webrtc.org)は、ブラウザ間でリアルタイムに音声や映像など任意のデータを直接やり取りできる技術です。
+  const pc1 = new RTCPeerConnection();
+  const pc2 = new RTCPeerConnection();
+  const sender = pc1.addTrack(stream.getVideoTracks()[0], stream);
+  sender.transform = new RTCRtpScriptTransform(new Worker('worker.js'), {});
+  pc2.ontrack = (event) => {
+    document.querySelector('video').srcObject = event.streams[0];
+  };
 
-実際に試してみたい方は、公式から提供されている[簡単なサンプル群](https://webrtc.github.io/samples/)や、Googleが用意する[コードラボ](https://codelabs.developers.google.com/codelabs/webrtc-web)を見るのがおすすめです。
-
-## WebRTC Encoded Transformとは
-
-WebRTC Encoded Transformは、WebRTC APIの一部で、エンコードされたメディアフレームを変換するために使用される機能です。
-Workerスレッドで実行される変換処理をWebRTCの送信・受信パイプラインに挿入できます。
-
-この機能は`RTCRtpScriptTransform`インターフェイスや`RTCRtpSender・RTCRtpReceiver`の`transform`プロパティを利用して実装されます。
-```ts
-new RTCRtpScriptTransform(worker, options, transfer)
+  // ICEの候補が出そろってからSDPを渡す
+  const gathered = (pc) =>
+    new Promise((resolve) => {
+      if (pc.iceGatheringState === 'complete') return resolve();
+      pc.addEventListener('icegatheringstatechange', () => {
+        if (pc.iceGatheringState === 'complete') resolve();
+      });
+    });
+  await pc1.setLocalDescription();
+  await gathered(pc1);
+  await pc2.setRemoteDescription(pc1.localDescription);
+  await pc2.setLocalDescription();
+  await gathered(pc2);
+  await pc1.setRemoteDescription(pc2.localDescription);
+</script>
 ```
-第1引数には変換処理を実行するWorkerオブジェクトを指定します。
-第2引数には変換処理に関するオプションを、第3引数には、Workerに転送するオブジェクトの配列を指定します。
-第2、第3引数は省略可能です。
 
-`RTCRtpSender・RTCRtpReceiver`の`transform`プロパティは`RTCRtpScriptTransform`を設定するものです。
+```js title="worker.js"
+self.addEventListener('rtctransform', (event) => {
+  const { readable, writable } = event.transformer;
+  readable
+    .pipeThrough(
+      new TransformStream({
+        transform(frame, controller) {
+          console.log(frame.type, frame.data.byteLength);
+          controller.enqueue(frame);
+        },
+      }),
+    )
+    .pipeTo(writable);
+});
+```
+
+開くと左のcanvasの色が変わり続け、右のvideoに同じ映像が映ります。コンソールには、Workerが受け取ったフレームの種類と大きさが`key 177`、`delta 111`のように流れます。
+
+## RTCRtpScriptTransform
+
+WebRTC Encoded Transformは、送信側ではエンコードとネットワークのあいだに、受信側ではネットワークとデコードのあいだに、Workerで動く変換（Transform）を挟みます。
+
+<TransformPipeline />
+
+これまでは、エンコードからデコードまでのあいだに手を入れられませんでした。扱うのはエンコード済みのデータなので、色を変えるといった映像の効果をかける用途には向きません。
+
+変換は、`RTCRtpScriptTransform`を作り、`RTCRtpSender`か`RTCRtpReceiver`の`transform`プロパティに入れて挟みます。
+
+```ts
+new RTCRtpScriptTransform(worker, options, transfer);
+```
+
+第1引数には変換を動かすWorkerを渡します。第2引数はWorkerに渡すオプションで、第3引数はWorkerに転送するオブジェクトの配列です。第2引数と第3引数は省けます。
 
 ```ts
 videoSender.transform = new RTCRtpScriptTransform(worker);
 ```
 
-## 使用例
-例としてE2EE（End-to-End Encryption）を搭載してみます。
+Workerでは、`rtctransform`イベントの`event.transformer`の`readable`からフレームを読み、`writable`に書き戻します。映像のフレームは`RTCEncodedVideoFrame`で、`data`（`ArrayBuffer`）と`type`（`key`か`delta`）を持ちます。`getMetadata()`を呼ぶと、コーデック（既定ではChromeが`video/VP8`、Safariが`video/H264`）や幅と高さが分かります。
 
-まずは、メインスレッド側のコードです。
-```ts
+## E2EEを実装する
+
+はじめにの`index.html`の`sender.transform`と`pc2.ontrack`を次のように替え、送信側で暗号化し、受信側で復号します。
+
+```js
 // [!og]
-async function setupSecureVideoCall() {
-  const pc = new RTCPeerConnection();
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true,
-  });
-  const videoTrack = stream.getVideoTracks()[0]!;
-  const sender = pc.addTrack(videoTrack, stream);
+const key = await crypto.subtle.generateKey(
+  { name: 'AES-GCM', length: 128 },
+  false,
+  ['encrypt', 'decrypt'],
+);
+sender.transform = new RTCRtpScriptTransform(new Worker('e2ee-worker.js'), {
+  operation: 'encrypt',
+  key,
+});
+pc2.ontrack = (event) => {
+  event.receiver.transform = new RTCRtpScriptTransform(
+    new Worker('e2ee-worker.js'),
+    { operation: 'decrypt', key },
+  );
+  document.querySelector('video').srcObject = event.streams[0];
+};
+```
 
-  // 暗号化キーを生成
-  const encryptionKey = await generateKey();
+`CryptoKey`は`options`に入れてWorkerに渡せます。ここでは同じページで作った鍵を両方に渡していますが、実際には鍵交換の仕組みで相手と共有します。
 
-  // 送信側の暗号化設定
-  const encryptWorker = new Worker('e2e-encryption-worker.js');
-  sender.transform = new RTCRtpScriptTransform(encryptWorker, {
-    operation: 'encrypt',
-    key: encryptionKey
-  });
+Worker側（`e2ee-worker.js`）では、AES-GCMでフレームを暗号化し、初期化ベクトル（IV）を末尾に付けて送ります。受信側は末尾のIVを取り出して復号します。
 
-  // 受信側の復号化設定も同様に行う
+```js title="e2ee-worker.js"
+// 先頭のバイトは暗号化しない（VP8のキーフレームは10バイト、それ以外は3バイト）
+const offsets = { key: 10, delta: 3 };
+
+self.addEventListener('rtctransform', (event) => {
+  const { readable, writable, options } = event.transformer;
+  const { operation, key } = options;
+  readable
+    .pipeThrough(
+      new TransformStream({
+        async transform(frame, controller) {
+          const data = new Uint8Array(frame.data);
+          const n = offsets[frame.type] ?? 1;
+          const head = data.subarray(0, n);
+          if (operation === 'encrypt') {
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const body = await crypto.subtle.encrypt(
+              { name: 'AES-GCM', iv, additionalData: head },
+              key,
+              data.subarray(n),
+            );
+            frame.data = concat(head, new Uint8Array(body), iv).buffer;
+          } else {
+            const iv = data.subarray(data.length - 12);
+            try {
+              const body = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv, additionalData: head },
+                key,
+                data.subarray(n, data.length - 12),
+              );
+              frame.data = concat(head, new Uint8Array(body)).buffer;
+            } catch {
+              return; // 復号できないフレームは捨てる
+            }
+          }
+          controller.enqueue(frame);
+        },
+      }),
+    )
+    .pipeTo(writable);
+});
+
+function concat(...parts) {
+  const out = new Uint8Array(parts.reduce((sum, p) => sum + p.length, 0));
+  let offset = 0;
+  for (const p of parts) {
+    out.set(p, offset);
+    offset += p.length;
+  }
+  return out;
 }
 ```
 
-次に、Workerスレッド側（`e2e-encryption-worker.js`）のコードです。
-```ts
-self.addEventListener('rtctransform', (event: RTCTransformEvent) => {
-  const transformer = event.transformer;
-  const { operation, key } = transformer.options;
+VP8では、フレームの先頭（キーフレームは10バイト、それ以外は3バイト）を暗号化せずに残し、受信側のブラウザがフレームの種類を見分けられるようにします。フレーム全体を暗号化すると、Chromeでは映像は映りますが、受信側ではキーフレームでない多くのフレームが`type`を`key`として届きます。
 
-  const cryptoTransform = new TransformStream({
-    async transform(encodedFrame, controller) {
-      if (operation === 'encrypt') {
-        // フレームデータを暗号化
-        encodedFrame.data = await encryptData(encodedFrame.data, key);
-      } else if (operation === 'decrypt') {
-        // フレームデータを復号化
-        encodedFrame.data = await decryptData(encodedFrame.data, key);
-      }
+受信側に復号のTransformを置かないと、映像は映りません。違う鍵で復号すると`decrypt()`が失敗してフレームを捨てるので、やはり映りません。
 
-      controller.enqueue(encodedFrame);
-    }
-  });
+Safariは既定のコーデックがH.264で、このE2EEのコードのままでは映像が映りません（フレームをそのまま通す最初の例は映ります）。Workerで暗号化せずに残す先頭のバイト数はVP8に合わせたものなので、Safariでは`addTrack()`の後でVP8を先頭に並べます。
 
-  transformer.readable
-    .pipeThrough(cryptoTransform)
-    .pipeTo(transformer.writable);
-});
+```js
+const [transceiver] = pc1.getTransceivers();
+const { codecs } = RTCRtpSender.getCapabilities('video');
+transceiver.setCodecPreferences([
+  ...codecs.filter((c) => c.mimeType === 'video/VP8'),
+  ...codecs.filter((c) => c.mimeType !== 'video/VP8'),
+]);
 ```
 
-このように、WebRTC Encoded Transformを使用することで、リアルタイムのビデオストリームに対してカスタムエフェクトを適用できます。
-
-エンコードされたメディアフレームに対して直接操作を行うため、パフォーマンスへの影響を最小限に抑えつつ、高度なメディア処理が可能です。
-
-```ts
-// これまで
-[getUserMedia] → [Encoder] → [Network] → [Decoder] → [Display]
-                     ↑                        ↑
-                 触れられない               触れられない
-// これから
-[getUserMedia] → [Encoder] → [Transform] → [Network] → [Transform] → [Decoder] → [Display]
-                                  ↑                          ↑
-                             E2EEを追加可能               E2EEを追加可能
-```
+こう並べると、Safariでもフレームが復号されて映ります。
 
 ## おわりに
-WebRTCとWebRTC Encoded Transformについて簡単に紹介しました。
 
-WebRTC Encoded Transformは、Baseline 2025に追加された、WebRTCに関する強力な機能です。
-
-これにより、WebRTCにおける一連の処理中にカスタムエフェクトや高度なメディア処理が可能となり、大きなパフォーマンスと柔軟性の向上が期待されます。
+WebRTC Encoded Transformを使うと、エンコード済みのフレームをWorkerで書き換えてから送受信できます。送信側で暗号化して受信側で復号すれば、SFUのようなサーバーを経由しても中身を読ませないE2EEを、WebRTCの送受信の途中に挟めます。

@@ -1,27 +1,25 @@
 ---
-title: 'Scroll-driven animationsでスクロールに合わせてCSSのアニメーションを進める'
-description: 'Scroll-driven animationsは、時間ではなくスクロールの位置や要素の見え方でCSSのアニメーションを進める機能です。Chrome 115とSafari 26に続いてFirefox 159が対応し、Baseline 2026に加わりました。scroll()とview()の2つのタイムラインと、animation-rangeで進む区間を決める書き方を整理します。'
+title: 'animation-timelineでスクロール連動アニメーション'
+description: 'animation-timelineにscroll()やview()を書くと、CSSのアニメーションがスクロールの位置や要素の見え方で進みます。読んだ割合を示すバーや、画面に入ったカードの表示をJavaScriptなしで作れます。'
 createdAt: 2026-11-07
-updatedAt: 2026-11-07
+updatedAt: 2026-11-09
 featureIds:
   - scroll-driven-animations
 ---
 
-# Scroll-driven animationsでスクロールに合わせてCSSのアニメーションを進める
+# animation-timelineでスクロール連動アニメーション
 
 <BrowserSupportStatus featureId="scroll-driven-animations" />
 
 ## はじめに
 
-読み進めた割合をバーで示したり、画面に入ってきたカードを少しずつ表示したりしたいことがあります。これまでは`scroll`イベントや`IntersectionObserver`で状態を受け取り、JavaScriptからスタイルを書き換えていました。
-
-Scroll-driven animationsは、CSSのアニメーションを時間ではなくスクロールで進める機能です。スクロールの位置で進める`scroll()`と、要素の見え方で進める`view()`の2つを使い分けます。Chrome 115とSafari 26に続いてFirefox 159が対応し、Baseline 2026に加わりました。
+Scroll-driven animationsは、CSSのアニメーションを時間ではなくスクロールで進める機能です。`animation-timeline`に`scroll()`を書くとスクロールの位置で、`view()`を書くと要素の見え方でアニメーションが進みます。読み進めた割合を示すバーや、画面に入ってきたカードを少しずつ表示する動きを、JavaScriptなしで書けます。Firefox 159が対応して、Baseline 2026に入りました。
 
 ## scroll()でスクロールの位置に合わせる
 
 `animation-timeline: scroll()`を書くと、アニメーションはスクロールコンテナのスクロール位置で進みます。このタイムラインは、先頭にいるときが0%、末尾までスクロールしたときが100%です。
 
-```css
+```css demo="progress"
 /* [!og] */
 @keyframes grow {
   from {
@@ -38,18 +36,38 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
   transform-origin: 0 50%;
   animation: grow auto linear;
   animation-timeline: scroll();
+  height: 0.5rem;
+  background-color: steelblue;
+}
+
+.scroller {
+  height: 10rem;
+  overflow-y: auto;
 }
 ```
 
-`animation-timeline`は、先に書くと後の`animation`ショートハンドに初期値で上書きされるので、`animation`より後に書きます。仕様の草案では`animation`の中に`scroll()`も書けますが、Chrome 156、Safari 27.2、Firefox 159のどれでも宣言ごと無効になります。`animation`の時間に書いた`auto`は、タイムライン全体を使って進めるための値です。
+```html demo="progress"
+<div class="scroller">
+  <div class="progress"></div>
+  <p>段落 1</p>
+  <p>段落 2</p>
+  <p>段落 3</p>
+  <p>段落 4</p>
+  <p>段落 5</p>
+  <p>段落 6</p>
+  <p>段落 7</p>
+  <p>段落 8</p>
+</div>
+```
 
-`scroll()`の引数には、見るスクロールコンテナと軸を書きます。スクロールコンテナは`nearest`（最も近い祖先。既定値）・`root`（ビューポート）・`self`（要素自身）から、軸は`block`（既定値）・`inline`・`x`・`y`から選びます。
+結果の欄で枠の中をスクロールすると、上のバーが読み進めた割合だけ右へ伸びます。
 
-<PlaygroundEmbed
-  demo="スクロール量をプログレスバーで示す"
-  headingLevel="h4"
-  sectionId="scroll-driven-animations"
-/>
+`animation-timeline`は、先に書くと後の`animation`ショートハンドに初期値で上書きされるので、`animation`より後に書きます。仕様の草案では`animation`の中に`scroll()`も書けますが、どのブラウザでも宣言ごと無効になります。`animation`の時間に書いた`auto`は、タイムライン全体を使って進めるための値です。
+
+`scroll()`の引数には、見るスクロールコンテナと軸を書きます。
+
+- スクロールコンテナ：`nearest`（最も近い祖先。既定値）、`root`（ビューポート）、`self`（要素自身）
+- 軸：`block`（既定値）、`inline`、`x`、`y`
 
 スクロールコンテナの中身があふれずスクロールできないときは、タイムラインが働かず、キーフレームの値が当たりません。プログレスバーの例では、ページが短いと最初から伸びきった状態で表示されます。
 
@@ -59,7 +77,7 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
 
 `view()`の引数には、`scroll()`と同じ軸と、見えていると判定する範囲を内側へ狭めるinsetを書けます。
 
-```css
+```css demo="range"
 @keyframes reveal {
   from {
     clip-path: inset(0 100% 0 0);
@@ -73,7 +91,42 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
   animation: reveal auto linear both;
   animation-timeline: view();
   animation-range: entry;
+  margin-block: 6rem;
+  padding: 1.5rem 1rem;
+  background-color: steelblue;
+  color: white;
 }
+
+.scroller {
+  height: 16rem;
+  overflow-y: auto;
+}
+```
+
+```html demo="range"
+<label>
+  animation-range:
+  <select id="range">
+    <option>cover</option>
+    <option>contain</option>
+    <option selected>entry</option>
+    <option>exit</option>
+  </select>
+</label>
+<div class="scroller">
+  <p class="card">カード 1</p>
+  <p class="card">カード 2</p>
+  <p class="card">カード 3</p>
+</div>
+```
+
+```js demo="range"
+const select = document.querySelector('#range');
+select.addEventListener('change', () => {
+  for (const card of document.querySelectorAll('.card')) {
+    card.style.animationRange = select.value;
+  }
+});
 ```
 
 `animation-range`を書かないと、アニメーションは見え始めから出きるまでをかけて進むので、スクロールポートの真ん中に来たカードはまだ左半分しか見えません。`animation-range`はアニメーションを進める区間を決めるプロパティで、上の例のように`entry`を書くと、入りきった時点で全体が見えます。区間には次の4つの名前を使えます。
@@ -85,19 +138,13 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
 
 `animation-fill-mode`を`both`にしておくと、区間の前では最初の、後では最後のキーフレームの値が保たれます。`animation-range`も`animation-timeline`と同じく、先に書くと後の`animation`で上書きされるので、`animation`より後に書きます。こちらは仕様でも`animation`の中には書けません。
 
-<PlaygroundEmbed
-  demo="animation-rangeを切り替えて進む区間を比べる"
-  headingLevel="h4"
-  sectionId="scroll-driven-animations"
-/>
-
-デモでは、カードの`animation-range`を切り替えられます。`cover`ではカードがスクロールポートの真ん中に来ても左半分しか見えず、`entry`では入りきった時点で全体が見えます。
+結果の欄で`animation-range`を切り替えてスクロールすると、`cover`ではカードがスクロールポートの真ん中に来ても左半分しか見えず、`entry`では入りきった時点で全体が見えます。
 
 ## 名前を付けて離れた要素を動かす
 
 `scroll()`は祖先のスクロールコンテナを、`view()`は要素自身を見ます。それ以外の要素に合わせて動かしたいときは、タイムラインに名前を付けます。スクロールコンテナには`scroll-timeline`で、見え方を追う要素には`view-timeline`で、`--`から始まる名前を宣言します。動かす要素の`animation-timeline`には、その名前を書きます。
 
-[仕様](https://drafts.csswg.org/scroll-animations-1/#timeline-scoping)では、名前を文書全体から参照できます。Firefox 159は仕様どおり隣の要素からも参照できましたが、Chrome 156とSafari 27.2では宣言した要素とその子孫からしか参照できませんでした。祖先ではない要素から参照するときは、共通の祖先に`timeline-scope`で名前を書きます。
+[仕様](https://drafts.csswg.org/scroll-animations-1/#timeline-scoping)では、名前を文書全体から参照できます。Firefoxは仕様どおり隣の要素からも参照できますが、ChromeとSafariでは宣言した要素とその子孫からしか参照できません。祖先ではない要素から参照するときは、共通の祖先に`timeline-scope`で名前を書きます。
 
 ```css
 .layout {
@@ -115,8 +162,8 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
 }
 ```
 
-Chrome 156とSafari 27.2の`timeline-scope`は、子孫が宣言した名前を、その要素の中のどこからでも参照できるようにします。仕様の`timeline-scope`は逆に、参照できる範囲をその要素の中に限ります。どちらの動きでも、`.layout`の中のインジケーターはパネルのタイムラインを参照できます。
+ChromeとSafariの`timeline-scope`は、子孫が宣言した名前を、その要素の中のどこからでも参照できるようにします。仕様の`timeline-scope`は逆に、参照できる範囲をその要素の中に限ります。どちらの動きでも、`.layout`の中のインジケーターはパネルのタイムラインを参照できます。
 
 ## おわりに
 
-Scroll-driven animationsで、スクロールに合わせたアニメーションをCSSだけで書けるようになりました。スクロールの位置で進めるなら`scroll()`、要素の見え方で進めるなら`view()`を使い、進む区間は`animation-range`で絞ります。Web Animations APIでも、`ScrollTimeline`か`ViewTimeline`を`element.animate()`の`timeline`に渡せば同じことができます。
+Scroll-driven animationsでは、スクロールの位置で進めるなら`scroll()`、要素の見え方で進めるなら`view()`を`animation-timeline`に書き、進む区間は`animation-range`で絞ります。Web Animations APIでも、`ScrollTimeline`か`ViewTimeline`を`element.animate()`の`timeline`に渡せば同じことができます。

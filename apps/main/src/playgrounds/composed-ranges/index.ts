@@ -1,34 +1,20 @@
 import type { PlaygroundSection } from '../types';
 import { GetComposedRanges } from './get-composed-ranges';
-import { SelectionMethods } from './selection-methods';
-import { SelectionProperties } from './selection-properties';
 
 export const composedRangesSection: PlaygroundSection = {
   id: 'composed-ranges',
-  title: 'Selectionオブジェクト',
+  title: 'getComposedRanges',
   description:
-    'ユーザーが選択したテキストの範囲やキャレットの位置を扱うSelectionオブジェクトの紹介です。',
+    'Shadow DOMの中を選んだ範囲を、getRangeAtとgetComposedRangesで取り出したときの違いを比べられます。',
   category: 'js-api',
   type: 'blog',
   slug: 'composed-ranges',
   demos: [
     {
-      component: SelectionProperties,
-      title: 'Selectionオブジェクトのプロパティ',
-      description:
-        'テキストを選択すると、選択文字列や開始・終了位置、選択の種類がリアルタイムに表示されます。',
-    },
-    {
-      component: SelectionMethods,
-      title: 'Selectionオブジェクトのメソッド',
-      description:
-        'ボタンからaddRangeやextendなどを呼び出し、選択範囲をスクリプトで作成・削除・拡張できます。',
-    },
-    {
       component: GetComposedRanges,
-      title: 'Baseline 2025で追加されたgetComposedRangesメソッド',
+      title: 'getRangeAtとgetComposedRangesの比較',
       description:
-        '閉じたShadow Tree内の選択で、getRangeAtとgetComposedRangesが返す範囲の違いを比較できます。',
+        '閉じたShadow DOMの中を選んだとき、getRangeAtとgetComposedRangesの範囲がどの文字を指すかを比べられます。',
     },
   ],
 };

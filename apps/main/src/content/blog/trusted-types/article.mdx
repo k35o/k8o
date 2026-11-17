@@ -1,20 +1,23 @@
 ---
-title: 'Trusted TypesでDOM XSSを大幅に軽減する'
-description: 'Trusted Typesは、innerHTMLやeval()などのシンクに対して型付きオブジェクトの使用を強制し、DOM XSSを大幅に軽減するブラウザAPIです。CSPヘッダーによる強制やポリシーの作成を中心に解説します。'
+title: 'Trusted TypesとCSPでDOM XSSを防ぐ'
+description: 'Trusted Typesは、innerHTMLなどへの生の文字列の代入をブラウザに止めさせて、DOM XSSを防ぐ仕組みです。CSPのrequire-trusted-types-forで有効にする方法と、ポリシーの書き方を説明します。'
 createdAt: 2026-03-08
-updatedAt: 2026-03-08
+updatedAt: 2026-11-09
 featureIds:
   - trusted-types
 ---
 
-
-# Trusted TypesでDOM XSSを大幅に軽減する
+# Trusted TypesとCSPでDOM XSSを防ぐ
 
 <BrowserSupportStatus featureId="trusted-types" />
 
 ## はじめに
 
-DOM XSSは、`innerHTML`や`document.write`などのDOM APIに攻撃者が制御可能な文字列が渡されることで発生します。
+Trusted Typesは、`innerHTML`のように文字列をHTMLやスクリプトとして扱うDOM API（シンク）に、生の文字列を渡すことをブラウザに禁止させる仕組みです。CSPの`require-trusted-types-for 'script'`で有効にすると、シンクにはポリシーを通して作った`TrustedHTML`などの値しか渡せなくなります。Firefox 148が対応して、Baseline 2026に入りました。
+
+文字列を表示するだけなら`textContent`で足り、HTMLとして入れる箇所もDOMPurifyなどで毎回サニタイズすればXSSは防げます。Trusted Typesでしかできないのは、サニタイズを忘れた代入やサードパーティのスクリプトによる代入まで、ブラウザが実行時に止めることです。
+
+DOM XSSは、`innerHTML`や`document.write`などのシンクに攻撃者が制御可能な文字列が渡されることで発生します。
 
 ```js
 // ユーザー入力をそのままinnerHTMLに渡してしまう
@@ -22,50 +25,56 @@ const userInput = '<img src=x onerror="alert(document.cookie)">';
 el.innerHTML = userInput; // XSSが実行される
 ```
 
-この種の脆弱性は、コードレビューやLinterで注意を払っても完全には防ぎきれず、プロジェクトが大きくなるほどリスクが高まります。
+この種の脆弱性は、コードレビューやLinterで気をつけても防ぎきれず、コードが大きくなるほど見落としが増えます。
 
-Baseline 2026に追加されたTrusted Typesは、これらの危険なDOM API（シンク）に対して生の文字列ではなく型付きオブジェクトの使用を強制することで、DOM XSSを大幅に軽減するブラウザAPIです。
+## CSPで有効にする
 
-## CSPヘッダーによる強制
-
-Trusted Typesは、`Content-Security-Policy`ヘッダーで強制します。
+Trusted Typesは、`Content-Security-Policy`で有効にします。
 
 ```http
 Content-Security-Policy: trusted-types myPolicy
 ```
 
-`trusted-types`ディレクティブは、作成できるポリシー名を制限します。
-この例では`myPolicy`以外の名前で`trustedTypes.createPolicy()`（後述）を呼び出すとエラーになります。
-これにより、サードパーティスクリプトなどが勝手にポリシーを作成することを防げます。
+`trusted-types`ディレクティブは、作れるポリシーの名前を決めます。この例では、`myPolicy`以外の名前で`trustedTypes.createPolicy()`を呼ぶとエラーになり、サードパーティのスクリプトが勝手にポリシーを作るのを防げます。Trusted Typesに対応したライブラリは自分の名前でポリシーを作るので、使うときはその名前も`trusted-types`に書き足します。
 
-`trusted-types`の宣言では作成を制限するだけで、シンクに生の文字列を渡すことは禁止できません。
-
-禁止するには`require-trusted-types-for 'script'`を追加します。
+`trusted-types`だけでは、シンクに生の文字列を渡すことは止められません。止めるには、`require-trusted-types-for 'script'`を足します。
 
 ```http
 Content-Security-Policy: require-trusted-types-for 'script'; trusted-types myPolicy
 ```
 
-この設定が有効な状態でシンクに生の文字列を渡すと、`TypeError`がスローされます。
+この設定のもとでシンクに生の文字列を渡すと、`TypeError`が投げられます。CSPは`<meta>`で書いても効きます。
 
-```js
-el.innerHTML = '<b>Hello</b>';
-// TypeError: Failed to set the 'innerHTML' property on 'Element':
-// This document requires 'TrustedHTML' assignment.
+```html
+<!doctype html>
+<meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'">
+<div id="el"></div>
+<script>
+  document.getElementById('el').innerHTML = '<b>Hello</b>';
+</script>
 ```
 
-段階的に導入する場合は、`Content-Security-Policy-Report-Only`ヘッダーを使って違反をレポートのみにすることもできます。
+開くと画面には何も表示されず、DevToolsのコンソールにエラーが出ます。メッセージはブラウザごとに違います。
+
+- Chrome: `This document requires 'TrustedHTML' assignment. The action has been blocked.`に続いて、`TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.`
+- Safari: `TypeError: This assignment requires a TrustedHTML`
+- Firefox: `TypeError: Element.innerHTML setter: Sink type mismatch violation blocked by CSP`
+
+どれも、シンクに生の文字列を渡した箇所があるという意味です。ChromeとSafariでは、`setTimeout`に文字列を渡すと`TrustedScript`、`script.src`に代入すると`TrustedScriptURL`と、求められた型の名前がメッセージに入ります。直すには、その代入をポリシーを通した値に書き換えるか、すぐには直せないコードのためにデフォルトポリシーを用意します。
+
+どの代入で止まったかは、`securitypolicyviolation`イベントの`sample`でも分かります。`Element innerHTML|<b>Hello</b>`のように、シンクの名前と値の先頭が入ります。
+
+少しずつ入れるときは、`Content-Security-Policy-Report-Only`ヘッダーで、違反をレポートするだけにできます。
 
 ```http
 Content-Security-Policy-Report-Only: require-trusted-types-for 'script'; trusted-types myPolicy; report-uri /csp-endpoint
 ```
 
-## ポリシーの作成
+このヘッダーでは代入はそのまま通り、Chromeのコンソールには`This document requires 'TrustedHTML' assignment. The policy is report-only, so the violation has been logged but no further action has been taken.`と出ます。`/csp-endpoint`には、`effective-directive`が`require-trusted-types-for`のレポートが届きます。
 
-`trustedTypes.createPolicy()`でポリシーを作成します。
-ポリシーはシンクに渡す値の検証やサニタイズを一箇所にまとめる仕組みです。
+## ポリシーを作る
 
-第1引数にはCSPの`trusted-types`ディレクティブで許可したポリシー名を、第2引数にはコールバック関数を定義します。
+ポリシーは、`trustedTypes.createPolicy()`で作ります。シンクに渡す値の検証やサニタイズを、1か所にまとめる仕組みです。第1引数にはCSPの`trusted-types`で許可した名前を、第2引数にはコールバック関数を持つオブジェクトを渡します。
 
 ```js
 const escapePolicy = trustedTypes.createPolicy('myPolicy', {
@@ -73,13 +82,13 @@ const escapePolicy = trustedTypes.createPolicy('myPolicy', {
 });
 ```
 
-コールバック関数は用途に応じて3種類あります。
+コールバック関数は、渡す先のシンクに応じて3種類あります。
 
-- `createHTML` → `TrustedHTML`を返す。`innerHTML`や`document.write()`などに対応
-- `createScript` → `TrustedScript`を返す。`eval()`や`setTimeout(string, ms)`などに対応
-- `createScriptURL` → `TrustedScriptURL`を返す。`HTMLScriptElement.src`や`new Worker()`などに対応
+- `createHTML`：`TrustedHTML`を返す。`innerHTML`や`document.write()`などに渡す
+- `createScript`：`TrustedScript`を返す。`eval()`や`setTimeout(string, ms)`などに渡す
+- `createScriptURL`：`TrustedScriptURL`を返す。`HTMLScriptElement.src`や`new Worker()`などに渡す
 
-シンクは`TrustedHTML`・`TrustedScript`・`TrustedScriptURL`のいずれかしか受け付けないため、原則として`TrustedTypePolicy`のインスタンスメソッド経由で作成した値しか渡せません。
+有効にしているあいだは、シンクに生の文字列ではなく、ポリシーのメソッドで作った値を渡します。
 
 ```js
 el.innerHTML = escapePolicy.createHTML(userInput);
@@ -88,8 +97,7 @@ el.innerHTML = escapePolicy.createHTML(userInput);
 
 ### デフォルトポリシー
 
-`default`という名前のポリシーは特別な役割を持ちます。
-シンクに生の文字列が渡された際、ブラウザが自動的にデフォルトポリシーのコールバックを呼び出します。
+`default`という名前のポリシーは、ほかと役割が違います。シンクに生の文字列が渡されると、ブラウザがこのポリシーのコールバックを呼び、その戻り値を代入します。サードパーティのスクリプトはこちらのポリシーを使えないので、`innerHTML`に生の文字列を代入します。その代入も、デフォルトポリシーを通ります。
 
 ```js
 // [!og]
@@ -104,34 +112,37 @@ el.innerHTML = '<b>Hello</b><script>alert(1)</script>';
 
 作成したデフォルトポリシーは`trustedTypes.defaultPolicy`から参照できます。
 
-デフォルトポリシーは既存のコードベースへの移行手段として設計されています。
-変更が難しいサードパーティスクリプトへの対応にも有効ですが、ルールが緩くなりがちでTrusted Typesのメリットが薄まるため、最終的には各シンクで明示的にポリシーを使うようリファクタリングすることが推奨されます。
+CSPの`trusted-types`でポリシーの名前を決めているときは、`default`も書き足します。書かないと、`createPolicy('default', ...)`が`TypeError`になります。
 
-## ユーティリティ
+```http
+Content-Security-Policy: require-trusted-types-for 'script'; trusted-types myPolicy default
+```
 
-このほかにも`trustedTypes`から直接扱える便利なプロパティとメソッドが用意されています。
+デフォルトポリシーのコールバックは、第2引数に求められた型の名前、第3引数にシンクの名前を受け取ります。上の代入では、`'TrustedHTML'`と`'Element innerHTML'`が渡ります。移行の途中で、どのシンクに文字列が渡っているかをログに残すのに使えます。
 
-`emptyHTML`はポリシーを経由せずに空のHTMLをシンクに渡すためのプロパティで、`TrustedHTML`を返します。
-`emptyScript`は空の`TrustedScript`を返します。
+デフォルトポリシーは、すぐには書き換えられない既存のコードや、サードパーティのスクリプトのためのものです。どのシンクにも同じ処理がかかり、チェックが緩くなりやすいので、最後は各シンクで名前の付いたポリシーを使うように書き換えます。
+
+## trustedTypesのプロパティとメソッド
+
+`emptyHTML`と`emptyScript`は、空の`TrustedHTML`と`TrustedScript`です。ポリシーを作らずに、シンクを空にできます。
 
 ```js
 el.innerHTML = trustedTypes.emptyHTML;
 scriptEl.text = trustedTypes.emptyScript;
 ```
 
-`isHTML()`・`isScript()`・`isScriptURL()`は値が対応するTrusted Typeかどうかを判定します。
+`isHTML()`と`isScript()`、`isScriptURL()`は、値がそれぞれの型かを判定します。
 
 ```js
-// TrustedTypeかどうかを判定するユーティリティ
-trustedTypes.isHTML(value); // true TrustedHTMLの場合
-trustedTypes.isScript(value); // false TrustedHTMLはScriptではない
-trustedTypes.isScriptURL(value); // true TrustedScriptURLの場合
+const html = escapePolicy.createHTML('<b>Hello</b>');
+trustedTypes.isHTML(html); // true
+trustedTypes.isScript(html); // false（TrustedHTMLはTrustedScriptではない）
+trustedTypes.isHTML('<b>Hello</b>'); // false（文字列はTrustedHTMLではない）
 ```
 
-`getPropertyType()`・`getAttributeType()`は特定の要素のプロパティや属性にどのTrusted Typeが必要かを確認できます。
+`getPropertyType()`と`getAttributeType()`は、要素のプロパティや属性にどの型が要るかを返します。
 
 ```js
-// 特定の要素・属性にどの型が必要かを確認
 trustedTypes.getPropertyType('div', 'innerHTML'); // TrustedHTML
 trustedTypes.getPropertyType('script', 'text'); // TrustedScript
 trustedTypes.getAttributeType('script', 'src'); // TrustedScriptURL
@@ -141,8 +152,4 @@ trustedTypes.getAttributeType('img', 'src'); // null
 
 ## おわりに
 
-Trusted Typesは、シンクに型付きオブジェクトの使用を強制することで、DOM XSSを大幅に軽減するAPIです。
-サニタイズ処理をポリシーに集約できるため、セキュリティレビューの対象をポリシーの実装に絞ることができます。
-
-`Content-Security-Policy-Report-Only`ヘッダーを使えば既存のコードに影響を与えずに違反箇所を可視化できるので、まずはレポートモードから気軽に導入してみましょう。
-ただし、Trusted TypesはCSP全体の防御戦略の一部であり、`script-src`など他のディレクティブと合わせた設計・検証が重要です。
+Trusted Typesを有効にすると、シンクに生の文字列を渡す代入をブラウザが止め、サニタイズをポリシーの1か所にまとめられます。既存のコードには、まず`Content-Security-Policy-Report-Only`で違反を洗い出し、すぐには直せない箇所をデフォルトポリシーで受けてから、強制に切り替えます。
