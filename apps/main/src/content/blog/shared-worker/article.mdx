@@ -16,7 +16,7 @@ featureIds:
 
 SharedWorkerは、同じオリジンの複数のタブやiframeから1つのWorkerにつなげる仕組みです。Worker側の変数は全部のタブで共有され、どのタブで起きた変化もほかのタブへ配れます。Android版のChrome 148が対応して、Baseline 2026に入りました。
 
-ページの裏で処理を回すだけなら、通常の`Worker`（Dedicated Worker）で足ります。ただし、Dedicated Workerはそれを生成したドキュメント1つにだけ紐づき、別のタブやiframeから直接アクセスすることはできません。タブ間でメッセージを送り合うだけなら`BroadcastChannel`でも足りますが、状態はタブごとに持つことになります。1つの状態や接続を全部のタブで持ちたいときにSharedWorkerを使います。
+ページの裏で処理を回すときは、通常の`Worker`（Dedicated Worker）を使います。ただし、Dedicated Workerはそれを生成したドキュメント1つにだけ紐づき、別のタブやiframeから直接アクセスすることはできません。タブ間でメッセージを送り合うのは`BroadcastChannel`でもできますが、状態はタブごとに持つことになります。1つの状態や接続を全部のタブで持ちたいときにSharedWorkerを使います。
 
 <PlaygroundEmbed demo="タブ間カウンタ" headingLevel="h4" sectionId="shared-worker" />
 
@@ -214,7 +214,7 @@ SharedWorkerが効くのは、同一オリジンの複数の画面が同じバ�
 - 重い計算やキャッシュをタブ間で共有して、二重実行を避ける
 - ログイン状態やフィーチャーフラグなど、タブをまたいだ状態の単一の窓口を作る
 
-逆に、ページの裏でちょっとした処理を回したいだけならDedicated Workerで十分です。
+ページの裏でちょっとした処理を回すときは、Dedicated Workerを使います。
 
 ## おわりに
 
