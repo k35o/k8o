@@ -11,7 +11,7 @@ updatedAt: 2026-11-09
 
 `satisfies`は、式の型が指定した型に合うかを検査する演算子です。式の型は変えずに残し、TypeScript 4.9で追加されました。
 
-変数の型を宣言した型そのものにしたいなら、型注釈で足ります。型を検査しながら、推論されたリテラル型を残したいときに`satisfies`を使います。ただし、制約にリテラル型のユニオンがあると、`satisfies`を付けた式の型が付けないときより絞り込まれます。
+変数の型を宣言した型そのものにするときは、型注釈を使います。型を検査しながら、推論されたリテラル型を残したいときに`satisfies`を使います。ただし、制約にリテラル型のユニオンがあると、`satisfies`を付けた式の型が付けないときより絞り込まれます。
 
 次の3つの`palette`は、どれも`blue`を`bleu`と書き間違えています（[TypeScript Playground](https://www.typescriptlang.org/play/?#code/FAFwngDgpgBAwgewDYIE4GcYF4YCJVQAmuMAPngOYFQB2J5uARkgK5S4DcwwAxgjehAwIAQyRQQIKAEZsMAN7AYymAUIAuPAGIAZjoAMh-bgA0SlVSi1NuLYb2HT55czY27RvU4C+MEZj4BEC5efkFhMQkpACZNACUoPlRCAB5EFAwTGEFUAEsaCgA+OUUVVSJ3ByMnMstrbXsDYzMy1yh3I30vM19-GEDBEIGhUXFJKABmEudyjW0qxxaLahoOrqaalTa1xp8-ALChdBEQXPQdXKhMBKTU9LR0LJz8oo4gA)）。
 
