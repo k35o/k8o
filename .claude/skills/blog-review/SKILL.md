@@ -1,19 +1,13 @@
 ---
 name: blog-review
-description: k8oブログ記事（MDX）専用の公開前レビュースキル。文章面は /writing-review に委譲（不在時はフォールバック）し、@repo/code-highlight の活用・frontmatter整合性・MDXコンポーネント・見出し階層・本文の太字不使用といった MDX/ブログ固有の項目を点検して指摘レポートを出す（ファイルは変更しない）。
+description: k8oのブログ記事（MDX）を公開前にレビューするときに使う。検索結果での見せ方と冒頭、記事の中身、MDXの決まりを見て、重要度つきの指摘レポートを出す。文章面は/writing-reviewに任せる。「記事をレビューして」「公開前に見て」と言われたときにも使う。ファイルは変更しない。
 ---
 
 # ブログ記事レビュースキル
 
-k8oのブログ記事（MDX）を公開前にレビューする。**文章面は `/writing-review`** に委譲し、本スキルは**ブログ/MDX固有のチェック**（コードハイライト・frontmatter・MDXコンポーネント・見出し階層・太字不使用）を足す薄い層。最終レポートは文章面とブログ固有を**1つに統合**して出す。
+k8oのブログ記事（MDX）を公開前にレビューする。文章面は**`/writing-review`**に委譲する。本スキルが足すのは、`/blog-prep`の**記事の決まり**と、**ブログ/MDX固有のチェック**の2つ。最終レポートは文章面とブログ固有を**1つに統合**して出す。
 
-## 対象範囲
-
-**行うこと**: `/writing-review` の文章観点をブログ記事に適用（不在時はフォールバック）／`@repo/code-highlight`のディレクティブ活用／frontmatter整合性（`featureIds`⇔`<BrowserSupportStatus>`）／MDXコンポーネントのimport・props／見出し階層・リンク・画像／本文の太字不使用。重要度つきの統合レポートを出す。
-
-**行わないこと**: ファイルの自動修正（レポートのみ）／執筆・アウトライン作成／公開ファイル一式の準備（`article.mdx`の雛形/マイグレーション → `/blog-prep`）／コードの動作・技術的正しさ（別途確認）。
-
-> 記事の準備は `/blog-prep`。本スキルはその後段（執筆を終えた記事の公開前レビュー）。修正依頼でもまずレポートを出して合意してから着手する。**ファイルは変更しない。**
+> 記事の準備（`article.mdx`の雛形とマイグレーション）は`/blog-prep`。本スキルはその後段（執筆を終えた記事の公開前レビュー）。執筆はしない。修正依頼でもまずレポートを出して合意してから着手する。**ファイルは変更しない。**
 
 ## レビュー対象の特定
 
@@ -31,11 +25,40 @@ apps/main/src/content/blog/<slug>/
 ## レビューの進め方
 
 1. **文章面**: 下記「writing-review 連携」のとおり文章観点を適用する。
-2. **ブログ固有の上書き**: 本文に太字（`**`）が無いか（writing-reviewの「太字可」を上書き）。
-3. **機械的補助コマンド**を実行し、ブログ固有1〜4を当てる。
-4. 文章面とブログ固有の指摘を**1つのレポート**に統合し、重要度つきで出す。
+2. **writing-reviewの上書き**: 3つある。
+   - 本文に太字（`**`）が無いかを見る（writing-reviewの「太字可」を上書き）。
+   - 観点5（独自性）の指摘は、ブログ固有1の「動かして分かったこと」にまとめ、重要度はブログ固有1に従う。
+   - writing-reviewが「別途確認」とするコードの動作は、ブログ固有1で動かした結果に置き換える。
+3. **機械的補助コマンド**を実行する。
+4. **ブログ固有1**（記事の決まり）を当てる。本文のコードはここで動かす。
+5. **ブログ固有2〜5**（MDX）を当てる。2〜4は[references/mdx-checks.md](references/mdx-checks.md)を読んでから当てる。
+6. 文章面とブログ固有の指摘を**1つのレポート**に統合し、重要度つきで出す。
 
-### writing-review 連携（二層）
+## ブログ固有1: 記事の決まり
+
+Web機能やライブラリ、道具の機能を紹介する記事に当てる。体験記や概念を説明する記事には当てない。決まりの理由は`/blog-prep`の「記事の決まり」にある。
+
+### 検索結果での見せ方（推奨まで）
+
+- **タイトル**: 検索で打たれる綴りの機能名が先頭にあるか。後ろに続く作業が、機能が無かった頃から検索されていた言葉か（仕様の言葉だけになっていないか）。「：」で2つの句をつないでいたり、35字を超えたりしたら指摘する。
+- **description**: 最初の80字で、何ができるか、どんな作業に使うかを言い切っているか。Baselineや対応ブラウザの話から始まっていないか。120字を超えたら指摘する。
+
+### 冒頭（推奨まで）
+
+- **最初の段落**: 「〇〇とは」に1〜2文で答えているか。最初の段落は`<BrowserSupportStatus>`の直後の段落で、`## はじめに`から始まる記事ではその節の最初の段落。
+- **書き分け**: 最初のコードより前に、今までの書き方で足りる場面と、この機能でしかできない場面が書いてあるか。
+- **デモか最小のコード**: 最初の2節以内にどちらかがあり、直後に、デモなら何を押すと何が見えるか、コードなら何が出るかが書いてあるか。保存や起動の手順を書いていたら、消すよう指摘する。`## はじめに`も1節と数える。位置は機械的補助コマンド(5)で分かる。
+
+### 中身
+
+- **動かして分かったこと**: 1つ以上あるか。1つも無ければ要修正。書けるのは試した本人なので、何を試せば書けるかをレポートで提案する。確かめたブラウザやライブラリの版、確かめた環境を述べる一文があれば、消すよう推奨する（ブラウザで結果が分かれるときのブラウザの名前と、機能が入った版は残す）。
+- **デモのコメント**: Playgroundのデモ（`apps/main/src/playgrounds/<sectionId>/`）のコメントにある落とし穴や回避策が、本文にもあるか。無ければ推奨。
+- **用途ごとのコード**: 冒頭や「おわりに」の節で挙げた用途ごとに、その用途のコードが本文にあるか。無ければ要修正。
+- **コードが動くか**: 本文のコードを動かして確かめる。JSはscratchpadに書き出してnodeで、ブラウザのAPIやDOMとCSSの挙動は`/agent-browser`で確かめる。動かないコードは要修正。
+- **「おわりに」との食い違い**: 「おわりに」の節が本文と食い違っていたら要修正。
+- **Baseline未達の機能**: Baselineに達していないWeb機能を紹介する節があれば、消すよう推奨する。
+
+## writing-review 連携（二層）
 
 - **`/writing-review` が使える場合**: Skillツールで `writing-review` を実行し、対象 `article.mdx` を渡して、その指摘を取り込む（これを文章面の正とする）。レポートでは出所を `【writing-review】` と添える。
 - **使えない場合のフォールバック**（CI・他者クローン・別マシン等、writing-review が無い環境）: 詳細表は複製しないが、最低限ここだけは自分で見る。
@@ -44,7 +67,7 @@ apps/main/src/content/blog/<slug>/
 
 ## 機械的補助コマンド
 
-対象記事のパスを`FILE`に入れて実行（ripgrep / awk）。
+対象記事のパスを`FILE`に入れて実行（ripgrep / awk / node）。
 
 ```bash
 FILE='apps/main/src/content/blog/<slug>/article.mdx'
@@ -58,6 +81,22 @@ awk '/^[[:space:]]*```/{n++; if(n%2==1 && $0 !~ /^[[:space:]]*```[A-Za-z]/) prin
 rg -c '\[!og\]' "$FILE" || echo 0
 # (4) markdownテーブルの使用（本文では使わない。出力があれば要修正候補。先頭が | の行を検出）
 rg -n '^\s*\|.*\|' "$FILE"
+# (5) タイトルと description の文字数、最初のコードとデモが何番目の ## 節にあるか（0 は最初の ## より前）
+node - "$FILE" <<'EOF'
+const text = require('node:fs').readFileSync(process.argv[2], 'utf8');
+for (const key of ['title', 'description']) {
+  const m = text.match(new RegExp(`^${key}:\\s*'?(.*?)'?\\s*$`, 'm'));
+  console.log(key, m ? [...m[1]].length : 'なし');
+}
+let section = 0;
+const found = {};
+for (const line of text.split('---').slice(2).join('---').split('\n')) {
+  if (line.startsWith('## ')) section += 1;
+  if (!('コード' in found) && /^\s*```/.test(line)) found['コード'] = section;
+  if (!('デモ' in found) && /<(PlaygroundEmbed|Playground)\b/.test(line)) found['デモ'] = section;
+}
+console.log('最初のコード', found['コード'] ?? 'なし', '/ 最初のデモ', found['デモ'] ?? 'なし');
+EOF
 
 # writing-review が無いときのフォールバック（本文のみ＝PROSEに当てる）
 rg -n '[A-Za-z0-9] [ぁ-んァ-ヶー一-龥]|[ぁ-んァ-ヶー一-龥] [A-Za-z0-9]' "$FILE"   # 英日スペース
@@ -66,53 +105,11 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 > **コード除外**: (1) と英日スペースは**コードフェンス内・インラインコード（`...`）・`[!callout:]`のテキストも拾う**。マッチがコード内なら違反ではない（例: インラインコードのべき乗 `2 ** -54`、callout内の `theme と…`）。本文（`PROSE`）に当てると誤検出が減る。ブログ本文に出てくる素の`**…**`は太字なので要修正。
 
-## ブログ固有1: @repo/code-highlightの活用
+## ブログ固有2〜4: コードハイライト、MDXコンポーネント、frontmatter
 
-`article.mdx`は`@repo/code-highlight`（Shiki）でハイライトされる。
+点検項目と構文は[references/mdx-checks.md](references/mdx-checks.md)にある。レビューのたびに読んでから当てる。言語なしのフェンスと、MDXからの`@/`、`next`、`next-themes`のimportは要修正。frontmatterの必須キー欠落と日付不正、`featureIds`と`<BrowserSupportStatus>`の不一致も要修正。
 
-> ディレクティブのほかに、フェンスのメタ`title="..."`がファイル名のラベルになる（無ければ言語名がラベルになる）。コピーボタンはすべてのコードブロックに付き、本文を挟まずに続けて書いたコードブロックはタブで切り替える1つのブロックにまとまる。
-
-| 項目 | 内容 | 重要度 |
-|------|------|--------|
-| フェンスの言語指定 | すべての` ``` `に言語を付ける（` ```ts `など）。言語なしはハイライトが効かない | 要修正 |
-| `[!og]`マーカー | いずれか1つのコードブロックに`// [!og]`（OGP画像に載るコードを選ぶ）。OGP画像（`/blog/<slug>/og.png`）は全記事で`getBlogOgCode`がこのマーカーのコードを探して描く。無いとコードが載らず劣化（エラーにはならない）。**較正: [!og]無しの記事も全体の約2割あり、コード無しOGPを許容する設計。コードが主役の記事であれば推奨、そうでなければ任意** | 推奨/任意 |
-| 注目行の強調 | 地の文で「この行が重要」と言うコードに`[!hl]`/`[!callout:]`が無ければ付ける余地 | 任意 |
-| 差分の表現 | before/after・追加削除を見せるコードに`[!+]`/`[!-]`が使える（現状ほぼ未使用） | 任意 |
-
-**ディレクティブ構文**（`packages/code-highlight/src/parser.ts`）: コメント1行だけの行に書き、次のコード行に適用。パーサは言語に関係なく全コメント形式（`//` `/* */` `#` `--` `<!-- -->`）を受理する（言語と違う形式でも効く）。種類: `[!hl]`(=`[!highlight]`)／`[!+]`／`[!-]`／`[!callout: テキスト]`／`[!og]`（本文上は無表示）。未知ディレクティブはコードに残る／空`[!callout:]`は無視／末尾の宙ぶらりんは消える。`@repo/code-highlight/parser`の`parseAnnotations(code).annotations`で機械的に確認できる（`features/blog/application/og-code.ts`が同じ使い方）。
-
-## ブログ固有2: frontmatter整合性
-
-`apps/main/src/shared/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BrowserSupportStatus>`の一致は慣習なので人手で確認する。
-
-| フィールド | 必須 | チェック |
-|-----------|:----:|---------|
-| `title` | ✅ | 文字列。本文先頭の`# <title>`と一致 |
-| `description` | ✅ | キー必須（値は`null`可）。SEO向けに簡潔か |
-| `createdAt` / `updatedAt` | ✅ | `Date.parse`可能な日付（例: `2026-05-26`）。更新したなら`updatedAt`が新しいか |
-| `featureIds` | 任意 | 文字列配列（型はコードが検証）。**各IDが本文の`<BrowserSupportStatus featureId="..." />`と1対1で一致**するか人手確認（片方だけ・綴り違いを指摘） |
-
-frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`で落ちる。必須キー欠落・日付不正は要修正。
-
-## ブログ固有3: MDXコンポーネントの利用
-
-下の部品は`apps/main/src/components/blog/blog-mdx-components`の`blogMdxComponents`で渡されるので、MDXでは import しない。propsが正しいか確認する。
-
-| コンポーネント | 主なprops |
-|---------------|-----------|
-| `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
-| `PlaygroundEmbed` | `sectionId`（必須。`apps/main/src/playgrounds/<id>/`のディレクトリ名＝セクションの`id`） / `headingLevel`（必須。置いた節の一つ下の段） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
-| `Playground` | `title`（必須） / `headingLevel`（記事の中では必須。置いた節の一つ下の段）。子にデモ |
-| `LinkCard` | `href`（必須） / `variant?` |
-| `Image` / `FloatImage` | `src`・`alt`・`width`・`height`（すべて必須。width と height は画像の縦横比に合わせる） / `loading?` |
-| `Alert` | `tone`（`warning`等） / `message` |
-
-- **動く例**: コードブロックのメタに`demo="<名前>"`を書いた HTML・CSS・JS・tsx は、記事の中で動く。説明に要る見た目（大きさ・色・並べ方）がコードに書いてあり、要の行が`[!hl]`で強調されているかを見る。tsx は部品を`export default`で書き、`react`と`react-dom`のほかを import していないかを見る。HTML・CSS・JS・React で書けるのに Playground や`_components`で動かしているデモは、動く例に替えられないかを指摘する。
-- 見出し・段落・リンク・インラインコードは`apps/main/src/components/site/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
-- **import検証**: MDXが`@/`・`next`・`next-themes`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`apps/main/src/playgrounds/<id>/`のディレクトリ名（セクションの`id`）と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないとビルドの描画で落ちる）。
-- **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。
-
-## ブログ固有4: 見出し階層・リンク・画像・テーブル
+## ブログ固有5: 見出し階層・リンク・画像・テーブル
 
 > 見出しの**中身**（具体性・オチにしない・二要素を詰め込まない）は `/writing-review`（整合性・流れ）で見る。ここは MDX 描画に絡む**階層**とリンク・画像・テーブル。
 
@@ -130,38 +127,43 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 ## ブログ記事レビュー: <slug>
 
 ### 🔴 要修正
-- `article.mdx:12` 本文に太字 `**重要**` → ブログは太字を使わない。文の組み立てで強調
+- `article.mdx:70` 「おわりに」の節の「すぐ消える要素に付けます」が`:62`の「要素が消えるだけなら、この指定は要りません」と食い違う → 本文に合わせる
+- `article.mdx` 動かして分かったことが無い → 例: 手元のSafariとChromeで同じデモを開き、違いがあればブラウザの名前と一緒に書く
+- `article.mdx:16` 用途にtextareaを挙げているが、コード例はinputだけ → textareaの例を足す
 - `article.mdx:42` 言語指定のないコードフェンス → ` ```ts ` を付ける
-- `article.mdx:55` 本文にmarkdownテーブル → 横スクロールに弱い。箇条書き/定義に置き換える
 - `article.mdx:88` 文体混在（ですます/である）【writing-review】
 
 ### 🟡 推奨
+- `article.mdx:2` タイトルが41字で、作業が仕様の言葉 → 機能名を先頭に置き、検索される作業の言葉で30字前後に
+- `article.mdx` 最初の2節にデモも最小のコードも無い（最初のコードは3節目、デモは4節目）→ どちらかを2節目までに移し、何が見えるかを添える
 - `article.mdx` コードが主役だが `[!og]` 無し（`getBlogOgCode`使用）→ 代表ブロックに `// [!og]`
-- `article.mdx:15` 「React の」→「Reactの」【writing-review】
 
 ### 🟢 任意
 - `article.mdx:60` 注目コードに `[!hl]` を付ける余地
 
 ### 指摘なしの観点
+- 本文のコード: nodeとagent-browserで動作を確認、OK
 - frontmatter / featureIds⇔BrowserSupportStatus: OK
 - MDXコンポーネント: OK
-- 文章（writing-review）: 全観点（日本語ルール〜語り口・事実確認）とも問題なし
+- 文章（writing-review）: 全観点（日本語ルール〜公開前チェック）とも問題なし
 ```
 
-**重要度の天井**（writing-review と共通）:
+**重要度の天井**（writing-reviewの上限に、ブログ固有の区分を足したもの）:
 
-- 客観違反（言語なしフェンス・frontmatter不正・`featureIds`不一致・本文の太字・本文のテーブル・日本語ルール違反）→ **要修正**まで可。
-- 主観観点（整合性・独自性・語り口）→ 原則 **推奨**上限。例外: 論理矛盾・焼き直し（独自性ゼロの足切り該当）は要修正。
-- コードの動作・技術的正確性は対象外（その旨をレポートに一言）。
+- **要修正**まで可:
+  - 客観違反（言語なしフェンス／frontmatter不正／`featureIds`不一致／本文の太字／本文のテーブル／日本語ルール違反）。
+  - 記事の決まりの中身（動かして分かったことが無い／挙げた用途のコードが無い／コードが動かない／本文と「おわりに」の節が食い違う）。
+- **推奨**上限:
+  - 記事の決まりの見せ方と冒頭（タイトル／description／最初の段落／書き分け／デモか最小のコードの位置／デモのコメント）。
+  - 主観観点（整合性、独自性、語り口）。例外として、論理矛盾と焼き直し（独自性ゼロの足切り該当）は要修正にしてよい。
 - 指摘ゼロの観点も「OK」と明記する。
 
 ## チェックリスト
 
 - [ ] 文章面: `/writing-review` を実行（不在時はフォールバックの5点＋文章系コマンド）。文章観点1〜7を網羅した
-- [ ] ブログ固有の上書き: 本文に太字（`**`）が無い
-- [ ] 機械的補助コマンド（太字 / 言語なしフェンス / `[!og]` / テーブル / 英日スペース / 文体）を実行した
-- [ ] ブログ固有1: `@repo/code-highlight`の活用（言語・`[!og]`較正・`[!hl]`/`[!callout:]`）
-- [ ] ブログ固有2: frontmatter整合性（必須キー・`featureIds`⇔`BrowserSupportStatus`）
-- [ ] ブログ固有3: MDXコンポーネントのprops（importしない。MCP不在時は型定義/docsで確認）
-- [ ] ブログ固有4: 見出し階層（Playgroundの`headingLevel`含む）・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`と`article-outline.test.ts`が通る
+- [ ] writing-reviewの上書き: 本文に太字（`**`）が無い。独自性とコードの動作はブログ固有1の結果に寄せた
+- [ ] 機械的補助コマンド（太字 / 言語なしフェンス / `[!og]` / テーブル / 文字数と最初のコードとデモの位置 / 英日スペース / 文体）を実行した
+- [ ] ブログ固有1: 機能を紹介する記事で、記事の決まりの3つ（見せ方と冒頭と中身）を見て、本文のコードを動かした
+- [ ] ブログ固有2〜4: `references/mdx-checks.md` を読み、コードハイライト（言語・`[!og]`較正・`[!hl]`/`[!callout:]`）、MDXコンポーネントのprops（importしない。MCP不在時は型定義/docsで確認）、frontmatter整合性（必須キー・`featureIds`⇔`BrowserSupportStatus`）を見た
+- [ ] ブログ固有5: 見出し階層（Playgroundの`headingLevel`含む）・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`と`article-outline.test.ts`が通る
 - [ ] 文章面とブログ固有を統合し、重要度つきレポートを出力した（ファイルは変更していない）
