@@ -15,7 +15,7 @@ featureIds:
 
 `document.caretPositionFromPoint`は、画面上の座標を渡すと、そこにキャレット（テキストカーソル）を置いたときのノードと文字の位置を返すメソッドです。クリックやドロップの座標が、テキストの何文字目にあたるかが分かります。Safari 26.2が対応して、Baseline 2025に入りました。
 
-入力欄をクリックした位置なら、クリックのあとの`selectionStart`で分かります。一方、マウスを重ねただけのときやドロップしたときは選択範囲が動かないので、座標の下の文字の位置はこのメソッドで求めます。
+マウスを重ねただけのときやドロップしたときは、クリックと違って選択範囲が動きません。そうした座標の下の文字の位置は、このメソッドで求めます。
 
 ```js
 document.addEventListener('click', (event) => {
@@ -29,14 +29,22 @@ document.addEventListener('click', (event) => {
 
 開発者ツールのコンソールに貼ってこのページの本文をクリックすると、クリックしたテキストノードと、その中の位置が出ます。文字の左半分を押すとその文字の前、右半分を押すと後ろの位置が返ります。
 
-## document.caretPositionFromPoint
-
-`document.caretPositionFromPoint`は、指定した座標に対応するキャレット位置を`CaretPosition`オブジェクトとして返します。
+## 引数と返り値
 
 ```ts
 document.caretPositionFromPoint(x, y);
 document.caretPositionFromPoint(x, y, options);
 ```
+
+座標は`clientX`と`clientY`と同じビューポートの座標で、スクロールしたページで`pageY`を渡すと違う位置が返ります。返り値は`CaretPosition`オブジェクトで、座標がビューポートの外か負の値のときは`null`です。テキストの無い空の`div`の上では、`null`ではなくその`div`と0が返ります。
+
+- `offsetNode`：キャレット位置を含むノード。ふつうはテキストノードで、`input`や`textarea`の上ではその要素になる
+- `offset`：`offsetNode`の中の位置。テキストノードなら文字の位置、`input`や`textarea`なら`value`の中の文字の位置、それ以外の要素なら子ノードの位置
+- `getClientRect()`：キャレットの立つ位置の矩形。テキストノードでは幅0で、高さは文字の高さほどになる
+
+画像の上では、ChromeとSafariは親の要素と画像の位置を、Firefoxは`img`要素と0を返します。`offsetNode`が要素のとき、`getClientRect()`は`null`ではなく、`x`と`y`と幅と高さがすべて0の矩形を返します。Safariは、`input`と`textarea`の中を指したときも0の矩形を返します。
+
+### Shadow DOMの中を指すとき
 
 第3引数の`options`には、中の位置まで返してよいShadowRootを`shadowRoots`で渡せます。
 
@@ -46,37 +54,7 @@ const caretPosition = document.caretPositionFromPoint(x, y, {
 });
 ```
 
-座標がShadow DOMの中を指すとき、そのShadowRootを`shadowRoots`に渡していれば、中のテキストノードと文字の位置が返ります。渡していなければ、ホスト要素の親と、その中でのホスト要素の位置が返ります。たとえば`<div>before<span id="host"></span>after</div>`の`span`にShadow DOMを付けて中を指すと、渡さないときは`div`と1が返ります。閉じたShadow DOMでも、渡せば中の位置が返ります。
-
-`caretPositionFromPoint`は以下の場合に`null`を返します。
-
-- ドキュメントにビューポートが関連付けられていない場合
-- 座標が負の値またはビューポート外の場合
-- 指定した座標にテキスト挿入ポイントがない場合
-
-実際に`null`が返るのは、ビューポートの外と負の座標だけです。テキストの無い空の`div`の上ではその`div`と0が、ページの下の余白では近くのテキストの末尾が返ります。座標は`clientX`と`clientY`と同じビューポートの座標です。スクロールしたページで`pageY`を渡すと、違う位置が返ります。
-
-### CaretPositionのプロパティ
-
-`CaretPosition`オブジェクトは以下のプロパティを持ちます。
-
-#### offsetNode
-
-キャレット位置を含むノードを返します。通常はテキストノードですが、要素ノードの場合もあります。
-
-`input`や`textarea`の上では、その要素が返り、`offset`は`value`の中の文字の位置になります。画像の上では、ChromeとSafariは親の要素と画像の位置を、Firefoxは`img`要素と0を返します。
-
-#### offset
-
-`offsetNode`内でのキャレットのオフセット位置を返します。テキストノードの場合は文字のインデックス、要素ノードの場合は子ノードのインデックスになります。
-
-### CaretPositionのメソッド
-
-#### getClientRect()
-
-キャレット位置の矩形情報を`DOMRect`オブジェクトとして返します。テキストノードのときは、キャレットの立つ位置にある幅0の矩形で、高さは文字の高さほどです。
-
-`offsetNode`が要素のときは`null`ではなく、x・y・幅・高さがすべて0の矩形が返ります。Safariは、`input`と`textarea`の中を指したときも0の矩形を返します。
+座標がShadow DOMの中を指すとき、そのShadowRootを渡していれば、中のテキストノードと文字の位置が返ります。渡していなければ、ホスト要素の親と、その中でのホスト要素の位置が返ります。たとえば`<div>before<span id="host"></span>after</div>`の`span`にShadow DOMを付けて中を指すと、渡さないときは`div`と1が返ります。閉じたShadow DOMでも、渡せば中の位置が返ります。
 
 ## 基本的な使い方
 
@@ -141,6 +119,4 @@ dropZone.addEventListener('drop', (event) => {
 
 ## おわりに
 
-`document.caretPositionFromPoint`を紹介しました。似た名前の`document.caretRangeFromPoint`はFirefoxにもありますが、仕様にあるのは`document.caretPositionFromPoint`のほうです。
-
-座標からテキストの中の位置が分かるので、クリックした文字を調べたり、ドロップした位置に文字を入れたりするときに使えます。Baseline 2025で主要なブラウザに揃っています。
+`document.caretPositionFromPoint`を使うと、座標からテキストの中の位置が分かり、クリックした文字を調べたり、ドロップした位置に文字を入れたりできます。似た名前の`caretRangeFromPoint`は仕様にないメソッドなので、新しく書くコードではこちらを使います。
