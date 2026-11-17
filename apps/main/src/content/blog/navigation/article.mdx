@@ -16,7 +16,7 @@ featureIds:
 
 Navigation APIは、リンクのクリックやフォーム送信、ブラウザの戻るボタンと進むボタンといったページの遷移を、`navigation`オブジェクトの`navigate`イベント1つで受け取れるAPIです。イベントの`intercept()`を呼ぶと、ページを読み込み直す代わりに、JavaScriptで画面を書き換えるSPAの遷移になります。Firefox 147が対応して、Baseline 2026に入りました。
 
-遷移のたびにページを読み込み直すサイトなら、History APIもNavigation APIも要りません。SPAでも、ルーターのライブラリが用意する`<Link>`のような部品でリンクを書くなら、ライブラリの内側のHistory APIで足ります。素の`<a>`やフォーム、戻るボタンと進むボタンまでを1か所で受け取り、遷移の途中でデータを取りに行く処理を挟めるのは、Navigation APIだけです。
+遷移のたびにページを読み込み直すサイトでは、History APIもNavigation APIも使いません。SPAでも、ルーターのライブラリが用意する`<Link>`のような部品でリンクを書くときは、ライブラリがHistory APIを内側で使います。素の`<a>`やフォーム、戻るボタンと進むボタンまでを1か所で受け取り、遷移の途中でデータを取りに行く処理を挟めるのは、Navigation APIだけです。
 
 ```html
 <a href="/about">About</a>
