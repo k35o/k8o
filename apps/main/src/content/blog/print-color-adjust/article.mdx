@@ -17,7 +17,7 @@ import { PrintColorAdjustExample } from './_components/print-color-adjust-exampl
 
 `print-color-adjust`は、印刷するときにブラウザが色を変えてよいかを指定するCSSプロパティです。`exact`を指定すると、印刷で省かれる背景色や、変えられる文字色をそのまま印刷できます。Chrome 136が接頭辞なしの名前に対応して、Baseline 2025に入りました。
 
-ブラウザは印刷するとき、インクを節約し文字を読みやすくするために、背景色を省いたり文字色を変えたりします。ページ全体の背景を印刷するかは、ユーザーが印刷の設定（Chromeなら背景のグラフィック）で選べます。印刷のときだけ別の色にするなら、`@media print`で足ります。しかし、ページの側から、特定の要素の色を変えずに印刷するよう指示できるのは`print-color-adjust: exact`だけです。
+ブラウザは印刷するとき、インクを節約し文字を読みやすくするために、背景色を省いたり文字色を変えたりします。ページ全体の背景を印刷するかは、ユーザーが印刷の設定（Chromeなら背景のグラフィック）で選べます。印刷のときだけ色を変えるには、`@media print`を使います。ページの側から、特定の要素の色を変えずに印刷するよう指示できるのは`print-color-adjust: exact`だけです。
 
 紺の背景に白い文字のdivを2つ用意し、下のdivにだけ`print-color-adjust: exact`を指定します。
 
@@ -34,7 +34,7 @@ import { PrintColorAdjustExample } from './_components/print-color-adjust-exampl
 
 値は`economy`（初期値）と`exact`の2つで、親要素から子要素へ継承されます。
 
-接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。ChromeとSafariは`-webkit-print-color-adjust`も受け付けますが、Firefoxは受け付けません。`-moz-print-color-adjust`はどれも受け付けず、古い名前の`color-adjust`はSafariとFirefoxだけが受け付けます。接頭辞なしの`print-color-adjust`はどれも受け付けるので、今はこれだけを書けば足ります。
+接頭辞の付いた書き方は、ブラウザによって受け付けるものが違います。ChromeとSafariは`-webkit-print-color-adjust`も受け付けますが、Firefoxは受け付けません。`-moz-print-color-adjust`はどれも受け付けず、古い名前の`color-adjust`はSafariとFirefoxだけが受け付けます。接頭辞なしの`print-color-adjust`はどれも受け付けるので、これだけを書きます。
 
 ### economy
 
