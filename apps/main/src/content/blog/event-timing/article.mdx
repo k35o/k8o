@@ -15,7 +15,7 @@ featureIds:
 
 Event Timing API（Performance Event Timing API）は、クリックやキー入力などのイベントが起きてから、ハンドラが動いて次に画面が描かれるまでの時間を、イベントごとに返すAPIです。Core Web VitalsのINP（Interaction to Next Paint）は、この時間から求めます。Safari 26.2が対応して、Baseline 2025に入りました。
 
-ハンドラの処理にかかった時間だけなら、`performance.now()`で前後を測れば足ります。ただ、ユーザーが感じる遅さには、ハンドラが動き出すまでの待ちと、ハンドラの後に画面が描かれるまでの時間も入ります。この2つまで含めて測るときに、Event Timing APIを使います。
+ハンドラの処理にかかった時間は、`performance.now()`で前後を測れば分かります。ただ、ユーザーが感じる遅さには、ハンドラが動き出すまでの待ちと、ハンドラの後に画面が描かれるまでの時間も入ります。この2つまで含めて測るときに、Event Timing APIを使います。
 
 ## 基本的な使い方
 
