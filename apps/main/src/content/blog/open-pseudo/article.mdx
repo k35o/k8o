@@ -15,7 +15,7 @@ featureIds:
 
 `:open`疑似クラスは、開いている`<dialog>`と`<details>`、`<select>`、ピッカーを持つ`<input>`にマッチするセレクタです。`<select>`なら選択肢の一覧を、`<input type="color">`なら色を選ぶ画面を開いているあいだ当たります。Safari 26.5が対応して、Baseline 2026に入りました。
 
-`<dialog>`と`<details>`だけなら、`dialog[open]`や`details[open]`のように、`open`属性のセレクタで足ります。`<select>`や`<input>`のピッカーには、開いている状態を選ぶセレクタがありませんでした。`:open`は、これらをまとめて表せます。
+`<dialog>`と`<details>`の開いた状態は、`dialog[open]`や`details[open]`のように、`open`属性のセレクタで選べます。`<select>`や`<input>`のピッカーには、開いている状態を選ぶセレクタがありませんでした。`:open`は、これらをまとめて表せます。
 
 ```html
 <style>
