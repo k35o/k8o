@@ -11,7 +11,7 @@ updatedAt: 2026-11-09
 
 `storybook-framework-hono-vite`は、Hono JSXで書いたコンポーネントをStorybookで表示し、テストするためのStorybookフレームワークです。`@storybook/react-vite`と同じく、storyに`component`を書くだけでHono JSXのランタイムでマウントされ、`useState`などのフックやイベントハンドラが動きます。
 
-propsごとの見た目を並べるだけなら、`@storybook/html-vite`のstoryで`renderToString`の結果を返せば足ります。クリックで状態が変わるコンポーネントをplay関数で操作したいときや、storyを切り替えたときに`useEffect`のcleanupを呼ばせたいときに、このフレームワークが要ります。`hono/jsx`と`hono/jsx/dom`のどちらのランタイムを使うプロジェクトでも使えます。
+propsごとの見た目を並べるときは、`@storybook/html-vite`のstoryで`renderToString`の結果を返す方法もあります。クリックで状態が変わるコンポーネントをplay関数で操作したいときや、storyを切り替えたときに`useEffect`のcleanupを呼ばせたいときに、このフレームワークが要ります。`hono/jsx`と`hono/jsx/dom`のどちらのランタイムを使うプロジェクトでも使えます。
 
 <LinkCard href="https://github.com/k35o/storybook-framework-hono-vite" variant="outline" />
 
@@ -41,7 +41,7 @@ Storybookのframework APIは、rendererとbuilderを差し替えられるよう�
 pnpm add -D storybook-framework-hono-vite storybook vite hono @storybook/addon-vitest @storybook/addon-a11y vitest @vitest/browser-playwright playwright
 ```
 
-`.storybook/main.ts`で`framework`にこのパッケージを指定します。`stories`や`addons`はこれまで通りで、`@storybook/react-vite`を使っていたプロジェクトなら`framework.name`を差し替えるだけで済みます。
+`.storybook/main.ts`で`framework`にこのパッケージを指定します。`stories`や`addons`はこれまで通りで、`@storybook/react-vite`を使っていたプロジェクトでは`framework.name`を差し替えます。
 
 ```ts
 import type { StorybookConfig } from 'storybook-framework-hono-vite';
