@@ -17,17 +17,29 @@ featureIds:
 
 マウスを重ねただけのときやドロップしたときは、クリックと違って選択範囲が動きません。そうした座標の下の文字の位置は、このメソッドで求めます。
 
-```js
-document.addEventListener('click', (event) => {
-  const position = document.caretPositionFromPoint(
+```js demo="click"
+const output = document.querySelector('output');
+document.querySelector('p').addEventListener('click', (event) => {
+  const caretPosition = document.caretPositionFromPoint(
     event.clientX,
     event.clientY,
   );
-  console.log(position?.offsetNode, position?.offset);
+  if (caretPosition?.offsetNode.nodeType !== Node.TEXT_NODE) return;
+
+  const { offsetNode, offset } = caretPosition;
+  const rect = caretPosition.getClientRect();
+  // 文字の右半分を押すと、offset はその文字の後ろを指す
+  const index = rect && event.clientX < rect.x ? offset - 1 : offset;
+  output.textContent = `offset: ${offset}、クリックした文字: ${offsetNode.textContent[index]}`;
 });
 ```
 
-開発者ツールのコンソールに貼ってこのページの本文をクリックすると、クリックしたテキストノードと、その中の位置が出ます。文字の左半分を押すとその文字の前、右半分を押すと後ろの位置が返ります。
+```html demo="click"
+<p>吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。</p>
+<output>文章の好きな文字をクリックしてください</output>
+```
+
+結果の欄で文字をクリックすると、`offset`とクリックした文字が出ます。文字の右半分を押すと`offset`はその文字の後ろを指すので、`getClientRect()`の`x`とクリックした`x`を比べ、クリックした点が左にあれば1つ前の文字を取っています。行の右の余白を押すと、文字は`undefined`になります。
 
 ## 引数と返り値
 
@@ -56,66 +68,63 @@ const caretPosition = document.caretPositionFromPoint(x, y, {
 
 座標がShadow DOMの中を指すとき、そのShadowRootを渡していれば、中のテキストノードと文字の位置が返ります。渡していなければ、ホスト要素の親と、その中でのホスト要素の位置が返ります。たとえば`<div>before<span id="host"></span>after</div>`の`span`にShadow DOMを付けて中を指すと、渡さないときは`div`と1が返ります。閉じたShadow DOMでも、渡せば中の位置が返ります。
 
-## 基本的な使い方
+## ドロップした位置に文字を入れる
 
-クリックした文字を取り出す例です。文字の右半分を押すと`offset`はその文字の後ろを指すので、`getClientRect()`の`x`とクリックした`x`を比べ、クリックした点が左にあれば1つ前の文字を取ります。
+```js demo="drop"
+const text = document.querySelector('#text');
+for (const word of document.querySelectorAll('[draggable]')) {
+  word.addEventListener('dragstart', (event) => {
+    event.dataTransfer.setData('text/plain', word.textContent);
+  });
+}
 
-```ts
-// [!og]
-document.addEventListener('click', (event) => {
-  const caretPosition = document.caretPositionFromPoint(
-    event.clientX,
-    event.clientY,
-  );
-  if (caretPosition?.offsetNode.nodeType !== Node.TEXT_NODE) return;
-
-  const { offsetNode, offset } = caretPosition;
-  const rect = caretPosition.getClientRect();
-  // 文字の右半分を押すと、offset はその文字の後ろを指す
-  const index = rect && event.clientX < rect.x ? offset - 1 : offset;
-  console.log('クリックした文字:', offsetNode.textContent?.[index]);
-});
-```
-
-左から右へ書く横書きの文字なら、文字の左半分と右半分のどちらを押しても同じ文字が出ます。行の右の余白を押すと`undefined`になります。
-
-<PlaygroundEmbed demo="キャレット位置取得" headingLevel="h4" sectionId="caret-position-from-point" />
-
-テキストをクリックすると、`offset`と`offsetNode`の種類と名前が並び、キャレットの立つ位置に縦線が入ります。
-
-### ドラッグ&ドロップでのテキスト挿入
-
-ドラッグしたテキストをドロップ位置に挿入する実装例です。
-
-```ts
+const dropZone = document.querySelector('#drop-zone');
+dropZone.addEventListener('dragover', (event) => event.preventDefault());
 dropZone.addEventListener('drop', (event) => {
   event.preventDefault();
-
-  const text = event.dataTransfer?.getData('text/plain');
-  if (!text) return;
-
   const caretPosition = document.caretPositionFromPoint(
     event.clientX,
     event.clientY,
   );
-
-  if (caretPosition && caretPosition.offsetNode.nodeType === Node.TEXT_NODE) {
-    const textNode = caretPosition.offsetNode as Text;
-    const offset = caretPosition.offset;
-
-    // テキストを挿入位置で分割して挿入
-    const before = textNode.textContent?.slice(0, offset) ?? '';
-    const after = textNode.textContent?.slice(offset) ?? '';
-    textNode.textContent = before + text + after;
+  // ヒントの文の上に落としたときは入れない
+  if (
+    caretPosition?.offsetNode.nodeType !== Node.TEXT_NODE ||
+    !text.contains(caretPosition.offsetNode)
+  ) {
+    return;
   }
+
+  const word = event.dataTransfer.getData('text/plain');
+  caretPosition.offsetNode.insertData(caretPosition.offset, word);
 });
 ```
 
-ドロップ先の中にヒントの文のような別のテキストがあると、そのテキストノードに挿入されます。下のデモでは、`offsetNode`が本文の要素の中にあるかを`contains()`で確かめてから挿入しています。
+```html demo="drop"
+<p>
+  <span draggable="true">素敵な</span>
+  <span draggable="true">可愛い</span>
+  <span draggable="true">立派な</span>
+</p>
+<div id="drop-zone">
+  <p id="text">吾輩は猫である。名前はまだ無い。</p>
+  <p>上の単語をドラッグして、文章の好きな位置に落とす</p>
+</div>
+```
 
-<PlaygroundEmbed demo="ドラッグ&ドロップ" headingLevel="h5" sectionId="caret-position-from-point" />
+```css demo="drop"
+[draggable] {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid gray;
+  border-radius: 0.25rem;
+  cursor: grab;
+}
+#drop-zone {
+  padding: 0 1rem;
+  border: 1px dashed gray;
+}
+```
 
-単語のチップを文章の好きな位置へドラッグして落とすと、その位置に単語が入ります。
+結果の欄で単語を文章の好きな位置へドラッグして落とすと、その位置に単語が入ります。ドロップ先の中にヒントの文のような別のテキストがあると、そこに落としたときはそのテキストノードに入るので、`offsetNode`が本文の要素の中にあるかを`contains()`で確かめています。
 
 ## おわりに
 
