@@ -15,7 +15,7 @@ featureIds:
 
 URLPattern APIは、`/blog/:id`のようなパターンでURLを照合し、`:id`に当たる部分を取り出せるAPIです。Safari 26が対応して、Baseline 2025に入りました。
 
-パスが決まった文字列と同じかを見るだけなら、`url.pathname === "/blog"`や`startsWith()`で足ります。`/blog/`の後ろの記事名を取り出したり、数字だけのIDに絞ったりするには、これまで正規表現を書いていました。URLPatternなら名前を付けたパラメータで書け、ホスト名やクエリも部品ごとに照合できます。
+パスが決まった文字列と同じかは、`url.pathname === "/blog"`や`startsWith()`で調べられます。`/blog/`の後ろの記事名を取り出したり、数字だけのIDに絞ったりするには、これまで正規表現を書いていました。URLPatternなら名前を付けたパラメータで書け、ホスト名やクエリも部品ごとに照合できます。
 
 ```js
 const pattern = new URLPattern({ pathname: "/blog/:slug" });
