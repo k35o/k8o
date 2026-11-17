@@ -13,7 +13,7 @@ featureIds:
 
 ## はじめに
 
-`zstd`（Zstandard）は、Metaが開発した可逆圧縮のアルゴリズムです。HTTPではレスポンスの圧縮形式の1つとして使え、ブラウザは`Content-Encoding: zstd`で返されたレスポンスを展開します。
+`zstd`（Zstandard）は、Metaが開発した可逆圧縮のアルゴリズムです。HTTPではレスポンスの圧縮形式の1つとして使え、ブラウザは`Content-Encoding: zstd`で返されたレスポンスを展開します。Safari 26.3が対応して、Baseline 2026に入りました。
 
 `gzip`と`Brotli`で返せていれば、多くの場面はそれで足ります。`zstd`を足して変わるのは、圧縮と展開にかかる時間です。リクエストのたびに圧縮するレスポンスを、`gzip`より短い時間で小さくしたいときに向いています。
 
@@ -47,7 +47,7 @@ Content-Encoding: br
 
 なお、サーバーが圧縮に対応していない場合や、クライアントが送った`Accept-Encoding`の中に対応形式がなかった場合は、`Content-Encoding`ヘッダーなしで非圧縮のまま返されます。
 
-`zstd`はこの仕組みに乗っかる形で、Baseline 2026で新たに加わった圧縮形式です。
+`zstd`も、この仕組みで使える圧縮形式の1つです。
 
 ## zstd
 
@@ -58,11 +58,10 @@ Content-Encoding: br
 
 また、圧縮速度と圧縮率はトレードオフの関係にありますが、圧縮レベルを細かく調整することでそのバランスを柔軟に変えられます。
 
-手元のNode.js 26.13.0（zstd 1.5.7）で、この記事のHTML（約211KB）を圧縮して比べました。`gzip`（レベル6）は1.5msで52KB、`zstd`（既定のレベル3）は0.2msで37KBになり、`zstd`の方が速く小さくなりました。最も小さくなったのは、123msかけた`Brotli`（品質11）の28KBです。react-domの本番用のJS（約625KB）では、レベル3の`zstd`は`gzip`より大きくなり、レベル9で`gzip`より速く小さくなりました。展開は、どちらのファイルでも`zstd`が最も速く終わりました。
+Node.jsの`node:zlib`で、この記事のHTMLを圧縮して比べると、`zstd`（既定のレベル3）は`gzip`（レベル6）より速く、小さくなります。最も小さくなるのは`Brotli`（品質11）ですが、圧縮には`gzip`の数十倍の時間がかかります。react-domの本番用のJSでは、レベル3の`zstd`は`gzip`より大きくなり、レベル9で`gzip`より速く小さくなります。展開は、どちらのファイルでも`zstd`が`Brotli`より速く終わります。
 
 ### ブラウザでの利用
 
-Baseline 2026に加わったことで、主要なブラウザで`zstd`が利用できるようになりました。
 対応したブラウザでは、`Accept-Encoding`ヘッダーに`zstd`が自動的に追加されます。
 
 ```http
@@ -75,7 +74,7 @@ Accept-Encoding: gzip, deflate, br, zstd
 Content-Encoding: zstd
 ```
 
-Node.js 26.13.0では、`node:zlib`の`zstdCompressSync`で圧縮して返せます。
+Node.jsでは、`node:zlib`の`zstdCompressSync`で圧縮して返せます。
 
 ```js title="server.mjs"
 import { createServer } from 'node:http';
@@ -102,9 +101,9 @@ createServer((req, res) => {
 }).listen(3000);
 ```
 
-Chrome 156かFirefox 159で`http://localhost:3000`を開くと、ターミナルに`gzip, deflate, br, zstd`と出て、`zstd`で圧縮した見出しが表示されます。Safari 27.2では`gzip, deflate`とだけ出て、圧縮していない見出しが表示されます。Safari 27.2は`zstd`で返したレスポンスも展開できますが、`http`の`localhost`へのリクエストには`zstd`を付けませんでした。`https`で開いたページでは、ページの読み込みにも`fetch()`にも`gzip, deflate, br, zstd`を付けました。
+ChromeかFirefoxで`http://localhost:3000`を開くと、ターミナルに`gzip, deflate, br, zstd`と出て、`zstd`で圧縮した見出しが表示されます。Safariでは`gzip, deflate`とだけ出て、圧縮していない見出しが表示されます。Safariは`zstd`で返したレスポンスも展開できますが、`http`の`localhost`へのリクエストには`zstd`を付けません。`https`で開いたページでは、ページの読み込みにも`fetch()`にも`gzip, deflate, br, zstd`を付けます。
 
-ただし、ブラウザが`zstd`を送っても、サーバーが`zstd`を選ぶとは限りません。このサイトはVercelで配信していますが、2026年11月に`curl`で`Accept-Encoding: gzip, deflate, br, zstd`を送ると`Content-Encoding: br`が返り、`zstd`だけを送ると圧縮されずに返りました。どの形式で返すかはサーバーやCDNが決めるので、`zstd`で配信したいときは、DevToolsのネットワークパネルで`Content-Encoding`を見て、配信側が対応しているかを確かめます。
+ただし、ブラウザが`zstd`を送っても、サーバーが`zstd`を選ぶとは限りません。どの形式で返すかはサーバーやCDNが決めるので、`zstd`で配信したいときは、DevToolsのネットワークパネルで`Content-Encoding`を見て、配信側が対応しているかを確かめます。
 
 ## おわりに
 
