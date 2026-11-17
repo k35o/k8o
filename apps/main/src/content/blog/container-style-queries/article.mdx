@@ -15,7 +15,7 @@ featureIds:
 
 Container style queriesは、`@container style(--theme: dark)`のように、祖先要素のカスタムプロパティ（CSS変数）の値を条件にして、子孫のスタイルを切り替えるCSSの仕組みです。サイズクエリの`@container (width > 600px)`と同じ`@container`ルールで、幅の代わりにカスタムプロパティの値を見ます。
 
-親のクラスで子のスタイルを変えるだけなら、`.theme-dark .card`のような子孫セレクタで足ります。ただ、セレクタはカスタムプロパティの値を見られないので、`style`属性で書いた値や親から継承した値を条件にできません。Container style queriesを使うと、親はカスタムプロパティを置くだけで、子のCSSがその値を読んでスタイルを決められます。Firefox 151が対応して、Baseline 2026に入りました。
+親のクラスで子のスタイルを変えるときは、`.theme-dark .card`のような子孫セレクタを使います。ただ、セレクタはカスタムプロパティの値を見られないので、`style`属性で書いた値や親から継承した値を条件にできません。Container style queriesを使うと、親はカスタムプロパティを置くだけで、子のCSSがその値を読んでスタイルを決められます。Firefox 151が対応して、Baseline 2026に入りました。
 
 ## 基本構文
 
