@@ -15,9 +15,9 @@ import monitor from './_images/monitor.avif';
 
 ## はじめに
 
-Screen Wake Lock APIは、ページを表示しているあいだ、端末の画面が暗くなったりスリープしたりするのを止めるAPIです。`navigator.wakeLock.request('screen')`でロックを取ると、タブを離れるか`release()`を呼ぶまで画面が点いたままになります。
+Screen Wake Lock APIは、ページを表示しているあいだ、端末の画面が暗くなったりスリープしたりするのを止めるAPIです。`navigator.wakeLock.request('screen')`でロックを取ると、タブを離れるか`release()`を呼ぶまで画面が点いたままになります。iOSのSafari 18.4が対応して、Baseline 2025に入りました。
 
-ユーザーが画面を触っているあいだは、OSが画面を点けたままにするので、このAPIは要りません。レシピを見ながら料理するときのように、画面を見ているのに触らない場面では、OSの設定した時間で画面が暗くなります。この場面でページの側から画面を点けたままにできるのが、Screen Wake Lock APIです。2025年のBaselineに追加されました。
+ユーザーが画面を触っているあいだは、OSが画面を点けたままにするので、このAPIは要りません。レシピを見ながら料理するときのように、画面を見ているのに触らない場面では、OSの設定した時間で画面が暗くなります。この場面でページの側から画面を点けたままにできるのが、Screen Wake Lock APIです。
 
 ## Screen Wake Lock APIによるスリープを体験する
 
@@ -43,7 +43,7 @@ Macでは、標準のアクティビティモニタで確かめられます。`�
 これは表示中のタブが有効な範囲でのみScreen Wake Lock APIが有効になり、有効範囲からはみ出るとロックが解除されるためです。
 この仕様はセキュリティとプライバシーの問題を解決してくれています。
 
-Macのターミナルからは`pmset -g assertions`で確かめられます。Chrome 156とFirefox 159でロックを取ると、ブラウザのプロセスに`NoDisplaySleepAssertion`の行が加わり、その名前はChromeでは`Blink Wake Lock`、Firefoxでは`screen`でした。Firefox 159では、別のタブに切り替えるとこの行が消えました。
+Macのターミナルからは`pmset -g assertions`で確かめられます。ChromeとFirefoxでロックを取ると、ブラウザのプロセスに`NoDisplaySleepAssertion`の行が加わり、その名前はChromeでは`Blink Wake Lock`、Firefoxでは`screen`です。Firefoxでは、別のタブに切り替えるとこの行が消えます。
 
 ## Screen Wake Lock APIの使い方
 
@@ -68,15 +68,15 @@ await wakeLock.release();
 `navigator.wakeLock.request`は画面のスリープを防ぐことを要求するメソッドです。
 
 `navigator.wakeLock.request`は第1引数にロックの種類を任意で渡せます。
-指定できるのは`screen`だけで、省略しても`screen`になります。Chrome 156、Safari 27.2、Firefox 159のいずれでも、`'system'`のような別の値を渡すと`TypeError`になりました。
+指定できるのは`screen`だけで、省略しても`screen`になります。`'system'`のような別の値を渡すと`TypeError`になります。
 
-戻り値は`WakeLockSentinel`インスタンスで解決するPromiseです。ロックを取れないときは`NotAllowedError`で拒否されます。試したなかでは、次のときに`NotAllowedError`になりました。
+戻り値は`WakeLockSentinel`インスタンスで解決するPromiseです。ロックを取れないときは`NotAllowedError`で拒否されます。たとえば次のときです。
 
-- タブが隠れているとき（Firefox 159）
-- `allow="screen-wake-lock 'none'"`を付けた`iframe`の中（Chrome 156、Safari 27.2、Firefox 159）
-- ボタンを押すといったユーザーの操作を経ずに呼んだとき（Safari 27.2）
+- タブが隠れているとき
+- `allow="screen-wake-lock 'none'"`を付けた`iframe`の中
+- ボタンを押すといったユーザーの操作を経ずに呼んだとき（Safariだけ）
 
-Safari 27.2では、ページを開いた直後に呼んでも、`button.click()`でスクリプトからクリックして呼んでも断られ、`navigator.permissions.query({ name: 'screen-wake-lock' })`は`prompt`を返しました。Chrome 156とFirefox 159は`granted`を返し、ページを開いた直後でもロックを取れました。Safariに対応するなら、デモのようにボタンを押したときに`request()`を呼ぶ形にします。
+Safariでは、ページを開いた直後に呼んでも、`button.click()`でスクリプトからクリックして呼んでも断られ、`navigator.permissions.query({ name: 'screen-wake-lock' })`は`prompt`を返します。ChromeとFirefoxは`granted`を返し、ページを開いた直後でもロックを取れます。Safariに対応するなら、デモのようにボタンを押したときに`request()`を呼ぶ形にします。
 
 ### WakeLockSentinel
 
@@ -106,7 +106,7 @@ wakeLock.addEventListener('release', () => {
 });
 ```
 
-`release`イベントは、そのインスタンスのロックが外れたことを知らせるだけで、画面のロックが外れたとは限りません。Chrome 156とFirefox 159で`request()`を2回呼び、片方だけ`release()`すると、`release`は呼んだほうにだけ発火しました。もう片方の`released`は`false`のままで、`pmset -g assertions`の行も残りました。同じインスタンスの`release()`を2回呼んでもエラーにはならず、イベントも1回しか発火しません。
+`release`イベントは、そのインスタンスのロックが外れたことを知らせるだけで、画面のロックが外れたとは限りません。`request()`を2回呼び、片方だけ`release()`すると、`release`は呼んだほうにだけ発火します。もう片方の`released`は`false`のままです。ChromeとFirefoxでは、`pmset -g assertions`の行も残ります。同じインスタンスの`release()`を2回呼んでもエラーにはならず、イベントも1回しか発火しません。
 
 ### タブに戻ったときに取り直す
 
@@ -128,7 +128,7 @@ document.addEventListener('visibilitychange', async () => {
 });
 ```
 
-Firefox 159で試すと、別のタブに切り替えたときに`visibilitychange`、`release`の順に発火し、隠れているあいだの`request()`は`NotAllowedError`で断られました。元のタブに戻ると`visibilitychange`の中で新しいロックが取れ、`pmset -g assertions`の行も戻りました。Safari 27.2では、ボタンを押さずに開いたページで試すと、タブに戻ったときの`visibilitychange`の中で呼んだ`request()`も`NotAllowedError`で断られました。
+Firefoxでは、別のタブに切り替えたときに`visibilitychange`、`release`の順に発火し、隠れているあいだの`request()`は`NotAllowedError`で断られます。元のタブに戻ると`visibilitychange`の中で新しいロックが取れ、`pmset -g assertions`の行も戻ります。Safariでは、ボタンを押さずに開いたページだと、タブに戻ったときの`visibilitychange`の中で呼んだ`request()`も`NotAllowedError`で断られます。
 
 ## おわりに
 
