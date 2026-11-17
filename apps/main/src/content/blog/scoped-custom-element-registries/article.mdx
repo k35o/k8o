@@ -34,9 +34,10 @@ customElements.define('x-badge', BadgeV2); // NotSupportedError
 
 レジストリは`new CustomElementRegistry()`で作ります。`define()`や`get()`、`getName()`、`whenDefined()`、`upgrade()`は`customElements`と同じように使えます。作ったレジストリを`attachShadow()`の`customElementRegistry`オプションに渡すと、そのシャドウルートに結びつきます。
 
-例では、ページに追加されたときに版の文字を出すだけの2つの定義を使います。
+次の例では、ページに追加されたときに版の文字を出すだけの2つの定義を使い、ページ全体の`x-badge`は`BadgeV1`のまま、`scoped-panel`の中の`x-badge`だけを`BadgeV2`にしています。
 
-```js
+```js demo="badge"
+// [!og]
 class BadgeV1 extends HTMLElement {
   connectedCallback() {
     this.textContent = 'v1';
@@ -47,12 +48,7 @@ class BadgeV2 extends HTMLElement {
     this.textContent = 'v2';
   }
 }
-```
 
-次の例では、ページ全体の`x-badge`は`BadgeV1`のまま、`scoped-panel`の中の`x-badge`だけを`BadgeV2`にしています。
-
-```js
-// [!og]
 // ページ全体の x-badge は BadgeV1
 customElements.define('x-badge', BadgeV1);
 
@@ -75,14 +71,12 @@ class ScopedPanel extends HTMLElement {
 customElements.define('scoped-panel', ScopedPanel);
 ```
 
-ページに2つの要素を書くと、それぞれ別の定義になります。
-
-```html
+```html demo="badge"
 <x-badge></x-badge> <!-- BadgeV1 -->
 <scoped-panel></scoped-panel> <!-- 中の x-badge は BadgeV2 -->
 ```
 
-開くと、v1とv2が並びます。`scoped-panel`の中の`x-badge`は`BadgeV2`のインスタンスです。
+ページに書いた2つの要素はそれぞれ別の定義になり、結果の欄にv1とv2が並びます。`scoped-panel`の中の`x-badge`は`BadgeV2`のインスタンスです。
 
 `scoped-panel`のシャドウルートの中の要素は、定義を`registry`からだけ探し、`customElements`は見ません。そのため、中の`x-badge`は`BadgeV2`になり、ページの`BadgeV1`とは衝突しません。逆に`registry`に無い名前は、`customElements`に定義があっても未定義のまま残ります。シャドウルートの`innerHTML`や、シャドウルートの中の要素の`innerHTML`と`setHTMLUnsafe()`で書いたときも、パーサーはこのレジストリで要素を作ります。ただし、シャドウルートの`setHTMLUnsafe()`は、ChromeとSafariではこのレジストリで要素を作りますが、Firefoxでは`customElements`の定義で作ります。
 
