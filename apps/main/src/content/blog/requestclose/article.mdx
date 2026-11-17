@@ -15,7 +15,7 @@ featureIds:
 
 `requestClose`メソッドは、`<dialog>`要素を閉じる前に`cancel`イベントを発火させるメソッドです。`cancel`イベントで`preventDefault`メソッドを呼ぶと、閉じるのを止められます。Firefox 139が対応して、Baseline 2025に入りました。
 
-閉じるだけなら、`close`メソッドや`<form method="dialog">`の送信で足ります。ただ、`close`メソッドは`cancel`イベントを出さずにすぐ閉じるので、入力中なら閉じないといった確認を挟めません。
+ダイアログは、`close`メソッドや`<form method="dialog">`の送信で閉じられます。ただ、`close`メソッドは`cancel`イベントを出さずにすぐ閉じるので、入力中なら閉じないといった確認を挟めません。
 
 ```html
 <dialog id="dialog">
