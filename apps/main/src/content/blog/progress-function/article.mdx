@@ -36,26 +36,86 @@ h1 {
 
 幅が800pxなら`(800 - 400) / (1200 - 400)`で0.5になり、`font-size`は1.5remです。400pxより狭いと0、1200pxより広いと1になるので、`clamp()`で包まなくても1remと2remで止まります。幅の境界を変えるときは、式に並んだ400pxと1200pxを書き換えます。
 
-`100vw`の代わりに`100cqw`を渡すと、画面幅ではなくコンテナの幅を基準にできます。
+`100vw`の代わりに`100cqw`を渡すと、画面幅ではなくコンテナの幅を基準にできます。次の例では、枠の幅が150pxから350pxに広がるあいだに、文字サイズが1remから2remに変わります。
 
-<PlaygroundEmbed demo="画面幅を動かして文字サイズを見る" headingLevel="h4" sectionId="progress-function" />
+```css demo="container"
+.box {
+  container-type: inline-size;
+  max-inline-size: 100%;
+  outline: 1px dashed gray;
+}
+.box p {
+  font-size: calc(1rem + progress(100cqw, 150px, 350px) * 1rem);
+}
+```
 
-スライダーで画面幅に見立てた値を動かすと、上下の見出しが同じ大きさのまま変わり、400pxより狭いと1rem、1200pxより広いと2remで止まります。
+```html demo="container"
+<label>
+  枠の幅: <output id="value"></output>
+  <input type="range" id="width" min="100" max="400" step="10" value="250" />
+</label>
+<div class="box">
+  <p>見出しの文字</p>
+</div>
+```
+
+```js demo="container"
+const input = document.querySelector('#width');
+const output = document.querySelector('#value');
+const box = document.querySelector('.box');
+const update = () => {
+  box.style.inlineSize = `${input.value}px`;
+  output.textContent = `${input.value}px`;
+};
+input.addEventListener('input', update);
+update();
+```
+
+結果の欄でスライダーを動かすと、枠の幅に合わせて文字が大きくなり、150pxより狭いと1rem、350pxより広いと2remで止まります。
 
 ## 並び順を0から1に正規化する
 
 `sibling-index()`と`sibling-count()`を渡すと、リストの先頭を0、末尾を1にした比率が取れます。返り値は単位のない数値なので、そのまま`opacity`にも使えます。
 
-```css
+```css demo="siblings"
 li {
   --ratio: progress(sibling-index(), 1, max(sibling-count(), 2));
   opacity: calc(0.3 + var(--ratio) * 0.7);
+  width: calc(30% + var(--ratio) * 70%);
+  margin-block-end: 0.25rem;
+  background-color: steelblue;
+  color: white;
+  list-style: none;
 }
 ```
 
-<PlaygroundEmbed demo="項目数を変えても両端を固定する" headingLevel="h4" sectionId="progress-function" />
+```html demo="siblings"
+<p>
+  <button type="button" id="remove">減らす</button>
+  <button type="button" id="add">増やす</button>
+</p>
+<ul id="list">
+  <li>項目</li>
+  <li>項目</li>
+  <li>項目</li>
+  <li>項目</li>
+  <li>項目</li>
+</ul>
+```
 
-`sibling-index()`をそのまま係数にすると項目数で値の幅が変わりますが、`progress()`で比率にすれば両端は動きません。[sibling-index()の記事](/blog/sibling-count-index)で扱った遅延の計算も、この形にすると全体の所要時間を固定できます。
+```js demo="siblings"
+const list = document.querySelector('#list');
+document.querySelector('#add').addEventListener('click', () => {
+  const item = document.createElement('li');
+  item.textContent = '項目';
+  list.append(item);
+});
+document.querySelector('#remove').addEventListener('click', () => {
+  list.lastElementChild?.remove();
+});
+```
+
+結果の欄で項目を増やしたり減らしたりしても、先頭と末尾の濃さと幅は変わらず、間が等分されます。`sibling-index()`をそのまま係数にすると項目数で値の幅が変わりますが、`progress()`で比率にすれば両端は動きません。[sibling-index()の記事](/blog/sibling-count-index)で扱った遅延の計算も、この形にすると全体の所要時間を固定できます。
 
 終了値を`max()`で2以上にしているのは、項目が1つのときのためです。そのままだと開始値と終了値が同じ`progress(1, 1, 1)`になり、仕様では0を返しますが、Chromeでは`opacity`が0になって項目が見えなくなります。`max()`で包んでおけば、どのブラウザでも先頭と同じ濃さで見えます。
 
