@@ -15,7 +15,7 @@ featureIds:
 
 `Document.parseHTMLUnsafe()`は、HTML文字列か`TrustedHTML`を解析して、新しい`Document`を返す静的メソッドです。Safari 26が対応して、Baseline 2025に入りました。
 
-HTML文字列を解析するだけなら、これまでどおり`DOMParser`の`parseFromString()`メソッドで足ります。`parseHTMLUnsafe()`でしかできないのは、Declarative Shadow DOM（`<template shadowrootmode>`）をシャドウルートとして解析することです。サーバーが返したWeb Componentsを含むHTMLを、シャドウルートごと取り込めます。
+HTML文字列の解析は、`DOMParser`の`parseFromString()`メソッドでもできます。`parseHTMLUnsafe()`でしかできないのは、Declarative Shadow DOM（`<template shadowrootmode>`）をシャドウルートとして解析することです。サーバーが返したWeb Componentsを含むHTMLを、シャドウルートごと取り込めます。
 
 ## DOMParserとの違い
 
