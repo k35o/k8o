@@ -15,7 +15,7 @@ featureIds:
 
 Intl.Locale infoは、`Intl.Locale`に`getWeekInfo()`や`getTextInfo()`などのメソッドを足す機能です。週の始まりの曜日や書字方向といった、ロケールごとの慣習を返します。Firefox 153が対応して、Baseline 2026に入りました。
 
-日付や数値をロケールに合わせて表示するだけなら、`Intl.DateTimeFormat`や`Intl.NumberFormat`がロケールの慣習に従って整形するので足ります。カレンダーの列を何曜日から並べるかや、ページの`dir`属性のように、慣習の値そのものを受け取ってUIを組むときに、Intl.Locale infoが要ります。
+日付や数値をロケールに合わせて表示するときは、`Intl.DateTimeFormat`や`Intl.NumberFormat`がロケールの慣習に従って整形します。カレンダーの列を何曜日から並べるかや、ページの`dir`属性のように、慣習の値そのものを受け取ってUIを組むときに、Intl.Locale infoが要ります。
 
 ```js
 // [!og]
