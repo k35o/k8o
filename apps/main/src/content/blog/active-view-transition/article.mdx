@@ -15,7 +15,7 @@ featureIds:
 
 `:active-view-transition-type()`は、`startViewTransition()`の`types`オプションで渡したタイプのView Transitionが進んでいる間だけ、ルート要素（`<html>`）に当たる疑似クラスです。同じView Transitionでも、進むと戻るのようにタイプごとに別のアニメーションを書き分けられます。Firefox 147が対応して、Baseline 2026に入りました。
 
-アニメーションが1種類で済むなら、`::view-transition-old()`と`::view-transition-new()`に直接書けば足ります。進むと戻るで向きを変えるように遷移ごとにアニメーションを切り替えたい場合、これまでは遷移の前にJavaScriptで`<html>`へクラスを付け、終わったら外していました。`types`と`:active-view-transition-type()`を使うと、この付け外しをブラウザに任せられます。
+アニメーションが1種類のときは、`::view-transition-old()`と`::view-transition-new()`に直接書きます。進むと戻るで向きを変えるように遷移ごとにアニメーションを切り替えたい場合、これまでは遷移の前にJavaScriptで`<html>`へクラスを付け、終わったら外していました。`types`と`:active-view-transition-type()`を使うと、この付け外しをブラウザに任せられます。
 
 View Transition APIそのものは、[View Transition APIの記事](/blog/view-transitions)で書いています。
 
