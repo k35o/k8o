@@ -169,7 +169,7 @@ GitHub Actionsの`permissions`で`id-token`に`write`権限を付与する必要
   run: npm install -g npm@latest
 ```
 
-Node.js 22に同梱されるnpmは10系ですが、Node.js 24.5.0以降に同梱されるnpmは11.5.1以上です。Node.js 24.5.0以降を使うなら、npmを入れ直すこのstepは要りません。手元のNode.js 26.13.0では、同梱のnpmは11.20.0でした。
+Node.js 22に同梱されるnpmは10系ですが、Node.js 24.5.0以降に同梱されるnpmは11.5.1以上です。Node.js 24.5.0以降を使うなら、npmを入れ直すこのstepは要りません。
 
 ### package.jsonのrepositoryフィールドの設定
 `package.json`の`repository`フィールドにtypoがあるとリリースが失敗します。
