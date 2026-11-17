@@ -11,9 +11,7 @@ updatedAt: 2026-11-09
 
 `sb.mock`は、Storybookのストーリーが読み込むモジュールを、モック関数に置き換える関数です。`.storybook/preview.ts`に書いたモジュールはどのストーリーでもモックになり、戻り値をストーリーごとに変えられます。Storybookのv9.1.0で、`Automocking`という機能として追加されました。
 
-<LinkCard href="https://github.com/storybookjs/storybook/releases/tag/v9.1.0" />
-
-コンポーネントにpropsで渡せる値なら、ストーリーの`args`で変えれば足ります。コンポーネントが直接importする関数（データベースやAPIを呼ぶ関数など）の戻り値をストーリーごとに変えたいときに、モジュールのモックが要ります。従来のStorybookで主流だった、サブパスインポートや`Vite`・`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
+コンポーネントが直接importする関数（データベースやAPIを呼ぶ関数など）の戻り値をストーリーごとに変えたいときに、モジュールのモックが要ります。従来のStorybookで主流だった、サブパスインポートや`Vite`や`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
 
 ## sb.mockを使ってみる
 
