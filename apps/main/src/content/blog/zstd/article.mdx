@@ -15,7 +15,7 @@ featureIds:
 
 `zstd`（Zstandard）は、Metaが開発した可逆圧縮のアルゴリズムです。HTTPではレスポンスの圧縮形式の1つとして使え、ブラウザは`Content-Encoding: zstd`で返されたレスポンスを展開します。Safari 26.3が対応して、Baseline 2026に入りました。
 
-`gzip`と`Brotli`で返せていれば、多くの場面はそれで足ります。`zstd`を足して変わるのは、圧縮と展開にかかる時間です。リクエストのたびに圧縮するレスポンスを、`gzip`より短い時間で小さくしたいときに向いています。
+`zstd`は、`gzip`より短い時間で圧縮と展開ができます。リクエストのたびに圧縮するレスポンスでは、この速さが効きます。
 
 レスポンスボディは、`Accept-Encoding`リクエストヘッダーと`Content-Encoding`レスポンスヘッダーを使って圧縮できます。
 
@@ -53,8 +53,7 @@ Content-Encoding: br
 
 `zstd`は[RFC 8878](https://www.rfc-editor.org/rfc/rfc8878)で標準化されていて、`zlib`レベルの圧縮率を保ちつつリアルタイム圧縮が可能なことを目標に設計されています。
 
-[ベンチマーク](https://github.com/facebook/zstd?tab=readme-ov-file#benchmarks)によれば、`gzip(zlib)`を上回る圧縮率を誇り、`Brotli`と同等のサイズを維持しながら、数倍速い展開速度を実現しています。
-これにより、クライアント側のCPU負荷を抑えつつ高速なページロードが可能です。
+[ベンチマーク](https://github.com/facebook/zstd?tab=readme-ov-file#benchmarks)では、`gzip(zlib)`より圧縮率が高く、`Brotli`と同じくらいの大きさまで縮めたうえで、展開は数倍速くなっています。
 
 また、圧縮速度と圧縮率はトレードオフの関係にありますが、圧縮レベルを細かく調整することでそのバランスを柔軟に変えられます。
 
@@ -107,6 +106,4 @@ ChromeかFirefoxで`http://localhost:3000`を開くと、ターミナルに`gzip
 
 ## おわりに
 
-`zstd`がBaseline 2026で追加され、`gzip`・`Brotli`に並ぶ圧縮形式の選択肢として使えるようになりました。
-
-対応したブラウザは`Accept-Encoding`に`zstd`を自動で付けるので、サーバーかCDNが`zstd`で返せば使われます。事前に圧縮して置ける静的なファイルは時間をかけた`Brotli`が最も小さくなり、リクエストのたびに圧縮するレスポンスは`zstd`で`gzip`より速く小さくできます。配信している`Content-Encoding`を確かめて、`zstd`への対応を検討してみてください。
+対応したブラウザは`Accept-Encoding`に`zstd`を自動で付けるので、サーバーかCDNが`zstd`で返せば使われます。事前に圧縮して置ける静的なファイルは時間をかけた`Brotli`が最も小さくなり、リクエストのたびに圧縮するレスポンスは`zstd`で`gzip`より速く小さくできます。
