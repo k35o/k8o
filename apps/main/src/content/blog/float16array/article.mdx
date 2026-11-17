@@ -15,7 +15,7 @@ featureIds:
 
 `Float16Array`は、16bit（半精度）の浮動小数点数を1要素2バイトで並べる`TypedArray`です。`Float32Array`や`Float64Array`の16bit版にあたります。Chrome 135が対応して、Baseline 2025に入りました。
 
-JavaScriptの中で計算するだけなら、`Float32Array`や`Float64Array`、普通の配列で足ります。WebGPUのシェーダーや機械学習のモデルは、16bitの浮動小数点数でデータを受け渡すことがあります。これまでは`Float32Array`で倍のメモリを使うか、`Uint16Array`にビットを自分で組み立てて入れるしかありませんでした。`Float16Array`なら、16bitの浮動小数点数をそのまま読み書きできます。
+JavaScriptの中の計算には、`Float32Array`や`Float64Array`、普通の配列を使います。WebGPUのシェーダーや機械学習のモデルは、16bitの浮動小数点数でデータを受け渡すことがあります。これまでは`Float32Array`で倍のメモリを使うか、`Uint16Array`にビットを自分で組み立てて入れるしかありませんでした。`Float16Array`なら、16bitの浮動小数点数をそのまま読み書きできます。
 
 ## 扱える範囲
 
