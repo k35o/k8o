@@ -15,7 +15,7 @@ featureIds:
 
 Invoker Commands APIは、`<button>`に`commandfor`属性と`command`属性を書くだけで、ほかの要素を操作できるAPIです。Dialogをモーダルで開いたり閉じたり、Popoverを開閉したりする操作を、JavaScriptなしで書けます。Safari 26.2が対応して、Baseline 2025に入りました。
 
-Popoverの開閉だけなら、これまでの`popovertarget`属性で足ります。一方で、Dialogをモーダルで開くには、JavaScriptで`<dialog>`要素の`showModal()`メソッドを呼び出す必要がありました。
+Popoverの開閉は、`popovertarget`属性で書けます。一方で、Dialogをモーダルで開くには、JavaScriptで`<dialog>`要素の`showModal()`メソッドを呼び出す必要がありました。
 
 ```js
 openButton.addEventListener('click', () => {
