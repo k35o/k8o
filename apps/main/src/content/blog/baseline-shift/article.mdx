@@ -15,7 +15,7 @@ featureIds:
 
 `baseline-shift`は、文字が並ぶ基準の線（ベースライン）を、親の文字に対して上下にずらすCSSプロパティです。SVGの`<text>`の中の`<tspan>`に指定すると、化学式や単位の数字のように、その部分だけを上付きや下付きにできます。Firefox 149が対応して、Baseline 2026に入りました。
 
-HTMLの文章なら、今までどおり`<sub>`や`<sup>`、`vertical-align`で足ります。SVGの`<text>`の中では、ChromeとSafariで`vertical-align`が効きません。`<tspan>`の`dy`属性でもずらせますが、後ろの文字まで一緒にずれるので、戻すための`dy`がもう1つ要ります。後ろの文字を元の高さに残したまま、その部分だけをずらせるのが`baseline-shift`です。
+HTMLの文章では、`<sub>`や`<sup>`、`vertical-align`で文字の高さをずらせます。SVGの`<text>`の中では、ChromeとSafariで`vertical-align`が効きません。`<tspan>`の`dy`属性でもずらせますが、後ろの文字まで一緒にずれるので、戻すための`dy`がもう1つ要ります。後ろの文字を元の高さに残したまま、その部分だけをずらせるのが`baseline-shift`です。
 
 SVGには古くから`baseline-shift`属性があり、`<text>`や`<tspan>`に書けばずらせました。この属性は、同じ名前のCSSプロパティの値を決めるプレゼンテーション属性なので、CSSから`baseline-shift`を指定しても同じようにずれます。
 
