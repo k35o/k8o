@@ -15,8 +15,6 @@ updatedAt: 2026-11-09
 
 コンポーネントにpropsで渡せる値なら、ストーリーの`args`で変えれば足ります。コンポーネントが直接importする関数（データベースやAPIを呼ぶ関数など）の戻り値をストーリーごとに変えたいときに、モジュールのモックが要ります。従来のStorybookで主流だった、サブパスインポートや`Vite`・`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
 
-この記事のコードは、Storybook 10.6.5と`@storybook/react-vite`でビルドし、Chrome 156でストーリーを開いて確かめています。
-
 ## sb.mockを使ってみる
 
 `sb`はオブジェクトで、`storybook/test`からインポートできます。
@@ -38,7 +36,7 @@ sb.mock('../src/services/users.ts', {
 });
 ```
 
-拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、`Cannot find module`のエラーでビルドが失敗しました。
+拡張子を省いた`'../src/services/users'`や、プロジェクトのルートからの`'./src/services/users.ts'`を渡すと、`Cannot find module`のエラーでビルドが失敗します。
 
 オプションは`spy`だけがサポートされています。
 
@@ -55,7 +53,7 @@ sb.mock('../src/services/users.ts');
 
 この行を足すと、`src/services/users.ts`の`getUser`を呼ぶコンポーネントのストーリーでは、`getUser`の戻り値が`undefined`になります。戻り値の決め方は後で紹介します。
 
-`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。ストーリーのファイルに`sb.mock`を書いても、エラーにはならず、モジュールもモックされませんでした。
+`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。ストーリーのファイルに`sb.mock`を書いても、エラーにはならず、モジュールもモックされません。
 
 `import()`構文を用いてより確実にモジュールをモックすることも可能です。
 
@@ -83,7 +81,7 @@ export const getUser = async (id: number) => {
 
 上記のように定義されている場合、Storyに表示するコンポーネント内で`getUser`メソッドを呼び出しても、`users.ts`に定義された元の`getUser`は実行されません。`getUser`はモック関数に置き換わり、呼ぶと`undefined`を返します。元の`getUser`は`async`の関数ですが、モックはPromiseも返しません。
 
-ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。ストーリーを開くと、モックしていても開発者ツールのコンソールに`users.ts`の`console.log`が出ました。
+ただし、元のメソッドが記述された`users.ts`ファイル自体は読み込まれるので、例の`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。ストーリーを開くと、モックしていても開発者ツールのコンソールに`users.ts`の`console.log`が出ます。
 
 #### モックしたモジュールのメソッドをspyする
 
