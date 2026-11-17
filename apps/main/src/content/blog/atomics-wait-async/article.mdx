@@ -15,7 +15,7 @@ featureIds:
 
 `Atomics.waitAsync`は、`SharedArrayBuffer`の値が`notify`で通知されるのを、スレッドを止めずに`Promise`で待つ静的メソッドです。`Atomics.wait`の非同期版です。Firefox 145が対応して、Baseline 2025に入りました。
 
-Workerの計算結果を受け取るだけなら、Workerが`postMessage`で送り、メインスレッドが`message`イベントで受け取れば足ります。Workerと共有したメモリの値が書き換わるのを待つときに、`Atomics.waitAsync`が要ります。`Atomics.wait`はスレッドを止めて待つので、ブラウザのメインスレッドで呼ぶと`TypeError`になります。
+Workerの計算結果は、Workerが`postMessage`で送り、メインスレッドが`message`イベントで受け取ります。Workerと共有したメモリの値が書き換わるのを待つときに、`Atomics.waitAsync`が要ります。`Atomics.wait`はスレッドを止めて待つので、ブラウザのメインスレッドで呼ぶと`TypeError`になります。
 
 ```js title="main.js"
 const int32 = new Int32Array(new SharedArrayBuffer(4));
