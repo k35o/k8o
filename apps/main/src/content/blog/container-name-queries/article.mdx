@@ -15,7 +15,7 @@ featureIds:
 
 Name-only container queriesは、`@container sidebar`のように名前だけを書くコンテナクエリです。`container-name`で`sidebar`と名付けた祖先の中にある要素にだけスタイルが当たり、`container-type`もサイズの条件も要りません。Chrome 148が対応して、Baseline 2026に入りました。
 
-同じカードでも、本文の中では横並びに、サイドバーの中では縦積みにしたいことがあります。コンポーネントの見た目を、置かれた場所に応じて変える場面です。配置先が決まっていて、そのクラス名をコンポーネントのCSSに書いてもよいなら、`.sidebar .card`のような子孫セレクタで足ります。配置先を名前だけで指したいときは、これまで`@container sidebar (width >= 0px)`のように必ず真になる条件を付け、使わない条件のためだけに`container-type`を指定していました。
+同じカードでも、本文の中では横並びに、サイドバーの中では縦積みにしたいことがあります。コンポーネントの見た目を、置かれた場所に応じて変える場面です。配置先のクラス名をコンポーネントのCSSに書いてよければ、`.sidebar .card`のような子孫セレクタでも書けます。配置先を名前だけで指したいときは、これまで`@container sidebar (width >= 0px)`のように必ず真になる条件を付け、使わない条件のためだけに`container-type`を指定していました。
 
 ## 書き方
 
@@ -128,7 +128,7 @@ section {
 }
 ```
 
-2つ目は、配置先のセレクタを知らなくて済むことです。コンポーネントのCSSには`sidebar`という名前しか出てきません。配置先が`<aside>`でも`.drawer`でも、`container-name: sidebar`を付ければ同じスタイルが当たります。
+2つ目は、コンポーネントのCSSに配置先のセレクタが出てこないことです。出てくるのは`sidebar`という名前だけです。配置先が`<aside>`でも`.drawer`でも、`container-name: sidebar`を付ければ同じスタイルが当たります。
 
 3つ目はShadow DOMです。shadow treeの中に書いた子孫セレクタは、shadow hostより外側の要素にはマッチしません。`@container sidebar`なら、shadow treeの中に書いても外側の`sidebar`を見つけられます。コンテナはflat treeの祖先から探されるためです。
 
