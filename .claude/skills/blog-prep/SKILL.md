@@ -1,25 +1,36 @@
 ---
 name: blog-prep
-description: k8oブログ記事の技術的準備ワークフロー。MDXファイル、Playgroundコンポーネント、マイグレーションなど必要なファイル一式を作成。記事の執筆は別途行う。
+description: k8o のブログ記事を新しく書き始めるときに使う。記事の決まり（検索結果での見せ方、冒頭、中身）を示す。あわせて、article.mdx の雛形と Playground のデモ、DB のマイグレーションを用意する。「ブログを書きたい」「記事の準備をして」「〇〇の記事を書く」と言われたときにも使う。本文の執筆そのものは行わない。
 ---
 
 # ブログ記事準備スキル
 
-このスキルは、k8oプロジェクトでブログ記事を公開するために必要な**技術的なファイル一式**を準備するワークフローを提供する。
+k8o のブログ記事を公開するために必要なファイル一式を用意し、記事の決まりを示す。このスキルは本文を書かない。本文を書くときは、書くのがユーザーでも Claude でも、下の記事の決まりに従う。書き終えた記事は `/blog-review` でレビューする。
 
-## 対象範囲
+## 記事の決まり
 
-### このスキルが行うこと
+Web 機能やライブラリ、道具の機能を紹介する記事に当てる。体験記や概念を説明する記事には当てず、日本語と構成を整えるだけにする。
 
-- ブログ記事に必要なファイル構造の作成
-- Playgroundコンポーネントの雛形作成
-- データベースマイグレーションの作成
-- 空のarticle.mdxファイルの作成
+読者のほぼ全員が Google 検索から来て、1本の記事に着地し、40秒ほどで離れる。機能紹介の記事は MDN や web.dev と同じ検索結果に並ぶ。そのため、検索結果で選ばれる見せ方と、読み始めてすぐ答えが分かる冒頭、MDN を読んでも得られない中身の3つを用意する。
 
-### このスキルが行わないこと
+### 検索結果での見せ方
 
-- 記事の内容の執筆・ライティング
-- 記事の構成・アウトライン作成
+- タイトルは、検索で打たれる綴りの機能名（`Promise.try`、`::details-content`、`field-sizing`）を先頭に置く。その後ろに、その機能で片付く作業を書く。作業は仕様の言葉ではなく、機能が無かった頃から検索されていた言葉で書く（「フォームコントロールを内容に合わせて伸縮させる」より「textareaの高さを内容に合わせる」）。「：」で2つの句をつながず、1つの句にする。検索結果で切れないよう、30字前後に収める。
+- description は、最初の80字ほどで何ができるか、どんな作業に使うかを言い切る。スマホの検索結果はそこまでしか出ない。Baseline に入ったことや対応ブラウザは後ろに回し、全体を120字以内にする。
+
+### 冒頭
+
+- 最初の段落で、「〇〇とは」に1〜2文で答える。最初の段落は `<BrowserSupportStatus>` の直後の段落を指し、`## はじめに` から始めるならその節の最初の段落を指す。「zstandardとは」「相対輝度」のような広い検索語で来た人は、ここで読み進めるかを決める。
+- 最初のコードより前に、今までの書き方を使う場面と、この機能でしかできない場面を書き分ける。書き分けは「〜なら〜で足ります」「〜に向いています」「〜だけで済みます」のような決まった言い回しにせず、「〜ときは〜を使います」「〜は〜でできます」のように言い切る。
+- 最初の2節以内に、操作できるデモか、貼れば動く最小のコードを置く。`## はじめに` も1節と数える。直後に、デモなら何を押すと何が見えるかを、コードなら何が出るかを書く。保存や起動の手順は書かない。試したい読者は自分でコピーして試す。
+
+### 中身
+
+- 自分で動かして分かったことを1つ以上書く。ブラウザで結果が分かれるときは、ブラウザの名前を添える。MDN と並んだときに、この記事を読む理由になる。確かめたブラウザやライブラリの版は書かない。読者に要るのは、機能がどの版で入ったか（Web 機能なら `<BrowserSupportStatus>` のバーが示す）のほうで、確かめた版は書くたびに手間がかかり、すぐ古くなる。デモを作るときに見つけた落とし穴や回避策は、デモのコメントだけでなく本文にも書く。
+- 冒頭や「おわりに」の節で挙げた用途ごとに、その用途のコードを載せる（textarea を用途に挙げたなら、input だけでなく textarea の例を置く）。
+- 本文のコードは実際に動かして確かめる。JS は node かブラウザで、DOM や CSS の挙動は `/agent-browser` で確かめる。
+- 「おわりに」の節を、本文と食い違わせない。
+- Baseline に達していない Web 機能は、記事の中で紹介しない。Baseline に入ったときに、その機能だけの記事として書く題材になる。
 
 ## 必要なファイル
 
@@ -46,33 +57,35 @@ apps/main/src/content/blog/{slug}/
 
 ```mdx
 ---
-title: 'タイトル'
-description: '説明文（SEO用、100-160文字程度）'
+title: '機能名で片付く作業'
+description: '何ができるか、どんな作業に使うかを最初の80字で言い切る。全体は120字以内'
 createdAt: 2025-01-10
 updatedAt: 2025-01-10
 featureIds:
   - feature-id
 ---
 
-# タイトル
+# 機能名で片付く作業
 
 <BrowserSupportStatus featureId="feature-id" />
 
-{/* ここに記事の内容を執筆する */}
+{/* 最初の段落で「機能名とは」に1〜2文で答え、今までの書き方を使う場面と、この機能でしかできない場面を書き分ける */}
 
 ## セクション
+
+{/* 最初の2節以内に、デモか、貼れば動く最小のコードを置く。デモなら何を押すと何が見えるか、コードなら何が出るかを書く */}
 
 <PlaygroundEmbed demo="デモタイトル" headingLevel="h4" sectionId="my-feature" />
 ```
 
-- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/components/blog/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる
-- 記事の画像は `_images/` に、この記事だけの部品は `_components/` に置き、`./_images/...`・`./_components/...` の相対パスで import する
-- `_images/` の画像は、`pnpm run -F main optimize:image <元の画像> src/content/blog/{slug}/_images/{名前}.avif --max-width 1920` で AVIF にして置く（パスは `apps/main` からの相対か絶対パス）。元の PNG や JPG はコミットしない。出力された `width={...} height={...}` を `<Image src={...} alt="..." width={...} height={...} />` に書き、画面の最初に見える画像には `loading="eager"` を足す。`FloatImage` は表示したい大きさの width と height を、画像と同じ縦横比で書く。縦横比が画像と合わないと `features/blog/application/article-files.test.ts` が落ちる
-- `<LinkCard href="..." />` を足したら、`pnpm run -F main generate:link-card-metadata` を流し、更新された `apps/main/src/content/link-card-metadata.json` もコミットする。カードはこの JSON の OGP で描き、ビルドではリンク先へ取りに行かない。流し忘れは `features/blog/application/article-files.test.ts` が落とす。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出る URL（`http://` や OGP を持たないページ）は `{}` のままでよい。`--refresh` は使わない
-- `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない
-- `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、`<PlaygroundEmbed>` を書かない
-- `<PlaygroundEmbed>` と `<Playground>` の `headingLevel` には、置いた節の見出しの一つ下の段を書く。`##` は h3 で描かれるので、`##` の節の中は `h4`、`###` の中は `h5`、`####` の中は `h6`、最初の `##` より前は `h3`。書き忘れと段の取り違えは `components/site/mdx-base/article-outline.test.ts` が落とす
-- OGP画像には記事のタイトルが入る。コードが主役の記事では、載せたいコードブロックの1つに `// [!og]` を書くと、そのコードも描かれる
+- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/components/blog/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる。
+- 記事の画像は `_images/` に、この記事だけの部品は `_components/` に置き、`./_images/...`・`./_components/...` の相対パスで import する。
+- `_images/` の画像は、`pnpm run -F main optimize:image <元の画像> src/content/blog/{slug}/_images/{名前}.avif --max-width 1920` で AVIF にして置く（パスは `apps/main` からの相対か絶対パス）。元の PNG や JPG はコミットしない。出力された `width={...} height={...}` を `<Image src={...} alt="..." width={...} height={...} />` に書き、画面の最初に見える画像には `loading="eager"` を足す。`FloatImage` は表示したい大きさの width と height を、画像と同じ縦横比で書く。縦横比が画像と合わないと `features/blog/application/article-files.test.ts` が落ちる。
+- `<LinkCard href="..." />` を足したら、`pnpm run -F main generate:link-card-metadata` を流し、更新された `apps/main/src/content/link-card-metadata.json` もコミットする。カードはこの JSON の OGP で描き、ビルドではリンク先へ取りに行かない。流し忘れは `features/blog/application/article-files.test.ts` が落とす。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出る URL（`http://` や OGP を持たないページ）は `{}` のままでよい。`--refresh` は使わない。
+- `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない。
+- `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、`<PlaygroundEmbed>` を書かない。
+- `<PlaygroundEmbed>` と `<Playground>` の `headingLevel` には、置いた節の見出しの一つ下の段を書く。`##` は h3 で描かれるので、`##` の節の中は `h4`、`###` の中は `h5`、`####` の中は `h6`、最初の `##` より前は `h3`。書き忘れと段の取り違えは `components/site/mdx-base/article-outline.test.ts` が落とす。
+- OGP画像には記事のタイトルが入る。コードが主役の記事では、載せたいコードブロックの1つに `// [!og]` を書くと、そのコードも描かれる。
 
 ### 2. 数式を使う記事
 
@@ -108,112 +121,7 @@ HTML・CSS・JS か、React の部品（tsx）で書けるデモは、記事の�
 
 ### 4. Playgroundコンポーネント（動く例で作れないデモ）
 
-ディレクトリ名は機能の内容がわかる名前を使用する（例: `caret-position-from-point`, `event-timing`）。
-
-```
-apps/main/src/playgrounds/{feature-name}/
-├── {demo-name}-demo.tsx           # デモ本体
-├── {demo-name}-demo.module.css    # デモのスタイル
-├── {demo-name}-demo.stories.tsx   # Storybook
-└── index.ts                       # セクションの定義
-```
-
-デモが1つなら `{demo-name}` は `{feature-name}` と同じにする。デモが複数あるときは、デモごとに3つのファイルを置く（例: `scope/`）。
-
-`src/playgrounds` の中のファイルは、`next`・`next/*`・`next-themes` と `@/` を import しない（ルートの lint が止める）。リンクは素の `a` で書き、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `apps/main/public/playgrounds/{feature-name}-{名前}` に置き、`/playgrounds/{feature-name}-{名前}` の URL で読む。サイトの `public` に既にある画像（アイコンの `/icon.png`）は、写さずにその URL を読む。
-
-#### デモ本体とスタイル
-
-スタイルは CSS Modules で書き、値は @k8ordo/ui のトークンだけを使う（規約はルートの `CLAUDE.md` の「UI共通」）。
-
-紹介する CSS そのものを見せるデモでは、その CSS を文字列で持ち、`<style>` で当てて、同じ文字列を `<pre><code>` で表示する。`<style>` の中身はページ全体に効くので、セレクタのクラス名にはほかのデモと衝突しない接頭辞を付ける。
-
-```tsx
-import styles from './my-feature-demo.module.css';
-
-const demoStyle = `.mf-target {
-  text-decoration-line: underline;
-}`;
-
-export function MyFeatureDemo() {
-  return (
-    <div className={styles.root}>
-      <style>{demoStyle}</style>
-      <p className="mf-target">対象の要素</p>
-      <pre className={styles.code}>
-        <code>{demoStyle}</code>
-      </pre>
-    </div>
-  );
-}
-```
-
-```css
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 6);
-}
-
-.code {
-  margin-block: 0;
-  overflow-x: auto;
-  color: var(--color-fg-mute);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-```
-
-#### Storybookの例
-
-```tsx
-import preview from '../../../.storybook/preview';
-import { Playground } from '../playground';
-import { MyFeatureDemo } from './my-feature-demo';
-
-const playgroundTitle = MyFeatureDemo.name;
-
-const meta = preview.meta({
-  title: 'playgrounds/my-feature/MyFeatureDemo',
-  component: MyFeatureDemo,
-  decorators: [
-    (Story) => (
-      <Playground title={playgroundTitle}>
-        <Story />
-      </Playground>
-    ),
-  ],
-});
-
-export const Default = meta.story();
-```
-
-#### index.tsの例
-
-```typescript
-import type { PlaygroundSection } from '../types';
-import { MyFeatureDemo } from './my-feature-demo';
-
-export const myFeatureSection: PlaygroundSection = {
-  id: 'my-feature',
-  title: 'My Feature',
-  description: '機能の説明',
-  category: 'css', // css・html・js-api・performance・react のいずれか
-  type: 'blog',
-  slug: 'my-feature',
-  demos: [
-    {
-      component: MyFeatureDemo,
-      title: 'デモタイトル',
-      description: 'デモの説明',
-    },
-  ],
-};
-```
-
-#### 一覧への登録
-
-一覧に書き足すものは無い。`/playgrounds` の一覧・llms.txt・sitemap（`apps/main/src/playgrounds/sections.ts`）と、`/playgrounds/{id}` のページ・記事の `<PlaygroundEmbed>`（`apps/main/src/components/playgrounds/load-section.ts`）は、どれも `src/playgrounds/{id}/index.ts` を glob で集める。ビルドの paths もディレクトリの名前から作るので、ディレクトリ名とセクションの `id` をそろえる（食い違うと `load-section.test.ts` が落ちる）。無い `sectionId` を記事が渡すと、ビルドの描画で落ちる。
+デモは `apps/main/src/playgrounds/{feature-name}/` に置く。置くのは、デモ本体と CSS Modules、Story、セクションの定義（`index.ts`）。作るときは [references/playground.md](references/playground.md) を読む。
 
 ## データベースマイグレーション
 
@@ -295,4 +203,4 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 ### 次のステップ
 
-- [ ] 記事の内容を執筆し、公開前に `/blog-review` でレビューする
+- [ ] 「記事の決まり」に沿って本文を書き、公開前に `/blog-review` でレビューする
