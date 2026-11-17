@@ -15,7 +15,7 @@ featureIds:
 
 `field-sizing`は、`input`や`textarea`、`select`の大きさを、入力された内容に合わせて伸び縮みさせるかを決めるCSSプロパティです。`field-sizing: content`を指定すると、改行するたびに`textarea`の高さが伸び、文字を打つたびに`input`の幅が広がります。Firefox 152が対応して、Baseline 2026に入りました。
 
-大きさが決まっていてよい入力欄なら、今までどおり`width`や`rows`で決めれば足ります。入力に合わせて伸ばしたいときは、これまで`input`イベントで`scrollHeight`を読んで`height`を書き換えるJavaScriptが要りました。`field-sizing: content`なら、その処理をCSSだけで書けます。
+大きさが決まっている入力欄は、`width`や`rows`で大きさを決めます。入力に合わせて伸ばしたいときは、これまで`input`イベントで`scrollHeight`を読んで`height`を書き換えるJavaScriptが要りました。`field-sizing: content`なら、その処理をCSSだけで書けます。
 
 ## デモ
 
