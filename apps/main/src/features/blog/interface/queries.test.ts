@@ -50,7 +50,12 @@ const published = (
   slug: string,
   tags: PublishedBlog['tags'] = [],
   slideUrl: string | null = null,
-): PublishedBlog => ({ id, slug, tags, slideUrl });
+): PublishedBlog => ({
+  id,
+  slug,
+  tags,
+  talk: slideUrl === null ? null : { slug: null, slideUrl },
+});
 
 // MDX の frontmatter。missing に挙げた記事は MDX が無い
 const mockMetadata = (

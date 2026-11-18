@@ -2,16 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 import type { BlogSummary } from '@/features/blog/interface/queries';
-import { getSlideContents } from '@/features/slides/interface/queries';
 import { getTags } from '@/features/tags/interface/queries';
+import { getTalkDecks } from '@/features/talks/interface/queries';
 
 import { generateSitemap } from './sitemap';
 
 vi.mock('@/features/blog/interface/queries', () => ({
   getBlogContents: vi.fn(),
-}));
-vi.mock('@/features/slides/interface/queries', () => ({
-  getSlideContents: vi.fn(),
 }));
 vi.mock('@/features/tags/interface/queries', () => ({
   getTag: vi.fn(),
@@ -19,6 +16,7 @@ vi.mock('@/features/tags/interface/queries', () => ({
 }));
 vi.mock('@/features/talks/interface/queries', () => ({
   getTalks: vi.fn(),
+  getTalkDecks: vi.fn(),
 }));
 vi.mock('@playgrounds/sections', () => ({
   playgroundSections: [
@@ -73,7 +71,7 @@ vi.mock('@/shared/site/site-entries', () => ({
   ],
 }));
 
-type SlideContent = Awaited<ReturnType<typeof getSlideContents>>[number];
+type TalkDeck = Awaited<ReturnType<typeof getTalkDecks>>[number];
 type Tag = Awaited<ReturnType<typeof getTags>>[number];
 
 const blog = (overrides: Partial<BlogSummary> = {}): BlogSummary => ({
@@ -88,15 +86,18 @@ const blog = (overrides: Partial<BlogSummary> = {}): BlogSummary => ({
   ...overrides,
 });
 
-const slide = (overrides: Partial<SlideContent> = {}): SlideContent => ({
+const deck = (slug: string, eventDate: string): TalkDeck => ({
   id: 1,
-  slug: 'sample-deck',
-  tags: ['CSS'],
-  title: 'サンプルデッキ',
-  description: 'デッキの説明。',
-  createdAt: '2026-01-05',
-  updatedAt: '2026-01-06',
-  ...overrides,
+  title: 'サンプルトーク',
+  eventUrl: 'https://example.com/event',
+  eventName: 'サンプルイベント',
+  eventDate,
+  eventLocation: null,
+  blog: null,
+  tags: [],
+  deck: { slug, kind: 'pdf' },
+  cover: null,
+  slidesHref: `/talks/${slug}`,
 });
 
 const tag = (overrides: Partial<Tag> = {}): Tag => ({
@@ -113,7 +114,7 @@ const locsOf = (xml: string): string[] =>
 describe('generateSitemap', () => {
   beforeEach(() => {
     vi.mocked(getBlogContents).mockResolvedValue([]);
-    vi.mocked(getSlideContents).mockResolvedValue([]);
+    vi.mocked(getTalkDecks).mockResolvedValue([]);
     vi.mocked(getTags).mockResolvedValue([]);
   });
 
@@ -123,8 +124,8 @@ describe('generateSitemap', () => {
         blog({ id: 2, slug: 'older-update', updatedAt: '2026-10-10' }),
         blog({ id: 1, slug: 'newer-update', updatedAt: '2026-10-20' }),
       ]);
-      vi.mocked(getSlideContents).mockResolvedValue([
-        slide({ slug: 'sample-deck', updatedAt: '2026-10-25' }),
+      vi.mocked(getTalkDecks).mockResolvedValue([
+        deck('sample-talk', '2026-10-25'),
       ]);
       vi.mocked(getTags).mockResolvedValue([tag({ id: 12 }), tag({ id: 3 })]);
 
@@ -134,7 +135,7 @@ describe('generateSitemap', () => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://k8o.me</loc>
-<lastmod>2026-10-25T00:00:00.000Z</lastmod>
+<lastmod>2026-10-20T00:00:00.000Z</lastmod>
 </url>
 <url>
 <loc>https://k8o.me/about</loc>
@@ -159,12 +160,7 @@ describe('generateSitemap', () => {
 <lastmod>2026-10-20T00:00:00.000Z</lastmod>
 </url>
 <url>
-<loc>https://k8o.me/slides</loc>
-<lastmod>2026-10-25T00:00:00.000Z</lastmod>
-<changefreq>weekly</changefreq>
-</url>
-<url>
-<loc>https://k8o.me/slides/sample-deck</loc>
+<loc>https://k8o.me/talks/sample-talk</loc>
 <lastmod>2026-10-25T00:00:00.000Z</lastmod>
 </url>
 <url>
@@ -192,16 +188,13 @@ describe('generateSitemap', () => {
 `);
     });
 
-    it('トップのlastmodは記事とデッキを合わせて最も新しい更新日、/blogと/slidesはそれぞれの最も新しい更新日にするべき', async () => {
+    it('トップと/blogのlastmodは記事の最も新しい更新日、デッキのlastmodは登壇の日にするべき', async () => {
       vi.mocked(getBlogContents).mockResolvedValue([
         blog({ slug: 'a', updatedAt: '2026-03-01' }),
         blog({ slug: 'b', updatedAt: '2026-09-01' }),
         blog({ slug: 'c', updatedAt: '2026-06-01' }),
       ]);
-      vi.mocked(getSlideContents).mockResolvedValue([
-        slide({ slug: 'd', updatedAt: '2026-04-01' }),
-        slide({ slug: 'e', updatedAt: '2026-08-01' }),
-      ]);
+      vi.mocked(getTalkDecks).mockResolvedValue([deck('d', '2026-12-01')]);
 
       const xml = await generateSitemap();
 
@@ -212,7 +205,7 @@ describe('generateSitemap', () => {
         '<loc>https://k8o.me/blog</loc>\n<lastmod>2026-09-01T00:00:00.000Z</lastmod>\n<changefreq>weekly</changefreq>\n</url>',
       );
       expect(xml).toContain(
-        '<loc>https://k8o.me/slides</loc>\n<lastmod>2026-08-01T00:00:00.000Z</lastmod>\n<changefreq>weekly</changefreq>\n</url>',
+        '<loc>https://k8o.me/talks/d</loc>\n<lastmod>2026-12-01T00:00:00.000Z</lastmod>\n</url>',
       );
     });
 
@@ -229,7 +222,7 @@ describe('generateSitemap', () => {
       ).toHaveLength(1);
     });
 
-    it('固定のページはトップ・About・Contact・Privacy・/blog・/slides・/tagsだけで、/notificationsを載せないべき', async () => {
+    it('固定のページはトップ・About・Contact・Privacy・/blog・/tagsだけで、/notificationsを載せないべき', async () => {
       const xml = await generateSitemap();
 
       expect(locsOf(xml)).toStrictEqual([
@@ -238,7 +231,6 @@ describe('generateSitemap', () => {
         'https://k8o.me/contact',
         'https://k8o.me/privacy',
         'https://k8o.me/blog',
-        'https://k8o.me/slides',
         'https://k8o.me/tags',
         'https://k8o.me/playgrounds/zeta-demo',
         'https://k8o.me/playgrounds/alpha-demo',
@@ -281,14 +273,14 @@ describe('generateSitemap', () => {
       ).toStrictEqual(['https://k8o.me/tags/8']);
     });
 
-    it('記事とデッキが0件のとき、トップ・/blog・/slidesにlastmodを書かないべき', async () => {
+    it('記事が0件のとき、トップと/blogにlastmodを書かないべき', async () => {
       const xml = await generateSitemap();
 
       expect(xml).toContain(
         '<url>\n<loc>https://k8o.me</loc>\n</url>\n<url>\n<loc>https://k8o.me/about</loc>',
       );
       expect(xml).toContain(
-        '<url>\n<loc>https://k8o.me/blog</loc>\n<changefreq>weekly</changefreq>\n</url>\n<url>\n<loc>https://k8o.me/slides</loc>\n<changefreq>weekly</changefreq>\n</url>',
+        '<url>\n<loc>https://k8o.me/blog</loc>\n<changefreq>weekly</changefreq>\n</url>\n<url>\n<loc>https://k8o.me/tags</loc>',
       );
       expect(xml).not.toContain('<lastmod>');
     });

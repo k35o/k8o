@@ -9,7 +9,7 @@
   "ignoreBinaries": ["fnox", "mise", "vercel"],
   "workspaces": {
     "apps/main": {
-      "ignoreDependencies": ["chromatic"],
+      "ignoreDependencies": ["chromatic", "@napi-rs/canvas"],
       "entry": [
         "better-css-modules.config.ts",
         "src/routes/**/{page,layout,not-found,error}.tsx",

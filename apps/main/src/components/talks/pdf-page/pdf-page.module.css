@@ -1,0 +1,23 @@
+.root {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* ステージ（16:9 の size container）の中に、ページの縦横比のまま収める */
+.sheet {
+  position: relative;
+  width: min(100cqw, calc(100cqh * var(--ratio)));
+  aspect-ratio: var(--ratio);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.link {
+  position: absolute;
+}

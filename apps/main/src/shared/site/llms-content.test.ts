@@ -78,10 +78,11 @@ const talk = (overrides: Partial<Talk> = {}): Talk => ({
   eventName: 'サンプルイベント',
   eventDate: '2026-02-01',
   eventLocation: null,
-  slideUrl: 'https://example.com/slide',
-  blogId: 1,
   blog: { id: 1, slug: 'sample-post' },
   tags: [{ id: 1, name: 'CSS' }],
+  deck: null,
+  cover: null,
+  slidesHref: 'https://example.com/slide',
   ...overrides,
 });
 
@@ -164,8 +165,20 @@ describe('generateLlmsContent', () => {
       );
     });
 
-    it('slideUrlが空のトークはイベントリンクだけを載せるべき', async () => {
-      vi.mocked(getTalks).mockResolvedValue([talk({ slideUrl: '' })]);
+    it('k8o.me にデッキのあるトークは、スライドのリンクをサイトの URL で載せるべき', async () => {
+      vi.mocked(getTalks).mockResolvedValue([
+        talk({ slidesHref: '/talks/sample-talk' }),
+      ]);
+
+      const content = await generateLlmsContent();
+
+      expect(content).toContain(
+        '[イベント](https://example.com/event) / [スライド](https://k8o.me/talks/sample-talk)',
+      );
+    });
+
+    it('スライドのリンク先が無いトークはイベントリンクだけを載せるべき', async () => {
+      vi.mocked(getTalks).mockResolvedValue([talk({ slidesHref: null })]);
 
       const content = await generateLlmsContent();
 

@@ -188,6 +188,7 @@ erDiagram
   talks {
     integer id PK
     text title
+    text slug UK
     text event_url
     text event_name
     text event_date
@@ -200,7 +201,7 @@ erDiagram
   blogs ||--o{ blog_tag : "blog_id"
   blogs ||--o{ blog_view_dailies : "blog_id"
   blogs ||--o{ blog_views : "blog_id"
-  blogs ||--o{ talks : "blog_id"
+  blogs |o--o{ talks : "blog_id"
   comments ||--o{ blog_comment : "comment_id"
   feedbacks |o--o{ comments : "feedback_id"
   slides ||--o{ slide_tag : "slide_id"

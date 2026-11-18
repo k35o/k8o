@@ -219,6 +219,8 @@ jobs:
           K8O_TURSO_AUTH_TOKEN: ${{ matrix.app == 'main' && secrets.K8O_TURSO_READONLY_AUTH_TOKEN || '' }}
           AI_TURSO_DATABASE_URL: ${{ matrix.app == 'ai' && secrets.AI_TURSO_DATABASE_URL || '' }}
           AI_TURSO_AUTH_TOKEN: ${{ matrix.app == 'ai' && secrets.AI_TURSO_AUTH_TOKEN || '' }}
+          # PDF から作ったデッキのストア。未公開のデッキも読めるので、preview には渡さない
+          BLOB_READ_WRITE_TOKEN: ${{ matrix.app == 'main' && secrets.BLOB_READ_WRITE_TOKEN || '' }}
         run: pnpm exec vercel build --cwd "$GITHUB_WORKSPACE" --prod
 
       - name: Deploy

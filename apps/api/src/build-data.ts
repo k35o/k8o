@@ -7,13 +7,11 @@ export {
 export { getPublicPushLogs } from './features/push-notification/interface/queries';
 export {
   getPublishedBlogs,
-  getPublishedSlides,
   getTags,
   getTalks,
 } from './features/site-content/interface/queries';
 export type {
   PublishedBlog,
-  PublishedSlide,
   Tag,
   Talk,
 } from './features/site-content/interface/queries';

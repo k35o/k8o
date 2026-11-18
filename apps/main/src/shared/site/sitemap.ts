@@ -1,7 +1,7 @@
 import { playgroundSections } from '@playgrounds/sections';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
-import { getSlideContents } from '@/features/slides/interface/queries';
+import { getTalkDecks } from '@/features/talks/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
 import { SITE_URL } from '@/shared/site/site-url';
 import { getTagSummaries } from '@/shared/site/tag-contents';
@@ -37,17 +37,16 @@ const toXml = (urls: readonly SitemapUrl[]): string =>
     .join('')}</urlset>\n`;
 
 export async function generateSitemap(): Promise<string> {
-  const [blogs, slides, tags] = await Promise.all([
+  const [blogs, decks, tags] = await Promise.all([
     getBlogContents(),
-    getSlideContents(),
+    getTalkDecks(),
     getTagSummaries(),
   ]);
 
   const blogDates = blogs.map((blog) => blog.updatedAt);
-  const slideDates = slides.map((slide) => slide.updatedAt);
 
   return toXml([
-    { loc: SITE_URL, lastmod: latestOf([...blogDates, ...slideDates]) },
+    { loc: SITE_URL, lastmod: latestOf(blogDates) },
     { loc: `${SITE_URL}/about` },
     { loc: `${SITE_URL}/contact` },
     { loc: `${SITE_URL}/privacy` },
@@ -60,14 +59,9 @@ export async function generateSitemap(): Promise<string> {
       loc: `${SITE_URL}/blog/${blog.slug}`,
       lastmod: toIsoString(blog.updatedAt),
     })),
-    {
-      loc: `${SITE_URL}/slides`,
-      lastmod: latestOf(slideDates),
-      changefreq: 'weekly',
-    },
-    ...slides.map((slide) => ({
-      loc: `${SITE_URL}/slides/${slide.slug}`,
-      lastmod: toIsoString(slide.updatedAt),
+    ...decks.map((talk) => ({
+      loc: `${SITE_URL}/talks/${talk.deck.slug}`,
+      lastmod: toIsoString(talk.eventDate),
     })),
     { loc: `${SITE_URL}/tags` },
     ...tags

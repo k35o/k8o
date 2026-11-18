@@ -8,10 +8,11 @@ import { colorSchemeScriptHash } from '@k8ordo/color-scheme';
 import { vercel } from '@k8ordo/framework/vercel';
 import { framework } from '@k8ordo/framework/vite';
 import mdx from '@mdx-js/rollup';
+import type * as buildData from '@repo/api/build-data';
 import rehypePreset from '@repo/mdx-preset/rehype';
 import remarkPreset from '@repo/mdx-preset/remark';
 import { defineConfig, runnerImport } from 'vite';
-import type { UserConfigFnPromise } from 'vite';
+import type { Plugin, UserConfigFnPromise } from 'vite';
 
 import type * as demoDocument from './src/features/blog/application/demo-document.ts';
 import type * as demos from './src/features/blog/application/demos.ts';
@@ -21,6 +22,7 @@ import { blogDemoScripts, demoBundler } from './src/site/blog-demo-scripts.ts';
 import type { TsxDemo } from './src/site/blog-demo-scripts.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { inlineScriptHashes } from './src/site/inline-script-hashes.ts';
+import { blobStore, syncPdfDecks } from './src/site/pdf-deck-sync.ts';
 import { pagePolicy, securityHeaders } from './src/site/security-headers.ts';
 import type { DeployTarget } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
@@ -109,6 +111,49 @@ const colorSchemeHash = await colorSchemeScriptHash(
   COLOR_SCHEME_SCRIPT_OPTIONS,
 );
 
+let pdfDecks: Promise<void> | undefined;
+
+// PDF から作ったデッキの中身は公開のリポジトリに置かず、slug を持つトークのものだけをストアから
+// public/talks/<slug>/ へ取り込む。ビルドの初めに済ませ、paths.ts（トークの一覧がマニフェストを読む）と public の
+// 写しはそのあとに走る。
+// ストアのトークンは slug を入れる前のデッキも読めるので、本番のビルドにだけ渡す。トークンの無い preview と
+// 手元は取り込まず、手元は upload:talk-deck が書いたものをそのまま使う
+const syncPdfDecksOfTalks = (): Promise<void> => {
+  pdfDecks ??= (async () => {
+    // workflow は、secret の無い環境にも空の文字列でこの変数を渡す
+    const hasToken = Boolean(process.env['BLOB_READ_WRITE_TOKEN']);
+    if (!hasToken && process.env['DEPLOY_TARGET'] !== 'production') {
+      return;
+    }
+    const { getTalks } = await importWithAlias<typeof buildData>(
+      import.meta.resolve('@repo/api/build-data'),
+    );
+    const slugs = (await getTalks()).flatMap(({ slug }) =>
+      slug === null ||
+      existsSync(join(alias['@content'], 'talks', slug, 'content.mdx'))
+        ? []
+        : [slug],
+    );
+    if (hasToken) {
+      await syncPdfDecks({
+        slugs,
+        decksDir: fileURLToPath(new URL('./public/talks', import.meta.url)),
+        store: blobStore,
+      });
+    } else if (slugs.length > 0) {
+      throw new Error(
+        `BLOB_READ_WRITE_TOKEN が無く、PDF のデッキを取り込めない: ${slugs.join(', ')}`,
+      );
+    }
+  })();
+  return pdfDecks;
+};
+
+const pdfDeckSync: Plugin = {
+  name: 'k8o:pdf-deck-sync',
+  buildStart: syncPdfDecksOfTalks,
+};
+
 const config: UserConfigFnPromise = async ({ command, isPreview }) => ({
   resolve: { alias },
   // @repo/helpers は in-source のテストを持つ。置き換えないとテストの本体が client のバンドルに残る
@@ -126,6 +171,7 @@ const config: UserConfigFnPromise = async ({ command, isPreview }) => ({
     },
   },
   plugins: [
+    pdfDeckSync,
     // framework() の React と plugin-rsc より先に、MDX を JSX にする
     {
       enforce: 'pre',

@@ -72,3 +72,6 @@ routes.json
 
 # better-css-modules が生成する CSS Modules の型
 __generated__/
+
+# PDF から作ったデッキ（upload:talk-deck が書き、ビルドがストアから取り込む。中身はコミットしない）
+/apps/main/public/talks/*/

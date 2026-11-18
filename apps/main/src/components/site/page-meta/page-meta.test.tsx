@@ -174,7 +174,7 @@ describe('PageMeta', () => {
 
     it('記事の更新日を省くと、article:modified_time を書かない', () => {
       const tags = tagsOf({
-        path: '/slides/sample-deck',
+        path: '/talks/sample-talk',
         article: { publishedTime: '2026-05-15' },
       });
 
