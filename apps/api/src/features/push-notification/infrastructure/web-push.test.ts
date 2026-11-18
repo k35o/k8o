@@ -442,9 +442,9 @@ describe('sendWebPush', () => {
         },
         payload,
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: vapid.privateKey,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: vapid.privateKey,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -463,9 +463,9 @@ describe('sendWebPush', () => {
         },
         'hello',
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: vapid.privateKey,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: vapid.privateKey,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -493,9 +493,9 @@ describe('sendWebPush', () => {
         },
         'hello',
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: vapid.privateKey,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: vapid.privateKey,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -516,9 +516,9 @@ describe('sendWebPush', () => {
         },
         'hello',
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: vapid.privateKey,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: vapid.privateKey,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -606,9 +606,9 @@ describe('sendWebPush', () => {
         },
         RFC8291_PLAINTEXT,
         {
-          vapidPublicKey: RFC8291_AS_PUBLIC,
-          vapidPrivateKey: RFC8291_AS_PRIVATE,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: RFC8291_AS_PUBLIC,
+          privateKey: RFC8291_AS_PRIVATE,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -634,9 +634,9 @@ describe('sendWebPush', () => {
         },
         'hello',
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: vapid.privateKey,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: vapid.privateKey,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -660,9 +660,9 @@ describe('sendWebPush', () => {
         },
         'hello',
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: vapid.privateKey,
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: vapid.privateKey,
+          subject: 'mailto:admin@example.com',
         },
       );
 
@@ -681,9 +681,9 @@ describe('sendWebPush', () => {
         },
         'hello',
         {
-          vapidPublicKey: vapid.publicKey,
-          vapidPrivateKey: toB64Url(new Uint8Array(5)),
-          vapidSubject: 'mailto:admin@example.com',
+          publicKey: vapid.publicKey,
+          privateKey: toB64Url(new Uint8Array(5)),
+          subject: 'mailto:admin@example.com',
         },
       );
 

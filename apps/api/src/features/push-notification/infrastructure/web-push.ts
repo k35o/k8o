@@ -6,10 +6,10 @@ type Subscription = {
   };
 };
 
-type VapidOptions = {
-  vapidPublicKey: string;
-  vapidPrivateKey: string;
-  vapidSubject: string;
+export type VapidConfig = {
+  publicKey: string;
+  privateKey: string;
+  subject: string;
 };
 
 type ClientKeys = {
@@ -96,7 +96,7 @@ export async function importSubscriptionKeys(
 export async function sendWebPush(
   subscription: Subscription,
   payload: string,
-  vapid: VapidOptions,
+  vapid: VapidConfig,
 ): Promise<Response> {
   const client = await importSubscriptionKeys(subscription.keys);
   if (client === null) {
@@ -146,9 +146,9 @@ export async function sendWebPush(
 
   const vapidHeaders = await generateVapidHeaders(
     subscription.endpoint,
-    vapid.vapidSubject,
-    vapid.vapidPublicKey,
-    vapid.vapidPrivateKey,
+    vapid.subject,
+    vapid.publicKey,
+    vapid.privateKey,
   );
 
   // redirect: 'manual' でリダイレクト追従を無効化し、allowlist 済みホスト以外へ

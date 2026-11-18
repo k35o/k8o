@@ -1,14 +1,22 @@
-import { db } from '@repo/database';
-import { eq, inArray } from '@repo/database/orm';
 import type { PushLogKind } from '@repo/database/schema';
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 
-import { isAllowedPushEndpoint } from './is-allowed-push-endpoint';
+import { isAllowedPushEndpoint } from '../infrastructure/is-allowed-push-endpoint';
+import {
+  claimPushLog,
+  recordPushLogResult,
+} from '../infrastructure/push-log-repository';
+import {
+  deleteSubscriptionsByEndpoints,
+  findSubscriptions,
+} from '../infrastructure/subscription-repository';
+import type { StoredSubscription } from '../infrastructure/subscription-repository';
 import {
   InvalidSubscriptionKeysError,
   sendWebPush,
   WebPushError,
-} from './web-push';
+} from '../infrastructure/web-push';
+import type { VapidConfig } from '../infrastructure/web-push';
 
 type SendPushNotificationParams = {
   kind: PushLogKind;
@@ -16,18 +24,6 @@ type SendPushNotificationParams = {
   body: string;
   url: string;
   dedupeKey: string;
-};
-
-type VapidConfig = {
-  publicKey: string;
-  privateKey: string;
-  subject: string;
-};
-
-type StoredSubscription = {
-  endpoint: string;
-  p256dh: string;
-  auth: string;
 };
 
 type DeliveryOutcome = 'succeeded' | 'failed' | 'dead';
@@ -70,9 +66,7 @@ const readVapidConfig = (): VapidConfig | null => {
 const findDeliverableSubscriptions = async (): Promise<
   StoredSubscription[]
 > => {
-  const subscriptions = await db.query.pushSubscriptions.findMany({
-    columns: { endpoint: true, p256dh: true, auth: true },
-  });
+  const subscriptions = await findSubscriptions();
   // 多層防御: 保存時に検証済みだが、送信直前にも allowlist を再チェックする
   return subscriptions.filter((sub) => isAllowedPushEndpoint(sub.endpoint));
 };
@@ -93,11 +87,7 @@ const deliverToSubscriptions = async (
             keys: { p256dh: sub.p256dh, auth: sub.auth },
           },
           payload,
-          {
-            vapidPublicKey: vapid.publicKey,
-            vapidPrivateKey: vapid.privateKey,
-            vapidSubject: vapid.subject,
-          },
+          vapid,
         );
         return 'succeeded';
       } catch (error) {
@@ -132,24 +122,17 @@ export async function sendPushNotification({
   // claim より先に読む。読み込みに失敗したとき、claim だけが残って再実行でも送れなくなるのを避ける
   const subscriptions = await findDeliverableSubscriptions();
 
-  // 送信より前に dedupeKey で履歴行を確保する。unique 制約により
-  // 並行 cron 実行でも claim できた1実行だけが送信し、二重通知を防ぐ。
   // 送信の途中で関数が止まると結果が分からないので、全件を失敗として確保しておき、結果で上書きする
-  const claimed = await db
-    .insert(db._schema.pushLogs)
-    .values({
-      kind,
-      title,
-      body,
-      url,
-      dedupeKey,
-      succeeded: 0,
-      failed: subscriptions.length,
-    })
-    .onConflictDoNothing({ target: db._schema.pushLogs.dedupeKey })
-    .returning({ id: db._schema.pushLogs.id });
-  const logId = claimed[0]?.id;
-  if (logId === undefined) {
+  const logId = await claimPushLog({
+    kind,
+    title,
+    body,
+    url,
+    dedupeKey,
+    succeeded: 0,
+    failed: subscriptions.length,
+  });
+  if (logId === null) {
     return;
   }
 
@@ -161,14 +144,9 @@ export async function sendPushNotification({
   );
 
   // 購読の掃除に失敗しても送信結果は残るよう、記録を先にする
-  await db
-    .update(db._schema.pushLogs)
-    .set({ succeeded, failed })
-    .where(eq(db._schema.pushLogs.id, logId));
+  await recordPushLogResult(logId, { succeeded, failed });
 
   if (deadEndpoints.length > 0) {
-    await db
-      .delete(db._schema.pushSubscriptions)
-      .where(inArray(db._schema.pushSubscriptions.endpoint, deadEndpoints));
+    await deleteSubscriptionsByEndpoints(deadEndpoints);
   }
 }
