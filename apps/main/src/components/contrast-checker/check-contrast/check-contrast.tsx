@@ -3,8 +3,10 @@
 import { Alert, Heading, Stack } from '@k8ordo/ui';
 import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FC } from 'react';
+
+import { DebouncedAnnouncement } from '@/components/site/debounced-announcement/debounced-announcement';
 
 import { ApcaResultTable } from '../apca-result-table/apca-result-table';
 import { ColorPallet } from '../color-pallet/color-pallet';
@@ -31,23 +33,12 @@ export const CheckContrast: FC = () => {
   const isInvalidAaNormalText = contrast < WCAG_THRESHOLDS.AA_NORMAL_TEXT;
   const isInvalidAaaNormalText = contrast < WCAG_THRESHOLDS.AAA_NORMAL_TEXT;
 
-  // カラーピッカーのドラッグ中は change が連続発火するため、読み上げは
-  // デバウンスして最新の結果だけをスクリーンリーダーに通知する
-  const [announcement, setAnnouncement] = useState('');
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setAnnouncement(
-        `コントラスト比 ${contrast.toFixed(2)}対1、APCA Lc ${apcaLc.toFixed(1)}`,
-      );
-    }, 500);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [contrast, apcaLc]);
-
   return (
     <Stack gap="xl">
-      <output className={styles.srOnly}>{announcement}</output>
+      {/* カラーピッカーのドラッグ中は change が連続発火するので、最新の結果だけを通知する */}
+      <DebouncedAnnouncement
+        message={`コントラスト比 ${contrast.toFixed(2)}対1、APCA Lc ${apcaLc.toFixed(1)}`}
+      />
       <div className={styles.palettes}>
         <ColorPallet color={baseColor} label="背景色" setColor={setBaseColor} />
         <ColorPallet

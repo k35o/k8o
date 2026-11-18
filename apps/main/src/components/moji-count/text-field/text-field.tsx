@@ -1,7 +1,9 @@
 'use client';
 
 import { FormControl, Textarea } from '@k8ordo/ui';
-import { useDeferredValue, useEffect, useState } from 'react';
+import { useDeferredValue, useState } from 'react';
+
+import { DebouncedAnnouncement } from '@/components/site/debounced-announcement/debounced-announcement';
 
 import { countGraphemeLength } from '../count-text/count-text';
 import { TextLength } from '../text-length/text-length';
@@ -12,24 +14,14 @@ export const TextField = () => {
   const [text, setText] = useState('');
   const deferredText = useDeferredValue(text);
 
-  // タイピング中は入力の都度カウントが変わるため、読み上げはデバウンスして
-  // 入力が落ち着いてから最新の文字数だけをスクリーンリーダーに通知する。
-  // 未入力時は読み上げない（初期マウントで「0文字」が鳴るのを避ける）
-  const [announcement, setAnnouncement] = useState('');
-  useEffect(() => {
-    const id = setTimeout(() => {
-      if (text !== '') {
-        setAnnouncement(`${countGraphemeLength(text).toString()}文字`);
-      }
-    }, 500);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [text]);
-
   return (
     <div className={styles.root}>
-      <output className={styles.srOnly}>{announcement}</output>
+      {/* 未入力のときは読み上げない（初期マウントで「0文字」が鳴るのを避ける） */}
+      <DebouncedAnnouncement
+        message={
+          text === '' ? '' : `${countGraphemeLength(text).toString()}文字`
+        }
+      />
       <div className={styles.field}>
         <FormControl
           label="カウントしたい文字列"
