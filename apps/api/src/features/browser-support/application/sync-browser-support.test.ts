@@ -1,4 +1,3 @@
-import { checkBaselineInvariants } from '@repo/helpers/baseline/invariants';
 import type {
   BaselineDataset,
   BaselineFeature,
@@ -15,6 +14,7 @@ import {
   discoverLatestVersion,
   fetchUpstreamData,
 } from '../infrastructure/upstream-release-source';
+import { checkBaselineInvariants } from './baseline-invariants';
 import {
   diffBaselineFeatures,
   syncBrowserSupport,
@@ -37,7 +37,7 @@ vi.mock('@repo/helpers/baseline/transform-upstream', () => ({
   transformUpstreamData: vi.fn(),
   UpstreamFormatError: class UpstreamFormatError extends Error {},
 }));
-vi.mock('@repo/helpers/baseline/invariants', () => ({
+vi.mock('./baseline-invariants', () => ({
   checkBaselineInvariants: vi.fn(),
 }));
 

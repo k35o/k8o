@@ -1,16 +1,16 @@
 import type { BaselineFeature } from '@repo/helpers/baseline/model';
-import {
-  RECENT_CHANGES_LIMIT,
-  RECENT_CHANGES_WINDOW_MS,
-  selectFeatureStatus,
-  selectFeedFeatures,
-} from '@repo/helpers/baseline/select';
 
 import {
   findActiveDataset,
   findRecentFeatureChanges,
 } from '../infrastructure/browser-support-repository';
 import type { BrowserSupportFeatureChange } from '../infrastructure/browser-support-repository';
+import {
+  RECENT_CHANGES_LIMIT,
+  RECENT_CHANGES_WINDOW_MS,
+  selectFeatureStatus,
+  selectFeedFeatures,
+} from './baseline-select';
 
 type BrowserSupportSnapshot = {
   meta: { upstreamVersion: string; ingestedAt: string } | null;

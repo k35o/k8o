@@ -1,4 +1,3 @@
-import { checkBaselineInvariants } from '@repo/helpers/baseline/invariants';
 import type { BaselineFeature } from '@repo/helpers/baseline/model';
 import {
   transformUpstreamData,
@@ -20,6 +19,7 @@ import {
   fetchUpstreamData,
   UpstreamDiscoveryError,
 } from '../infrastructure/upstream-release-source';
+import { checkBaselineInvariants } from './baseline-invariants';
 
 // 対応している上流メジャー。上流が v4 を出したら取り込みを止めて警報し、
 // 型・変換・検証を確認してからこの定数を上げる。

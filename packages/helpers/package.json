@@ -25,14 +25,6 @@
       "types": "./src/baseline/transform-upstream.ts",
       "default": "./src/baseline/transform-upstream.ts"
     },
-    "./baseline/invariants": {
-      "types": "./src/baseline/invariants.ts",
-      "default": "./src/baseline/invariants.ts"
-    },
-    "./baseline/select": {
-      "types": "./src/baseline/select.ts",
-      "default": "./src/baseline/select.ts"
-    },
     "./browser/detect-browser": {
       "types": "./src/browser/detect-browser.ts",
       "default": "./src/browser/detect-browser.ts"
