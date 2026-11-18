@@ -1,7 +1,12 @@
 import { tool } from 'ai';
 import * as z from 'zod/mini';
 
-import { truncateChars } from '@/shared/truncate-chars';
+import {
+  countChars,
+  firstChars,
+  truncateChars,
+  truncateCharsWith,
+} from '@/shared/truncate-chars';
 
 import {
   COMMENTS_PER_PAGE,
@@ -36,20 +41,15 @@ const MAX_FRAGMENT_CHARS = 600;
 const MAX_BODY_CHARS = 10_000;
 const MAX_COMMENT_CHARS = 2500;
 
-// サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-const toChars = (text: string): string[] => Array.from(text);
-
-const firstChars = (text: string, max: number): string =>
-  toChars(text).slice(0, max).join('');
-
 const formatCount = (count: number): string => count.toLocaleString('en-US');
 
-const truncate = (text: string, max: number, label: string): string => {
-  const { length } = toChars(text);
-  return length <= max
-    ? text
-    : `${firstChars(text, max)}\n（${label}を ${formatCount(max)} 字で切りました。全 ${formatCount(length)} 字）`;
-};
+const truncate = (text: string, max: number, label: string): string =>
+  truncateCharsWith(
+    text,
+    max,
+    (total) =>
+      `\n（${label}を ${formatCount(max)} 字で切りました。全 ${formatCount(total)} 字）`,
+  );
 
 const nextPage = (hasNext: boolean, page: number): string[] =>
   hasNext ? [`次のページがあります（page: ${(page + 1).toString()}）`] : [];
@@ -58,7 +58,7 @@ const nextPage = (hasNext: boolean, page: number): string[] =>
 const countFittingLines = (lines: readonly string[], max: number): number => {
   let used = 0;
   for (const [index, line] of lines.entries()) {
-    used += (index === 0 ? 0 : 1) + toChars(line).length;
+    used += (index === 0 ? 0 : 1) + countChars(line);
     if (used > max) {
       return index;
     }
@@ -151,10 +151,7 @@ const formatFile = (
     const first = header(start);
     return [
       first,
-      firstChars(
-        numbered[0] ?? '',
-        MAX_OUTPUT_CHARS - toChars(first).length - 1,
-      ),
+      firstChars(numbered[0] ?? '', MAX_OUTPUT_CHARS - countChars(first) - 1),
       start < total
         ? `（${start.toString()} 行目が長いので途中で切りました。続きの行は startLine: ${(start + 1).toString()} で読んでください）`
         : `（${start.toString()} 行目が長いので途中で切りました）`,

@@ -2,7 +2,7 @@ import { tool } from 'ai';
 import type { InferToolOutput } from 'ai';
 import * as z from 'zod/mini';
 
-import { truncateChars } from '@/shared/truncate-chars';
+import { truncateChars, truncateCharsWith } from '@/shared/truncate-chars';
 
 import {
   fetchOwnerBlogMarkdown,
@@ -25,21 +25,17 @@ const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
 const MAX_DESCRIPTION_CHARS = 200;
 const MAX_MARKDOWN_CHARS = 50_000;
 
-// サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-const toChars = (text: string): string[] => Array.from(text);
-
 const shortenDescription = (blog: OwnerBlog): OwnerBlog => ({
   ...blog,
   description: truncateChars(blog.description, MAX_DESCRIPTION_CHARS),
 });
 
-const truncateMarkdown = (markdown: string): string => {
-  const chars = toChars(markdown);
-  if (chars.length <= MAX_MARKDOWN_CHARS) {
-    return markdown;
-  }
-  return `${chars.slice(0, MAX_MARKDOWN_CHARS).join('')}\n\n（ここで切り詰めました。全体は ${chars.length} 文字）`;
-};
+const truncateMarkdown = (markdown: string): string =>
+  truncateCharsWith(
+    markdown,
+    MAX_MARKDOWN_CHARS,
+    (total) => `\n\n（ここで切り詰めました。全体は ${total} 文字）`,
+  );
 
 export const agentTools = {
   list_blogs: tool({
