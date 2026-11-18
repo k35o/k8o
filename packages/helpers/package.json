@@ -119,9 +119,6 @@
     "test:watch": "vitest",
     "type-check": "tsc --noEmit"
   },
-  "dependencies": {
-    "clsx": "2.1.1"
-  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "vitest": "catalog:"

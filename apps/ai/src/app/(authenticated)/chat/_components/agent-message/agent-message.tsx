@@ -3,7 +3,7 @@
 import { Alert, Avatar } from '@k8ordo/ui';
 import { Message, Reasoning, ToolInvocation } from '@k8ordo/ui/ai';
 import { BotMessageIcon } from '@k8ordo/ui/icons';
-import { isStaticToolUIPart } from 'ai';
+import { getStaticToolName, isStaticToolUIPart } from 'ai';
 import type { FC, Ref } from 'react';
 
 import {
@@ -54,7 +54,7 @@ const ToolPart: FC<{ part: AgentToolPart; isGenerating: boolean }> = ({
   part,
   isGenerating,
 }) => {
-  const name = part.type.slice('tool-'.length);
+  const name = getStaticToolName(part);
   // provider が実行した tool は、保存するときに結果を落として呼び出しだけに戻している
   if (
     !isGenerating &&
