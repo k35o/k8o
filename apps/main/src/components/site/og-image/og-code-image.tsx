@@ -135,7 +135,7 @@ export async function OgCodeImage({
         <img
           alt=""
           height={230}
-          src={getJellyfishLegsDataUrl('bottom-left')}
+          src={getJellyfishLegsDataUrl()}
           style={{ position: 'absolute', bottom: 0, left: 0 }}
           width={230}
         />
