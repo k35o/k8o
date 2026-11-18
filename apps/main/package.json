@@ -63,7 +63,7 @@
     "@types/mdx": "2.0.14",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vercel/blob": "2.8.2",
+    "@vercel/blob": "2.9.0",
     "@vitest/browser-playwright": "catalog:",
     "chromatic": "catalog:",
     "msw": "3.0.5",
