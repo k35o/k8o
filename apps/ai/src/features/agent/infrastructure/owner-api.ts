@@ -52,25 +52,32 @@ type OwnerReportPage = InferResponseType<
   200
 >;
 
-// tool の例外はモデルへの tool の結果になるだけでログに残らないので、ここで残す
-const unexpectedStatus = (path: string, status: number): Error => {
-  const message = `オーナー API の ${path} が ${status} を返しました`;
-  console.error(message);
-  return new Error(message);
-};
+const requestOptions = (
+  signal: AbortSignal | undefined,
+): { init: { signal: AbortSignal | null } } => ({
+  init: { signal: signal ?? null },
+});
+
+// hc の型にはルートが返すステータスしか無く、認可の 401 や想定外の 500 は含まれないので、
+// status を number に広げて比べる
+function assertOk<Res extends { status: number }>(
+  path: string,
+  res: Res,
+): asserts res is Extract<Res, { status: 200 }> {
+  const status: number = res.status;
+  if (status !== 200) {
+    // tool の例外はモデルへの tool の結果になるだけでログに残らないので、ここで残す
+    const message = `オーナー API の ${path} が ${status} を返しました`;
+    console.error(message);
+    throw new Error(message);
+  }
+}
 
 export const fetchOwnerBlogs = async (
   signal: AbortSignal | undefined,
 ): Promise<OwnerBlog[]> => {
-  const res = await ownerApi.owner.blogs.$get(
-    {},
-    { init: { signal: signal ?? null } },
-  );
-  // hc の型にはルートが返すステータスしか無く、認可の 401 や想定外の 500 は含まれない
-  const status: number = res.status;
-  if (status !== 200) {
-    throw unexpectedStatus('/owner/blogs', status);
-  }
+  const res = await ownerApi.owner.blogs.$get({}, requestOptions(signal));
+  assertOk('/owner/blogs', res);
   return (await res.json()).items;
 };
 
@@ -80,29 +87,20 @@ export const fetchOwnerBlogMarkdown = async (
 ): Promise<string | null> => {
   const res = await ownerApi.owner.blogs[':slug'].$get(
     { param: { slug } },
-    { init: { signal: signal ?? null } },
+    requestOptions(signal),
   );
   if (res.status === 404 || res.status === 400) {
     return null;
   }
-  const status: number = res.status;
-  if (status !== 200) {
-    throw unexpectedStatus(`/owner/blogs/${slug}`, status);
-  }
+  assertOk(`/owner/blogs/${slug}`, res);
   return (await res.json()).markdown;
 };
 
 export const fetchOwnerOverview = async (
   signal: AbortSignal | undefined,
 ): Promise<OwnerOverview> => {
-  const res = await ownerApi.owner.overview.$get(
-    {},
-    { init: { signal: signal ?? null } },
-  );
-  const status: number = res.status;
-  if (status !== 200) {
-    throw unexpectedStatus('/owner/overview', status);
-  }
+  const res = await ownerApi.owner.overview.$get({}, requestOptions(signal));
+  assertOk('/owner/overview', res);
   return res.json();
 };
 
@@ -112,11 +110,9 @@ export const fetchOwnerInquiries = async (
 ): Promise<OwnerInquiryPage> => {
   const res = await ownerApi.owner.inquiries.$get(
     { query: { page: String(page), pageSize: String(pageSize) } },
-    { init: { signal: signal ?? null } },
+    requestOptions(signal),
   );
-  if (res.status !== 200) {
-    throw unexpectedStatus('/owner/inquiries', res.status);
-  }
+  assertOk('/owner/inquiries', res);
   return res.json();
 };
 
@@ -141,11 +137,9 @@ export const fetchOwnerBlogStats = async (
         pageSize: String(pageSize),
       },
     },
-    { init: { signal: signal ?? null } },
+    requestOptions(signal),
   );
-  if (res.status !== 200) {
-    throw unexpectedStatus('/owner/blog-stats', res.status);
-  }
+  assertOk('/owner/blog-stats', res);
   return res.json();
 };
 
@@ -165,10 +159,8 @@ export const fetchOwnerReports = async (
         pageSize: String(pageSize),
       },
     },
-    { init: { signal: signal ?? null } },
+    requestOptions(signal),
   );
-  if (res.status !== 200) {
-    throw unexpectedStatus('/owner/reports', res.status);
-  }
+  assertOk('/owner/reports', res);
   return res.json();
 };

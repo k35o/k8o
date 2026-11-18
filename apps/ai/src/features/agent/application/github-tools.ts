@@ -32,6 +32,7 @@ import type {
   GithubRepo,
   GithubSearchPage,
 } from '../infrastructure/github-api';
+import { pageInputOf } from './page-input';
 
 const MAX_OUTPUT_CHARS = 50_000;
 const MAX_REPO_DESCRIPTION_CHARS = 200;
@@ -73,15 +74,8 @@ const repoInput = z
     z.describe('リポジトリの名前。k35o/ は付けない（例: k8o）'),
   );
 
-const pageInput = z.optional(
-  z
-    .int()
-    .check(
-      z.positive(),
-      z.describe(
-        'ページの番号（1 から）。結果に次のページがあると書かれていたら、その番号を渡す',
-      ),
-    ),
+const pageInput = pageInputOf(
+  'ページの番号（1 から）。結果に次のページがあると書かれていたら、その番号を渡す',
 );
 
 const repoLine = (repo: GithubRepo): string => {
@@ -461,15 +455,8 @@ export const githubTools = {
     inputSchema: z.object({
       repo: repoInput,
       number: z.int().check(z.positive(), z.describe('issue か PR の番号')),
-      page: z.optional(
-        z
-          .int()
-          .check(
-            z.positive(),
-            z.describe(
-              'コメントのページの番号（1 から）。結果に次のページがあると書かれていたら、その番号を渡す',
-            ),
-          ),
+      page: pageInputOf(
+        'コメントのページの番号（1 から）。結果に次のページがあると書かれていたら、その番号を渡す',
       ),
     }),
     execute: async (
