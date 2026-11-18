@@ -6,14 +6,14 @@ import {
   generateRandomHex,
 } from '../quiz-colors/quiz-colors';
 
-type Phase = 'question' | 'result';
+export type QuizPhase = 'question' | 'result';
 
 const OPTION_COUNT = 4;
 
 export const useColorQuiz = () => {
   const [targetHex, setTargetHex] = useState(() => generateRandomHex());
   const [selectedHex, setSelectedHex] = useState<string | null>(null);
-  const [phase, setPhase] = useState<Phase>('question');
+  const [phase, setPhase] = useState<QuizPhase>('question');
 
   const options = useMemo(() => {
     const distractors = generateDistractors(targetHex, OPTION_COUNT - 1);
