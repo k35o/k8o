@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 
 import { parseAnnotations } from '@repo/code-highlight/parser';
+import remarkPreset from '@repo/mdx-preset/remark';
 import { remark } from 'remark';
-import remarkFrontmatter from 'remark-frontmatter';
 
 import { blogPath } from './path';
 
@@ -15,7 +15,7 @@ export const getBlogOgCode = async (
   slug: string,
 ): Promise<BlogOgCode | null> => {
   const content = await readFile(blogPath(slug), 'utf-8');
-  const tree = remark().use(remarkFrontmatter).parse(content);
+  const tree = remark().use(remarkPreset).parse(content);
 
   for (const node of tree.children) {
     if (node.type !== 'code') {

@@ -1,6 +1,6 @@
+import remarkPreset from '@repo/mdx-preset/remark';
 import type { PhrasingContent } from 'mdast';
 import { remark } from 'remark';
-import remarkFrontmatter from 'remark-frontmatter';
 
 export type HeadingTree = {
   depth: 0;
@@ -39,7 +39,7 @@ export const getTocTree = (content: string): HeadingTree => {
     depth: 0,
     children: [],
   };
-  const tree = remark().use(remarkFrontmatter).parse(content);
+  const tree = remark().use(remarkPreset).parse(content);
   for (const node of tree.children) {
     if (node.type !== 'heading') {
       continue;
