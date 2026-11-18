@@ -9,12 +9,12 @@ import type { FC } from 'react';
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
-import { useFragmentTarget } from '../hooks/use-fragment-target';
 import { useIsFullscreen } from '../hooks/use-is-fullscreen';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
 import { ProgressBar } from '../progress-bar/progress-bar';
-import { slideDeckState } from '../slide-deck/deck-state';
+import { slideDeckState, slideHashOf } from '../slide-deck/deck-state';
+import { keepFragmentInDeck } from '../slide-deck/fragment-target';
 import { Stage } from '../stage/stage';
 
 import styles from './deck-viewer.module.css';
@@ -48,12 +48,11 @@ export const DeckViewer: FC<{
     return generated;
   });
   useBroadcastViewerHeartbeat({ slug, sessionId });
-  const fragmentTarget = useFragmentTarget();
   const current = slides[index] ?? slides[0];
   const presenterHref = `${slideDeckState.href(`/slides/${slug}`, {
     mode: 'presenter',
     session: sessionId,
-  })}#${(index + 1).toString()}`;
+  })}#${slideHashOf(index)}`;
 
   useEffect(() => {
     if (!isPresenting) return undefined;
@@ -73,7 +72,7 @@ export const DeckViewer: FC<{
       aria-label={title}
       aria-roledescription="slide deck"
       className={styles.root}
-      ref={fragmentTarget}
+      ref={keepFragmentInDeck}
       tabIndex={-1}
     >
       {!isMaximized && (
