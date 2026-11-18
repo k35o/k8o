@@ -4,9 +4,10 @@ import { cn } from '@repo/helpers/cn';
 import type { OgMetadata } from '@repo/helpers/og/og-metadata';
 import type { FC } from 'react';
 
+import { MetaImage } from '@/components/site/meta-image/meta-image';
+
 import { LinkCardFallback } from './fallback';
 import type { LinkCardVariant } from './fallback';
-import { MetaImage } from './image';
 
 import styles from './link-card-view.module.css';
 

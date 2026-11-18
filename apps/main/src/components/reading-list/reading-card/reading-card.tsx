@@ -5,8 +5,9 @@ import { isHttpUrl } from '@repo/helpers/url/is-http-url';
 import { memo } from 'react';
 import type { FC } from 'react';
 
+import { MetaImage } from '@/components/site/meta-image/meta-image';
+
 import { ReadingCardBody } from './body';
-import { ReadingCardImage } from './image';
 
 import styles from './reading-card.module.css';
 
@@ -33,7 +34,7 @@ export const ReadingCard: FC<ReadingCardProps> = memo(function ReadingCard({
     <div className={styles.root}>
       <Card interactive variant="shadow">
         <div className={styles.card}>
-          {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
+          {imageUrl !== null && <MetaImage keepFrameOnError src={imageUrl} />}
           <div className={styles.body}>
             <div className={styles.heading}>
               <p className={styles.title}>
