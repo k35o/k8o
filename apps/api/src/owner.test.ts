@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { findBlogs } from './features/blog/infrastructure/blog-repository';
+import {
+  findActiveDatasetMeta,
+  findRecentSyncRuns,
+} from './features/browser-support/infrastructure/browser-support-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
@@ -13,6 +17,13 @@ import app from './index';
 vi.mock('./features/blog/infrastructure/blog-repository', () => ({
   findBlogs: vi.fn(),
 }));
+vi.mock(
+  './features/browser-support/infrastructure/browser-support-repository',
+  () => ({
+    findActiveDatasetMeta: vi.fn(),
+    findRecentSyncRuns: vi.fn(),
+  }),
+);
 vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
   findInquiries: vi.fn(),
 }));
@@ -271,7 +282,7 @@ describe('GET /owner/blogs/:slug', () => {
 
 describe('GET /owner/overview', () => {
   describe('正常系', () => {
-    it('DB の集計に、reading-list の要約の進み具合を足して返す', async () => {
+    it('DB の集計に、reading-list の要約の進み具合と browser-support の取り込み状況を足して返す', async () => {
       vi.mocked(findOverview).mockResolvedValue({
         blogs: { published: 90, drafts: 1, totalViews: 1234 },
         inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
@@ -286,16 +297,18 @@ describe('GET /owner/overview', () => {
           sources: 12,
           latestPublishedAt: '2026-10-08T00:00:00.000Z',
         },
-        browserSupport: {
-          activeVersion: '3.40.1',
-          activeIngestedAt: '2026-10-08T14:40:34.555Z',
-          lastRun: {
-            result: 'applied',
-            trigger: 'manual',
-            createdAt: '2026-10-08T14:40:36.027Z',
-          },
-        },
       });
+      vi.mocked(findActiveDatasetMeta).mockResolvedValue({
+        upstreamVersion: '3.40.1',
+        ingestedAt: '2026-10-08T14:40:34.555Z',
+      });
+      vi.mocked(findRecentSyncRuns).mockResolvedValue([
+        {
+          createdAt: '2026-10-08T14:40:36.027Z',
+          result: 'applied',
+          trigger: 'manual',
+        },
+      ]);
       vi.mocked(getSummaryProgress).mockResolvedValue({
         unsummarized: 20,
         summaryGaveUp: 2,

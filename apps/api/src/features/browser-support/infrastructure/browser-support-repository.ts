@@ -31,6 +31,11 @@ const KEEP_SUPERSEDED = 3;
 // 世代置換のたびに削る。
 const CHANGE_RETENTION_DAYS = 90;
 
+export type ActiveDatasetMeta = Pick<
+  ActiveDatasetRecord,
+  'upstreamVersion' | 'ingestedAt'
+>;
+
 export type FeatureChangeInput = {
   featureId: string;
   featureName: string;
@@ -68,6 +73,21 @@ export const findActiveDataset =
       ingestedAt: row.ingestedAt,
       dataset,
     };
+  };
+
+// data 列は数 MB のブロブなので、版と取り込み時刻だけを読む
+export const findActiveDatasetMeta =
+  async (): Promise<ActiveDatasetMeta | null> => {
+    const rows = await db
+      .select({
+        upstreamVersion: db._schema.browserSupportDatasets.upstreamVersion,
+        ingestedAt: db._schema.browserSupportDatasets.ingestedAt,
+      })
+      .from(db._schema.browserSupportDatasets)
+      .where(eq(db._schema.browserSupportDatasets.state, 'active'))
+      .orderBy(desc(db._schema.browserSupportDatasets.id))
+      .limit(1);
+    return rows[0] ?? null;
   };
 
 export type BrowserSupportFeatureChange = FeatureChangeInput & {
