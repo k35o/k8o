@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { renderBlogOgImage } from '@/components/blog/blog-og-image/blog-og-image';
+import { OgImage } from '@/components/site/og-image/og-image';
 import {
   findBlogContent,
   findBlogDemoDocument,
   findBlogMarkdown,
+  getBlogOgCode,
 } from '@/features/blog/interface/queries';
 
 import { GET as getArticleMarkdown } from '../routes/blog/[slug]/article.md/route';
@@ -16,9 +17,10 @@ vi.mock('@/features/blog/interface/queries', () => ({
   findBlogContent: vi.fn(),
   findBlogDemoDocument: vi.fn(),
   findBlogMarkdown: vi.fn(),
+  getBlogOgCode: vi.fn(),
 }));
-vi.mock('@/components/blog/blog-og-image/blog-og-image', () => ({
-  renderBlogOgImage: vi.fn(),
+vi.mock('@/components/site/og-image/og-image', () => ({
+  OgImage: vi.fn(),
 }));
 
 const requestMarkdown = async (slug: string): Promise<Response> =>
@@ -105,7 +107,7 @@ describe('GET /blog/:slug/demos/:demo', () => {
 
 describe('GET /blog/:slug/og.png', () => {
   describe('正常系', () => {
-    it('公開済みの記事は renderBlogOgImage の画像をそのまま返す', async () => {
+    it('公開済みの記事は題とコードで描いた画像をそのまま返す', async () => {
       vi.mocked(findBlogContent).mockResolvedValue({
         id: 1,
         slug: 'blog-a',
@@ -119,23 +121,28 @@ describe('GET /blog/:slug/og.png', () => {
       const image = new Response('png', {
         headers: { 'Content-Type': 'image/png' },
       });
-      vi.mocked(renderBlogOgImage).mockResolvedValue(image);
+      vi.mocked(getBlogOgCode).mockResolvedValue(null);
+      vi.mocked(OgImage).mockResolvedValue(image);
 
       const res = await requestOgImage('blog-a');
 
       expect(res).toBe(image);
-      expect(renderBlogOgImage).toHaveBeenCalledWith('blog-a');
+      expect(OgImage).toHaveBeenCalledWith({
+        category: 'Blog',
+        title: 'タイトル',
+        code: undefined,
+      });
     });
   });
 
   describe('異常系', () => {
-    it('記事が無い slug は 404 を返し、OG を描きに行かない（描く側は MDX を先に読み、ENOENT で落ちるため）', async () => {
+    it('記事が無い slug は 404 を返し、OG のコードを読みに行かない（MDX を読むと ENOENT で落ちるため）', async () => {
       vi.mocked(findBlogContent).mockResolvedValue(null);
 
       const res = await requestOgImage('missing-blog');
 
       expect(res.status).toBe(404);
-      expect(renderBlogOgImage).not.toHaveBeenCalled();
+      expect(getBlogOgCode).not.toHaveBeenCalled();
     });
   });
 });
