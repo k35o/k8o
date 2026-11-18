@@ -1,0 +1,1 @@
+ALTER TABLE `talks` ADD `deck_published_at` text;
