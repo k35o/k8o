@@ -30,7 +30,6 @@ const talk = (overrides: Partial<Talk> = {}): Talk => ({
   eventName: 'イベント',
   eventDate: '2026-11-10',
   eventLocation: null,
-  slideUrl: 'https://example.com/slides',
   blog: null,
   tags: [],
   ...overrides,
@@ -69,15 +68,12 @@ describe('findPdfDeck', () => {
 
 describe('getTalks', () => {
   describe('正常系', () => {
-    it('slug の無いトークはデッキを持たず、スライドは外の URL を指す', async () => {
+    it('slug の無いトークはデッキを持たず、スライドのリンク先も持たない', async () => {
       vi.mocked(readTalks).mockResolvedValue([talk()]);
 
       const [result] = await getTalks();
 
-      expect(result).toMatchObject({
-        deck: null,
-        slidesHref: 'https://example.com/slides',
-      });
+      expect(result).toMatchObject({ deck: null, slidesHref: null });
     });
 
     it('PDF のマニフェストがあるトークは PDF のデッキを持ち、スライドはデッキのページを指す', async () => {
@@ -120,7 +116,7 @@ describe('getTalks', () => {
   });
 
   describe('異常系', () => {
-    it('slug があっても中身の無いトークはデッキを持たず、警告を出して外の URL を指す', async () => {
+    it('slug があっても中身の無いトークはデッキを持たず、警告を出してスライドのリンク先を持たない', async () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
       vi.mocked(readTalks).mockResolvedValue([talk({ slug: 'my-talk' })]);
 
@@ -128,30 +124,12 @@ describe('getTalks', () => {
 
       expect(result).toMatchObject({
         deck: null,
-        slidesHref: 'https://example.com/slides',
+        slidesHref: null,
       });
       expect(warn).toHaveBeenCalledWith(
         'トーク "my-talk" のデッキの MDX も PDF のマニフェストも無いため、デッキを出しません',
       );
       warn.mockRestore();
-    });
-  });
-
-  describe('エッジケース', () => {
-    it('デッキも外のスライドも無いトークは、スライドのリンク先を持たない', async () => {
-      vi.mocked(readTalks).mockResolvedValue([talk({ slideUrl: null })]);
-
-      const [result] = await getTalks();
-
-      expect(result).toMatchObject({ deck: null, slidesHref: null });
-    });
-
-    it('slide_url が空の文字列のトークも、スライドのリンク先を持たない', async () => {
-      vi.mocked(readTalks).mockResolvedValue([talk({ slideUrl: '' })]);
-
-      const [result] = await getTalks();
-
-      expect(result).toMatchObject({ slidesHref: null });
     });
   });
 });

@@ -10,8 +10,8 @@ export type PublishedBlog = {
   id: number;
   slug: string;
   tags: TagRef[];
-  // 記事を解説に持つトークの、k8o.me のデッキの名前と外のスライドの URL
-  talk: { slug: string | null; slideUrl: string | null } | null;
+  // 記事を解説に持つトークの、k8o.me のデッキの名前
+  talk: { slug: string | null } | null;
 };
 
 export type Tag = {
@@ -29,7 +29,6 @@ export type Talk = {
   eventName: string;
   eventDate: string;
   eventLocation: string | null;
-  slideUrl: string | null;
   blog: { id: number; slug: string } | null;
   tags: TagRef[];
 };
@@ -62,7 +61,6 @@ export const getTalks = async (): Promise<Talk[]> =>
     eventName: row.eventName,
     eventDate: row.eventDate,
     eventLocation: row.eventLocation,
-    slideUrl: row.slideUrl,
     blog: row.blog,
     tags: row.talkTag.map(({ tag }) => tag),
   }));

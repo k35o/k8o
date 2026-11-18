@@ -12,7 +12,7 @@ export const TalkCard: FC<{
   eventName: string;
   eventDate: string;
   eventLocation: string | null;
-  // k8o.me のデッキのページか、外のスライドの URL
+  // k8o.me のデッキのページ
   slidesHref: string | null;
   // k8o.me のデッキの 1 ページ目
   cover: {

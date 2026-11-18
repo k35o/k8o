@@ -41,18 +41,13 @@ const findDeckKind = async (slug: string | null): Promise<DeckKind | null> => {
   return null;
 };
 
-// slide_url が空の行は、外のスライドが無いものとして扱う
-const externalSlides = (slideUrl: string | null): string | null =>
-  slideUrl === '' ? null : slideUrl;
-
-// スライドのリンク先。k8o.me にデッキがあればそのページ、無ければ外のスライド
+// スライドのリンク先。k8o.me にデッキのあるトークだけが持つ
 export const findSlidesHref = async (talk: {
   slug: string | null;
-  slideUrl: string | null;
 }): Promise<string | null> =>
   talk.slug !== null && (await findDeckKind(talk.slug)) !== null
     ? `/talks/${talk.slug}`
-    : externalSlides(talk.slideUrl);
+    : null;
 
 // 一覧に出す表紙。PDF から作ったデッキの 1 ページ目
 const findCover = async (
@@ -94,8 +89,7 @@ export const getTalks = async () =>
         tags: talk.tags,
         deck,
         cover: await findCover(deck),
-        slidesHref:
-          deck === null ? externalSlides(talk.slideUrl) : `/talks/${deck.slug}`,
+        slidesHref: deck === null ? null : `/talks/${deck.slug}`,
       };
     }),
   );

@@ -112,7 +112,7 @@ describe('GET /blog/:slug/og.png', () => {
         id: 1,
         slug: 'blog-a',
         tags: [],
-        slideUrl: null,
+        slidesHref: null,
         title: 'タイトル',
         description: null,
         createdAt: '2026-01-01T00:00:00.000Z',

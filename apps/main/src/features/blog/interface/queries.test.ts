@@ -49,12 +49,12 @@ const published = (
   id: number,
   slug: string,
   tags: PublishedBlog['tags'] = [],
-  slideUrl: string | null = null,
+  talk: PublishedBlog['talk'] = null,
 ): PublishedBlog => ({
   id,
   slug,
   tags,
-  talk: slideUrl === null ? null : { slug: null, slideUrl },
+  talk,
 });
 
 // MDX の frontmatter。missing に挙げた記事は MDX が無い
@@ -140,9 +140,9 @@ describe('getBlogContents', () => {
 
 describe('findBlogContent', () => {
   describe('正常系', () => {
-    it('一覧の記事を、タグの ID と名前・発表のスライドの URL つきで返す', async () => {
+    it('一覧の記事を、タグの ID と名前つきで返す。デッキの無いトークの記事は、スライドのリンク先を持たない', async () => {
       vi.mocked(getPublishedBlogs).mockResolvedValue([
-        published(1, 'blog-a', [CSS], 'https://example.com/slide.pdf'),
+        published(1, 'blog-a', [CSS], { slug: null }),
       ]);
       mockMetadata();
 
@@ -150,7 +150,7 @@ describe('findBlogContent', () => {
         id: 1,
         slug: 'blog-a',
         tags: [CSS],
-        slideUrl: 'https://example.com/slide.pdf',
+        slidesHref: null,
         title: '題 blog-a',
         description: null,
         createdAt: '2026-01-01T00:00:00.000Z',

@@ -24,7 +24,7 @@ export type BlogDetail = Pick<
   | 'id'
   | 'slug'
   | 'tags'
-  | 'slideUrl'
+  | 'slidesHref'
   | 'title'
   | 'description'
   | 'createdAt'
@@ -70,7 +70,7 @@ export const findBlogContent = async (
     id: blog.id,
     slug: blog.slug,
     tags: blog.tags,
-    slideUrl: blog.slideUrl,
+    slidesHref: blog.slidesHref,
     title: blog.title,
     description: blog.description,
     createdAt: blog.createdAt,
