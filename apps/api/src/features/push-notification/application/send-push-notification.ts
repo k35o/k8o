@@ -11,12 +11,12 @@ import {
   findSubscriptions,
 } from '../infrastructure/subscription-repository';
 import type { StoredSubscription } from '../infrastructure/subscription-repository';
+import type { VapidConfig } from '../infrastructure/vapid';
 import {
   InvalidSubscriptionKeysError,
   sendWebPush,
   WebPushError,
 } from '../infrastructure/web-push';
-import type { VapidConfig } from '../infrastructure/web-push';
 
 type SendPushNotificationParams = {
   kind: PushLogKind;
