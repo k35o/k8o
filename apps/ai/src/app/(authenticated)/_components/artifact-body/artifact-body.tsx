@@ -1,12 +1,12 @@
 'use client';
 
-import type { Spec } from '@json-render/core';
 import type { FC, ReactNode } from 'react';
 
 import { DeckPreview } from '@/app/_components/deck-preview';
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { SpecPreview } from '@/app/_components/spec-preview';
+import type { PartialArtifactContent } from '@/features/artifacts/application/artifact-kind';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 
 import { CodeView } from '../code-view';
@@ -15,13 +15,9 @@ import type { ArtifactView } from './artifact-views';
 
 import styles from './artifact-body.module.css';
 
-type ArtifactContent =
-  | { kind: 'ui'; spec: Spec | null }
-  | { kind: 'slides'; source: string | null };
-
 // 見ていないビューのコードは作らない。TSX への変換は spec が届くたびに走るため
 export const codeOf = (
-  content: ArtifactContent,
+  content: PartialArtifactContent,
   view: ArtifactView,
 ): string | null => {
   if (view === 'preview') {
@@ -39,7 +35,7 @@ export const codeOf = (
 };
 
 const codeLangOf = (
-  kind: ArtifactContent['kind'],
+  kind: PartialArtifactContent['kind'],
   view: ArtifactView,
 ): string => {
   if (kind === 'slides') {
@@ -49,7 +45,7 @@ const codeLangOf = (
 };
 
 const previewOf = (
-  content: ArtifactContent,
+  content: PartialArtifactContent,
   waitingText: string,
   isGenerating: boolean,
   printable: boolean,
@@ -73,7 +69,7 @@ const previewOf = (
 };
 
 type ArtifactBodyProps = {
-  content: ArtifactContent;
+  content: PartialArtifactContent;
   waitingText: string;
   isGenerating: boolean;
   view: ArtifactView;

@@ -1,4 +1,4 @@
-import type { ArtifactKind } from '@/features/agent/application/chat-artifacts';
+import type { ArtifactKind } from '@/features/artifacts/application/artifact-kind';
 
 export type ArtifactView = 'preview' | 'spec' | 'tsx' | 'markdown';
 

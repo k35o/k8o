@@ -1,14 +1,15 @@
-import type { AiArtifactKind, AiUsageKind } from '@repo/ai-database/schema';
+import type { AiUsageKind } from '@repo/ai-database/schema';
 import * as z from 'zod/mini';
 
+import type {
+  ArtifactContent,
+  ArtifactKind,
+} from '@/features/artifacts/application/artifact-kind';
 import {
   findArtifactVersion,
   saveArtifactVersion,
 } from '@/features/artifacts/application/artifacts';
-import type {
-  ArtifactContent,
-  StoredArtifactVersion,
-} from '@/features/artifacts/application/artifacts';
+import type { StoredArtifactVersion } from '@/features/artifacts/application/artifacts';
 import {
   addUsageTokens,
   EMPTY_USAGE_TOKENS,
@@ -41,16 +42,17 @@ export const progressIntervalMs = (chars: number): number =>
 const truncateSummary = (text: string): string =>
   truncateChars(text, MAX_SUMMARY_CHARS);
 
+// Claude に返す文に入るので、画面のラベル（ARTIFACT_KIND_LABELS）を変えても変わらないよう別に持つ
 const NAMES = {
   ui: 'UI',
   slides: 'スライド',
-} as const satisfies Record<AiArtifactKind, string>;
+} as const satisfies Record<ArtifactKind, string>;
 
 // 英字で終わる語のあとだけ、助詞との間をあける
 const SUBJECTS = {
   ui: 'UI ',
   slides: 'スライド',
-} as const satisfies Record<AiArtifactKind, string>;
+} as const satisfies Record<ArtifactKind, string>;
 
 type ArtifactInputSchema = z.ZodMiniObject<{
   title: z.ZodMiniString;
@@ -88,7 +90,7 @@ export const artifactInputSchema = (describe: {
 
 type ArtifactToolInput = z.infer<ArtifactInputSchema>;
 
-export const findBase = async <Kind extends AiArtifactKind>(input: {
+export const findBase = async <Kind extends ArtifactKind>(input: {
   kind: Kind;
   target: ArtifactToolInput['base'];
   userId: string;
@@ -110,7 +112,7 @@ export const findBase = async <Kind extends AiArtifactKind>(input: {
   return base;
 };
 
-export const noChangeError = (kind: AiArtifactKind, summary: string): Error =>
+export const noChangeError = (kind: ArtifactKind, summary: string): Error =>
   new Error(
     summary === ''
       ? `${SUBJECTS[kind]}は変わりませんでした`
@@ -127,7 +129,7 @@ type SavedArtifact = {
 export const saveGenerated = async (input: {
   context: ArtifactToolContext;
   abortSignal: AbortSignal | undefined;
-  base: StoredArtifactVersion<AiArtifactKind> | null;
+  base: StoredArtifactVersion<ArtifactKind> | null;
   title: string;
   instruction: string;
   summary: string;
@@ -155,7 +157,7 @@ export const saveGenerated = async (input: {
 
 // ループの中の生の値と、DB から戻した値のどちらでも同じ文を返すよう、input と output だけから決める
 export const artifactModelOutput = (
-  kind: AiArtifactKind,
+  kind: ArtifactKind,
   {
     input,
     output,

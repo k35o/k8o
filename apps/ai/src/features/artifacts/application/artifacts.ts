@@ -3,7 +3,6 @@ import { randomUUID } from 'node:crypto';
 
 import { isNonEmptySpec } from '@json-render/core';
 import type { Spec } from '@json-render/core';
-import type { AiArtifactKind } from '@repo/ai-database/schema';
 
 import {
   insertArtifactWithFirstVersion,
@@ -12,6 +11,7 @@ import {
   selectArtifactVersions,
   selectVersion,
 } from '../infrastructure/artifact-repository';
+import type { ArtifactContent, ArtifactKind } from './artifact-kind';
 
 type StoredVersion = {
   id: number;
@@ -36,18 +36,14 @@ type VersionQuery = {
   userId: string;
 };
 
-export type ArtifactContent =
-  | { kind: 'ui'; spec: Spec }
-  | { kind: 'slides'; source: string };
-
 export type ArtifactVersion = ArtifactContent & { title: string };
 
-export type StoredArtifactVersion<Kind extends AiArtifactKind> = StoredVersion &
+export type StoredArtifactVersion<Kind extends ArtifactKind> = StoredVersion &
   Extract<ArtifactContent, { kind: Kind }>;
 
 export type ArtifactListItem = {
   id: string;
-  kind: AiArtifactKind;
+  kind: ArtifactKind;
   title: string;
   updatedAt: string;
   isPublic: boolean;
@@ -70,7 +66,7 @@ type HistoryVersion = {
 
 type ArtifactHistory = {
   id: string;
-  kind: AiArtifactKind;
+  kind: ArtifactKind;
   versions: HistoryVersion[];
 };
 
@@ -130,7 +126,7 @@ const sourceOf = (content: unknown): string | null =>
     : null;
 
 const contentOf = (
-  kind: AiArtifactKind,
+  kind: ArtifactKind,
   content: unknown,
 ): ArtifactContent | null => {
   if (kind === 'ui') {
@@ -142,7 +138,7 @@ const contentOf = (
 };
 
 export const versionFromRow = (row: {
-  kind: AiArtifactKind;
+  kind: ArtifactKind;
   title: string;
   content: unknown;
 }): ArtifactVersion | null => {
@@ -161,12 +157,12 @@ const readVersion = async (
   return version === null ? null : { id: row.id, version };
 };
 
-const isKind = <Kind extends AiArtifactKind>(
+const isKind = <Kind extends ArtifactKind>(
   version: ArtifactVersion,
   kind: Kind,
 ): version is Extract<ArtifactVersion, { kind: Kind }> => version.kind === kind;
 
-export const findArtifactVersion = async <Kind extends AiArtifactKind>({
+export const findArtifactVersion = async <Kind extends ArtifactKind>({
   kind,
   ...query
 }: VersionQuery & {

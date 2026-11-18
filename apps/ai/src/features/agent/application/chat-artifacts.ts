@@ -1,6 +1,10 @@
-import type { Spec } from '@json-render/core';
 import type { ChatStatus } from 'ai';
 
+import { ARTIFACT_KIND_LABELS } from '@/features/artifacts/application/artifact-kind';
+import type {
+  ArtifactKind,
+  PartialArtifactContent,
+} from '@/features/artifacts/application/artifact-kind';
 import { truncateChars } from '@/shared/truncate-chars';
 
 import type { AgentUIMessage } from './agent-message';
@@ -12,13 +16,7 @@ type ArtifactToolPart = Extract<
 
 export type ArtifactLive = 'receiving' | 'waiting' | null;
 
-type ArtifactContent =
-  | { kind: 'ui'; spec: Spec | null }
-  | { kind: 'slides'; source: string | null };
-
-export type ArtifactKind = ArtifactContent['kind'];
-
-export type ChatArtifact = ArtifactContent & {
+export type ChatArtifact = PartialArtifactContent & {
   toolCallId: string;
   title: string;
   text: string;
@@ -45,11 +43,6 @@ const PHASE_TEXT = {
   repairing: '検証エラーを直しています…',
   writing: 'スライドを書いています…',
 } as const;
-
-const DEFAULT_TITLES = {
-  ui: 'UI',
-  slides: 'スライド',
-} as const satisfies Record<ArtifactKind, string>;
 
 // 最後の出力は、確定の出力として届き直すまで preliminary のまま流れるので、書いている段階の文にする
 const WRITING_PHASES = {
@@ -82,7 +75,7 @@ export const artifactLiveOf = (input: {
     : null;
 };
 
-const contentOf = (part: ArtifactToolPart): ArtifactContent => {
+const contentOf = (part: ArtifactToolPart): PartialArtifactContent => {
   switch (part.type) {
     case 'tool-generate_ui':
       return {
@@ -97,7 +90,7 @@ const contentOf = (part: ArtifactToolPart): ArtifactContent => {
   }
 };
 
-const hasContent = (content: ArtifactContent): boolean =>
+const hasContent = (content: PartialArtifactContent): boolean =>
   content.kind === 'ui' ? content.spec !== null : content.source !== null;
 
 export const chatArtifactOf = (
@@ -108,7 +101,7 @@ export const chatArtifactOf = (
   const content = contentOf(part);
   const title =
     part.input?.title === undefined || part.input.title === ''
-      ? DEFAULT_TITLES[content.kind]
+      ? ARTIFACT_KIND_LABELS[content.kind]
       : part.input.title;
   if (part.state === 'output-error') {
     return {
