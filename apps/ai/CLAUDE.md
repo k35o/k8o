@@ -7,7 +7,7 @@ AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.m
 `app / features / shared` 構成。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
 - `app/` - App Router のルーティングと UI。`page.tsx`・`layout.tsx`・`route.ts` などの entry を置き、UI コンポーネントは `app/**/_components`（route 専用なら route の下、複数の route で使うなら `app/_components`）。entry からは `features/*/interface` を読む
-- `features/<feature>/` - 機能ごとの UI 以外の処理。`interface` は `app` が読む関数、`application` はユースケースと整形（小さい読み取りはここでよい）、`infrastructure` は DB・外部 API などの外部接続。UI コンポーネントは置かない
+- `features/<feature>/` - 機能ごとの UI 以外の処理。`interface` は `app` が読む関数（クライアントの部品が読む純粋な関数と型は、`server-only` でない interface のファイルから出す）、`application` はユースケースと整形（小さい読み取りはここでよい）、`infrastructure` は DB・外部 API などの外部接続。UI コンポーネントは置かない
 - `shared/` - アプリの中で横断して使う UI 以外の処理。UI コンポーネントや `cn` は置かない
 
 features は次のとおり。

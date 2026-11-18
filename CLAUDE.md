@@ -43,6 +43,8 @@ packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール�
 
 main は k8o の DB を直に読まず、ビルドで api の `@repo/api/build-data` の関数を呼ぶ。DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/ai-database`）を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。route と部品（ai の `app/`、main の `routes/`・`components/`）や `features/*/interface` から直接読まない。例外として `@repo/ai-database/auth` だけは ai の `shared/auth` から import してよい（認証の実装の置き場で、セッションを確かめるゲートと Better Auth の route handler が Better Auth のインスタンスを読む）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。drizzle の演算子（`eq` / `and` / `count` など）も各 DB パッケージの `/orm`（`@repo/database/orm` など）から import し、apps は drizzle-orm に直接依存しない（`no-restricted-imports` で強制）。
 
+features の層（`interface`・`application`・`infrastructure`）をまたぐ import は向きを限る。features の外（ai の `app/`、main の `routes/`・`components/`・`shared/`、api の `src` 直下）からは `features/*/interface` だけを読む。同じ feature の `interface` は `infrastructure` を直に読まず、`application` を通す。別の feature は `interface` と `application` を読めるが、`infrastructure` は読まない。テストと Story は対象外。oxc カスタムルール `k8o/feature-layer-boundary` で機械的に強制される。
+
 ## コーディング規約
 
 - `type` を使う（`interface` は使わない。module augmentation の `.d.ts` は例外）。`enum` 禁止。いずれもOXCで強制

@@ -42,6 +42,8 @@ export default defineConfig({
     rules: {
       // DB パッケージ（@repo/database・@repo/ai-database）の import 層を強制する
       'k8o/database-import-boundary': 'error',
+      // features の層（interface・application・infrastructure）をまたぐ import の向きを強制する
+      'k8o/feature-layer-boundary': 'error',
     },
     overrides: [
       {
