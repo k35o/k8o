@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: calc(var(--spacing) * 2);
   padding: calc(var(--spacing) * 4);
-  background-color: var(--color-bg-mute);
+  background-color: light-dark(var(--color-bg-mute), var(--color-bg-surface));
   color: var(--color-fg-base);
 }
 
@@ -74,23 +74,9 @@
 }
 
 .caption {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: var(--letter-spacing-normal);
-  text-transform: uppercase;
-}
-
-.captionCurrent {
-  color: var(--color-primary-fg);
-}
-
-.captionNext {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
   color: var(--color-fg-mute);
-}
-
-.captionNotes {
-  color: var(--color-secondary-fg);
 }
 
 .slot {
@@ -98,6 +84,14 @@
   min-width: 0;
   flex: 1;
   overflow: hidden;
+}
+
+/* 次のスライドは枠の高さいっぱいに取らず、見出しのすぐ下に置く */
+.nextSlot {
+  @media (width >= 64rem) {
+    flex: none;
+    aspect-ratio: 16 / 9;
+  }
 }
 
 .end {
@@ -131,7 +125,6 @@
 }
 
 .empty {
-  font-style: italic;
   color: var(--color-fg-mute);
 }
 

@@ -4,7 +4,7 @@
   z-index: var(--z-index-modal);
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg-mute);
+  background-color: light-dark(var(--color-bg-mute), var(--color-bg-surface));
   color: var(--color-fg-base);
 }
 

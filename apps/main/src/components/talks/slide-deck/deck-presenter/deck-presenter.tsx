@@ -49,7 +49,6 @@ export const DeckPresenter: FC<{
       </header>
       <div className={styles.panels}>
         <section aria-label="現在のスライド" className={styles.current}>
-          <p className={cn(styles.caption, styles.captionCurrent)}>Now</p>
           <div className={styles.slot}>
             <Stage
               bleed={bleed}
@@ -61,10 +60,10 @@ export const DeckPresenter: FC<{
           </div>
         </section>
         <section aria-label="次のスライド" className={styles.next}>
-          <p className={cn(styles.caption, styles.captionNext)}>Next</p>
-          <div className={styles.slot}>
+          <p className={styles.caption}>次のスライド</p>
+          <div className={cn(styles.slot, styles.nextSlot)}>
             {nextSlide === undefined ? (
-              <div className={styles.end}>最終スライドです</div>
+              <div className={styles.end}>これが最後のスライドです</div>
             ) : (
               <Stage bleed={bleed} key={`next-${index.toString()}`}>
                 {nextSlide.content}
@@ -73,7 +72,7 @@ export const DeckPresenter: FC<{
           </div>
         </section>
         <section aria-label="発表者ノート" className={styles.notes}>
-          <p className={cn(styles.caption, styles.captionNotes)}>Notes</p>
+          <p className={styles.caption}>ノート</p>
           <div className={styles.notesBody}>
             {current === undefined || current.notes.length === 0 ? (
               <p className={styles.empty}>ノートはありません</p>
