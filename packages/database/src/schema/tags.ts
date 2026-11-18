@@ -9,7 +9,6 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 import { blogTag } from './blog-tag.ts';
-import { slideTag } from './slide-tag.ts';
 import { talkTag } from './talk-tag.ts';
 
 export const tags = sqliteTable(
@@ -24,5 +23,4 @@ export const tags = sqliteTable(
 export const tagsRelations = relations(tags, ({ many }) => ({
   blogTag: many(blogTag),
   talkTag: many(talkTag),
-  slideTag: many(slideTag),
 }));

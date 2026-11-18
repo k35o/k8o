@@ -167,16 +167,6 @@ erDiagram
     text body
     text created_at
   }
-  slide_tag {
-    integer slide_id FK
-    integer tag_id FK
-  }
-  slides {
-    integer id PK
-    text slug UK
-    integer published
-    text created_at
-  }
   tags {
     integer id PK
     text name UK
@@ -204,9 +194,7 @@ erDiagram
   blogs |o--o{ talks : "blog_id"
   comments ||--o{ blog_comment : "comment_id"
   feedbacks |o--o{ comments : "feedback_id"
-  slides ||--o{ slide_tag : "slide_id"
   tags ||--o{ blog_tag : "tag_id"
-  tags ||--o{ slide_tag : "tag_id"
   tags ||--o{ talk_tag : "tag_id"
   talks ||--o{ talk_tag : "talk_id"
 ```
