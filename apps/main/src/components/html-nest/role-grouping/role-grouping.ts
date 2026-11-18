@@ -19,13 +19,10 @@ export type RoleGroup = {
 
 // 関連要素リストを役割（BOARD_GROUPS のラベル）で束ねる。BOARD_GROUPS の順を保つ。
 export const groupByRole = (items: readonly RelatedElement[]): RoleGroup[] => {
-  const buckets = new Map<string, RelatedElement[]>();
-  for (const item of items) {
-    const role = ROLE_OF.get(item.element.tag) ?? OTHER_ROLE;
-    const arr = buckets.get(role) ?? [];
-    arr.push(item);
-    buckets.set(role, arr);
-  }
+  const buckets = Map.groupBy(
+    items,
+    (item) => ROLE_OF.get(item.element.tag) ?? OTHER_ROLE,
+  );
   return [...ROLE_ORDER, OTHER_ROLE].flatMap((role) => {
     const arr = buckets.get(role);
     return arr && arr.length > 0 ? [{ role, items: arr }] : [];
