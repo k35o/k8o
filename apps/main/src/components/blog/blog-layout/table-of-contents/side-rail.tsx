@@ -9,51 +9,10 @@ import type { HeadingTree } from '@/features/blog/interface/queries';
 import { END_OF_CONTENT_ID } from '../constants';
 import { useWritingMode } from '../writing-mode/writing-mode-context';
 import { ProgressBar } from './progress-bar';
+import { TocItem } from './toc-item';
 import { useActiveHeading } from './use-active-heading';
 
 import styles from './side-rail.module.css';
-
-type TocNode = {
-  text: string;
-  children?: readonly TocNode[];
-};
-
-const RailItem: FC<{
-  node: TocNode;
-  depth: number;
-  activeId: string;
-  onNavigate: (id: string) => void;
-}> = ({ node, depth, activeId, onNavigate }) => {
-  const isActive = activeId === node.text;
-  return (
-    <li>
-      <a
-        aria-current={isActive ? 'location' : undefined}
-        className={styles.link}
-        data-depth={depth}
-        href={`#${node.text}`}
-        onClick={() => {
-          onNavigate(node.text);
-        }}
-      >
-        {node.text}
-      </a>
-      {node.children && node.children.length > 0 && (
-        <ul>
-          {node.children.map((child) => (
-            <RailItem
-              activeId={activeId}
-              depth={depth + 1}
-              key={child.text}
-              node={child}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </ul>
-      )}
-    </li>
-  );
-};
 
 export const TableOfContentsSideRail: FC<{
   headingTree: HeadingTree;
@@ -152,10 +111,11 @@ export const TableOfContentsSideRail: FC<{
           )}
           <ul className={styles.list}>
             {headingTree.children.map((node) => (
-              <RailItem
+              <TocItem
                 activeId={activeId}
                 depth={1}
                 key={node.text}
+                linkClassName={styles.link}
                 node={node}
                 onNavigate={setActiveId}
               />
