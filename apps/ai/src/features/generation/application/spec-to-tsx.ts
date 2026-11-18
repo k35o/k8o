@@ -44,9 +44,6 @@ export const FIELD_TYPE_INPUTS: Record<string, string> = {
   password: 'PasswordInput',
 };
 
-// 複数の case が共有する prop 列は定数にする。case をまとめたまま片方の
-// コンポーネント名で CONVERTED_PROPS を引くと、catalog が片側だけ変わったときに
-// 表と switch がずれてもテストが素通りするため。
 const TEXT_INPUT_PROPS = [
   'name',
   'placeholder',
@@ -181,6 +178,9 @@ const isDynamicValue = (value: unknown): boolean =>
   !Array.isArray(value) &&
   Object.keys(value).some((key) => key.startsWith('$'));
 
+const dynamicValueNote = (name: string): string =>
+  `${name} に動的値（$state 等）が使われていたため省略した。移植先で配線すること。`;
+
 const escapeText = (text: string): string =>
   /[<>{}]/u.test(text) ? `{${JSON.stringify(text)}}` : text;
 
@@ -193,9 +193,7 @@ const attr = (name: string, value: unknown, ctx: Ctx): string | null => {
     return null;
   }
   if (isDynamicValue(value)) {
-    ctx.notes.add(
-      `${name} に動的値（$state 等）が使われていたため省略した。移植先で配線すること。`,
-    );
+    ctx.notes.add(dynamicValueNote(name));
     return null;
   }
   if (value === true) {
@@ -233,9 +231,7 @@ const textProp = (el: UIElement, name: string, ctx: Ctx): string => {
     return value;
   }
   if (isDynamicValue(value)) {
-    ctx.notes.add(
-      `${name} に動的値（$state 等）が使われていたため省略した。移植先で配線すること。`,
-    );
+    ctx.notes.add(dynamicValueNote(name));
   }
   return '';
 };
@@ -279,9 +275,7 @@ const emitLabeledGroup = (
 const emitCheckboxGroupItems = (el: UIElement, ctx: Ctx): string[] => {
   const { options } = el.props;
   if (!Array.isArray(options)) {
-    ctx.notes.add(
-      'options に動的値（$state 等）が使われていたため省略した。移植先で配線すること。',
-    );
+    ctx.notes.add(dynamicValueNote('options'));
     return [];
   }
   return options.map((option: { value?: string; label?: string }) => {
@@ -299,20 +293,14 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     );
   }
   switch (el.type) {
-    case 'Stack': {
-      ctx.imports.add('Stack');
+    case 'Stack':
+    case 'Grid':
+    case 'Form': {
+      ctx.imports.add(el.type);
       return wrap(
-        `<Stack${attrs(el, CONVERTED_PROPS.Stack, ctx)}>`,
+        `<${el.type}${attrs(el, CONVERTED_PROPS[el.type], ctx)}>`,
         emitChildren(el, ctx),
-        '</Stack>',
-      );
-    }
-    case 'Grid': {
-      ctx.imports.add('Grid');
-      return wrap(
-        `<Grid${attrs(el, CONVERTED_PROPS.Grid, ctx)}>`,
-        emitChildren(el, ctx),
-        '</Grid>',
+        `</${el.type}>`,
       );
     }
     case 'Card': {
@@ -354,9 +342,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       // href は attrs() の共通経路を通らないため、動的値の検知もここで行う
       // （黙って落とすとリンクの移植漏れに気づけない）。
       if (isDynamicValue(href)) {
-        ctx.notes.add(
-          'href に動的値（$state 等）が使われていたため省略した。移植先で配線すること。',
-        );
+        ctx.notes.add(dynamicValueNote('href'));
       }
       return [`<Button${base}>${label}</Button>`];
     }
@@ -368,33 +354,24 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         `<Heading${attrs(el, CONVERTED_PROPS.Heading, ctx, { level })}>${escapeText(textProp(el, 'label', ctx))}</Heading>`,
       ];
     }
-    case 'Badge': {
-      ctx.imports.add('Badge');
-      return [`<Badge${attrs(el, CONVERTED_PROPS.Badge, ctx)} />`];
-    }
-    case 'Alert': {
-      ctx.imports.add('Alert');
-      return [`<Alert${attrs(el, CONVERTED_PROPS.Alert, ctx)} />`];
-    }
-    case 'Spinner': {
-      ctx.imports.add('Spinner');
-      return [`<Spinner${attrs(el, CONVERTED_PROPS.Spinner, ctx)} />`];
-    }
-    case 'Separator': {
-      ctx.imports.add('Separator');
-      return [`<Separator${attrs(el, CONVERTED_PROPS.Separator, ctx)} />`];
-    }
-    case 'Skeleton': {
-      ctx.imports.add('Skeleton');
-      return [`<Skeleton${attrs(el, CONVERTED_PROPS.Skeleton, ctx)} />`];
-    }
-    case 'Progress': {
-      ctx.imports.add('Progress');
-      return [`<Progress${attrs(el, CONVERTED_PROPS.Progress, ctx)} />`];
-    }
-    case 'Avatar': {
-      ctx.imports.add('Avatar');
-      return [`<Avatar${attrs(el, CONVERTED_PROPS.Avatar, ctx)} />`];
+    case 'Badge':
+    case 'Alert':
+    case 'Spinner':
+    case 'Separator':
+    case 'Skeleton':
+    case 'Progress':
+    case 'Avatar':
+    case 'TextField':
+    case 'Textarea':
+    case 'PasswordInput':
+    case 'NumberField':
+    case 'Slider':
+    case 'Checkbox':
+    case 'Switch':
+    case 'Select':
+    case 'Autocomplete': {
+      ctx.imports.add(el.type);
+      return [`<${el.type}${attrs(el, CONVERTED_PROPS[el.type], ctx)} />`];
     }
     case 'Anchor': {
       ctx.imports.add('Anchor');
@@ -459,37 +436,6 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         '/>',
       ];
     }
-    case 'TextField': {
-      ctx.imports.add('TextField');
-      return [`<TextField${attrs(el, CONVERTED_PROPS.TextField, ctx)} />`];
-    }
-    case 'Textarea': {
-      ctx.imports.add('Textarea');
-      return [`<Textarea${attrs(el, CONVERTED_PROPS.Textarea, ctx)} />`];
-    }
-    case 'PasswordInput': {
-      // catalog の PasswordInput は readOnly を持たない（TextField / Textarea との差分）。
-      ctx.imports.add('PasswordInput');
-      return [
-        `<PasswordInput${attrs(el, CONVERTED_PROPS.PasswordInput, ctx)} />`,
-      ];
-    }
-    case 'NumberField': {
-      ctx.imports.add('NumberField');
-      return [`<NumberField${attrs(el, CONVERTED_PROPS.NumberField, ctx)} />`];
-    }
-    case 'Slider': {
-      ctx.imports.add('Slider');
-      return [`<Slider${attrs(el, CONVERTED_PROPS.Slider, ctx)} />`];
-    }
-    case 'Checkbox': {
-      ctx.imports.add('Checkbox');
-      return [`<Checkbox${attrs(el, CONVERTED_PROPS.Checkbox, ctx)} />`];
-    }
-    case 'Switch': {
-      ctx.imports.add('Switch');
-      return [`<Switch${attrs(el, CONVERTED_PROPS.Switch, ctx)} />`];
-    }
     case 'Radio': {
       // catalog の Radio は invalid を持たない（RadioCard / CheckboxCard との差分）。
       ctx.imports.add('Radio');
@@ -500,8 +446,9 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'RadioCard':
     case 'CheckboxCard': {
       ctx.imports.add(el.type);
+      const names = CONVERTED_PROPS[el.type];
       return emitLabeledGroup(el, ctx, (labelId) => [
-        `<${el.type} aria-labelledby="${labelId}"${attrs(el, CHOICE_CARD_PROPS, ctx)} />`,
+        `<${el.type} aria-labelledby="${labelId}"${attrs(el, names, ctx)} />`,
       ]);
     }
     case 'CheckboxGroup': {
@@ -514,11 +461,6 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         ),
       );
     }
-    case 'Select':
-    case 'Autocomplete': {
-      ctx.imports.add(el.type);
-      return [`<${el.type}${attrs(el, OPTION_INPUT_PROPS, ctx)} />`];
-    }
     case 'ListBox': {
       // 実 ListBox は Root / Trigger / Content の組み立てで、フラットな1タグではない
       // （registry の renderListBox と同じ形）。
@@ -530,14 +472,6 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
           '<ListBox.Content />',
         ],
         '</ListBox.Root>',
-      );
-    }
-    case 'Form': {
-      ctx.imports.add('Form');
-      return wrap(
-        `<Form${attrs(el, CONVERTED_PROPS.Form, ctx)}>`,
-        emitChildren(el, ctx),
-        '</Form>',
       );
     }
     default: {
