@@ -1,6 +1,7 @@
 import { compareVersions } from '../browser/browser-support.ts';
 import { CORE_BROWSERS } from '../browser/detect-browser.ts';
 import type { BrowserMinVersions } from '../browser/detect-browser.ts';
+import { isRecord } from './is-record.ts';
 import type {
   BaselineBrowserSupport,
   BaselineDataset,
@@ -25,9 +26,6 @@ export type UpstreamTransformResult = {
   dataset: BaselineDataset;
   skippedFeatures: SkippedFeature[];
 };
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
 
 // 上流は baseline 到達日が不確かなとき "≤2022-09-24" のように ≤ を前置する。
 const normalizeDate = (date: string): string => date.replace(/^≤/u, '');

@@ -1,11 +1,13 @@
+import { between } from '../number/between.ts';
+
 export type Color = { r: number; g: number; b: number; alpha: number };
 
-export type Rgb255 = { r: number; g: number; b: number };
-export type Hsl = { h: number; s: number; l: number };
-export type Hwb = { h: number; w: number; b: number };
-export type Lab = { l: number; a: number; b: number };
-export type Lch = { l: number; c: number; h: number };
-export type Oklab = { l: number; a: number; b: number };
+type Rgb255 = { r: number; g: number; b: number };
+type Hsl = { h: number; s: number; l: number };
+type Hwb = { h: number; w: number; b: number };
+type Lab = { l: number; a: number; b: number };
+type Lch = { l: number; c: number; h: number };
+type Oklab = { l: number; a: number; b: number };
 export type Oklch = { l: number; c: number; h: number };
 
 type Vec3 = [number, number, number];
@@ -16,9 +18,6 @@ const multiply = (m: Mat3, v: Vec3): Vec3 => [
   m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2],
   m[2][0] * v[0] + m[2][1] * v[1] + m[2][2] * v[2],
 ];
-
-const clamp = (value: number, min: number, max: number): number =>
-  Math.min(Math.max(value, min), max);
 
 const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360;
 
@@ -208,8 +207,8 @@ export const colorToHsl = (color: Color): Hsl => {
 
 export const hslToColor = (hsl: Hsl, alpha: number): Color => {
   const h = normalizeHue(hsl.h);
-  const s = clamp(hsl.s / 100, 0, 1);
-  const l = clamp(hsl.l / 100, 0, 1);
+  const s = between(hsl.s / 100, 0, 1);
+  const l = between(hsl.l / 100, 0, 1);
   const a = s * Math.min(l, 1 - l);
   const channel = (n: number): number => {
     const k = (n + h / 30) % 12;
@@ -226,8 +225,8 @@ export const colorToHwb = (color: Color): Hwb => {
 };
 
 export const hwbToColor = (hwb: Hwb, alpha: number): Color => {
-  const white = clamp(hwb.w / 100, 0, 1);
-  const black = clamp(hwb.b / 100, 0, 1);
+  const white = between(hwb.w / 100, 0, 1);
+  const black = between(hwb.b / 100, 0, 1);
   if (white + black >= 1) {
     const gray = white / (white + black);
     return { r: gray, g: gray, b: gray, alpha };
@@ -239,19 +238,17 @@ export const hwbToColor = (hwb: Hwb, alpha: number): Color => {
 };
 
 export const colorToRgb255 = (color: Color): Rgb255 => ({
-  r: clamp(color.r, 0, 1) * 255,
-  g: clamp(color.g, 0, 1) * 255,
-  b: clamp(color.b, 0, 1) * 255,
+  r: between(color.r, 0, 1) * 255,
+  g: between(color.g, 0, 1) * 255,
+  b: between(color.b, 0, 1) * 255,
 });
 
 export const rgb255ToColor = (rgb: Rgb255, alpha: number): Color => ({
-  r: clamp(rgb.r / 255, 0, 1),
-  g: clamp(rgb.g / 255, 0, 1),
-  b: clamp(rgb.b / 255, 0, 1),
+  r: between(rgb.r / 255, 0, 1),
+  g: between(rgb.g / 255, 0, 1),
+  b: between(rgb.b / 255, 0, 1),
   alpha,
 });
-
-export { clamp, normalizeHue };
 
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest;

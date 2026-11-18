@@ -93,6 +93,10 @@
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"
     },
+    "./url/html-request-headers": {
+      "types": "./src/url/html-request-headers.ts",
+      "default": "./src/url/html-request-headers.ts"
+    },
     "./url/is-http-url": {
       "types": "./src/url/is-http-url.ts",
       "default": "./src/url/is-http-url.ts"

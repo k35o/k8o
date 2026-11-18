@@ -3,7 +3,6 @@
 import { NumberField, Slider, Tabs } from '@k8ordo/ui';
 import { toSrgbGamut } from '@repo/helpers/color/gamut';
 import {
-  clamp,
   colorToHsl,
   colorToOklch,
   colorToRgb255,
@@ -12,6 +11,7 @@ import {
   rgb255ToColor,
 } from '@repo/helpers/color/spaces';
 import type { Color, Oklch } from '@repo/helpers/color/spaces';
+import { between } from '@repo/helpers/number/between';
 import { useId, useState } from 'react';
 import type { FC } from 'react';
 
@@ -39,7 +39,7 @@ type Channel = {
 
 const ChannelControl: FC<{ channel: Channel }> = ({ channel }) => {
   const id = useId();
-  const value = clamp(channel.value, channel.min, channel.max);
+  const value = between(channel.value, channel.min, channel.max);
   // NumberField を空欄にしたときの null は無視する。
   const handleChange = (next: number | null): void => {
     if (next !== null) {

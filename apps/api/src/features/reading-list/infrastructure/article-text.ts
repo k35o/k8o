@@ -1,9 +1,12 @@
 import { Readability } from '@mozilla/readability';
+import {
+  BOT_USER_AGENT,
+  HTML_ACCEPT,
+} from '@repo/helpers/url/html-request-headers';
 import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import { parseHTML } from 'linkedom';
 
 const FETCH_TIMEOUT_MS = 8000;
-const USER_AGENT = 'Mozilla/5.0 (compatible; k8o-bot/1.0; +https://k8o.me)';
 // 記事の HTML はふつう数百 KB まで。数 MB の HTML は DOM にすると GB 単位のメモリを使い、
 // 関数ごと落ちるので、上限で切って途中までを読む（HTML パーサは途中で切れても読める）
 const MAX_HTML_BYTES = 3_000_000;
@@ -55,8 +58,8 @@ export async function fetchArticleText(
     const response = await safeFetch(url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       headers: {
-        'User-Agent': USER_AGENT,
-        Accept: 'text/html,application/xhtml+xml',
+        'User-Agent': BOT_USER_AGENT,
+        Accept: HTML_ACCEPT,
       },
     });
     if (!response.ok) {

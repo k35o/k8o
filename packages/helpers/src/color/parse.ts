@@ -1,7 +1,7 @@
+import { between } from '../number/between.ts';
 import { toSrgbGamut } from './gamut.ts';
 import { NAMED_COLORS } from './named-colors.ts';
 import {
-  clamp,
   hslToColor,
   hwbToColor,
   labToColor,
@@ -81,7 +81,7 @@ const parseAlpha = (token: string | null): number | null => {
   if (num === null) {
     return null;
   }
-  return clamp(num.percent ? num.value / 100 : num.value, 0, 1);
+  return between(num.percent ? num.value / 100 : num.value, 0, 1);
 };
 
 const splitArgs = (
@@ -157,7 +157,7 @@ const parseRgbFn = (parts: string[], alpha: number): Color | null => {
     if (num === null) {
       return null;
     }
-    return clamp(num.percent ? (num.value / 100) * 255 : num.value, 0, 255);
+    return between(num.percent ? (num.value / 100) * 255 : num.value, 0, 255);
   };
   const r = channel(tokens[0]);
   const g = channel(tokens[1]);
