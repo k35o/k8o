@@ -8,6 +8,8 @@ import type {
 import { parseBaselineDataset } from '@repo/helpers/baseline/model';
 import type { BaselineDataset } from '@repo/helpers/baseline/model';
 
+import { DAY_MS } from '../../../shared/time/day-ms';
+
 // schema 由来の型も上位層へはここから配る（reading-list-repository と同じ形）。
 export type {
   BrowserSupportSyncResult,
@@ -28,7 +30,6 @@ const KEEP_SUPERSEDED = 3;
 // 変更履歴の保持期間。main の表示窓(30日)より十分長く取り、それより古い行は
 // 世代置換のたびに削る。
 const CHANGE_RETENTION_DAYS = 90;
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 export type FeatureChangeInput = {
   featureId: string;
