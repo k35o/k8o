@@ -1,8 +1,6 @@
 import { codeToTokens } from 'shiki';
 import type { BundledLanguage, ThemedToken } from 'shiki';
 
-// 拡張子なしで import する（このファイルは tokenize/theme を deep-import するアプリ側からも
-// 型検査される。allowImportingTsExtensions を持たない consumer でも解決できるようにするため）。
 import { CODE_SURFACE, COLOR_REPLACEMENTS } from './theme.ts';
 
 export type HighlightedCode = {

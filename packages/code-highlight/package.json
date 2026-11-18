@@ -21,10 +21,6 @@
       "types": "./src/tokenize.ts",
       "default": "./src/tokenize.ts"
     },
-    "./tokenize-client": {
-      "types": "./src/tokenize-client.ts",
-      "default": "./src/tokenize-client.ts"
-    },
     "./theme": {
       "types": "./src/theme.ts",
       "default": "./src/theme.ts"
