@@ -1,13 +1,10 @@
 import { highlightCode } from '@repo/code-highlight/tokenize';
-import { loadDefaultJapaneseParser } from 'budoux';
 
 import { getJellyfishLegsDataUrl } from '@/shared/og/get-jellyfish-legs-data-url';
-import {
-  getIconDataUrl,
-  getJetBrainsMonoFont,
-  getMPlus2Font,
-} from '@/shared/og/og-assets';
+import { getIconDataUrl, getJetBrainsMonoFont } from '@/shared/og/og-assets';
 import { renderOgPng } from '@/shared/og/render-og-png';
+
+import { mPlus2Font, OgFrame, ogTitleWords } from './og-frame';
 
 type OgCodeImageProps = {
   title: string;
@@ -58,7 +55,6 @@ export async function OgCodeImage({
   title,
   code,
 }: OgCodeImageProps): Promise<Response> {
-  const words = loadDefaultJapaneseParser().parse(title);
   const iconDataUrl = getIconDataUrl();
   const highlighted = await highlightCode(code.code, code.lang);
 
@@ -77,241 +73,176 @@ export async function OgCodeImage({
   const titleFontSize = calcTitleFontSize(title);
 
   return renderOgPng(
-    <div
-      style={{
-        alignItems: 'center',
-        display: 'flex',
-        backgroundImage: 'linear-gradient(135deg, #cffafe 0%, #dbeafe 100%)',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        fontFamily: '"M PLUS 2"',
+    <OgFrame
+      cardStyle={{
+        gap: 36,
+        padding: 40,
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          width: 600,
-          height: 600,
-          borderRadius: 9999,
-          background: 'linear-gradient(135deg, #22d3ee, #5eead4)',
-          filter: 'blur(100px)',
-          top: -200,
-          right: -100,
-          display: 'flex',
-          opacity: 0.4,
-        }}
+      <img
+        alt=""
+        height={230}
+        src={getJellyfishLegsDataUrl()}
+        style={{ position: 'absolute', bottom: 0, left: 0 }}
+        width={230}
       />
+      {/* flexBasis 0 + minWidth 0 がないとタイトルのmax-content幅でパネルが押し出される */}
       <div
         style={{
-          position: 'absolute',
-          width: 500,
-          height: 500,
-          borderRadius: 9999,
-          background: 'linear-gradient(135deg, #60a5fa, #2dd4bf)',
-          filter: 'blur(100px)',
-          bottom: -150,
-          left: -100,
           display: 'flex',
-          opacity: 0.4,
-        }}
-      />
-      <div
-        style={{
-          background: '#ffffff',
-          width: 1100,
-          height: 550,
-          display: 'flex',
-          gap: 36,
-          padding: 40,
-          borderRadius: 32,
-          boxShadow: '0 25px 50px -12px #27272a',
-          position: 'relative',
-          overflow: 'hidden',
-          opacity: 0.98,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          flexGrow: 1,
+          flexBasis: 0,
+          minWidth: 0,
+          paddingTop: 24,
+          paddingBottom: 8,
+          paddingLeft: 16,
         }}
       >
-        <img
-          alt=""
-          height={230}
-          src={getJellyfishLegsDataUrl()}
-          style={{ position: 'absolute', bottom: 0, left: 0 }}
-          width={230}
-        />
-        {/* flexBasis 0 + minWidth 0 がないとタイトルのmax-content幅でパネルが押し出される */}
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            flexGrow: 1,
-            flexBasis: 0,
-            minWidth: 0,
-            paddingTop: 24,
-            paddingBottom: 8,
-            paddingLeft: 16,
+            justifyContent: 'flex-start',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start',
+            color: '#0f172a',
+            fontSize: titleFontSize,
+            lineHeight: TITLE_LINE_HEIGHT,
+            letterSpacing: '-0.02em',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              flexWrap: 'wrap',
-              alignItems: 'flex-start',
-              color: '#0f172a',
-              fontSize: titleFontSize,
-              lineHeight: TITLE_LINE_HEIGHT,
-              letterSpacing: '-0.02em',
-            }}
-          >
-            {words.map((word, index) => (
-              <span
-                key={`${word}-${index.toString()}`}
-                style={{
-                  display: 'block',
-                  color: '#0f172a',
-                }}
-              >
-                {word}
-              </span>
-            ))}
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 20,
-            }}
-          >
-            <img
-              alt="アイコン"
-              height={72}
-              src={iconDataUrl}
-              style={{
-                borderRadius: 9999,
-                objectFit: 'cover',
-                boxShadow: '0 10px 25px -5px #27272a',
-              }}
-              width={72}
-            />
-            <span
-              style={{
-                color: '#18181b',
-                fontSize: 36,
-              }}
-            >
-              k8o
-            </span>
-          </div>
+          {ogTitleWords(title)}
         </div>
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            width: PANEL_WIDTH,
-            height: PANEL_HEIGHT,
-            flexShrink: 0,
-            borderRadius: 20,
-            backgroundColor: '#21252b',
-            overflow: 'hidden',
+            alignItems: 'center',
+            gap: 20,
           }}
         >
-          <div
+          <img
+            alt="アイコン"
+            height={72}
+            src={iconDataUrl}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              height: PANEL_HEADER_HEIGHT,
-              paddingLeft: 20,
-              paddingRight: 20,
-              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: 9999,
+              objectFit: 'cover',
+              boxShadow: '0 10px 25px -5px #27272a',
+            }}
+            width={72}
+          />
+          <span
+            style={{
+              color: '#18181b',
+              fontSize: 36,
             }}
           >
-            <div style={{ display: 'flex', gap: 8 }}>
-              <div
-                style={{
-                  width: 13,
-                  height: 13,
-                  borderRadius: 9999,
-                  background: '#ff5f57',
-                  display: 'flex',
-                }}
-              />
-              <div
-                style={{
-                  width: 13,
-                  height: 13,
-                  borderRadius: 9999,
-                  background: '#febc2e',
-                  display: 'flex',
-                }}
-              />
-              <div
-                style={{
-                  width: 13,
-                  height: 13,
-                  borderRadius: 9999,
-                  background: '#28c840',
-                  display: 'flex',
-                }}
-              />
-            </div>
-            <span
-              style={{
-                fontFamily: '"JetBrains Mono"',
-                fontSize: 14,
-                color: 'rgba(255, 255, 255, 0.45)',
-              }}
-            >
-              {code.lang}
-            </span>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              paddingTop: CODE_PADDING_Y,
-              paddingBottom: CODE_PADDING_Y,
-              paddingLeft: CODE_PADDING_X,
-              paddingRight: CODE_PADDING_X,
-              fontFamily: '"JetBrains Mono"',
-              fontSize: codeFontSize,
-            }}
-          >
-            {visibleLines.map((line, lineIndex) => (
-              <div
-                key={`line-${lineIndex.toString()}`}
-                style={{
-                  display: 'flex',
-                  height: codeLineHeight,
-                  alignItems: 'center',
-                }}
-              >
-                {line.map((token, tokenIndex) => (
-                  <span
-                    key={`${lineIndex.toString()}-${tokenIndex.toString()}`}
-                    style={{
-                      color: token.color ?? highlighted.fg,
-                      whiteSpace: 'pre',
-                    }}
-                  >
-                    {token.content}
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
+            k8o
+          </span>
         </div>
       </div>
-    </div>,
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: PANEL_WIDTH,
+          height: PANEL_HEIGHT,
+          flexShrink: 0,
+          borderRadius: 20,
+          backgroundColor: '#21252b',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: PANEL_HEADER_HEIGHT,
+            paddingLeft: 20,
+            paddingRight: 20,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          }}
+        >
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div
+              style={{
+                width: 13,
+                height: 13,
+                borderRadius: 9999,
+                background: '#ff5f57',
+                display: 'flex',
+              }}
+            />
+            <div
+              style={{
+                width: 13,
+                height: 13,
+                borderRadius: 9999,
+                background: '#febc2e',
+                display: 'flex',
+              }}
+            />
+            <div
+              style={{
+                width: 13,
+                height: 13,
+                borderRadius: 9999,
+                background: '#28c840',
+                display: 'flex',
+              }}
+            />
+          </div>
+          <span
+            style={{
+              fontFamily: '"JetBrains Mono"',
+              fontSize: 14,
+              color: 'rgba(255, 255, 255, 0.45)',
+            }}
+          >
+            {code.lang}
+          </span>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            paddingTop: CODE_PADDING_Y,
+            paddingBottom: CODE_PADDING_Y,
+            paddingLeft: CODE_PADDING_X,
+            paddingRight: CODE_PADDING_X,
+            fontFamily: '"JetBrains Mono"',
+            fontSize: codeFontSize,
+          }}
+        >
+          {visibleLines.map((line, lineIndex) => (
+            <div
+              key={`line-${lineIndex.toString()}`}
+              style={{
+                display: 'flex',
+                height: codeLineHeight,
+                alignItems: 'center',
+              }}
+            >
+              {line.map((token, tokenIndex) => (
+                <span
+                  key={`${lineIndex.toString()}-${tokenIndex.toString()}`}
+                  style={{
+                    color: token.color ?? highlighted.fg,
+                    whiteSpace: 'pre',
+                  }}
+                >
+                  {token.content}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </OgFrame>,
     [
-      {
-        name: 'M PLUS 2',
-        data: getMPlus2Font(),
-        style: 'normal',
-        weight: 400,
-      },
+      mPlus2Font(),
       {
         name: 'JetBrains Mono',
         data: getJetBrainsMonoFont(),
