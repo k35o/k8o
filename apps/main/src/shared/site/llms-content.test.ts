@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
+import type { BlogSummary } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 
 import { generateLlmsContent } from './llms-content';
@@ -56,10 +57,9 @@ vi.mock('@/shared/site/site-entries', () => ({
   ],
 }));
 
-type BlogContent = Awaited<ReturnType<typeof getBlogContents>>[number];
 type Talk = Awaited<ReturnType<typeof getTalks>>[number];
 
-const blog = (overrides: Partial<BlogContent> = {}): BlogContent => ({
+const blog = (overrides: Partial<BlogSummary> = {}): BlogSummary => ({
   id: 1,
   slug: 'sample-post',
   tags: ['CSS', 'React'],

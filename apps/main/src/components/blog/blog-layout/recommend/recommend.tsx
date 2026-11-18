@@ -4,12 +4,12 @@ import { CalendarIcon, TagIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
-import type { getBlogsByTags } from '@/features/blog/interface/queries';
+import type { RelatedBlog } from '@/features/blog/interface/queries';
 
 import styles from './recommend.module.css';
 
 type RecommendProps = {
-  blogs: Awaited<ReturnType<typeof getBlogsByTags>>;
+  blogs: RelatedBlog[];
 };
 
 export const Recommend: FC<RecommendProps> = ({ blogs }) => {

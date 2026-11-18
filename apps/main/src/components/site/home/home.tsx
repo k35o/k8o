@@ -1,7 +1,7 @@
 import { Heading, Separator, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
-import type { getBlogContents } from '@/features/blog/interface/queries';
+import type { BlogSummary } from '@/features/blog/interface/queries';
 
 import { EmailTooltip } from '../email-tooltip/email-tooltip';
 import { RecentBlogs } from '../recent-blogs/recent-blogs';
@@ -15,7 +15,7 @@ import k8o from './k8o.avif';
 import styles from './home.module.css';
 
 type HomeProps = {
-  blogs: Awaited<ReturnType<typeof getBlogContents>>;
+  blogs: BlogSummary[];
 };
 
 export const Home: FC<HomeProps> = ({ blogs }) => (

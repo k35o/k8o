@@ -1,6 +1,8 @@
 import { UIProvider } from '@k8ordo/ui';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import type { BlogSummary } from '@/features/blog/interface/queries';
+
 import preview from '../../../../.storybook/preview';
 import {
   hydrateAfterTyping,
@@ -8,7 +10,6 @@ import {
   queryInUrl,
 } from '../../../../.storybook/url-state-story';
 import { BlogListContent } from './blog-list-content';
-import type { BlogSummary } from './types';
 
 const blogs: BlogSummary[] = [
   {
@@ -39,6 +40,7 @@ const blogs: BlogSummary[] = [
     description: null,
     createdAt: '2024-01-15T00:00:00.000Z',
     updatedAt: '2024-01-20T00:00:00.000Z',
+    readingTime: 3,
   },
 ];
 

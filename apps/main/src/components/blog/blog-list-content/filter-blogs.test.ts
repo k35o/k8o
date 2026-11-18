@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
+import type { BlogSummary } from '@/features/blog/interface/queries';
+
 import { filterBlogs } from './filter-blogs';
-import type { BlogSummary } from './types';
 
 const createBlog = (overrides: Partial<BlogSummary>): BlogSummary => ({
   id: 1,
@@ -11,6 +12,7 @@ const createBlog = (overrides: Partial<BlogSummary>): BlogSummary => ({
   description: '説明',
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
+  readingTime: 1,
   ...overrides,
 });
 

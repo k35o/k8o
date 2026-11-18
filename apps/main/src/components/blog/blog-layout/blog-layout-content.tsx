@@ -6,9 +6,9 @@ import type { FC, ReactNode } from 'react';
 
 import { ErrorBoundary } from '@/components/site/error-boundary/error-boundary';
 import type {
-  getBlogContent,
-  getBlogsByTags,
+  BlogDetail,
   getBlogToc,
+  RelatedBlog,
 } from '@/features/blog/interface/queries';
 
 import { BlogHeader } from '../blog-header/blog-header';
@@ -28,9 +28,9 @@ import styles from './blog-layout.module.css';
 type BlogLayoutContentProps = {
   children: ReactNode;
   slug: string;
-  blog: Awaited<ReturnType<typeof getBlogContent>>;
+  blog: BlogDetail;
   headingTree: Awaited<ReturnType<typeof getBlogToc>>;
-  recommendedBlogs: Awaited<ReturnType<typeof getBlogsByTags>>;
+  recommendedBlogs: RelatedBlog[];
   readingTime: number;
 };
 

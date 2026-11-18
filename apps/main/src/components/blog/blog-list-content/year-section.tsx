@@ -1,8 +1,9 @@
 import { Heading, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import type { BlogSummary } from '@/features/blog/interface/queries';
+
 import { BlogCard } from '../blog-card/blog-card';
-import type { BlogSummary } from './types';
 
 import styles from './year-section.module.css';
 

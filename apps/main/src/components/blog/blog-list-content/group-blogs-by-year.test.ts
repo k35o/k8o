@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
+import type { BlogSummary } from '@/features/blog/interface/queries';
+
 import { groupBlogsByYear } from './group-blogs-by-year';
-import type { BlogSummary } from './types';
 
 const createBlog = (id: number, createdAt: string): BlogSummary => ({
   id,
@@ -11,6 +12,7 @@ const createBlog = (id: number, createdAt: string): BlogSummary => ({
   description: null,
   createdAt,
   updatedAt: createdAt,
+  readingTime: 1,
 });
 
 describe('groupBlogsByYear', () => {

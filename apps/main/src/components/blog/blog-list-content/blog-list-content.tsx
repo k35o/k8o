@@ -6,12 +6,12 @@ import { BookTextIcon } from '@k8ordo/ui/icons';
 import { useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
+import type { BlogSummary } from '@/features/blog/interface/queries';
 import { replayTypedValue } from '@/shared/browser/replay-typed-value';
 
 import { blogListState } from './blog-list-state';
 import { filterBlogs } from './filter-blogs';
 import { groupBlogsByYear } from './group-blogs-by-year';
-import type { BlogSummary } from './types';
 import { YearSection } from './year-section';
 
 import styles from './blog-list-content.module.css';

@@ -2,6 +2,7 @@ import type { Talk } from '@repo/api/build-data';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
+import type { BlogSummary } from '@/features/blog/interface/queries';
 import { getTag, getTags } from '@/features/tags/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 
@@ -18,9 +19,7 @@ vi.mock('@/features/talks/interface/queries', () => ({
   getTalks: vi.fn(),
 }));
 
-type BlogContent = Awaited<ReturnType<typeof getBlogContents>>[number];
-
-const blog = (id: number, title: string): BlogContent => ({
+const blog = (id: number, title: string): BlogSummary => ({
   id,
   slug: `blog-${id.toString()}`,
   tags: ['CSS'],
