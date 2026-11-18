@@ -10,8 +10,7 @@ import {
 
 import { articles } from './articles.ts';
 
-export const ARTICLE_SOURCE_TYPES = ['feed', 'manual'] as const;
-export type ArticleSourceType = (typeof ARTICLE_SOURCE_TYPES)[number];
+const ARTICLE_SOURCE_TYPES = ['feed', 'manual'] as const;
 
 export const articleSources = sqliteTable(
   'article_sources',
