@@ -20,6 +20,7 @@ export const NewChatPlaceholder: FC = () => (
     </ToolHeader>
     <div className={styles.inert} inert>
       <ChatView
+        artifacts={[]}
         canSelectModel
         draft=""
         errorText={null}

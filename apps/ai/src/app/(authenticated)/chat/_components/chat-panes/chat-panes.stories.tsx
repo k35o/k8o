@@ -4,6 +4,7 @@ import type { ComponentProps, FC } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import { chatArtifactsOf } from '@/features/agent/application/chat-artifacts';
 
 import preview from '../../../../../../.storybook/preview';
 import { ViewTabs } from '../../../_components/view-tabs';
@@ -100,6 +101,11 @@ const longConversation: AgentUIMessage[] = [
   },
 ];
 
+const longConversationArtifacts = chatArtifactsOf(longConversation, {
+  live: null,
+  isStopping: false,
+});
+
 const Chat: FC = () => (
   <ChatView
     canSelectModel={false}
@@ -107,6 +113,7 @@ const Chat: FC = () => (
     errorText={null}
     isServerRunning={false}
     isStopping={false}
+    artifacts={longConversationArtifacts}
     messages={longConversation}
     model="claude-sonnet-5-5"
     onDraftChange={ignore}
@@ -165,6 +172,7 @@ const FocusingPanes: FC = () => {
           inputRef={paneFocus.inputRef}
           isServerRunning={false}
           isStopping={false}
+          artifacts={longConversationArtifacts}
           messages={longConversation}
           model="claude-sonnet-5-5"
           onDraftChange={ignore}

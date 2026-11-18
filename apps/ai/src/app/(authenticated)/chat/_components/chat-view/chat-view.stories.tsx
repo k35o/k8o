@@ -6,6 +6,7 @@ import type {
   AgentUIMessage,
   RunEnd,
 } from '@/features/agent/application/agent-message';
+import { chatArtifactsOf } from '@/features/agent/application/chat-artifacts';
 import type { GenerationModel } from '@/shared/claude/models';
 
 import preview from '../../../../../../.storybook/preview';
@@ -91,6 +92,12 @@ const stoppedUiAnswer: AgentUIMessage = {
   ],
 };
 
+const afterStoppedUi: AgentUIMessage[] = [
+  question,
+  stoppedUiAnswer,
+  { id: 'u2', role: 'user', parts: [{ type: 'text', text: '続けて' }] },
+];
+
 const endedAnswer = (end: RunEnd): AgentUIMessage => ({
   id: `end-${end}`,
   role: 'assistant',
@@ -142,6 +149,7 @@ const meta = preview.meta({
     onSelectModel: fn<(model: GenerationModel) => void>(),
     onSubmit: fn<(text: string) => void>(),
     onStop: fn<() => void>(),
+    artifacts: [],
     selectedToolCallId: null,
     onOpenArtifact: fn<(toolCallId: string) => void>(),
   } satisfies Partial<ComponentProps<typeof ChatView>>,
@@ -270,11 +278,11 @@ export const ServerRunningAfterPartialReply = meta.story({
 
 export const ServerRunningAfterStoppedUi = meta.story({
   args: {
-    messages: [
-      question,
-      stoppedUiAnswer,
-      { id: 'u2', role: 'user', parts: [{ type: 'text', text: '続けて' }] },
-    ],
+    messages: afterStoppedUi,
+    artifacts: chatArtifactsOf(afterStoppedUi, {
+      live: 'waiting',
+      isStopping: false,
+    }),
     isServerRunning: true,
   },
   play: async ({ args, canvasElement }) => {

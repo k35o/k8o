@@ -336,6 +336,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         chat={
           <ChatView
             artifactButtonRef={paneFocus.artifactButtonRef}
+            artifacts={artifacts}
             canSelectModel={!created && messages.length === 0}
             draft={draft}
             errorText={error?.message ?? null}

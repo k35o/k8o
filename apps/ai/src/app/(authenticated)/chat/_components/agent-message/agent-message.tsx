@@ -12,7 +12,7 @@ import type {
   RunEnd,
 } from '@/features/agent/application/agent-message';
 import { MAX_STEPS } from '@/features/agent/application/agent-run';
-import { chatArtifactOf } from '@/features/agent/application/chat-artifacts';
+import type { ChatArtifact } from '@/features/agent/application/chat-artifacts';
 import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
 import { MONTHLY_BUDGET_USD } from '@/features/usage/application/budget';
 
@@ -134,6 +134,7 @@ export const hasVisiblePart = (
 ): boolean => message.parts.some((part) => rendersPart(part, isStreaming));
 
 type ArtifactSelection = {
+  artifacts: ReadonlyMap<string, ChatArtifact>;
   selectedToolCallId: string | null;
   onOpenArtifact: (toolCallId: string) => void;
   artifactButtonRef?:
@@ -146,13 +147,12 @@ const AgentPart: FC<
     part: AgentMessagePart;
     isStreaming: boolean;
     isServerRunning: boolean;
-    isStopping: boolean;
   } & ArtifactSelection
 > = ({
   part,
   isStreaming,
   isServerRunning,
-  isStopping,
+  artifacts,
   selectedToolCallId,
   onOpenArtifact,
   artifactButtonRef,
@@ -165,16 +165,10 @@ const AgentPart: FC<
       part.type === 'tool-generate_ui' ||
       part.type === 'tool-generate_slides'
     ) {
-      return (
+      const artifact = artifacts.get(part.toolCallId);
+      return artifact === undefined ? null : (
         <ArtifactCard
-          artifact={chatArtifactOf(part, {
-            live: isStreaming
-              ? 'receiving'
-              : isServerRunning
-                ? 'waiting'
-                : null,
-            isStopping,
-          })}
+          artifact={artifact}
           buttonRef={artifactButtonRef?.(part.toolCallId)}
           isActive={selectedToolCallId === part.toolCallId}
           onOpen={() => {
@@ -214,14 +208,13 @@ type AgentMessageProps = {
   message: AgentUIMessage;
   isStreaming: boolean;
   isServerRunning: boolean;
-  isStopping: boolean;
 } & ArtifactSelection;
 
 export const AgentMessage: FC<AgentMessageProps> = ({
   message,
   isStreaming,
   isServerRunning,
-  isStopping,
+  artifacts,
   selectedToolCallId,
   onOpenArtifact,
   artifactButtonRef,
@@ -244,8 +237,8 @@ export const AgentMessage: FC<AgentMessageProps> = ({
       {message.parts.map((part, index) => (
         <AgentPart
           artifactButtonRef={artifactButtonRef}
+          artifacts={artifacts}
           isServerRunning={isServerRunning}
-          isStopping={isStopping}
           isStreaming={isStreaming}
           key={partKey(part, index)}
           onOpenArtifact={onOpenArtifact}
