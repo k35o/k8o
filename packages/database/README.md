@@ -179,6 +179,7 @@ erDiagram
     integer id PK
     text title
     text slug UK
+    text deck_published_at
     text event_url
     text event_name
     text event_date

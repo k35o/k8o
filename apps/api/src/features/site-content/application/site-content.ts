@@ -3,6 +3,7 @@ import {
   findTagRows,
   findTalkRows,
 } from '../infrastructure/site-content-repository';
+import { publishedDeckSlug } from './deck-publication';
 
 type TagRef = { id: number; name: string };
 
@@ -52,11 +53,12 @@ export const getTags = async (): Promise<Tag[]> =>
     talkIds: row.talkTag.map(({ talkId }) => talkId),
   }));
 
-export const getTalks = async (): Promise<Talk[]> =>
+// 公開時刻より前のデッキの slug は返さない。ビルドがデッキを取り込まず、トークは k8o.me のデッキを持たないものとして出る
+export const getTalks = async (now: Date = new Date()): Promise<Talk[]> =>
   (await findTalkRows()).map((row) => ({
     id: row.id,
     title: row.title,
-    slug: row.slug,
+    slug: publishedDeckSlug(row, now),
     eventUrl: row.eventUrl,
     eventName: row.eventName,
     eventDate: row.eventDate,

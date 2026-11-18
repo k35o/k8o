@@ -19,6 +19,8 @@ export const talks = sqliteTable(
     title: text('title').notNull(),
     // k8o.me に置くデッキの名前（/talks/<slug>）。デッキを出すときに入れる
     slug: text('slug'),
+    // デッキを出し始める時刻（オフセット付きの ISO 8601）。この時刻まではビルドがデッキを取り込まない。空ならすぐに出す
+    deckPublishedAt: text('deck_published_at'),
     eventUrl: text('event_url').notNull(),
     eventName: text('event_name').notNull(),
     eventDate: text('event_date').notNull(),

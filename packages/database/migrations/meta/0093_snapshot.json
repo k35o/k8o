@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "aac92ad5-e365-4804-8b20-3f491b74076f",
+  "id": "1c5415b0-3dfe-433c-81c1-a518b2477fdc",
   "prevId": "419eca76-c3f3-4ba7-9d91-bfc5d85d030e",
   "tables": {
     "article_sources": {
@@ -1019,6 +1019,126 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "slide_tag": {
+      "name": "slide_tag",
+      "columns": {
+        "slide_id": {
+          "name": "slide_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tag_id": {
+          "name": "tag_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "slide_tag_slide_id_idx": {
+          "name": "slide_tag_slide_id_idx",
+          "columns": [
+            "slide_id"
+          ],
+          "isUnique": false
+        },
+        "slide_tag_tag_id_idx": {
+          "name": "slide_tag_tag_id_idx",
+          "columns": [
+            "tag_id"
+          ],
+          "isUnique": false
+        },
+        "slide_tag_unique_idx": {
+          "name": "slide_tag_unique_idx",
+          "columns": [
+            "slide_id",
+            "tag_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "slide_tag_slide_id_slides_id_fk": {
+          "name": "slide_tag_slide_id_slides_id_fk",
+          "tableFrom": "slide_tag",
+          "tableTo": "slides",
+          "columnsFrom": [
+            "slide_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "slide_tag_tag_id_tags_id_fk": {
+          "name": "slide_tag_tag_id_tags_id_fk",
+          "tableFrom": "slide_tag",
+          "tableTo": "tags",
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "slides": {
+      "name": "slides",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "published": {
+          "name": "published",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "slides_slug_idx": {
+          "name": "slides_slug_idx",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "tags": {
       "name": "tags",
       "columns": {
@@ -1144,6 +1264,13 @@
         },
         "slug": {
           "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "deck_published_at": {
+          "name": "deck_published_at",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
