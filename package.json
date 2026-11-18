@@ -26,7 +26,7 @@
     "knip": "6.45.1",
     "playwright": "1.65.0",
     "portless": "0.17.0",
-    "turbo": "2.11.10",
+    "turbo": "2.11.11",
     "typescript": "7.0.2",
     "vite-plus": "1.6.0",
     "wrangler": "catalog:"
