@@ -52,7 +52,7 @@ UPDATE talks SET slug = 'my-talk' WHERE title = 'My Talk' AND event_date = '2026
 
 本番のビルドが、`slug` を持ち MDX の無いトークの中身をストアから `public/talks/<slug>/` へ取り込んで配る。ストアに中身の無い `slug` を入れると、本番のビルドが止まる。
 
-preview のビルドはストアを読まないので、PDF のデッキは preview に出ず、カードは外のスライドを指す。手元では、`upload:talk-deck` が書いた `public/talks/<slug>/` と、手元の DB の `slug` があれば dev で開ける。
+preview のビルドはストアを読まず、すでに k8o.me に出ているデッキを公開のファイルから写す。まだ本番に出ていないデッキは preview に出ず、カードは外のスライドを指す。手元も同じで、`upload:talk-deck` が書いた `public/talks/<slug>/` があればそれを使い、無ければ公開済みのものを写す。どちらも、DB の行に `slug` が入っているトークだけが対象になる。
 
 ## MDX でデッキを書く
 

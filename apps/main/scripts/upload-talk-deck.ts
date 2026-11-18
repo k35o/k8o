@@ -19,13 +19,15 @@ import sharp from 'sharp';
 
 import {
   parsePdfDeck,
-  PDF_DECK_MANIFEST,
-  PDF_PAGE_WIDTHS,
-  pdfPageImage,
   splitNotes,
 } from '../src/features/talks/application/pdf-deck.ts';
 import type { PdfDeck } from '../src/features/talks/application/pdf-deck.ts';
 import { SLUG } from '../src/site/patterns.ts';
+import {
+  PDF_DECK_MANIFEST,
+  PDF_PAGE_WIDTHS,
+  pdfPageImage,
+} from '../src/site/pdf-deck-files.ts';
 import {
   listBlobs,
   PDF_DECK_SOURCE,

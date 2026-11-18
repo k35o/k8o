@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parsePdfDeck, pdfPageImage, splitNotes } from './pdf-deck';
+import { parsePdfDeck, splitNotes } from './pdf-deck';
 
 const link = {
   href: 'https://k8o.me/blog',
@@ -21,20 +21,6 @@ const deck = (page: Record<string, unknown> = {}) => ({
       ...page,
     },
   ],
-});
-
-describe('pdfPageImage', () => {
-  describe('正常系', () => {
-    it('ページの番号を 3 桁にそろえ、幅を名前に入れる', () => {
-      expect(pdfPageImage(7, 960)).toBe('pages/007.960w.avif');
-    });
-  });
-
-  describe('エッジケース', () => {
-    it('1000 枚目からは桁が増える', () => {
-      expect(pdfPageImage(1000, 1920)).toBe('pages/1000.1920w.avif');
-    });
-  });
 });
 
 describe('parsePdfDeck', () => {

@@ -22,7 +22,12 @@ import { blogDemoScripts, demoBundler } from './src/site/blog-demo-scripts.ts';
 import type { TsxDemo } from './src/site/blog-demo-scripts.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { inlineScriptHashes } from './src/site/inline-script-hashes.ts';
-import { blobStore, syncPdfDecks } from './src/site/pdf-deck-sync.ts';
+import {
+  blobStore,
+  fillMissingPdfDecks,
+  publicSiteStore,
+  syncPdfDecks,
+} from './src/site/pdf-deck-sync.ts';
 import { pagePolicy, securityHeaders } from './src/site/security-headers.ts';
 import type { DeployTarget } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
@@ -117,33 +122,53 @@ let pdfDecks: Promise<void> | undefined;
 // public/talks/<slug>/ へ取り込む。ビルドの初めに済ませ、paths.ts（トークの一覧がマニフェストを読む）と public の
 // 写しはそのあとに走る。
 // ストアのトークンは slug を入れる前のデッキも読めるので、本番のビルドにだけ渡す。トークンの無い preview と
-// 手元は取り込まず、手元は upload:talk-deck が書いたものをそのまま使う
+// 手元は、手元に無いデッキだけを、k8o.me に公開されているファイルから写す。/talks/:slug は値が 1 つも無いと
+// ビルドが止まるので、ストアを読めないビルドにも公開済みのデッキを持たせる。upload:talk-deck が手元に書いた
+// デッキは置き換えない
+// slug を持ち、MDX の無いトーク
+const readPdfDeckSlugs = async (): Promise<string[]> => {
+  const { getTalks } = await importWithAlias<typeof buildData>(
+    import.meta.resolve('@repo/api/build-data'),
+  );
+  return (await getTalks()).flatMap(({ slug }) =>
+    slug === null ||
+    existsSync(join(alias['@content'], 'talks', slug, 'content.mdx'))
+      ? []
+      : [slug],
+  );
+};
+
 const syncPdfDecksOfTalks = (): Promise<void> => {
   pdfDecks ??= (async () => {
     // workflow は、secret の無い環境にも空の文字列でこの変数を渡す
     const hasToken = Boolean(process.env['BLOB_READ_WRITE_TOKEN']);
-    if (!hasToken && process.env['DEPLOY_TARGET'] !== 'production') {
-      return;
-    }
-    const { getTalks } = await importWithAlias<typeof buildData>(
-      import.meta.resolve('@repo/api/build-data'),
-    );
-    const slugs = (await getTalks()).flatMap(({ slug }) =>
-      slug === null ||
-      existsSync(join(alias['@content'], 'talks', slug, 'content.mdx'))
-        ? []
-        : [slug],
-    );
+    const decksDir = fileURLToPath(new URL('./public/talks', import.meta.url));
     if (hasToken) {
       await syncPdfDecks({
-        slugs,
-        decksDir: fileURLToPath(new URL('./public/talks', import.meta.url)),
+        slugs: await readPdfDeckSlugs(),
+        decksDir,
         store: blobStore,
       });
-    } else if (slugs.length > 0) {
-      throw new Error(
-        `BLOB_READ_WRITE_TOKEN が無く、PDF のデッキを取り込めない: ${slugs.join(', ')}`,
-      );
+      return;
+    }
+    if (process.env['DEPLOY_TARGET'] === 'production') {
+      const slugs = await readPdfDeckSlugs();
+      if (slugs.length > 0) {
+        throw new Error(
+          `BLOB_READ_WRITE_TOKEN が無く、PDF のデッキを取り込めない: ${slugs.join(', ')}`,
+        );
+      }
+      return;
+    }
+    // DB や k8o.me に届かなくても、手元にあるデッキで dev とビルドを進める
+    try {
+      await fillMissingPdfDecks({
+        slugs: await readPdfDeckSlugs(),
+        decksDir,
+        store: publicSiteStore('https://k8o.me'),
+      });
+    } catch (error) {
+      console.warn('k8o.me から公開済みのデッキを写せなかった', error);
     }
   })();
   return pdfDecks;
