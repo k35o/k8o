@@ -31,30 +31,16 @@ async function hkdf(
   info: Uint8Array<ArrayBuffer>,
   length: number,
 ): Promise<Uint8Array<ArrayBuffer>> {
-  const key = await crypto.subtle.importKey(
-    'raw',
-    salt.length > 0 ? salt : new Uint8Array(32),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
+  const key = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, [
+    'deriveBits',
+  ]);
+  return new Uint8Array(
+    await crypto.subtle.deriveBits(
+      { name: 'HKDF', hash: 'SHA-256', salt, info },
+      key,
+      length * 8,
+    ),
   );
-
-  const prk = new Uint8Array(await crypto.subtle.sign('HMAC', key, ikm));
-
-  const prkKey = await crypto.subtle.importKey(
-    'raw',
-    prk,
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
-
-  const infoWithCounter = concatBytes(info, new Uint8Array([1]));
-  const okm = new Uint8Array(
-    await crypto.subtle.sign('HMAC', prkKey, infoWithCounter),
-  );
-
-  return okm.slice(0, length);
 }
 
 async function deriveEncryptionKeys(
