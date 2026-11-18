@@ -642,8 +642,8 @@ importers:
         specifier: 'catalog:'
         version: 19.3.0(@types/react@19.3.0)
       '@vercel/blob':
-        specifier: 2.8.2
-        version: 2.8.2
+        specifier: 2.9.0
+        version: 2.9.0
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 5.1.0(msw@3.0.5(@types/node@26.6.6)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(playwright@1.65.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.1.0)
@@ -3840,8 +3840,8 @@ packages:
     peerDependencies:
       valibot: ^1.5.0
 
-  '@vercel/blob@2.8.2':
-    resolution: {integrity: sha512-ZUUWO2VA00r9ZTRtKgH4va7FGOUxUtge2FaRr9WZmeeX2s3C3qVe2tOTLTbv/tkcd+L+ijxaI2eP9S1/mGHc9Q==}
+  '@vercel/blob@2.9.0':
+    resolution: {integrity: sha512-o+1CMRlT8/RvGo1aGkFv40F7v3MLdSOaVaIccepBXWrXgonKId3hHKSKGQ+iBDPoSe03crmHfhpHtTs0CCXiig==}
     engines: {node: '>=20.0.0'}
 
   '@vercel/cli-config@0.2.1':
@@ -8667,7 +8667,7 @@ snapshots:
     dependencies:
       valibot: 1.5.0(typescript@7.0.2)
 
-  '@vercel/blob@2.8.2':
+  '@vercel/blob@2.9.0':
     dependencies:
       '@vercel/oidc': 3.8.1
       async-retry: 1.3.3
