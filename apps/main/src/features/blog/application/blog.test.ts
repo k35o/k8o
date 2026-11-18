@@ -81,7 +81,7 @@ describe('getBlogToc', () => {
       };
       vi.mocked(blogPath).mockReturnValue('/path/to/blog');
       vi.mocked(readFile).mockResolvedValue('## Introduction');
-      vi.mocked(getTocTree).mockResolvedValue(toc);
+      vi.mocked(getTocTree).mockReturnValue(toc);
 
       const result = await getBlogToc('test-slug');
 

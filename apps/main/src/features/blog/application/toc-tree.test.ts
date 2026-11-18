@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { getTocTree } from './toc-tree';
 
 describe('getTocTree', () => {
-  it('h2からh4までの見出しを階層構造で返す', async () => {
+  it('h2からh4までの見出しを階層構造で返す', () => {
     const content = `---
 title: test
 ---
@@ -19,7 +19,7 @@ title: test
 ## まとめ
 `;
 
-    await expect(getTocTree(content)).resolves.toStrictEqual({
+    expect(getTocTree(content)).toStrictEqual({
       depth: 0,
       children: [
         {
@@ -42,7 +42,7 @@ title: test
     });
   });
 
-  it('同じh2配下の複数のh3とh4を正しくぶら下げる', async () => {
+  it('同じh2配下の複数のh3とh4を正しくぶら下げる', () => {
     const content = `## セクション1
 
 ### 小見出し1
@@ -56,7 +56,7 @@ title: test
 ## セクション2
 `;
 
-    await expect(getTocTree(content)).resolves.toStrictEqual({
+    expect(getTocTree(content)).toStrictEqual({
       depth: 0,
       children: [
         {
@@ -84,7 +84,7 @@ title: test
     });
   });
 
-  it('h2より浅い見出しや親のない見出しは無視する', async () => {
+  it('h2より浅い見出しや親のない見出しは無視する', () => {
     const content = `# h1
 
 ### 孤立したh3
@@ -94,7 +94,7 @@ title: test
 #### 孤立したh4
 `;
 
-    await expect(getTocTree(content)).resolves.toStrictEqual({
+    expect(getTocTree(content)).toStrictEqual({
       depth: 0,
       children: [
         {
@@ -106,13 +106,13 @@ title: test
     });
   });
 
-  it('インラインコードや強調を含む見出しは全文を連結して採用する', async () => {
+  it('インラインコードや強調を含む見出しは全文を連結して採用する', () => {
     const content = `## \`source\`に何が入るか
 
 ### 方式1: \`renderToString\`で**HTML文字列**を返す
 `;
 
-    await expect(getTocTree(content)).resolves.toStrictEqual({
+    expect(getTocTree(content)).toStrictEqual({
       depth: 0,
       children: [
         {
@@ -130,7 +130,7 @@ title: test
     });
   });
 
-  it('h5以深の見出しは目次に含めない', async () => {
+  it('h5以深の見出しは目次に含めない', () => {
     const content = `## セクション
 
 ### 小見出し
@@ -140,7 +140,7 @@ title: test
 ##### 無視される見出し
 `;
 
-    await expect(getTocTree(content)).resolves.toStrictEqual({
+    expect(getTocTree(content)).toStrictEqual({
       depth: 0,
       children: [
         {
