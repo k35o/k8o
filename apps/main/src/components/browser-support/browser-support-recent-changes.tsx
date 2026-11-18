@@ -2,22 +2,10 @@ import { Badge, Heading, Stack } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
+import { STATUS_META } from '@/components/site/browser-support-status/status-meta';
 import type { BrowserSupportFeatureChange } from '@/features/browser-support/interface/queries';
 
 import styles from './browser-support-recent-changes.module.css';
-
-const STATUS_LABEL: Record<BrowserSupportFeatureChange['status'], string> = {
-  newly: 'Newly',
-  widely: 'Widely',
-};
-
-const STATUS_TONE: Record<
-  BrowserSupportFeatureChange['status'],
-  'info' | 'success'
-> = {
-  newly: 'info',
-  widely: 'success',
-};
 
 type ChangeGroup = {
   upstreamVersion: string;
@@ -77,8 +65,8 @@ export const BrowserSupportRecentChanges: FC<{
                 >
                   <Badge
                     size="sm"
-                    label={STATUS_LABEL[change.status]}
-                    tone={STATUS_TONE[change.status]}
+                    label={STATUS_META[change.status].label}
+                    tone={STATUS_META[change.status].tone}
                   />
                   <span className={styles.featureName}>
                     {change.featureName}
@@ -86,7 +74,7 @@ export const BrowserSupportRecentChanges: FC<{
                   <span className={styles.previous}>
                     {change.previousStatus === null
                       ? 'Baseline 到達'
-                      : `${STATUS_LABEL[change.previousStatus]} から`}
+                      : `${STATUS_META[change.previousStatus].label} から`}
                   </span>
                 </li>
               ))}

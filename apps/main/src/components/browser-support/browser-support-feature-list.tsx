@@ -15,11 +15,9 @@ import { memo, useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
 import { toBrowserFamilies } from '@/components/site/browser-support-status/browser-families';
+import { STATUS_META } from '@/components/site/browser-support-status/status-meta';
 import type { BlogLink } from '@/features/blog/interface/queries';
-import type {
-  BrowserSupportFeature,
-  SupportStatus,
-} from '@/features/browser-support/interface/queries';
+import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
 
 import { matchesFeatureFilters } from './matches-feature-filters/matches-feature-filters';
 import type { StatusVisibility } from './matches-feature-filters/matches-feature-filters';
@@ -31,24 +29,7 @@ import {
 
 import styles from './browser-support-feature-list.module.css';
 
-const STATUS_META: Record<
-  SupportStatus,
-  { label: string; tone: 'success' | 'info' | 'warning' }
-> = {
-  widely: { label: 'Widely', tone: 'success' },
-  newly: { label: 'Newly', tone: 'info' },
-  limited: { label: 'Limited', tone: 'warning' },
-};
-
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
-
-const getAvailableYears = (features: BrowserSupportFeature[]): string[] => {
-  const years = new Set<string>();
-  for (const feature of features) {
-    years.add(feature.resolvedDate.slice(0, 4));
-  }
-  return [...years].toSorted((a, b) => b.localeCompare(a));
-};
 
 const BrowserSupport: FC<{ feature: BrowserSupportFeature }> = ({
   feature,
@@ -149,21 +130,14 @@ export const BrowserSupportFeatureList: FC<{
   );
   const recentThresholdMs = nowMs - SEVEN_DAYS_MS;
 
-  const availableYears = useMemo(() => getAvailableYears(features), [features]);
-
-  const dataByYear = useMemo(() => {
-    const map = new Map<string, BrowserSupportFeature[]>();
-    for (const feature of features) {
-      const year = feature.resolvedDate.slice(0, 4);
-      const entry = map.get(year);
-      if (entry) {
-        entry.push(feature);
-      } else {
-        map.set(year, [feature]);
-      }
-    }
-    return map;
-  }, [features]);
+  const dataByYear = useMemo(
+    () => Map.groupBy(features, (feature) => feature.resolvedDate.slice(0, 4)),
+    [features],
+  );
+  const availableYears = useMemo(
+    () => [...dataByYear.keys()].toSorted((a, b) => b.localeCompare(a)),
+    [dataByYear],
+  );
 
   const filteredCountByYear = useMemo(() => {
     const counts = new Map<string, number>();
