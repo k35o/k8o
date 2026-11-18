@@ -1,6 +1,6 @@
-import type { BrowserImplementationMap } from '../browser/browser-support.ts';
-import { computeMinVersions } from '../browser/browser-support.ts';
+import { compareVersions } from '../browser/browser-support.ts';
 import { CORE_BROWSERS } from '../browser/detect-browser.ts';
+import type { BrowserMinVersions } from '../browser/detect-browser.ts';
 import type {
   BaselineBrowserSupport,
   BaselineDataset,
@@ -208,19 +208,22 @@ const resolveRedirects = (
   return { redirects, unresolved };
 };
 
-const computeDatasetMinVersions = (features: BaselineFeature[]) => {
-  const maps: BrowserImplementationMap[] = [];
+const computeDatasetMinVersions = (
+  features: readonly BaselineFeature[],
+): BrowserMinVersions => {
+  const minVersions: BrowserMinVersions = {};
   for (const feature of features) {
     if (feature.status === 'limited') {
       continue;
     }
-    const map: BrowserImplementationMap = {};
-    for (const row of feature.support) {
-      map[row.browser] = { status: 'available', version: row.version };
+    for (const { browser, version } of feature.support) {
+      const current = minVersions[browser];
+      if (current === undefined || compareVersions(version, current) > 0) {
+        minVersions[browser] = version;
+      }
     }
-    maps.push(map);
   }
-  return computeMinVersions(maps);
+  return minVersions;
 };
 
 export const transformUpstreamData = (
@@ -329,6 +332,65 @@ if (import.meta.vitest) {
     },
   };
 
+  const feature = (
+    status: BaselineSupportStatus,
+    support: Array<[BaselineBrowserSupport['browser'], string]>,
+  ): BaselineFeature => ({
+    featureId: 'feat',
+    name: 'Feature',
+    status,
+    baselineDate: null,
+    resolvedDate: '',
+    support: support.map(([browser, version]) => ({
+      browser,
+      version,
+      date: null,
+    })),
+  });
+
+  describe('computeDatasetMinVersions', () => {
+    describe('正常系', () => {
+      it('ブラウザごとに、baseline の機能が対応した版の最大値を取る', () => {
+        expect(
+          computeDatasetMinVersions([
+            feature('widely', [
+              ['chrome', '120'],
+              ['safari', '17.2'],
+            ]),
+            feature('newly', [
+              ['chrome', '143'],
+              ['safari', '17.0'],
+            ]),
+          ]),
+        ).toStrictEqual({ chrome: '143', safari: '17.2' });
+      });
+
+      it('版は文字列順ではなく数値として比べる', () => {
+        expect(
+          computeDatasetMinVersions([
+            feature('widely', [['safari', '17.10']]),
+            feature('widely', [['safari', '17.2']]),
+          ]),
+        ).toStrictEqual({ safari: '17.10' });
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('limited の機能は数えない', () => {
+        expect(
+          computeDatasetMinVersions([
+            feature('limited', [['chrome', '150']]),
+            feature('newly', [['firefox', '146']]),
+          ]),
+        ).toStrictEqual({ firefox: '146' });
+      });
+
+      it('機能が無ければ空を返す', () => {
+        expect(computeDatasetMinVersions([])).toStrictEqual({});
+      });
+    });
+  });
+
   describe('transformUpstreamData', () => {
     describe('正常系', () => {
       const { dataset, skippedFeatures } = transformUpstreamData(
@@ -429,6 +491,25 @@ if (import.meta.vitest) {
     });
 
     describe('エッジケース', () => {
+      it('コア7ブラウザ以外と空の版は minVersions に入れない', () => {
+        const { dataset } = transformUpstreamData(
+          {
+            browsers: {},
+            features: {
+              feat: {
+                kind: 'feature',
+                status: {
+                  baseline: 'low',
+                  support: { chrome: '120', opera: '106', edge: '' },
+                },
+              },
+            },
+          },
+          '1.0.0',
+        );
+        expect(dataset.minVersions).toStrictEqual({ chrome: '120' });
+      });
+
       it('コア7ブラウザ以外の support キーは黙って無視する', () => {
         const { dataset } = transformUpstreamData(
           {
