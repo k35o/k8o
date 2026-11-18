@@ -1,5 +1,7 @@
 import { getPublishedBlogs } from '@repo/api/build-data';
 
+import { findSlidesHref } from '@/features/talks/application/talks';
+
 import { findBlogMetadata } from './blog';
 
 type TagRef = { id: number; name: string };
@@ -28,7 +30,7 @@ export const getBlogs = async (): Promise<Blog[]> => {
         id: blog.id,
         slug: blog.slug,
         tags: blog.tags,
-        slideUrl: blog.slideUrl,
+        slideUrl: blog.talk === null ? null : await findSlidesHref(blog.talk),
         title: metadata.title,
         description: metadata.description,
         createdAt: metadata.createdAt,

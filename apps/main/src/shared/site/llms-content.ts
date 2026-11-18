@@ -22,9 +22,10 @@ export async function generateLlmsContent(): Promise<string> {
 
   const talkContent = talks
     .map((talk) => {
-      const links = talk.slideUrl
-        ? `[イベント](${talk.eventUrl}) / [スライド](${talk.slideUrl})`
-        : `[イベント](${talk.eventUrl})`;
+      const links =
+        talk.slidesHref === null
+          ? `[イベント](${talk.eventUrl})`
+          : `[イベント](${talk.eventUrl}) / [スライド](${new URL(talk.slidesHref, SITE_URL).href})`;
       return `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）\n${links}`;
     })
     .join('\n\n');

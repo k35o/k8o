@@ -1,4 +1,3 @@
-import type { Talk } from '@repo/api/build-data';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
@@ -7,6 +6,8 @@ import { getTag, getTags } from '@/features/tags/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 
 import { getTagContent, getTagSummaries } from './tag-contents';
+
+type Talk = Awaited<ReturnType<typeof getTalks>>[number];
 
 vi.mock('@/features/blog/interface/queries', () => ({
   getBlogContents: vi.fn(),
@@ -37,10 +38,11 @@ const talk = (id: number, title: string): Talk => ({
   eventName: 'イベント',
   eventDate: '2026-01-01',
   eventLocation: null,
-  slideUrl: 'https://example.com/slide.pdf',
-  blogId: 1,
   blog: { id: 1, slug: 'blog-1' },
   tags: [],
+  deck: null,
+  cover: null,
+  slidesHref: 'https://example.com/slide.pdf',
 });
 
 beforeEach(() => {

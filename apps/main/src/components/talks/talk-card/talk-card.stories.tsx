@@ -15,7 +15,8 @@ export const Primary = meta.story({
     eventName: 'Event Name',
     eventDate: '2023-01-01',
     eventLocation: 'Event Location',
-    slideUrl: 'https://example.com/slides',
+    slidesHref: 'https://example.com/slides',
+    cover: null,
     blog: {
       id: 1,
       slug: 'blog-slug',
@@ -34,7 +35,8 @@ export const DisplaysTitle = meta.story({
     eventName: 'React Meetup Tokyo',
     eventDate: '2024-03-15',
     eventLocation: '東京',
-    slideUrl: 'https://example.com/slides',
+    slidesHref: 'https://example.com/slides',
+    cover: null,
     blog: { id: 1, slug: 'react-19-features' },
     tags: [],
   },
@@ -54,7 +56,8 @@ export const DisplaysEventInfo = meta.story({
     eventName: 'Tech Conference 2024',
     eventDate: '2024-06-01',
     eventLocation: '大阪',
-    slideUrl: 'https://example.com/slides',
+    slidesHref: 'https://example.com/slides',
+    cover: null,
     blog: { id: 1, slug: 'test' },
     tags: [],
   },
@@ -74,7 +77,8 @@ export const DisplaysTags = meta.story({
     eventName: 'Event',
     eventDate: '2024-01-01',
     eventLocation: null,
-    slideUrl: 'https://example.com/slides',
+    slidesHref: 'https://example.com/slides',
+    cover: null,
     blog: { id: 1, slug: 'test' },
     tags: [
       { id: 1, name: 'React' },
@@ -98,19 +102,20 @@ export const HasSlideLink = meta.story({
     eventName: 'Event',
     eventDate: '2024-01-01',
     eventLocation: null,
-    slideUrl: 'https://slides.example.com/my-slides',
+    slidesHref: 'https://slides.example.com/my-slides',
+    cover: null,
     blog: { id: 1, slug: 'test' },
     tags: [],
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const slideLink = canvas.getByRole('link', { name: 'スライドを見る' });
-    await expect(slideLink).toBeInTheDocument();
+    const slideLink = canvas.getByRole('link', { name: 'テスト発表' });
     await expect(slideLink).toHaveAttribute(
       'href',
       'https://slides.example.com/my-slides',
     );
+    await expect(slideLink).toHaveAttribute('target', '_blank');
   },
 });
 
@@ -121,7 +126,8 @@ export const HasBlogLink = meta.story({
     eventName: 'Event',
     eventDate: '2024-01-01',
     eventLocation: null,
-    slideUrl: 'https://example.com/slides',
+    slidesHref: 'https://example.com/slides',
+    cover: null,
     blog: { id: 1, slug: 'my-blog-post' },
     tags: [],
   },
@@ -144,6 +150,87 @@ export const TagLinks = DisplaysTags.extend({
     await userEvent.tab();
     await expect(
       canvas.getByRole('link', { name: 'TypeScript' }),
+    ).toHaveFocus();
+  },
+});
+
+export const DeckOnSite = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Event',
+    eventDate: '2024-01-01',
+    eventLocation: null,
+    slidesHref: '/talks/my-talk',
+    cover: null,
+    blog: { id: 1, slug: 'test' },
+    tags: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const slideLink = canvas.getByRole('link', { name: 'テスト発表' });
+    await expect(slideLink).toHaveAttribute('href', '/talks/my-talk');
+    await expect(slideLink).not.toHaveAttribute('target');
+  },
+});
+
+export const WithoutSlidesAndBlog = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Event',
+    eventDate: '2024-01-01',
+    eventLocation: null,
+    slidesHref: null,
+    cover: null,
+    blog: null,
+    tags: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(
+      canvas.queryByRole('link', { name: 'テスト発表' }),
+    ).not.toBeInTheDocument();
+    await expect(
+      canvas.queryByRole('link', { name: 'ブログで解説を読む' }),
+    ).not.toBeInTheDocument();
+  },
+});
+
+const coverSvg = encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect width="1920" height="1080" fill="#0f766e"/></svg>',
+);
+
+// 正常系: 表紙はタイトルと同じ行き先で、読み上げと Tab からは外れ、デッキへのリンクはタイトルの 1 つだけになる
+export const WithCover = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Event',
+    eventDate: '2024-01-01',
+    eventLocation: null,
+    slidesHref: '/talks/my-talk',
+    cover: {
+      src: `data:image/svg+xml,${coverSvg}`,
+      srcSet: `data:image/svg+xml,${coverSvg} 1920w`,
+      width: 1920,
+      height: 1080,
+    },
+    blog: { id: 1, slug: 'test' },
+    tags: [],
+  },
+  play: async ({ canvas, canvasElement, userEvent }) => {
+    await expect(
+      canvas.getAllByRole('link', { name: 'テスト発表' }),
+    ).toHaveLength(1);
+    const cover = canvasElement.querySelector('a[aria-hidden="true"]');
+    await expect(cover).toHaveAttribute('href', '/talks/my-talk');
+
+    await userEvent.tab();
+    await expect(
+      canvas.getByRole('link', { name: 'テスト発表' }),
     ).toHaveFocus();
   },
 });
