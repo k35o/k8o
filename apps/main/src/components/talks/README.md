@@ -54,6 +54,18 @@ UPDATE talks SET slug = 'my-talk' WHERE title = 'My Talk' AND event_date = '2026
 
 preview のビルドはストアを読まず、すでに k8o.me に出ているデッキを公開のファイルから写す。まだ本番に出ていないデッキは preview に出ず、カードは外のスライドを指す。手元も同じで、`upload:talk-deck` が書いた `public/talks/<slug>/` があればそれを使い、無ければ公開済みのものを写す。どちらも、DB の行に `slug` が入っているトークだけが対象になる。
 
+### 発表の時刻まで出さない
+
+発表の前に準備だけ済ませておくときは、`slug` と一緒に `deck_published_at`（オフセット付きの ISO 8601）を入れる。この時刻までは、ビルドがデッキを取り込まず、ページも作らない。カードはデッキへのリンクと表紙を出さずに並ぶ。MDX のデッキにも効く。
+
+```sql
+UPDATE talks SET slug = 'my-talk', deck_published_at = '2026-05-15T13:00:00+09:00' WHERE title = 'My Talk' AND event_date = '2026-05-15';
+```
+
+サイトは静的なので、時刻を過ぎたあとのビルドで出る。`.github/workflows/vercel-prebuilt.yml` が 15 分おきに、時刻を過ぎたのに k8o.me に無いデッキを探し、あれば本番の main を建て直す。定期実行は数分〜十数分遅れることがあるので、発表の開始より 30 分ほど前の時刻を入れる。見るのは公開時刻から 3 時間までで、それを過ぎても出ていなければ、Actions の Vercel Prebuilt Deploy を見て main を手で流し直す。
+
+オフセットの無い時刻や読めない時刻は、ビルドが止まる。
+
 ## MDX でデッキを書く
 
 `apps/main/src/content/talks/<slug>/content.mdx` を置き、トークの行に `slug` を入れる。

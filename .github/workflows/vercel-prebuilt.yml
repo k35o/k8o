@@ -11,6 +11,11 @@ on:
   push:
     branches:
       - main
+  # 公開時刻を持つデッキ（talks.deck_published_at）は、時刻を過ぎたあとのビルドで初めて出る。
+  # 時刻を過ぎたのにサイトに無いデッキがあるときだけ、本番の main を建て直す（due-decks）。
+  # 毎時 0 分は GitHub に遅らされるので外す。それでも数分〜十数分は遅れうる
+  schedule:
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
     inputs:
       app:
@@ -28,7 +33,7 @@ permissions: {}
 jobs:
   detect:
     # fork PR は VERCEL_TOKEN を取得できず、renovate ブランチは preview 不要のため除外する
-    if: ${{ github.event_name != 'pull_request' || (github.event.action != 'closed' && github.event.pull_request.head.repo.fork != true && !startsWith(github.head_ref, 'renovate/')) }}
+    if: ${{ github.event_name != 'schedule' && (github.event_name != 'pull_request' || (github.event.action != 'closed' && github.event.pull_request.head.repo.fork != true && !startsWith(github.head_ref, 'renovate/'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -99,6 +104,54 @@ jobs:
           APPS: ${{ steps.detect.outputs.apps }}
         run: echo "apps=$APPS"
 
+  # 定期実行でだけ動く。公開時刻を過ぎたのに k8o.me に無いデッキがあれば main を建て直させる。
+  # 建て直しが失敗し続けても回り続けないよう、公開時刻から 3 時間までのデッキだけを見る
+  due-decks:
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # 本番 DB の読み取りに production の secret を使う。15 分おきに deployment の記録が積もらないよう作らない
+    environment:
+      name: production
+      deployment: false
+    permissions: {}
+    outputs:
+      apps: ${{ steps.check.outputs.apps }}
+    steps:
+      - name: Find published decks missing from the site
+        id: check
+        env:
+          K8O_TURSO_DATABASE_URL: ${{ secrets.K8O_TURSO_DATABASE_URL }}
+          K8O_TURSO_AUTH_TOKEN: ${{ secrets.K8O_TURSO_READONLY_AUTH_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          sql="SELECT slug FROM talks WHERE slug IS NOT NULL AND deck_published_at IS NOT NULL AND unixepoch(deck_published_at) <= unixepoch('now') AND unixepoch(deck_published_at) > unixepoch('now', '-3 hours')"
+          body=$(jq -n --arg sql "$sql" '{requests: [{type: "execute", stmt: {sql: $sql}}, {type: "close"}]}')
+          # libsql:// の URL を、同じホストの HTTP の口に読み替える
+          response=$(curl -sS --fail-with-body --max-time 30 \
+            -H "Authorization: Bearer $K8O_TURSO_AUTH_TOKEN" -H 'Content-Type: application/json' \
+            -d "$body" "https://${K8O_TURSO_DATABASE_URL#*://}/v2/pipeline")
+          if [ "$(echo "$response" | jq -r '.results[0].type')" != "ok" ]; then
+            echo "::error::公開時刻を過ぎたデッキを DB から読めなかった"
+            exit 1
+          fi
+
+          apps='[]'
+          while read -r slug; do
+            # slug は URL に入れるので、デッキの slug の形だけを通す
+            if ! echo "$slug" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$'; then
+              continue
+            fi
+            # 404 のときだけ建て直す。応答が無い・5xx のときは、サイトに無いとは言えないので見送る
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://k8o.me/talks/$slug" || true)
+            echo "$slug: $code"
+            if [ "$code" = "404" ]; then
+              apps='["main"]'
+            fi
+          done < <(echo "$response" | jq -r '.results[0].response.result.rows[][0].value')
+          echo "apps=$apps" >> "$GITHUB_OUTPUT"
+
   # 本番 DB のマイグレーションは、どのアプリのビルドよりも先に一度だけ流す。アプリは並列に
   # デプロイされるので、ビルドの中で流すと新しいスキーマより先に別のアプリが出ることがある。
   # main のビルドは DB を読むので、その前に終わっている必要もある。preview は deploy の中で流す
@@ -135,22 +188,23 @@ jobs:
         run: pnpm -F @repo/ai-database migrate
 
   deploy:
-    needs: [detect, migrate]
+    needs: [detect, due-decks, migrate]
     # preview では migrate がスキップされる。状態を見る関数が無いと暗黙の success() が付き、
     # needs のスキップで deploy もスキップされるので、!cancelled() で外して result を明示確認する。
-    # 本番は migrate の成功を待つ。skip された detect（fork PR・renovate）では起動しない
-    if: ${{ !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && (needs.migrate.result == 'success' || (github.event_name != 'push' && needs.migrate.result == 'skipped')) }}
+    # 本番は migrate の成功を待つ。skip された detect（fork PR・renovate）では起動しない。
+    # 定期実行は detect の代わりに due-decks がアプリを決め、migrate は流さない
+    if: ${{ !cancelled() && ((needs.detect.result == 'success' && needs.detect.outputs.apps != '[]') || (needs.due-decks.result == 'success' && needs.due-decks.outputs.apps != '[]')) && (needs.migrate.result == 'success' || (github.event_name != 'push' && needs.migrate.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # PR は workflow 自体を書き換えて任意の repo secret を参照できるため、本番の資格情報は
     # main に限定した production Environment にだけ置き、preview から届かないことを GitHub 側で担保する
-    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+    environment: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && 'production' || 'preview' }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ fromJSON(needs.detect.outputs.apps) }}
+        app: ${{ fromJSON(needs.detect.outputs.apps || needs.due-decks.outputs.apps) }}
     concurrency:
       group: vercel-prebuilt-${{ github.ref }}-${{ matrix.app }}
       cancel-in-progress: true
@@ -160,7 +214,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       # プロジェクト ID は秘密情報ではないため、app との対応を workflow に直書きして自己文書化する
       VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","api":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8"}')[matrix.app] }}
-      DEPLOY_TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+      DEPLOY_TARGET: ${{ (github.event_name == 'push' || github.event_name == 'schedule') && 'production' || 'preview' }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v7.0.1
