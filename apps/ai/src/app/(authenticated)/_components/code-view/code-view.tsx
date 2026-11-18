@@ -22,29 +22,20 @@ export const CodeView: FC<CodeViewProps> = ({
   }
 
   // ハイライト取得前は暗色面を維持してプレーン表示（チラつき防止）。
-  if (highlighted === null) {
-    return (
-      <pre
-        className={styles.code}
-        style={{ backgroundColor: CODE_SURFACE.bg, color: CODE_SURFACE.fg }}
-        // 枠を超える長いコードをキーボードでもスクロールできるよう、フォーカスできるようにする
-        // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={0}
-      >
-        <code>{code}</code>
-      </pre>
-    );
-  }
-
+  const surface = highlighted ?? CODE_SURFACE;
   return (
     <pre
       className={styles.code}
-      style={{ backgroundColor: highlighted.bg, color: highlighted.fg }}
+      style={{ backgroundColor: surface.bg, color: surface.fg }}
       // 枠を超える長いコードをキーボードでもスクロールできるよう、フォーカスできるようにする
       // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
     >
-      <HighlightedTokens highlighted={highlighted} />
+      {highlighted === null ? (
+        <code>{code}</code>
+      ) : (
+        <HighlightedTokens highlighted={highlighted} />
+      )}
     </pre>
   );
 };

@@ -1,5 +1,7 @@
 export const MONTHLY_BUDGET_MICRO_USD = 100_000_000;
 
+export const MONTHLY_BUDGET_USD = MONTHLY_BUDGET_MICRO_USD / 1_000_000;
+
 export const monthStartIso = (now: number): string => {
   const date = new Date(now);
   return new Date(

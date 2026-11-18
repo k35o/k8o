@@ -46,11 +46,7 @@ const isPublicPath = (pathname: string): boolean =>
   pathname === '/sign-in' || pathname.startsWith('/s/');
 
 export const proxy = (request: NextRequest): NextResponse => {
-  if (!isAuthEnabled) {
-    return withSecurityHeaders(NextResponse.next());
-  }
-
-  if (isPublicPath(request.nextUrl.pathname)) {
+  if (!isAuthEnabled || isPublicPath(request.nextUrl.pathname)) {
     return withSecurityHeaders(NextResponse.next());
   }
 

@@ -6,6 +6,7 @@ import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { isStaticToolUIPart } from 'ai';
 import type { FC, Ref } from 'react';
 
+import { messageTextOf } from '@/features/agent/application/agent-message';
 import type {
   AgentUIMessage,
   RunEnd,
@@ -13,7 +14,7 @@ import type {
 import { MAX_STEPS } from '@/features/agent/application/agent-run';
 import { chatArtifactOf } from '@/features/agent/application/chat-artifacts';
 import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
-import { MONTHLY_BUDGET_MICRO_USD } from '@/features/usage/application/budget';
+import { MONTHLY_BUDGET_USD } from '@/features/usage/application/budget';
 
 import { ArtifactCard } from '../artifact-card';
 import { MarkdownText } from '../markdown-text';
@@ -25,17 +26,12 @@ type AgentToolPart = Extract<AgentMessagePart, { type: `tool-${string}` }>;
 const RUN_END_MESSAGES = {
   stopped: '停止しました',
   'step-limit': `ステップの上限（${MAX_STEPS.toString()}回）に達したため止めました。続けるには続きを頼んでください`,
-  budget: `今月の予算（$${(MONTHLY_BUDGET_MICRO_USD / 1_000_000).toString()}）に達したため止めました`,
+  budget: `今月の予算（$${MONTHLY_BUDGET_USD.toString()}）に達したため止めました`,
   failed: 'エラーで止まりました',
   refused: 'Claude が回答を控えました',
   length: '出力の上限に達したため止めました',
   timeout: '時間の上限に達したため止めました',
 } as const satisfies Record<Exclude<RunEnd, 'completed'>, string>;
-
-const textOf = (message: AgentUIMessage): string =>
-  message.parts
-    .flatMap((part) => (part.type === 'text' ? [part.text] : []))
-    .join('\n');
 
 const toolOutputText = (
   part: Extract<AgentToolPart, { state: 'output-available' }>,
@@ -233,7 +229,7 @@ export const AgentMessage: FC<AgentMessageProps> = ({
   if (message.role === 'user') {
     return (
       <Message.Root from="user">
-        <Message.Content>{textOf(message)}</Message.Content>
+        <Message.Content>{messageTextOf(message)}</Message.Content>
       </Message.Root>
     );
   }
