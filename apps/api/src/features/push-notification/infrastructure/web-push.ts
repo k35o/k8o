@@ -1,4 +1,3 @@
-import { base64UrlDecode } from './base64url';
 import { encryptPushPayload } from './payload-encryption';
 import type { RecipientKeys } from './payload-encryption';
 import { generateVapidHeaders } from './vapid';
@@ -39,7 +38,7 @@ const PUSH_TIMEOUT_MS = 10_000;
 
 const decodeOrNull = (str: string): Uint8Array<ArrayBuffer> | null => {
   try {
-    return base64UrlDecode(str);
+    return Uint8Array.fromBase64(str, { alphabet: 'base64url' });
   } catch {
     return null;
   }

@@ -1,8 +1,11 @@
-import {
-  base64UrlDecode,
-  base64UrlEncode,
-  base64UrlEncodeBytes,
-} from './base64url';
+const fromBase64Url = (str: string): Uint8Array<ArrayBuffer> =>
+  Uint8Array.fromBase64(str, { alphabet: 'base64url' });
+
+const toBase64Url = (bytes: Uint8Array): string =>
+  bytes.toBase64({ alphabet: 'base64url', omitPadding: true });
+
+const jsonToBase64Url = (value: unknown): string =>
+  toBase64Url(new TextEncoder().encode(JSON.stringify(value)));
 
 export type VapidConfig = {
   publicKey: string;
@@ -26,19 +29,19 @@ export async function generateVapidHeaders(
     sub: subject,
   };
 
-  const headerB64 = base64UrlEncode(JSON.stringify(header));
-  const payloadB64 = base64UrlEncode(JSON.stringify(payload));
+  const headerB64 = jsonToBase64Url(header);
+  const payloadB64 = jsonToBase64Url(payload);
   const unsignedToken = `${headerB64}.${payloadB64}`;
 
-  const privateKeyBytes = base64UrlDecode(privateKey);
-  const publicKeyBytes = base64UrlDecode(publicKey);
+  const privateKeyBytes = fromBase64Url(privateKey);
+  const publicKeyBytes = fromBase64Url(publicKey);
 
   const jwk = {
     kty: 'EC',
     crv: 'P-256',
-    x: base64UrlEncodeBytes(publicKeyBytes.slice(1, 33)),
-    y: base64UrlEncodeBytes(publicKeyBytes.slice(33, 65)),
-    d: base64UrlEncodeBytes(privateKeyBytes),
+    x: toBase64Url(publicKeyBytes.slice(1, 33)),
+    y: toBase64Url(publicKeyBytes.slice(33, 65)),
+    d: toBase64Url(privateKeyBytes),
   };
 
   const cryptoKey = await crypto.subtle.importKey(
@@ -55,7 +58,7 @@ export async function generateVapidHeaders(
     new TextEncoder().encode(unsignedToken),
   );
 
-  const signatureB64 = base64UrlEncodeBytes(new Uint8Array(signature));
+  const signatureB64 = toBase64Url(new Uint8Array(signature));
   const jwt = `${unsignedToken}.${signatureB64}`;
 
   return {
