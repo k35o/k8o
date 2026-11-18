@@ -272,7 +272,7 @@ describe('insertNextVersion', () => {
         nextVersion({ parentId: 1 }),
       ]);
 
-      expect(added.toSorted()).toStrictEqual([2, 3]);
+      expect(added.toSorted((a, b) => a - b)).toStrictEqual([2, 3]);
     });
   });
 });
