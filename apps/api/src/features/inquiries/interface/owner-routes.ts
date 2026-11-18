@@ -1,6 +1,10 @@
 import { Hono } from 'hono';
 import * as z from 'zod/mini';
 
+import {
+  pageQuery,
+  pageSizeQuery,
+} from '../../../shared/http/pagination-query';
 import { validate } from '../../../shared/http/validate';
 import {
   INQUIRY_PAGE_SIZE_MAX,
@@ -8,10 +12,8 @@ import {
 } from '../application/list-inquiries';
 
 const listQuerySchema = z.object({
-  page: z.coerce.number().check(z.int(), z.minimum(1)),
-  pageSize: z.coerce
-    .number()
-    .check(z.int(), z.minimum(1), z.maximum(INQUIRY_PAGE_SIZE_MAX)),
+  page: pageQuery,
+  pageSize: pageSizeQuery(INQUIRY_PAGE_SIZE_MAX),
 });
 
 export const inquiryOwnerRoutes = new Hono().get(

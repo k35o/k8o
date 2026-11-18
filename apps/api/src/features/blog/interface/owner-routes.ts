@@ -1,9 +1,17 @@
 import { Hono } from 'hono';
 import * as z from 'zod/mini';
 
+import {
+  pageQuery,
+  pageSizeQuery,
+} from '../../../shared/http/pagination-query';
 import { validate } from '../../../shared/http/validate';
 import { BLOG_SLUG_PATTERN } from '../application/blog-slug';
-import { BLOG_STATS_PAGE_SIZE_MAX } from '../application/blog-stats';
+import {
+  BLOG_SORTS,
+  BLOG_STATS_PAGE_SIZE_MAX,
+  BLOG_STATUSES,
+} from '../application/blog-stats';
 import { findBlogs } from '../infrastructure/blog-repository';
 import {
   fetchBlogMarkdown,
@@ -15,12 +23,10 @@ const slugParamSchema = z.object({
 });
 
 const statsQuerySchema = z.object({
-  status: z.enum(['all', 'published', 'draft']),
-  sort: z.enum(['recent', 'views']),
-  page: z.coerce.number().check(z.int(), z.minimum(1)),
-  pageSize: z.coerce
-    .number()
-    .check(z.int(), z.minimum(1), z.maximum(BLOG_STATS_PAGE_SIZE_MAX)),
+  status: z.enum(BLOG_STATUSES),
+  sort: z.enum(BLOG_SORTS),
+  page: pageQuery,
+  pageSize: pageSizeQuery(BLOG_STATS_PAGE_SIZE_MAX),
 });
 
 export const blogOwnerRoutes = new Hono()

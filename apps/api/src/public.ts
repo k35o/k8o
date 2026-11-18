@@ -16,6 +16,8 @@ import {
   redirectReadingListFeedQuery,
 } from './features/reading-list/interface/public-routes';
 import { reportPublicRoutes } from './features/reports/interface/public-routes';
+import { createErrorHandler } from './shared/http/error-handler';
+import { hasQuery, isReadMethod } from './shared/http/read-request';
 
 const ALLOWED_ORIGINS = new Set(['https://k8o.me', 'https://www.k8o.me']);
 // ローカルの main（portless。worktree ではブランチ名が前に付き、ポートも付く）
@@ -27,9 +29,6 @@ const isAllowedOrigin = (origin: string): boolean =>
   ALLOWED_ORIGINS.has(origin) ||
   (process.env['NODE_ENV'] === 'development' && LOCAL_MAIN_ORIGIN.test(origin));
 const MAX_BODY_BYTES = 64 * 1024;
-
-const isReadMethod = (method: string): boolean =>
-  method === 'GET' || method === 'HEAD';
 
 const writeCors = cors({
   origin: (origin) => (isAllowedOrigin(origin) ? origin : null),
@@ -54,7 +53,7 @@ export const publicRoutes = new Hono()
     const isRead = isReadMethod(c.req.method);
     // CDN は query を含めた URL でキャッシュするので、query を変えるだけでキャッシュを外して
     // DB に届かせられる。読み取りの口は query を受けない
-    if (isRead && c.req.url.includes('?')) {
+    if (isRead && hasQuery(c.req.url)) {
       throw new HTTPException(400, {
         res: c.json({ ok: false, error: 'invalid_request' } as const, 400, {
           'Cache-Control': 'no-store',
@@ -82,12 +81,6 @@ export const publicRoutes = new Hono()
   .route('/push-subscriptions', pushSubscriptionPublicRoutes)
   .route('/reading-list', readingListPublicRoutes)
   .route('/reports', reportPublicRoutes)
-  .onError((error, c) => {
-    if (error instanceof HTTPException) {
-      return error.getResponse();
-    }
-    console.error('公開 API の処理に失敗しました:', error);
-    return c.json({ ok: false, error: 'internal_error' } as const, 500);
-  });
+  .onError(createErrorHandler('公開 API'));
 
 export type PublicApi = typeof publicRoutes;
