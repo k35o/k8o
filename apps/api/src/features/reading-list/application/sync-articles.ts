@@ -1,6 +1,3 @@
-import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
-import { compareDate } from '@repo/helpers/date/compare';
-import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 
 import { fetchFeedItems } from '../infrastructure/feed-source';
@@ -10,9 +7,8 @@ import {
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
+import { mapWithArticleOg } from './article-og';
 import { readingWindowStart } from './reading-window';
-
-const OG_CONCURRENCY = 5;
 
 type FeedArticle = {
   articleSourceId: number;
@@ -21,7 +17,7 @@ type FeedArticle = {
   publishedAt: string;
 };
 
-type SyncResult = {
+export type SyncResult = {
   newArticles: number;
   updatedArticles: number;
   failedSources: string[];
@@ -57,7 +53,7 @@ export async function syncArticles(): Promise<SyncResult> {
           continue;
         }
 
-        if (compareDate(publishedDate, ninetyDaysAgo) === 'less') {
+        if (publishedDate.getTime() < ninetyDaysAgo.getTime()) {
           continue;
         }
 
@@ -115,17 +111,9 @@ export async function syncArticles(): Promise<SyncResult> {
   }
 
   if (newArticles.length > 0) {
-    const newArticleRows = await mapWithConcurrency(
+    const newArticleRows = await mapWithArticleOg(
       newArticles,
-      OG_CONCURRENCY,
-      async (article) => {
-        const og = await fetchOgMetadata(article.url);
-        return {
-          ...article,
-          imageUrl: og.imageUrl ?? null,
-          description: og.description ?? null,
-        };
-      },
+      (article, og) => ({ ...article, ...og }),
     );
     await insertArticlesIgnoringDuplicates(newArticleRows);
   }

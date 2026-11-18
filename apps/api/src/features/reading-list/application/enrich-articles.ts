@@ -1,16 +1,13 @@
-import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
-import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
-
 import {
   findEnrichTargets,
   updateArticleOgById,
 } from '../infrastructure/reading-list-repository';
+import { mapWithArticleOg } from './article-og';
 import { readingWindowStart } from './reading-window';
 
-const OG_CONCURRENCY = 5;
 const BACKFILL_LIMIT = 50;
 
-type EnrichResult = {
+export type EnrichResult = {
   enrichedArticles: number;
 };
 
@@ -23,18 +20,13 @@ export async function enrichArticleMetadata(): Promise<EnrichResult> {
     return { enrichedArticles: 0 };
   }
 
-  const enriched = await mapWithConcurrency(
+  const enriched = await mapWithArticleOg(
     targets,
-    OG_CONCURRENCY,
-    async (article): Promise<boolean> => {
-      const og = await fetchOgMetadata(article.url);
-      if (og.imageUrl === undefined && og.description === undefined) {
+    async (article, og): Promise<boolean> => {
+      if (og.imageUrl === null && og.description === null) {
         return false;
       }
-      await updateArticleOgById(article.id, {
-        imageUrl: og.imageUrl ?? null,
-        description: og.description ?? null,
-      });
+      await updateArticleOgById(article.id, og);
       return true;
     },
   );
