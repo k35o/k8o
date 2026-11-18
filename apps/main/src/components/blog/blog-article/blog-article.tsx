@@ -4,18 +4,15 @@ import type { FC } from 'react';
 
 import { blogMdxComponents } from '@/components/blog/blog-mdx-components/blog-mdx-components';
 import { MdxContent } from '@/components/site/mdx-base/mdx-base';
+import { loadersBySlug } from '@/shared/glob/loaders-by-slug';
 
 const articles = import.meta.glob<MDXContent>('@content/blog/*/article.mdx', {
   import: 'default',
 });
 
-const ARTICLE_FILE = /\/blog\/([a-z0-9-]+)\/article\.mdx$/u;
-
-const loadArticle = new Map(
-  Object.entries(articles).flatMap(([file, load]) => {
-    const slug = ARTICLE_FILE.exec(file)?.[1];
-    return slug === undefined ? [] : [[slug, load] as const];
-  }),
+const loadArticle = loadersBySlug(
+  articles,
+  /\/blog\/([a-z0-9-]+)\/article\.mdx$/u,
 );
 
 export const BlogArticle: FC<{ slug: string }> = async ({ slug }) => {
