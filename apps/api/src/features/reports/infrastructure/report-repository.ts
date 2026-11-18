@@ -15,7 +15,7 @@ type ReportInput = {
   body: Record<string, unknown>;
 };
 
-type ReportTypeCount = {
+export type ReportTypeCount = {
   type: string;
   count: number;
 };

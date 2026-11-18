@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
+import { OpeningThreadProvider } from './_components/opening-thread';
 import { ToolFrame } from './_components/tool-frame';
-import { OpeningThreadProvider } from './chat/_components/opening-thread';
-import { TouchedThreadsProvider } from './chat/_components/touched-threads';
+import { TouchedThreadsProvider } from './_components/touched-threads';
 
 import styles from './layout.module.css';
 

@@ -1,9 +1,15 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
+import { pageInput, pageSizeInput } from '../../../shared/mcp/pagination-input';
+import { READ_ONLY_TOOL_ANNOTATIONS } from '../../../shared/mcp/read-only-annotations';
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { BLOG_STATS_PAGE_SIZE_MAX } from '../application/blog-stats';
-import { findBlogs } from '../infrastructure/blog-repository';
+import {
+  BLOG_SORTS,
+  BLOG_STATS_PAGE_SIZE_MAX,
+  BLOG_STATUSES,
+} from '../application/blog-stats';
+import { listBlogStats } from '../application/list-blog-stats';
 
 export const registerBlogTools = (server: McpServer): void => {
   server.registerTool(
@@ -13,15 +19,10 @@ export const registerBlogTools = (server: McpServer): void => {
       description:
         'ブログ記事を公開状態・閲覧数・フィードバック件数・タグ付きで返す。status で公開済み/下書きに絞り、sort で作成日順か閲覧数順を選ぶ。',
       inputSchema: z.object({
-        status: z.enum(['all', 'published', 'draft']).default('all'),
-        sort: z.enum(['recent', 'views']).default('recent'),
-        page: z.number().int().min(1).default(1),
-        pageSize: z
-          .number()
-          .int()
-          .min(1)
-          .max(BLOG_STATS_PAGE_SIZE_MAX)
-          .default(20),
+        status: z.enum(BLOG_STATUSES).default('all'),
+        sort: z.enum(BLOG_SORTS).default('recent'),
+        page: pageInput,
+        pageSize: pageSizeInput(BLOG_STATS_PAGE_SIZE_MAX, 20),
       }),
       outputSchema: z.object({
         total: z.number(),
@@ -36,13 +37,8 @@ export const registerBlogTools = (server: McpServer): void => {
           }),
         ),
       }),
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        idempotentHint: true,
-        openWorldHint: false,
-      },
+      annotations: READ_ONLY_TOOL_ANNOTATIONS,
     },
-    async (input) => toolResult(await findBlogs(input)),
+    async (input) => toolResult(await listBlogStats(input)),
   );
 };

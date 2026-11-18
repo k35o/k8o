@@ -1,4 +1,4 @@
-import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import type { AgentUIMessage } from '@/features/agent/interface/conversation';
 
 type OutputOf<Type extends string> = Extract<
   AgentUIMessage['parts'][number],

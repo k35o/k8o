@@ -1,6 +1,5 @@
+import type { BlogSummary } from '@/features/blog/interface/queries';
 import { matchesSearchQuery } from '@/shared/search/search-filter';
-
-import type { BlogSummary } from './types';
 
 export const filterBlogs = (
   blogs: readonly BlogSummary[],

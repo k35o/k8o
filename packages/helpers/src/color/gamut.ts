@@ -1,4 +1,5 @@
-import { clamp, colorToOklab, colorToOklch, oklchToColor } from './spaces.ts';
+import { between } from '../number/between.ts';
+import { colorToOklab, colorToOklch, oklchToColor } from './spaces.ts';
 import type { Color } from './spaces.ts';
 
 const GAMUT_EPSILON = 1e-4;
@@ -12,9 +13,9 @@ export const isInGamut = (color: Color, tolerance = GAMUT_EPSILON): boolean =>
   color.b <= 1 + tolerance;
 
 const clip = (color: Color): Color => ({
-  r: clamp(color.r, 0, 1),
-  g: clamp(color.g, 0, 1),
-  b: clamp(color.b, 0, 1),
+  r: between(color.r, 0, 1),
+  g: between(color.g, 0, 1),
+  b: between(color.b, 0, 1),
   alpha: color.alpha,
 });
 

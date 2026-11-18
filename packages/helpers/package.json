@@ -25,14 +25,6 @@
       "types": "./src/baseline/transform-upstream.ts",
       "default": "./src/baseline/transform-upstream.ts"
     },
-    "./baseline/invariants": {
-      "types": "./src/baseline/invariants.ts",
-      "default": "./src/baseline/invariants.ts"
-    },
-    "./baseline/select": {
-      "types": "./src/baseline/select.ts",
-      "default": "./src/baseline/select.ts"
-    },
     "./browser/detect-browser": {
       "types": "./src/browser/detect-browser.ts",
       "default": "./src/browser/detect-browser.ts"
@@ -73,10 +65,6 @@
       "types": "./src/color/format.ts",
       "default": "./src/color/format.ts"
     },
-    "./date/compare": {
-      "types": "./src/date/compare.ts",
-      "default": "./src/date/compare.ts"
-    },
     "./date/format": {
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
@@ -104,6 +92,10 @@
     "./sleep": {
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"
+    },
+    "./url/html-request-headers": {
+      "types": "./src/url/html-request-headers.ts",
+      "default": "./src/url/html-request-headers.ts"
     },
     "./url/is-http-url": {
       "types": "./src/url/is-http-url.ts",

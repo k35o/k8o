@@ -2,9 +2,9 @@ import { range } from '@repo/helpers/array/range';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
+import type { OpeningThread } from '../../../_components/opening-thread';
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ChatHeader } from '../chat-view';
-import type { OpeningThread } from '../opening-thread';
 
 import styles from './chat-skeleton.module.css';
 

@@ -2,8 +2,9 @@
 
 import type { Spec } from '@json-render/core';
 import { JsonRenderUI } from '@k8ordo/ui/json-render/registry';
-import { useSyncExternalStore } from 'react';
 import type { FC, MouseEvent } from 'react';
+
+import { useHydrated } from '../hydrated';
 
 import styles from './spec-preview.module.css';
 
@@ -31,8 +32,6 @@ const preventMiddleClickNavigation = (event: MouseEvent): void => {
   }
 };
 
-const subscribeNothing = (): (() => void) => () => {};
-
 // 生成された spec を @k8ordo/ui の registry でアプリと同じ文書に描画するので、
 // テーマ・フォントはアプリのものをそのまま継承する。空状態の分岐は呼び出し側が持つ。
 export const SpecPreview: FC<SpecPreviewProps> = ({
@@ -41,11 +40,7 @@ export const SpecPreview: FC<SpecPreviewProps> = ({
 }) => {
   // 止める処理は React のハンドラなので、サーバーで描いた HTML ではハイドレーションまで動かない。
   // そのあいだはリンクとフォームを押すこともフォーカスすることもできないよう、根を inert にする
-  const hydrated = useSyncExternalStore(
-    subscribeNothing,
-    () => true,
-    () => false,
-  );
+  const hydrated = useHydrated();
   return (
     <div
       className={styles.root}

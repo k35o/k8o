@@ -4,7 +4,7 @@ import { Suspense, use } from 'react';
 import type { FC } from 'react';
 import { browser, createPortal } from 'react-dom';
 
-import type { DeckSlide } from '@/features/slides/application/parse-deck';
+import type { DeckSlide } from '@/features/slides/interface/deck';
 
 import { DeckSlideView } from '../deck-slide-view';
 import { Stage } from '../stage';

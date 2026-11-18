@@ -92,7 +92,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 ## スライド
 
 - デッキの route は `/slides/:slug` の 1 本（何を書くかは「ビルドが読むもの」）。MDX は `components/slides/slide-article` が記事と同じく `import.meta.glob` で slug ごとに遅れて読み、`MdxContent` にスライドの部品の表を重ねて描く。MDX の `<SlideDeckShell slug>` は QR の URL と同期の名前になるので、ディレクトリ名と同じにする（`features/slides/application/slide-files.test.ts` が確かめる）
-- 発表者モードかどうか（`mode`）と、観覧と発表者の生存の知らせの名前（`session`）は `definePageState('slide-deck')` の url に、表示する枚の `#<番号>`（1 始まり）は同じ state の hash に置く。hash は文字列のまま持ち、`slideIndexOf` が読むときに解く（番号でない fragment と `#0` は 1 枚目）。番号でない fragment への移動は `use-fragment-target` が止める
+- 発表者モードかどうか（`mode`）と、観覧と発表者の生存の知らせの名前（`session`）は `definePageState('slide-deck')` の url に、表示する枚の `#<番号>`（1 始まり）は同じ state の hash に置く。hash は文字列のまま持ち、`slideIndexOf` が読むときに解く（番号でない fragment と `#0` は 1 枚目）。番号でない fragment への移動は `slide-deck/fragment-target.ts` の `keepFragmentInDeck` が止める
 - static mode の HTML は url の state を既定値で描くので、デッキ全体を `BrowserOnly`（`use(browser())` を Suspense で包む）でブラウザでだけ描く。HTML の `<main>` は見出しの Slides と、空の digest の `<!--$!-->` が 1 つになる
 - router は移る先の URL を先に書き、着くまで前のページを画面に残す。そのあいだ state は開いたときの URL の値を返し、`update()` は何も書かない。state を通らないほかのタブへの知らせ（BroadcastChannel）は、開いたときの pathname を覚えて止める（`useDeckController` の注釈）
 - `SlideDeckShell` は MDX の子を `hr` で区切り、`Notes` を関数に付けた `$$slideRole` で見分けて、クライアントの `SlideDeck` に渡す。`Notes` は関数の宣言や式で export しない。CSS を import するモジュールでそう書くと、plugin-rsc が CSS を載せる包みの関数に替え、`$$slideRole` が外れてノートが本文に出る

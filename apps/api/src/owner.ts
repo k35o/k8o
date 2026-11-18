@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { HTTPException } from 'hono/http-exception';
 
 import {
   blogOwnerRoutes,
@@ -8,6 +7,7 @@ import {
 import { inquiryOwnerRoutes } from './features/inquiries/interface/owner-routes';
 import { overviewOwnerRoutes } from './features/overview/interface/owner-routes';
 import { reportOwnerRoutes } from './features/reports/interface/owner-routes';
+import { createErrorHandler } from './shared/http/error-handler';
 
 export const ownerRoutes = new Hono()
   .basePath('/owner')
@@ -17,12 +17,6 @@ export const ownerRoutes = new Hono()
   // /blogs/stats にすると、/blogs/:slug の stats という slug の記事に届かなくなる
   .route('/blog-stats', blogStatsOwnerRoutes)
   .route('/reports', reportOwnerRoutes)
-  .onError((error, c) => {
-    if (error instanceof HTTPException) {
-      return error.getResponse();
-    }
-    console.error('オーナー API の処理に失敗しました:', error);
-    return c.json({ ok: false, error: 'internal_error' } as const, 500);
-  });
+  .onError(createErrorHandler('オーナー API'));
 
 export type OwnerApi = typeof ownerRoutes;

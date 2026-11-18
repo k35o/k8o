@@ -2,6 +2,8 @@ import { getAllowedSession } from '@/shared/auth/allowed-session';
 
 import { getThreadSnapshot } from '../application/threads';
 
+export type { ThreadSnapshot } from '../application/thread';
+
 export async function handleThreadSnapshot(
   threadId: string,
 ): Promise<Response> {

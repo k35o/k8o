@@ -3,6 +3,7 @@ import { prerender } from 'react-dom/static';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
+import type { BlogSummary } from '@/features/blog/interface/queries';
 
 import { PlaygroundSectionView } from './playground-section-view';
 
@@ -15,9 +16,7 @@ vi.mock('@k8ordo/framework', () => ({
     pattern.replaceAll(/:(\w+)/gu, (_, name: string) => params[name] ?? ''),
 }));
 
-type BlogContent = Awaited<ReturnType<typeof getBlogContents>>[number];
-
-const blog = (slug: string): BlogContent => ({
+const blog = (slug: string): BlogSummary => ({
   id: 1,
   slug,
   tags: ['CSS'],

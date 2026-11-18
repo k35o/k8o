@@ -3,6 +3,7 @@ import type {
   CoreBrowser,
 } from '../browser/detect-browser.ts';
 import { CORE_BROWSERS } from '../browser/detect-browser.ts';
+import { isRecord } from './is-record.ts';
 
 export type BaselineSupportStatus = 'widely' | 'newly' | 'limited';
 
@@ -38,9 +39,6 @@ export type BaselineDataset = {
 };
 
 export const BASELINE_DATASET_SCHEMA_VERSION = 1;
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const CORE_BROWSER_SET: ReadonlySet<string> = new Set(CORE_BROWSERS);
 

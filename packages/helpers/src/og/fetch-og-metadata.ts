@@ -1,3 +1,4 @@
+import { BOT_USER_AGENT, HTML_ACCEPT } from '../url/html-request-headers.ts';
 import { safeFetch } from '../url/safe-fetch.ts';
 import { parseOgMetadata } from './og-metadata.ts';
 import type { OgMetadata } from './og-metadata.ts';
@@ -19,8 +20,8 @@ export const fetchOgMetadata = async (url: string): Promise<OgMetadata> => {
     response = await safeFetch(url, {
       signal: AbortSignal.timeout(TIMEOUT_MS),
       headers: {
-        'user-agent': 'Mozilla/5.0 (compatible; k8o-bot/1.0; +https://k8o.me)',
-        accept: 'text/html,application/xhtml+xml',
+        'user-agent': BOT_USER_AGENT,
+        accept: HTML_ACCEPT,
       },
     });
   } catch {

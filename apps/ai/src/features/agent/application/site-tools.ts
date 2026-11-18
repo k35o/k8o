@@ -11,21 +11,15 @@ import type {
   OwnerBlogStats,
   OwnerOverview,
 } from '../infrastructure/owner-api';
+import { pageInputOf } from './page-input';
 
 const INQUIRIES_PAGE_SIZE = 20;
 const BLOG_STATS_PAGE_SIZE = 50;
 // api の上限は 20 件だが、1件の本文が 2,000 字まであるので、出力を抑えるために少なくする
 const REPORTS_PAGE_SIZE = 10;
 
-const pageInput = z.optional(
-  z
-    .int()
-    .check(
-      z.positive(),
-      z.describe(
-        'ページの番号（1 から）。結果の nextPage が null でなければ、その番号を渡す',
-      ),
-    ),
+const pageInput = pageInputOf(
+  'ページの番号（1 から）。結果の nextPage が null でなければ、その番号を渡す',
 );
 
 const nextPageOf = (

@@ -1,4 +1,4 @@
-import type { BlogSummary } from './types';
+import type { BlogSummary } from '@/features/blog/interface/queries';
 
 export type BlogYearGroup = {
   year: number;

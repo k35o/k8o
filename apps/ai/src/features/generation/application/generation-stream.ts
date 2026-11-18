@@ -1,21 +1,38 @@
-import type {
-  FinishReason,
-  ProviderMetadata,
-  TextStreamPart,
-  ToolSet,
-} from 'ai';
+import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic';
+import { streamText } from 'ai';
+import type { FinishReason, ProviderMetadata } from 'ai';
 import * as z from 'zod/mini';
 
 import { toUsageTokens } from '@/features/usage/application/pricing';
 import type { UsageTokens } from '@/features/usage/application/pricing';
+import { getGenerationModel } from '@/shared/claude/claude-provider';
+import type { GenerationModel } from '@/shared/claude/models';
 
 type GenerationTextPart =
   | { type: 'text-delta'; text: string }
   | { type: 'text-end' };
 
-export type GenerationFailure =
-  | { type: 'error'; message: string }
-  | { type: 'unfinished'; finishReason: FinishReason | undefined };
+type GenerationMessages = {
+  log: string;
+  error: string;
+  length: string;
+  contentFilter: string;
+  unfinished: string;
+};
+
+const unfinishedMessage = (
+  messages: GenerationMessages,
+  finishReason: FinishReason | undefined,
+): string => {
+  switch (finishReason) {
+    case 'length':
+      return messages.length;
+    case 'content-filter':
+      return messages.contentFilter;
+    default:
+      return messages.unfinished;
+  }
+};
 
 const messageStartUsageSchema = z.object({
   input_tokens: z.number(),
@@ -50,17 +67,45 @@ const describeError = (error: unknown): string => {
   return typeof error === 'string' ? error : JSON.stringify(error);
 };
 
-export async function* generationTextOf<TOOLS extends ToolSet>(input: {
-  stream: AsyncIterable<TextStreamPart<TOOLS>>;
+export async function* streamGenerationText(input: {
+  model: GenerationModel;
+  system: string;
+  userPrompt: string;
   abortSignal: AbortSignal | undefined;
   onStepUsage: (tokens: UsageTokens) => void;
-  failureMessage: (failure: GenerationFailure) => string;
+  messages: GenerationMessages;
 }): AsyncGenerator<GenerationTextPart, void> {
+  const result = streamText({
+    model: getGenerationModel(input.model),
+    // 呼び出しごとに変わる指示は user の文に置き、system を毎回同じにして cache を読み出せるようにする
+    instructions: {
+      role: 'system',
+      content: input.system,
+      providerOptions: { anthropic: { cacheControl: { type: 'ephemeral' } } },
+    },
+    prompt: input.userPrompt,
+    // thinking のトークンも上限に数えるため、生成物の分より大きく取る
+    maxOutputTokens: 16_000,
+    maxRetries: 2,
+    providerOptions: {
+      anthropic: {
+        effort: 'medium',
+        fallbacks: 'default',
+      } satisfies AnthropicLanguageModelOptions,
+    },
+    ...(input.abortSignal === undefined
+      ? {}
+      : { abortSignal: input.abortSignal }),
+    onError: ({ error }) => {
+      console.error(input.messages.log, error);
+    },
+  });
+
   let finishReason: FinishReason | undefined;
   let streamError: { error: unknown } | null = null;
   let startedUsage: UsageTokens | null = null;
   try {
-    for await (const part of input.stream) {
+    for await (const part of result.stream) {
       switch (part.type) {
         case 'text-delta':
           yield { type: 'text-delta', text: part.text };
@@ -101,13 +146,10 @@ export async function* generationTextOf<TOOLS extends ToolSet>(input: {
   input.abortSignal?.throwIfAborted();
   if (streamError !== null) {
     throw new Error(
-      input.failureMessage({
-        type: 'error',
-        message: describeError(streamError.error),
-      }),
+      `${input.messages.error}: ${describeError(streamError.error)}`,
     );
   }
   if (finishReason !== 'stop') {
-    throw new Error(input.failureMessage({ type: 'unfinished', finishReason }));
+    throw new Error(unfinishedMessage(input.messages, finishReason));
   }
 }

@@ -17,6 +17,7 @@ const meta = preview.meta({
         description: '最初の記事の説明',
         createdAt: '2024-03-01T00:00:00.000Z',
         updatedAt: '2024-03-10T00:00:00.000Z',
+        readingTime: 5,
       },
       {
         id: 2,
@@ -26,6 +27,7 @@ const meta = preview.meta({
         description: null,
         createdAt: '2024-01-15T00:00:00.000Z',
         updatedAt: '2024-01-20T00:00:00.000Z',
+        readingTime: 3,
       },
     ],
   },

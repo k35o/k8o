@@ -22,6 +22,11 @@ export type AgentUIMessage = UIMessage<
   InferUITools<typeof agentTools>
 >;
 
+export const messageTextOf = (message: AgentUIMessage): string =>
+  message.parts
+    .flatMap((part) => (part.type === 'text' ? [part.text] : []))
+    .join('\n');
+
 const MAX_TITLE_CHARS = 40;
 
 export const threadTitleFrom = (message: AgentUIMessage): string => {

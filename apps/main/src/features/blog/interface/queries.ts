@@ -12,6 +12,29 @@ import { getMarkdown } from '@/features/blog/application/markdown';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
 import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
+type Blog = Awaited<ReturnType<typeof _getBlogs>>[number];
+
+export type BlogSummary = Pick<
+  Blog,
+  'id' | 'slug' | 'title' | 'description' | 'createdAt' | 'updatedAt'
+> & { tags: string[]; readingTime: number };
+
+export type BlogDetail = Pick<
+  Blog,
+  | 'id'
+  | 'slug'
+  | 'tags'
+  | 'slideUrl'
+  | 'title'
+  | 'description'
+  | 'createdAt'
+  | 'updatedAt'
+>;
+
+export type RelatedBlog = Pick<Blog, 'id' | 'slug' | 'title' | 'createdAt'> & {
+  tags: string[];
+};
+
 // 一覧・詳細・関連記事・paths はどれもこの 1 つの一覧から引く。公開していない記事と MDX の無い記事は見つからない
 const getBlogs = memoizeInBuild(_getBlogs);
 
@@ -20,22 +43,25 @@ export const getBlogReadingTime = memoizeInBuild(
     estimateReadingTimeMinutes(await getMarkdown(slug)),
 );
 
-export const getBlogContents = memoizeInBuild(async () =>
-  Promise.all(
-    (await getBlogs()).map(async (blog) => ({
-      id: blog.id,
-      slug: blog.slug,
-      tags: blog.tags.map((tag) => tag.name),
-      title: blog.title,
-      description: blog.description,
-      createdAt: blog.createdAt,
-      updatedAt: blog.updatedAt,
-      readingTime: await getBlogReadingTime(blog.slug),
-    })),
-  ),
+export const getBlogContents = memoizeInBuild(
+  async (): Promise<BlogSummary[]> =>
+    Promise.all(
+      (await getBlogs()).map(async (blog) => ({
+        id: blog.id,
+        slug: blog.slug,
+        tags: blog.tags.map((tag) => tag.name),
+        title: blog.title,
+        description: blog.description,
+        createdAt: blog.createdAt,
+        updatedAt: blog.updatedAt,
+        readingTime: await getBlogReadingTime(blog.slug),
+      })),
+    ),
 );
 
-export const findBlogContent = async (slug: string) => {
+export const findBlogContent = async (
+  slug: string,
+): Promise<BlogDetail | null> => {
   const blog = (await getBlogs()).find((content) => content.slug === slug);
   if (blog === undefined) {
     return null;
@@ -52,7 +78,7 @@ export const findBlogContent = async (slug: string) => {
   };
 };
 
-export const getBlogContent = async (slug: string) => {
+export const getBlogContent = async (slug: string): Promise<BlogDetail> => {
   const blog = await findBlogContent(slug);
   if (blog === null) {
     notFound();
@@ -100,7 +126,7 @@ export const findBlogDemoDocument = async (
   });
 };
 
-export const getBlogsByTags = async (slug: string) =>
+export const getBlogsByTags = async (slug: string): Promise<RelatedBlog[]> =>
   selectRelatedBlogs(await getBlogs(), slug).map((blog) => ({
     id: blog.id,
     slug: blog.slug,

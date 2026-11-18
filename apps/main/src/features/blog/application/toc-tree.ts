@@ -1,4 +1,4 @@
-import type { PhrasingContent, Root } from 'mdast';
+import type { PhrasingContent } from 'mdast';
 import { remark } from 'remark';
 import remarkFrontmatter from 'remark-frontmatter';
 
@@ -34,66 +34,62 @@ const phrasingText = (nodes: readonly PhrasingContent[]): string => {
   return result;
 };
 
-export const getTocTree = async (content: string) => {
+export const getTocTree = (content: string): HeadingTree => {
   const headingTree: HeadingTree = {
     depth: 0,
     children: [],
   };
-  await remark()
-    .use(remarkFrontmatter)
-    .use(() => (tree: Root) => {
-      for (const node of tree.children) {
-        if (node.type !== 'heading') {
-          continue;
-        }
-        if (node.depth > 4) {
-          continue;
-        }
-        const text = phrasingText(node.children);
-        if (text === '') {
-          continue;
-        }
+  const tree = remark().use(remarkFrontmatter).parse(content);
+  for (const node of tree.children) {
+    if (node.type !== 'heading') {
+      continue;
+    }
+    if (node.depth > 4) {
+      continue;
+    }
+    const text = phrasingText(node.children);
+    if (text === '') {
+      continue;
+    }
 
-        if (node.depth === 2) {
-          headingTree.children.push({
-            depth: 1,
-            text,
-            children: [],
-          });
-          continue;
-        }
-        if (node.depth === 3) {
-          const depth1LastTree = headingTree.children.at(-1);
-          if (!depth1LastTree) {
-            continue;
-          }
-          depth1LastTree.children.push({
-            depth: 2,
-            text,
-            children: [],
-          });
-          continue;
-        }
-        if (node.depth === 4) {
-          const depth1LastTree = headingTree.children.at(-1);
-
-          if (!depth1LastTree) {
-            continue;
-          }
-
-          const depth2LastTree = depth1LastTree.children.at(-1);
-
-          if (!depth2LastTree) {
-            continue;
-          }
-
-          depth2LastTree.children.push({
-            depth: 3,
-            text,
-          });
-        }
+    if (node.depth === 2) {
+      headingTree.children.push({
+        depth: 1,
+        text,
+        children: [],
+      });
+      continue;
+    }
+    if (node.depth === 3) {
+      const depth1LastTree = headingTree.children.at(-1);
+      if (!depth1LastTree) {
+        continue;
       }
-    })
-    .process(content);
+      depth1LastTree.children.push({
+        depth: 2,
+        text,
+        children: [],
+      });
+      continue;
+    }
+    if (node.depth === 4) {
+      const depth1LastTree = headingTree.children.at(-1);
+
+      if (!depth1LastTree) {
+        continue;
+      }
+
+      const depth2LastTree = depth1LastTree.children.at(-1);
+
+      if (!depth2LastTree) {
+        continue;
+      }
+
+      depth2LastTree.children.push({
+        depth: 3,
+        text,
+      });
+    }
+  }
   return headingTree;
 };

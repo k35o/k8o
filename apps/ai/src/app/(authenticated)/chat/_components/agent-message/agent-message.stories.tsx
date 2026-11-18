@@ -3,6 +3,11 @@ import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import { chatArtifactsOf } from '@/features/agent/application/chat-artifacts';
+import type {
+  ArtifactLive,
+  ChatArtifact,
+} from '@/features/agent/application/chat-artifacts';
 import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
 
 import preview from '../../../../../../.storybook/preview';
@@ -364,6 +369,38 @@ const withheldWebAnswer: AgentUIMessage = {
   ],
 };
 
+const generatingUi: AgentUIMessage = {
+  id: 'a6',
+  role: 'assistant',
+  parts: uiGeneratingParts,
+};
+
+const stoppingUi: AgentUIMessage = {
+  id: 'a7',
+  role: 'assistant',
+  parts: uiGeneratingParts,
+};
+
+const generatingSlides: AgentUIMessage = {
+  id: 'a9',
+  role: 'assistant',
+  parts: slidesGeneratingParts,
+};
+
+const artifactsOf = (
+  message: AgentUIMessage,
+  {
+    live = null,
+    isStopping = false,
+  }: { live?: ArtifactLive; isStopping?: boolean } = {},
+): Map<string, ChatArtifact> =>
+  new Map(
+    chatArtifactsOf([message], { live, isStopping }).map((artifact) => [
+      artifact.toolCallId,
+      artifact,
+    ]),
+  );
+
 const meta = preview.meta({
   component: AgentMessage,
   // propより狭い型（null）のままargsを推論させると meta.storyの型推論が壊れるため、
@@ -372,7 +409,7 @@ const meta = preview.meta({
     message: answer,
     isStreaming: false,
     isServerRunning: false,
-    isStopping: false,
+    artifacts: new Map<string, ChatArtifact>(),
     selectedToolCallId: null,
     onOpenArtifact: fn<(toolCallId: string) => void>(),
   } satisfies Partial<ComponentProps<typeof AgentMessage>>,
@@ -489,7 +526,11 @@ export const ServerRunning = meta.story({
 });
 
 export const UiArtifacts = meta.story({
-  args: { message: uiAnswer, selectedToolCallId: 'ui-done' },
+  args: {
+    message: uiAnswer,
+    artifacts: artifactsOf(uiAnswer),
+    selectedToolCallId: 'ui-done',
+  },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('料金プラン')).toBeInTheDocument();
@@ -523,7 +564,8 @@ export const UiArtifacts = meta.story({
 
 export const GeneratingUi = meta.story({
   args: {
-    message: { id: 'a6', role: 'assistant', parts: uiGeneratingParts },
+    message: generatingUi,
+    artifacts: artifactsOf(generatingUi, { live: 'receiving' }),
     isStreaming: true,
   },
   play: async ({ canvasElement }) => {
@@ -540,9 +582,9 @@ export const GeneratingUi = meta.story({
 
 export const StoppingUi = meta.story({
   args: {
-    message: { id: 'a7', role: 'assistant', parts: uiGeneratingParts },
+    message: stoppingUi,
     isServerRunning: true,
-    isStopping: true,
+    artifacts: artifactsOf(stoppingUi, { live: 'waiting', isStopping: true }),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -557,7 +599,11 @@ export const StoppingUi = meta.story({
 });
 
 export const SlidesArtifacts = meta.story({
-  args: { message: slidesAnswer, selectedToolCallId: 'slides-done' },
+  args: {
+    message: slidesAnswer,
+    artifacts: artifactsOf(slidesAnswer),
+    selectedToolCallId: 'slides-done',
+  },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('TypeScript 入門')).toBeInTheDocument();
@@ -592,7 +638,8 @@ export const SlidesArtifacts = meta.story({
 
 export const GeneratingSlides = meta.story({
   args: {
-    message: { id: 'a9', role: 'assistant', parts: slidesGeneratingParts },
+    message: generatingSlides,
+    artifacts: artifactsOf(generatingSlides, { live: 'receiving' }),
     isStreaming: true,
   },
   play: async ({ canvasElement }) => {

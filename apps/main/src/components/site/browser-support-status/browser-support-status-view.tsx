@@ -5,23 +5,12 @@ import { ChromeIcon } from '@/components/site/brand-icons/chrome-icon';
 import { EdgeIcon } from '@/components/site/brand-icons/edge-icon';
 import { FirefoxIcon } from '@/components/site/brand-icons/firefox-icon';
 import { SafariIcon } from '@/components/site/brand-icons/safari-icon';
-import type {
-  BrowserSupportFeature,
-  SupportStatus,
-} from '@/features/browser-support/interface/queries';
+import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
 
 import { toBrowserFamilies } from './browser-families';
+import { STATUS_META } from './status-meta';
 
 import styles from './browser-support-status-view.module.css';
-
-const STATUS_META: Record<
-  SupportStatus,
-  { label: string; tone: 'success' | 'info' | 'warning' }
-> = {
-  widely: { label: 'Widely available', tone: 'success' },
-  newly: { label: 'Newly available', tone: 'info' },
-  limited: { label: 'Limited availability', tone: 'warning' },
-};
 
 const FAMILY_ICON: Record<string, typeof ChromeIcon> = {
   Chrome: ChromeIcon,
@@ -45,7 +34,7 @@ export const BrowserSupportStatusView: FC<{
   return (
     <div className={styles.root}>
       <div className={styles.summary}>
-        <Badge size="sm" label={meta.label} tone={meta.tone} />
+        <Badge size="sm" label={meta.longLabel} tone={meta.tone} />
         <span className={styles.name}>{feature.name}</span>
         {year !== null && <span className={styles.year}>{year}年〜</span>}
       </div>

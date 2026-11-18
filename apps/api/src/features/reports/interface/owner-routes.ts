@@ -1,15 +1,17 @@
 import { Hono } from 'hono';
 import * as z from 'zod/mini';
 
+import {
+  pageQuery,
+  pageSizeQuery,
+} from '../../../shared/http/pagination-query';
 import { validate } from '../../../shared/http/validate';
 import { listReports, REPORT_PAGE_SIZE_MAX } from '../application/list-reports';
 
 const listQuerySchema = z.object({
   type: z.optional(z.string().check(z.minLength(1))),
-  page: z.coerce.number().check(z.int(), z.minimum(1)),
-  pageSize: z.coerce
-    .number()
-    .check(z.int(), z.minimum(1), z.maximum(REPORT_PAGE_SIZE_MAX)),
+  page: pageQuery,
+  pageSize: pageSizeQuery(REPORT_PAGE_SIZE_MAX),
 });
 
 export const reportOwnerRoutes = new Hono().get(

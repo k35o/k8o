@@ -7,10 +7,10 @@ import type { FC, Ref } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import type {
-  ArtifactKind,
   PaneArtifact,
   PaneVersion,
-} from '@/features/agent/application/chat-artifacts';
+} from '@/features/agent/interface/conversation';
+import type { ArtifactKind } from '@/features/artifacts/interface/artifact-kind';
 
 import {
   ARTIFACT_VIEW_OPTIONS,

@@ -4,19 +4,13 @@ import type { FC } from 'react';
 
 import { MdxContent } from '@/components/site/mdx-base/mdx-base';
 import { slideMdxComponents } from '@/components/slides/slide-mdx-components/slide-mdx-components';
+import { loadersBySlug } from '@/shared/glob/loaders-by-slug';
 
 const decks = import.meta.glob<MDXContent>('@content/slides/*/content.mdx', {
   import: 'default',
 });
 
-const DECK_FILE = /\/slides\/([a-z0-9-]+)\/content\.mdx$/u;
-
-const loadDeck = new Map(
-  Object.entries(decks).flatMap(([file, load]) => {
-    const slug = DECK_FILE.exec(file)?.[1];
-    return slug === undefined ? [] : [[slug, load] as const];
-  }),
-);
+const loadDeck = loadersBySlug(decks, /\/slides\/([a-z0-9-]+)\/content\.mdx$/u);
 
 export const SlideArticle: FC<{ slug: string }> = async ({ slug }) => {
   const load = loadDeck.get(slug);

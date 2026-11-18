@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ThreadListItem } from './threads';
+import type { ThreadListItem } from './thread';
 import { withTouchedThreads } from './touched-threads';
 
 const older: ThreadListItem = {

@@ -3,6 +3,7 @@ import { etag } from 'hono/etag';
 import { createMiddleware } from 'hono/factory';
 
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
+import { hasQuery, isReadMethod } from '../../../shared/http/read-request';
 import {
   getReadingList,
   getReadingListFeed,
@@ -16,8 +17,7 @@ const CACHE_CONTROL = publicCacheControl({ maxAge: 300, sMaxAge: 3600 });
 // 戻す。戻した先は query を持たないので繰り返さない
 export const redirectReadingListFeedQuery = createMiddleware(
   async (c, next) => {
-    const isRead = c.req.method === 'GET' || c.req.method === 'HEAD';
-    if (isRead && c.req.url.includes('?')) {
+    if (isReadMethod(c.req.method) && hasQuery(c.req.url)) {
       c.header('Cache-Control', CACHE_CONTROL);
       return c.redirect(READING_LIST_FEED_URL, 308);
     }

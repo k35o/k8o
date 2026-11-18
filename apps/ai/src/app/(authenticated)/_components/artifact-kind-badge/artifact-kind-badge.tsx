@@ -1,17 +1,13 @@
 import { Badge } from '@k8ordo/ui';
 import type { FC } from 'react';
 
-import type { ArtifactKind } from '@/features/agent/application/chat-artifacts';
-
-const KIND_LABELS = {
-  ui: 'UI',
-  slides: 'スライド',
-} as const satisfies Record<ArtifactKind, string>;
+import { ARTIFACT_KIND_LABELS } from '@/features/artifacts/interface/artifact-kind';
+import type { ArtifactKind } from '@/features/artifacts/interface/artifact-kind';
 
 type ArtifactKindBadgeProps = {
   kind: ArtifactKind;
 };
 
 export const ArtifactKindBadge: FC<ArtifactKindBadgeProps> = ({ kind }) => (
-  <Badge label={KIND_LABELS[kind]} size="sm" />
+  <Badge label={ARTIFACT_KIND_LABELS[kind]} size="sm" />
 );

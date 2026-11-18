@@ -6,7 +6,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 - `index.ts` … Hono アプリの入口。ルートを束ね、`shared/auth/require-bearer-secret.ts` で `/cron/*` に `CRON_SECRET`、`/mcp` に `MCP_TOKEN`、`/owner/*` にクライアントごとのトークンの Bearer 検証をかける。`/owner/*` は `owner.ts`、`/public/*` は認証の無い公開ルート（`public.ts`）
 - `mcp.ts` … MCP サーバーの組み立て。各 feature の tool を登録する
-- `features/<feature>/interface/` … HTTP 境界（`cron-routes.ts`・`owner-routes.ts`・`public-routes.ts`）と MCP の tool（`mcp-tools.ts`）、通知の配線などユースケースの組み立て
+- `features/<feature>/interface/` … HTTP 境界（`cron-routes.ts`・`owner-routes.ts`・`public-routes.ts`）と MCP の tool（`mcp-tools.ts`）、通知の配線などユースケースの組み立て。repository や外への接続は直に読まず、application の関数を呼ぶ
 - `features/<feature>/application/` … ユースケースと整形。小さい読み取りはここに置いてよい
 - `features/<feature>/infrastructure/` … DB の読み書きと、外への接続（RSS・OGP・Claude・Web Push など）の詳細。処理が太くなったら application からここへ切り出す
 - `shared/` … アプリ内で横断利用する処理

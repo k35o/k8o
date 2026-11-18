@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 
-import type { BrowserSupportSyncTrigger } from '../infrastructure/browser-support-repository';
+import type { BrowserSupportSyncTrigger } from '../application/sync-browser-support';
 import { runBrowserSupportSync } from './sync';
 
 // Vercel Cron にリトライは無いが、失敗をログ・cron 画面で失敗として見せるため 500 で返す。

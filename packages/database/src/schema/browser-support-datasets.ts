@@ -9,7 +9,7 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 const DATASET_STATES = ['active', 'superseded'] as const;
-export type BrowserSupportDatasetState = (typeof DATASET_STATES)[number];
+type BrowserSupportDatasetState = (typeof DATASET_STATES)[number];
 
 // web-features 上流から取り込んだ正規化済みデータセットの世代管理。active は常に1行で、
 // main の表示はこの1行だけを読む。superseded は可用性のためではなくロールバック用に

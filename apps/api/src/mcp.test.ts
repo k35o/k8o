@@ -6,6 +6,10 @@ import type { VersionNegotiationMode } from '@modelcontextprotocol/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { findBlogs } from './features/blog/infrastructure/blog-repository';
+import {
+  findActiveDatasetMeta,
+  findRecentSyncRuns,
+} from './features/browser-support/infrastructure/browser-support-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
@@ -18,6 +22,13 @@ import app from './index';
 vi.mock('./features/blog/infrastructure/blog-repository', () => ({
   findBlogs: vi.fn(),
 }));
+vi.mock(
+  './features/browser-support/infrastructure/browser-support-repository',
+  () => ({
+    findActiveDatasetMeta: vi.fn(),
+    findRecentSyncRuns: vi.fn(),
+  }),
+);
 vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
   findInquiries: vi.fn(),
 }));
@@ -392,7 +403,7 @@ describe('MCP の tool', () => {
 
   describe('get_overview', () => {
     describe('正常系', () => {
-      it('リポジトリの集計に、reading-list の要約の進み具合を足して返す', async () => {
+      it('リポジトリの集計に、reading-list の要約の進み具合と browser-support の取り込み状況を足して返す', async () => {
         const overview = {
           blogs: { published: 90, drafts: 1, totalViews: 1234 },
           inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
@@ -407,17 +418,19 @@ describe('MCP の tool', () => {
             sources: 12,
             latestPublishedAt: '2026-10-08T00:00:00.000Z',
           },
-          browserSupport: {
-            activeVersion: '3.40.1',
-            activeIngestedAt: '2026-10-08T14:40:34.555Z',
-            lastRun: {
-              result: 'applied' as const,
-              trigger: 'manual' as const,
-              createdAt: '2026-10-08T14:40:36.027Z',
-            },
-          },
         };
         vi.mocked(findOverview).mockResolvedValue(overview);
+        vi.mocked(findActiveDatasetMeta).mockResolvedValue({
+          upstreamVersion: '3.40.1',
+          ingestedAt: '2026-10-08T14:40:34.555Z',
+        });
+        vi.mocked(findRecentSyncRuns).mockResolvedValue([
+          {
+            createdAt: '2026-10-08T14:40:36.027Z',
+            result: 'applied',
+            trigger: 'manual',
+          },
+        ]);
         vi.mocked(getSummaryProgress).mockResolvedValue({
           unsummarized: 20,
           summaryGaveUp: 2,
@@ -434,6 +447,15 @@ describe('MCP の tool', () => {
             ...overview.readingList,
             unsummarized: 20,
             summaryGaveUp: 2,
+          },
+          browserSupport: {
+            activeVersion: '3.40.1',
+            activeIngestedAt: '2026-10-08T14:40:34.555Z',
+            lastRun: {
+              result: 'applied',
+              trigger: 'manual',
+              createdAt: '2026-10-08T14:40:36.027Z',
+            },
           },
         });
       });
@@ -455,13 +477,10 @@ describe('MCP の tool', () => {
             sources: 0,
             latestPublishedAt: null,
           },
-          browserSupport: {
-            activeVersion: null,
-            activeIngestedAt: null,
-            lastRun: null,
-          },
         };
         vi.mocked(findOverview).mockResolvedValue(overview);
+        vi.mocked(findActiveDatasetMeta).mockResolvedValue(null);
+        vi.mocked(findRecentSyncRuns).mockResolvedValue([]);
         vi.mocked(getSummaryProgress).mockResolvedValue({
           unsummarized: 0,
           summaryGaveUp: 0,
@@ -478,6 +497,11 @@ describe('MCP の tool', () => {
             ...overview.readingList,
             unsummarized: 0,
             summaryGaveUp: 0,
+          },
+          browserSupport: {
+            activeVersion: null,
+            activeIngestedAt: null,
+            lastRun: null,
           },
         });
       });

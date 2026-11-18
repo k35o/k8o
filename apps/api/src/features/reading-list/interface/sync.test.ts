@@ -60,6 +60,24 @@ describe('runArticleSync', () => {
       expect(sendPushNotification).toHaveBeenCalledOnce();
     });
 
+    it('すべてのソースを取得できたら、追加と更新の件数を完了として通知する', async () => {
+      vi.mocked(syncArticles).mockResolvedValue({
+        newArticles: 2,
+        updatedArticles: 1,
+        failedSources: [],
+      });
+
+      await runArticleSync();
+
+      expect(sendPushNotification).toHaveBeenCalledExactlyOnceWith({
+        kind: 'readings_updated',
+        title: 'フィード取得完了',
+        body: '2件追加、1件更新',
+        url: 'https://k8o.me/reading-list',
+        dedupeKey: 'readings:2026-10-09',
+      });
+    });
+
     it('要約の締め切りは、同期を始めてから180秒後にする', async () => {
       await runArticleSync();
 
@@ -68,6 +86,32 @@ describe('runArticleSync', () => {
   });
 
   describe('異常系', () => {
+    it('取得に失敗したソースがあれば、ソース名を出さずに件数だけを失敗として通知する', async () => {
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      vi.mocked(syncArticles).mockResolvedValue({
+        newArticles: 2,
+        updatedArticles: 1,
+        failedSources: ['web.dev', 'WebKit'],
+      });
+
+      const result = await runArticleSync();
+
+      expect(result.failedSources).toStrictEqual(['web.dev', 'WebKit']);
+      expect(sendPushNotification).toHaveBeenCalledExactlyOnceWith({
+        kind: 'readings_updated',
+        title: 'フィード取得失敗',
+        body: '2件追加、1件更新（2件のソースで失敗）',
+        url: 'https://k8o.me/reading-list',
+        dedupeKey: 'readings:2026-10-09',
+      });
+    });
+
+    it('通知の送信に失敗しても、同期の結果を返す', async () => {
+      vi.mocked(sendPushNotification).mockRejectedValue(new Error('push'));
+
+      await expect(runArticleSync()).resolves.toMatchObject({ newArticles: 2 });
+    });
+
     it('要約が例外で失敗しても、打ち切りとして返し、通知は行う', async () => {
       vi.mocked(summarizeArticles).mockRejectedValue(new Error('db'));
 

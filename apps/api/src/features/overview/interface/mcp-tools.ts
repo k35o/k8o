@@ -1,8 +1,9 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
+import { READ_ONLY_TOOL_ANNOTATIONS } from '../../../shared/mcp/read-only-annotations';
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { getOverview } from './get-overview';
+import { getOverview } from '../application/get-overview';
 
 export const registerOverviewTools = (server: McpServer): void => {
   server.registerTool(
@@ -47,12 +48,7 @@ export const registerOverviewTools = (server: McpServer): void => {
             .nullable(),
         }),
       }),
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        idempotentHint: true,
-        openWorldHint: false,
-      },
+      annotations: READ_ONLY_TOOL_ANNOTATIONS,
     },
     async () => toolResult(await getOverview()),
   );

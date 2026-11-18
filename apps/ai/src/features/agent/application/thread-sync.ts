@@ -1,7 +1,8 @@
 import type { ChatOnFinishCallback, ChatStatus } from 'ai';
 
+import { messageTextOf } from './agent-message';
 import type { AgentUIMessage } from './agent-message';
-import type { ThreadSnapshot } from './threads';
+import type { ThreadSnapshot } from './thread';
 
 type ChatFinish = Parameters<ChatOnFinishCallback<AgentUIMessage>>[0];
 
@@ -142,7 +143,5 @@ export const unsavedUserText = (
   ) {
     return null;
   }
-  return lastUser.parts
-    .flatMap((part) => (part.type === 'text' ? [part.text] : []))
-    .join('\n');
+  return messageTextOf(lastUser);
 };

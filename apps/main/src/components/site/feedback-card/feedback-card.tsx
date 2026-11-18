@@ -10,7 +10,9 @@ import styles from './feedback-card.module.css';
 const FEEDBACK_MAP = {
   good: 1,
   bad: 2,
-} as const satisfies Record<string, number>;
+} as const;
+
+type Choice = keyof typeof FEEDBACK_MAP;
 
 export const FeedbackCard: FC<{
   title: string;
@@ -18,7 +20,7 @@ export const FeedbackCard: FC<{
 }> = ({ title, onSubmit }) => {
   const textareaId = useId();
   const errorId = useId();
-  const [feedbackValue, setFeedbackValue] = useState('');
+  const [choice, setChoice] = useState<Choice | null>(null);
   const [comment, setComment] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -27,19 +29,18 @@ export const FeedbackCard: FC<{
 
   const handleSubmit = () => {
     startTransition(async () => {
-      const id =
-        feedbackValue in FEEDBACK_MAP
-          ? FEEDBACK_MAP[feedbackValue as keyof typeof FEEDBACK_MAP]
-          : null;
-      const isSuccess = await onSubmit(id, comment);
+      const isSuccess = await onSubmit(
+        choice === null ? null : FEEDBACK_MAP[choice],
+        comment,
+      );
       if (isSuccess) {
         setIsSubmitted(true);
       }
     });
   };
 
-  const toggleFeedback = (key: string) => {
-    setFeedbackValue((prev) => (prev === key ? '' : key));
+  const toggleFeedback = (key: Choice): void => {
+    setChoice((prev) => (prev === key ? null : key));
   };
 
   if (isSubmitted) {
@@ -54,7 +55,7 @@ export const FeedbackCard: FC<{
         <p className={styles.title}>{title}</p>
         <fieldset aria-label="フィードバック" className={styles.choices}>
           <button
-            aria-pressed={feedbackValue === 'good'}
+            aria-pressed={choice === 'good'}
             className={styles.pill}
             disabled={isPending}
             onClick={() => {
@@ -66,7 +67,7 @@ export const FeedbackCard: FC<{
             良い
           </button>
           <button
-            aria-pressed={feedbackValue === 'bad'}
+            aria-pressed={choice === 'bad'}
             className={styles.pill}
             disabled={isPending}
             onClick={() => {
@@ -103,7 +104,9 @@ export const FeedbackCard: FC<{
         <div className={styles.actions}>
           <Button
             disabled={
-              !(feedbackValue || comment) || isInvalidComment || isPending
+              (choice === null && comment === '') ||
+              isInvalidComment ||
+              isPending
             }
             onClick={handleSubmit}
             size="sm"

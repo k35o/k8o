@@ -21,10 +21,6 @@
       "types": "./src/tokenize.ts",
       "default": "./src/tokenize.ts"
     },
-    "./tokenize-client": {
-      "types": "./src/tokenize-client.ts",
-      "default": "./src/tokenize-client.ts"
-    },
     "./theme": {
       "types": "./src/theme.ts",
       "default": "./src/theme.ts"
@@ -37,9 +33,6 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@shikijs/core": "4.6.0",
-    "@shikijs/engine-javascript": "4.6.0",
-    "@shikijs/langs": "4.6.0",
     "@shikijs/rehype": "4.6.0",
     "@shikijs/themes": "4.6.0",
     "shiki": "4.6.0"

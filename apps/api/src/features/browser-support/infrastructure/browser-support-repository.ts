@@ -8,6 +8,8 @@ import type {
 import { parseBaselineDataset } from '@repo/helpers/baseline/model';
 import type { BaselineDataset } from '@repo/helpers/baseline/model';
 
+import { DAY_MS } from '../../../shared/time/day-ms';
+
 // schema 由来の型も上位層へはここから配る（reading-list-repository と同じ形）。
 export type {
   BrowserSupportSyncResult,
@@ -28,7 +30,11 @@ const KEEP_SUPERSEDED = 3;
 // 変更履歴の保持期間。main の表示窓(30日)より十分長く取り、それより古い行は
 // 世代置換のたびに削る。
 const CHANGE_RETENTION_DAYS = 90;
-const DAY_MS = 24 * 60 * 60 * 1000;
+
+export type ActiveDatasetMeta = Pick<
+  ActiveDatasetRecord,
+  'upstreamVersion' | 'ingestedAt'
+>;
 
 export type FeatureChangeInput = {
   featureId: string;
@@ -67,6 +73,21 @@ export const findActiveDataset =
       ingestedAt: row.ingestedAt,
       dataset,
     };
+  };
+
+// data 列は数 MB のブロブなので、版と取り込み時刻だけを読む
+export const findActiveDatasetMeta =
+  async (): Promise<ActiveDatasetMeta | null> => {
+    const rows = await db
+      .select({
+        upstreamVersion: db._schema.browserSupportDatasets.upstreamVersion,
+        ingestedAt: db._schema.browserSupportDatasets.ingestedAt,
+      })
+      .from(db._schema.browserSupportDatasets)
+      .where(eq(db._schema.browserSupportDatasets.state, 'active'))
+      .orderBy(desc(db._schema.browserSupportDatasets.id))
+      .limit(1);
+    return rows[0] ?? null;
   };
 
 export type BrowserSupportFeatureChange = FeatureChangeInput & {

@@ -1,20 +1,18 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { EmptyState, Stack, TextField } from '@k8ordo/ui';
+import { Stack } from '@k8ordo/ui';
 import { BookTextIcon } from '@k8ordo/ui/icons';
 import { useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
-import { replayTypedValue } from '@/shared/browser/replay-typed-value';
+import { SearchableList } from '@/components/site/searchable-list/searchable-list';
+import type { BlogSummary } from '@/features/blog/interface/queries';
 
 import { blogListState } from './blog-list-state';
 import { filterBlogs } from './filter-blogs';
 import { groupBlogsByYear } from './group-blogs-by-year';
-import type { BlogSummary } from './types';
 import { YearSection } from './year-section';
-
-import styles from './blog-list-content.module.css';
 
 type Props = {
   blogs: readonly BlogSummary[];
@@ -35,42 +33,28 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
   );
 
   return (
-    <Stack gap="lg">
-      <div className={styles.toolbar}>
-        <div className={styles.search}>
-          <TextField
-            aria-label="記事を検索"
-            onChange={(e) => {
-              update({ q: e.target.value });
-            }}
-            placeholder="タイトル・説明・タグで検索..."
-            ref={replayTypedValue(q, (typed) => {
-              update({ q: typed });
-            })}
-            value={q}
-          />
-        </div>
-        <p aria-live="polite" className={styles.count}>
-          {filteredCount}件の記事
-        </p>
-      </div>
-      {filteredCount === 0 ? (
-        <EmptyState
-          description="検索条件を変更してみてください"
-          icon={<BookTextIcon size="lg" />}
-          title="条件に一致する記事がありません"
-        />
-      ) : (
-        <Stack gap="xl">
-          {yearGroups.map((group) => (
-            <YearSection
-              blogs={group.blogs}
-              key={group.year}
-              year={group.year}
-            />
-          ))}
-        </Stack>
-      )}
-    </Stack>
+    <SearchableList
+      countLabel={`${filteredCount.toString()}件の記事`}
+      empty={
+        filteredCount === 0
+          ? {
+              icon: <BookTextIcon size="lg" />,
+              title: '条件に一致する記事がありません',
+            }
+          : null
+      }
+      onQueryChange={(typed) => {
+        update({ q: typed });
+      }}
+      placeholder="タイトル・説明・タグで検索..."
+      query={q}
+      searchLabel="記事を検索"
+    >
+      <Stack gap="xl">
+        {yearGroups.map((group) => (
+          <YearSection blogs={group.blogs} key={group.year} year={group.year} />
+        ))}
+      </Stack>
+    </SearchableList>
   );
 };

@@ -1,10 +1,6 @@
 import type { Spec } from '@json-render/core';
-import * as z from 'zod/mini';
+import type * as z from 'zod/mini';
 
-import {
-  findUiVersion,
-  saveUiVersion,
-} from '@/features/artifacts/application/artifacts';
 import { streamUiSpec } from '@/features/generation/application/stream-ui-spec';
 import {
   settleUiRepair,
@@ -14,39 +10,21 @@ import {
 import type { UiSpecDraft } from '@/features/generation/application/ui-spec';
 
 import {
+  artifactInputSchema,
+  findBase,
+  noChangeError,
   progressIntervalMs,
-  truncateSummary,
+  saveGenerated,
   withReservedUsage,
 } from './artifact-tool';
 import type { ArtifactToolContext } from './artifact-tool';
 
-export const generateUiInputSchema = z.object({
-  title: z
-    .string()
-    .check(
-      z.minLength(1),
-      z.describe('UI の短い名前。カードとプレビューの見出しになる'),
-    ),
-  base: z
-    .nullish(
-      z.object({
-        artifactId: z.string().check(z.describe('直す UI の artifactId')),
-        version: z.int().check(z.positive(), z.describe('土台にする版')),
-      }),
-    )
-    .check(
-      z.describe(
-        '前に作った UI を直すときに、土台にする版を指す。省くと新しい UI を作る',
-      ),
-    ),
-  instruction: z
-    .string()
-    .check(
-      z.minLength(1),
-      z.describe(
-        '作る UI、または直す内容。UI を組む役はこの会話を読まないので、組むのに要ることをすべて書く',
-      ),
-    ),
+export const generateUiInputSchema = artifactInputSchema({
+  title: 'UI の短い名前。カードとプレビューの見出しになる',
+  baseArtifactId: '直す UI の artifactId',
+  base: '前に作った UI を直すときに、土台にする版を指す。省くと新しい UI を作る',
+  instruction:
+    '作る UI、または直す内容。UI を組む役はこの会話を読まないので、組むのに要ることをすべて書く',
 });
 
 type GenerateUiInput = z.infer<typeof generateUiInputSchema>;
@@ -125,16 +103,11 @@ export async function* generateUi({
   context: ArtifactToolContext;
   abortSignal: AbortSignal | undefined;
 }): AsyncGenerator<GenerateUiOutput> {
-  const target = input.base ?? null;
-  const base =
-    target === null
-      ? null
-      : await findUiVersion({ ...target, userId: context.userId });
-  if (target !== null && base === null) {
-    throw new Error(
-      `UI が見つかりません: artifactId ${target.artifactId} の版 ${target.version.toString()}`,
-    );
-  }
+  const base = await findBase({
+    kind: 'ui',
+    target: input.base,
+    userId: context.userId,
+  });
   const baseSpec = base?.spec ?? null;
 
   const first = yield* attempt({
@@ -153,11 +126,7 @@ export async function* generateUi({
     instruction: input.instruction,
   });
   if (settled.type === 'no-change') {
-    throw new Error(
-      settled.summary === ''
-        ? 'UI は変わりませんでした'
-        : `UI は変わりませんでした: ${truncateSummary(settled.summary)}`,
-    );
+    throw noChangeError('ui', settled.summary);
   }
   const ready =
     settled.type === 'ready'
@@ -177,43 +146,14 @@ export async function* generateUi({
     throw new Error(`UI の検証エラーを直せませんでした: ${ready.reason}`);
   }
 
-  // 止めたのに版ができる隙間を狭める
-  abortSignal?.throwIfAborted();
-  const summary = truncateSummary(ready.summary);
-  const saved = await saveUiVersion({
-    userId: context.userId,
-    threadId: context.threadId,
+  const saved = await saveGenerated({
+    context,
+    abortSignal,
     base,
     title: input.title,
     instruction: input.instruction,
-    summary,
-    spec: ready.spec,
+    summary: ready.summary,
+    content: { kind: 'ui', spec: ready.spec },
   });
-  yield {
-    status: 'done',
-    artifactId: saved.artifactId,
-    version: saved.version,
-    summary,
-    spec: ready.spec,
-  };
+  yield { ...saved, spec: ready.spec };
 }
-
-// ループの中の生の値と、DB から戻した値のどちらでも同じ文を返すよう、input と output だけから決める
-export const generateUiModelOutput = ({
-  input,
-  output,
-}: {
-  input: GenerateUiInput;
-  output: GenerateUiOutput;
-}): { type: 'text'; value: string } => ({
-  type: 'text',
-  value:
-    output.status === 'done'
-      ? [
-          `UI「${input.title}」を artifactId: ${output.artifactId} の版 ${output.version.toString()} として保存し、利用者の画面のプレビューに出しました。`,
-          output.summary,
-        ]
-          .filter((line) => line !== '')
-          .join('\n')
-      : 'UI の生成は完了していません',
-});

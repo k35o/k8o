@@ -7,10 +7,10 @@ import type { FC } from 'react';
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
-import { useFragmentTarget } from '../hooks/use-fragment-target';
 import { useClosePresenterOnViewerStop } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
 import { slideDeckState } from '../slide-deck/deck-state';
+import { keepFragmentInDeck } from '../slide-deck/fragment-target';
 import { Stage } from '../stage/stage';
 
 import styles from './deck-presenter.module.css';
@@ -30,13 +30,12 @@ export const DeckPresenter: FC<{
   const nextSlide = slides[index + 1];
   const [{ session: sessionId }] = useAppState(slideDeckState, ['session']);
   useClosePresenterOnViewerStop({ slug, sessionId });
-  const fragmentTarget = useFragmentTarget();
 
   return (
     <section
       aria-label={`${title} - 発表者モード`}
       className={styles.root}
-      ref={fragmentTarget}
+      ref={keepFragmentInDeck}
       tabIndex={-1}
     >
       <header className={styles.header}>

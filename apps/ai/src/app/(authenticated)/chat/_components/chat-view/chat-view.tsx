@@ -7,8 +7,11 @@ import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { useId } from 'react';
 import type { FC, Ref } from 'react';
 
-import type { AgentUIMessage } from '@/features/agent/application/agent-message';
-import { PRICE_PER_MTOK_USD } from '@/features/usage/application/pricing';
+import type {
+  AgentUIMessage,
+  ChatArtifact,
+} from '@/features/agent/interface/conversation';
+import { PRICE_PER_MTOK_USD } from '@/features/usage/interface/pricing';
 import {
   GENERATION_MODEL_LABELS,
   GENERATION_MODELS,
@@ -116,6 +119,7 @@ type ChatViewProps = {
   onSelectModel: (model: GenerationModel) => void;
   onSubmit: (text: string) => void;
   onStop: () => void;
+  artifacts: readonly ChatArtifact[];
   selectedToolCallId: string | null;
   onOpenArtifact: (toolCallId: string) => void;
   artifactButtonRef?:
@@ -137,11 +141,15 @@ export const ChatView: FC<ChatViewProps> = ({
   onSelectModel,
   onSubmit,
   onStop,
+  artifacts,
   selectedToolCallId,
   onOpenArtifact,
   artifactButtonRef,
   inputRef = null,
 }) => {
+  const artifactsByCallId = new Map(
+    artifacts.map((artifact) => [artifact.toolCallId, artifact]),
+  );
   const isReceiving = status === 'submitted' || status === 'streaming';
   const isWaitingServer = isServerRunning && !isReceiving;
   // サーバーの生成を待つ間も送信を止め、停止ボタンを出す
@@ -182,8 +190,8 @@ export const ChatView: FC<ChatViewProps> = ({
                   return (
                     <AgentMessage
                       artifactButtonRef={artifactButtonRef}
+                      artifacts={artifactsByCallId}
                       isServerRunning={isWaitingServer && isLast}
-                      isStopping={isStopping && isLast}
                       isStreaming={status === 'streaming' && isLast}
                       key={message.id}
                       message={message}

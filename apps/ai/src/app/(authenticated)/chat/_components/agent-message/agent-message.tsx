@@ -6,14 +6,17 @@ import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { isStaticToolUIPart } from 'ai';
 import type { FC, Ref } from 'react';
 
+import {
+  MAX_STEPS,
+  messageTextOf,
+  WITHHELD_OUTPUT_TEXT,
+} from '@/features/agent/interface/conversation';
 import type {
   AgentUIMessage,
+  ChatArtifact,
   RunEnd,
-} from '@/features/agent/application/agent-message';
-import { MAX_STEPS } from '@/features/agent/application/agent-run';
-import { chatArtifactOf } from '@/features/agent/application/chat-artifacts';
-import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
-import { MONTHLY_BUDGET_MICRO_USD } from '@/features/usage/application/budget';
+} from '@/features/agent/interface/conversation';
+import { MONTHLY_BUDGET_USD } from '@/features/usage/interface/pricing';
 
 import { ArtifactCard } from '../artifact-card';
 import { MarkdownText } from '../markdown-text';
@@ -25,17 +28,12 @@ type AgentToolPart = Extract<AgentMessagePart, { type: `tool-${string}` }>;
 const RUN_END_MESSAGES = {
   stopped: '停止しました',
   'step-limit': `ステップの上限（${MAX_STEPS.toString()}回）に達したため止めました。続けるには続きを頼んでください`,
-  budget: `今月の予算（$${(MONTHLY_BUDGET_MICRO_USD / 1_000_000).toString()}）に達したため止めました`,
+  budget: `今月の予算（$${MONTHLY_BUDGET_USD.toString()}）に達したため止めました`,
   failed: 'エラーで止まりました',
   refused: 'Claude が回答を控えました',
   length: '出力の上限に達したため止めました',
   timeout: '時間の上限に達したため止めました',
 } as const satisfies Record<Exclude<RunEnd, 'completed'>, string>;
-
-const textOf = (message: AgentUIMessage): string =>
-  message.parts
-    .flatMap((part) => (part.type === 'text' ? [part.text] : []))
-    .join('\n');
 
 const toolOutputText = (
   part: Extract<AgentToolPart, { state: 'output-available' }>,
@@ -138,6 +136,7 @@ export const hasVisiblePart = (
 ): boolean => message.parts.some((part) => rendersPart(part, isStreaming));
 
 type ArtifactSelection = {
+  artifacts: ReadonlyMap<string, ChatArtifact>;
   selectedToolCallId: string | null;
   onOpenArtifact: (toolCallId: string) => void;
   artifactButtonRef?:
@@ -150,13 +149,12 @@ const AgentPart: FC<
     part: AgentMessagePart;
     isStreaming: boolean;
     isServerRunning: boolean;
-    isStopping: boolean;
   } & ArtifactSelection
 > = ({
   part,
   isStreaming,
   isServerRunning,
-  isStopping,
+  artifacts,
   selectedToolCallId,
   onOpenArtifact,
   artifactButtonRef,
@@ -169,16 +167,10 @@ const AgentPart: FC<
       part.type === 'tool-generate_ui' ||
       part.type === 'tool-generate_slides'
     ) {
-      return (
+      const artifact = artifacts.get(part.toolCallId);
+      return artifact === undefined ? null : (
         <ArtifactCard
-          artifact={chatArtifactOf(part, {
-            live: isStreaming
-              ? 'receiving'
-              : isServerRunning
-                ? 'waiting'
-                : null,
-            isStopping,
-          })}
+          artifact={artifact}
           buttonRef={artifactButtonRef?.(part.toolCallId)}
           isActive={selectedToolCallId === part.toolCallId}
           onOpen={() => {
@@ -218,14 +210,13 @@ type AgentMessageProps = {
   message: AgentUIMessage;
   isStreaming: boolean;
   isServerRunning: boolean;
-  isStopping: boolean;
 } & ArtifactSelection;
 
 export const AgentMessage: FC<AgentMessageProps> = ({
   message,
   isStreaming,
   isServerRunning,
-  isStopping,
+  artifacts,
   selectedToolCallId,
   onOpenArtifact,
   artifactButtonRef,
@@ -233,7 +224,7 @@ export const AgentMessage: FC<AgentMessageProps> = ({
   if (message.role === 'user') {
     return (
       <Message.Root from="user">
-        <Message.Content>{textOf(message)}</Message.Content>
+        <Message.Content>{messageTextOf(message)}</Message.Content>
       </Message.Root>
     );
   }
@@ -248,8 +239,8 @@ export const AgentMessage: FC<AgentMessageProps> = ({
       {message.parts.map((part, index) => (
         <AgentPart
           artifactButtonRef={artifactButtonRef}
+          artifacts={artifacts}
           isServerRunning={isServerRunning}
-          isStopping={isStopping}
           isStreaming={isStreaming}
           key={partKey(part, index)}
           onOpenArtifact={onOpenArtifact}

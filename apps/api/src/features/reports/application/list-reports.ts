@@ -3,6 +3,7 @@ import {
   findReports,
   findReportTypeCounts,
 } from '../infrastructure/report-repository';
+import type { ReportTypeCount } from '../infrastructure/report-repository';
 
 // MCP とオーナー API が受ける 1 ページの件数の上限
 export const REPORT_PAGE_SIZE_MAX = 20;
@@ -10,11 +11,6 @@ export const REPORT_PAGE_SIZE_MAX = 20;
 // 受信時の上限は 64KB。モデルの文脈を圧迫しないよう、1件あたりの本文を短く切る
 const BODY_MAX_LENGTH = 2000;
 const SHORT_TEXT_MAX_LENGTH = 500;
-
-type ReportTypeCount = {
-  type: string;
-  count: number;
-};
 
 type ReportListItem = {
   id: number;

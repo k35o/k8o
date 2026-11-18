@@ -7,7 +7,7 @@ AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.m
 `app / features / shared` 構成。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
 - `app/` - App Router のルーティングと UI。`page.tsx`・`layout.tsx`・`route.ts` などの entry を置き、UI コンポーネントは `app/**/_components`（route 専用なら route の下、複数の route で使うなら `app/_components`）。entry からは `features/*/interface` を読む
-- `features/<feature>/` - 機能ごとの UI 以外の処理。`interface` は `app` が読む関数、`application` はユースケースと整形（小さい読み取りはここでよい）、`infrastructure` は DB・外部 API などの外部接続。UI コンポーネントは置かない
+- `features/<feature>/` - 機能ごとの UI 以外の処理。`interface` は `app` が読む関数（クライアントの部品が読む純粋な関数と型は、`server-only` でない interface のファイルから出す）、`application` はユースケースと整形（小さい読み取りはここでよい）、`infrastructure` は DB・外部 API などの外部接続。UI コンポーネントは置かない
 - `shared/` - アプリの中で横断して使う UI 以外の処理。UI コンポーネントや `cn` は置かない
 
 features は次のとおり。
@@ -123,7 +123,7 @@ tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md
 
 ### GitHub
 
-GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`）は、REST API（`https://api.github.com`、版 `2026-03-10`）から k35o の公開リポジトリを読む（`agent/infrastructure/github-api.ts`）。出力の形と切り詰めは `agent/application/github-tools.ts` にある。
+GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`）は、REST API（`https://api.github.com`、版 `2026-03-10`）から k35o の公開リポジトリを読む（`agent/infrastructure/github-api.ts`）。tool の定義は `agent/application/github-tools.ts`、出力の形と切り詰めは `agent/application/github-format.ts` にある。
 
 - 読む口は、リポジトリの一覧（`GET /users/k35o/repos`）、ファイルとディレクトリ（contents を object のメディアタイプで読む。1 MB を超えるファイルは GitHub が中身を返さない）、コードの検索（text-match の断片）、issue と PR の検索、issue と PR の本文・コメント・枝・変更したファイル。PR の変更後のファイルは、`read_github_issue` が返す head の SHA を `read_github_file` の `ref` に渡して読む
 - fine-grained PAT は GitHub のすべての公開リポジトリを読めるので、owner は tool の入力に取らずにコードの定数（`GITHUB_OWNER`）にする。検索は `user:k35o` か `repo:k35o/<repo>` を足し、検索語の修飾子で範囲が広がっても、結果を k35o のものに絞る。owner を入力に取ると、だれでも作れるリポジトリが注入の入口になり、tool の引数が宛先を選べる送信にもなるため

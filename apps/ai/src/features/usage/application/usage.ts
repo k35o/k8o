@@ -8,7 +8,11 @@ import {
   selectCostSinceMicroUsd,
   updateUsageCost,
 } from '../infrastructure/usage-repository';
-import { MONTHLY_BUDGET_MICRO_USD, monthStartIso } from './budget';
+import {
+  MONTHLY_BUDGET_MICRO_USD,
+  MONTHLY_BUDGET_USD,
+  monthStartIso,
+} from './budget';
 import { costMicroUsd } from './pricing';
 import type { UsageTokens } from './pricing';
 import { generationLimit, windowStartIso } from './rate-limit';
@@ -20,7 +24,7 @@ export type UsageReservation =
   | { ok: false; reason: UsageRefusal };
 
 export const USAGE_REFUSAL_MESSAGES: Record<UsageRefusal, string> = {
-  budget: `今月の利用額が上限（$${MONTHLY_BUDGET_MICRO_USD / 1_000_000}）に達しました。翌月1日（UTC）まで使えません。`,
+  budget: `今月の利用額が上限（$${MONTHLY_BUDGET_USD}）に達しました。翌月1日（UTC）まで使えません。`,
   'rate-limit':
     '1時間あたりの上限に達しました。しばらく待ってから送ってください。',
 };

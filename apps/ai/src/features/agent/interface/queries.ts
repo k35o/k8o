@@ -1,10 +1,10 @@
 import 'server-only';
 import { getAllowedSession } from '@/shared/auth/allowed-session';
 
+import type { LoadedThread, ThreadListItem } from '../application/thread';
 import { listThreads, loadThread } from '../application/threads';
-import type { LoadedThread, ThreadListItem } from '../application/threads';
 
-export type { LoadedThread, ThreadListItem } from '../application/threads';
+export type { LoadedThread, ThreadListItem } from '../application/thread';
 
 // 一覧が読めなくても、チャットそのものは使えるようにする
 export const listThreadsForRoute = async (): Promise<ThreadListItem[]> => {

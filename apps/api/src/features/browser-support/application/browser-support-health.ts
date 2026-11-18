@@ -9,6 +9,7 @@ import type {
   BrowserSupportSyncResult,
   SyncRunSummary,
 } from '../infrastructure/browser-support-repository';
+import type { BrowserSupportSyncStatus } from './browser-support-sync-status';
 
 // 同期の心拍が生きていると見なす上限。日次 cron に、発火時刻のずれと単発の失敗の余裕を足す
 const HEARTBEAT_STALE_MS = 30 * 60 * 60 * 1000;
@@ -22,12 +23,9 @@ const HEARTBEAT_RESULTS: ReadonlySet<BrowserSupportSyncResult> = new Set([
   'skipped_major',
 ]);
 
-type BrowserSupportHealth = {
+type BrowserSupportHealth = BrowserSupportSyncStatus & {
   status: 'ok' | 'stale' | 'degraded';
-  activeVersion: string | null;
-  activeIngestedAt: string | null;
   lastSuccessAt: string | null;
-  lastRun: SyncRunSummary | null;
   minVersions: BaselineDataset['minVersions'] | null;
 };
 

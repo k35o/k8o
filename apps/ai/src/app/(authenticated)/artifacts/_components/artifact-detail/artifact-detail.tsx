@@ -8,6 +8,7 @@ import type { FC } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { PrintButton } from '@/app/_components/print-button';
+import { ARTIFACT_KIND_LABELS } from '@/features/artifacts/interface/artifact-kind';
 import type { ArtifactForRoute } from '@/features/artifacts/interface/queries';
 
 import {
@@ -31,16 +32,11 @@ import styles from './artifact-detail.module.css';
 const HISTORY_TAB = { value: 'history', label: '履歴' } as const;
 
 // UI とスライドの artifactId は別もので、Claude が generate_ui と generate_slides のどちらで直すかを選べるよう、種類も書く
-const DRAFT_KINDS = {
-  ui: 'UI',
-  slides: 'スライド',
-} as const satisfies Record<ArtifactForRoute['kind'], string>;
-
 const editDraftOf = (
   artifactId: string,
   selected: ArtifactForRoute['selected'],
 ): string =>
-  `${DRAFT_KINDS[selected.kind]}「${selected.title}」（artifactId: ${artifactId}）の版 ${selected.version.toString()} を土台に、`;
+  `${ARTIFACT_KIND_LABELS[selected.kind]}「${selected.title}」（artifactId: ${artifactId}）の版 ${selected.version.toString()} を土台に、`;
 
 // highlight・shareActions・forkAction は、Storybook から server action を辿らないよう、呼び出し側から渡す
 type ArtifactDetailProps = {

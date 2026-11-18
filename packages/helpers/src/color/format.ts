@@ -1,5 +1,5 @@
+import { between } from '../number/between.ts';
 import {
-  clamp,
   colorToHsl,
   colorToHwb,
   colorToLab,
@@ -16,12 +16,12 @@ const round = (value: number, digits: number): number => {
 };
 
 const alphaText = (alpha: number): string =>
-  round(clamp(alpha, 0, 1), 4).toString();
+  round(between(alpha, 0, 1), 4).toString();
 
 const hasAlpha = (color: Color): boolean => color.alpha < 1;
 
 const toHexByte = (value: number): string =>
-  Math.round(clamp(value, 0, 255))
+  Math.round(between(value, 0, 255))
     .toString(16)
     .padStart(2, '0');
 
@@ -33,7 +33,7 @@ export const formatHex = (color: Color): string => {
     : base;
 };
 
-export const formatRgb = (color: Color): string => {
+const formatRgb = (color: Color): string => {
   const { r, g, b } = colorToRgb255(color);
   const [ri, gi, bi] = [Math.round(r), Math.round(g), Math.round(b)];
   return hasAlpha(color)
@@ -41,7 +41,7 @@ export const formatRgb = (color: Color): string => {
     : `rgb(${ri}, ${gi}, ${bi})`;
 };
 
-export const formatHsl = (color: Color): string => {
+const formatHsl = (color: Color): string => {
   const { h, s, l } = colorToHsl(color);
   const [hi, si, li] = [round(h, 0), round(s, 0), round(l, 0)];
   return hasAlpha(color)
@@ -49,7 +49,7 @@ export const formatHsl = (color: Color): string => {
     : `hsl(${hi}, ${si}%, ${li}%)`;
 };
 
-export const formatHwb = (color: Color): string => {
+const formatHwb = (color: Color): string => {
   const { h, w, b } = colorToHwb(color);
   const body = `${round(h, 0)} ${round(w, 0)}% ${round(b, 0)}%`;
   return hasAlpha(color)
@@ -57,7 +57,7 @@ export const formatHwb = (color: Color): string => {
     : `hwb(${body})`;
 };
 
-export const formatLab = (color: Color): string => {
+const formatLab = (color: Color): string => {
   const { l, a, b } = colorToLab(color);
   const body = `${round(l, 2)} ${round(a, 2)} ${round(b, 2)}`;
   return hasAlpha(color)
@@ -65,7 +65,7 @@ export const formatLab = (color: Color): string => {
     : `lab(${body})`;
 };
 
-export const formatLch = (color: Color): string => {
+const formatLch = (color: Color): string => {
   const { l, c, h } = colorToLch(color);
   const body = `${round(l, 2)} ${round(c, 2)} ${round(h, 2)}`;
   return hasAlpha(color)
@@ -73,7 +73,7 @@ export const formatLch = (color: Color): string => {
     : `lch(${body})`;
 };
 
-export const formatOklab = (color: Color): string => {
+const formatOklab = (color: Color): string => {
   const { l, a, b } = colorToOklab(color);
   const body = `${round(l, 4)} ${round(a, 4)} ${round(b, 4)}`;
   return hasAlpha(color)

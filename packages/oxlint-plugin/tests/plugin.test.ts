@@ -62,6 +62,7 @@ const diagnosticsFor = (filename: string, code: string): Diagnostic[] =>
   );
 
 const BOUNDARY = 'k8o(database-import-boundary)';
+const LAYER = 'k8o(feature-layer-boundary)';
 
 describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
   describe('正常系', () => {
@@ -86,6 +87,9 @@ describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
           `apps/main/src/app/page.tsx ${BOUNDARY}`,
           `apps/ai/src/features/demo/interface/bad-import.ts ${BOUNDARY}`,
           `apps/ai/src/shared/auth/session.ts ${BOUNDARY}`,
+          `apps/ai/src/app/feature-import.tsx ${LAYER}`,
+          `apps/api/src/features/demo/interface/routes.ts ${LAYER}`,
+          `apps/api/src/features/other/application/other.ts ${LAYER}`,
         ].toSorted(),
       );
     });
@@ -114,6 +118,30 @@ describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
       );
       expect(found).toHaveLength(1);
       expect(found[0]?.message).toContain("'@repo/ai-database/auth' だけ");
+    });
+
+    test('features の外からの application の import を、型だけでも検出する', () => {
+      const found = diagnosticsFor('apps/ai/src/app/feature-import.tsx', LAYER);
+      expect(found).toHaveLength(1);
+      expect(found[0]?.message).toContain('features/*/interface だけ');
+    });
+
+    test('interface から infrastructure への re-export を検出する', () => {
+      const found = diagnosticsFor(
+        'apps/api/src/features/demo/interface/routes.ts',
+        LAYER,
+      );
+      expect(found).toHaveLength(1);
+      expect(found[0]?.message).toContain('interface から infrastructure');
+    });
+
+    test('別の feature の infrastructure の動的 import を検出する', () => {
+      const found = diagnosticsFor(
+        'apps/api/src/features/other/application/other.ts',
+        LAYER,
+      );
+      expect(found).toHaveLength(1);
+      expect(found[0]?.message).toContain('別の feature の infrastructure');
     });
   });
 });
