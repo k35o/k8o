@@ -5,12 +5,11 @@ import * as z from 'zod/mini';
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
 import { validate } from '../../../shared/http/validate';
 import { getPublicPushLogs } from '../application/public-push-logs';
-import { isAllowedPushEndpoint } from '../infrastructure/is-allowed-push-endpoint';
 import {
-  deleteSubscription,
-  insertSubscription,
-} from '../infrastructure/subscription-repository';
-import { importSubscriptionKeys } from '../infrastructure/web-push';
+  rejectSubscription,
+  subscribe,
+  unsubscribe,
+} from '../application/subscriptions';
 
 const MAX_ENDPOINT_LENGTH = 2048;
 const MAX_KEY_LENGTH = 256;
@@ -38,32 +37,20 @@ export const pushSubscriptionPublicRoutes = new Hono()
       if (!parsed.success) {
         return c.json({ ok: false, error: 'invalid_request' } as const, 400);
       }
-      // SSRF 対策: 通知を送る先は、Push サービスの https のホストに限る
-      if (!isAllowedPushEndpoint(parsed.data.endpoint)) {
-        return c.json(
-          { ok: false, error: 'endpoint_not_allowed' } as const,
-          400,
-        );
-      }
-      if ((await importSubscriptionKeys(parsed.data.keys)) === null) {
-        return c.json({ ok: false, error: 'invalid_keys' } as const, 400);
+      const rejection = await rejectSubscription(parsed.data);
+      if (rejection !== null) {
+        return c.json({ ok: false, error: rejection } as const, 400);
       }
       return parsed.data;
     }),
     async (c) => {
-      const { endpoint, keys } = c.req.valid('json');
-      await insertSubscription({
-        endpoint,
-        endpointHost: new URL(endpoint).hostname,
-        p256dh: keys.p256dh,
-        auth: keys.auth,
-      });
+      await subscribe(c.req.valid('json'));
       return c.body(null, 204);
     },
   )
   .delete('/', validate('json', unsubscribeSchema), async (c) => {
     const { endpoint, auth } = c.req.valid('json');
-    await deleteSubscription(endpoint, auth);
+    await unsubscribe(endpoint, auth);
     return c.body(null, 204);
   });
 

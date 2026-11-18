@@ -12,11 +12,11 @@ import {
   BLOG_STATS_PAGE_SIZE_MAX,
   BLOG_STATUSES,
 } from '../application/blog-stats';
-import { findBlogs } from '../infrastructure/blog-repository';
+import { listBlogStats } from '../application/list-blog-stats';
 import {
-  fetchBlogMarkdown,
-  fetchPublishedBlogs,
-} from '../infrastructure/main-blog-source';
+  getPublishedBlogMarkdown,
+  listPublishedBlogs,
+} from '../application/published-blogs';
 
 const slugParamSchema = z.object({
   slug: z.string().check(z.regex(BLOG_SLUG_PATTERN)),
@@ -30,10 +30,10 @@ const statsQuerySchema = z.object({
 });
 
 export const blogOwnerRoutes = new Hono()
-  .get('/', async (c) => c.json({ items: await fetchPublishedBlogs() }, 200))
+  .get('/', async (c) => c.json({ items: await listPublishedBlogs() }, 200))
   .get('/:slug', validate('param', slugParamSchema), async (c) => {
     const { slug } = c.req.valid('param');
-    const markdown = await fetchBlogMarkdown(slug);
+    const markdown = await getPublishedBlogMarkdown(slug);
     if (markdown === null) {
       return c.json({ ok: false, error: 'not_found' } as const, 404);
     }
@@ -43,5 +43,5 @@ export const blogOwnerRoutes = new Hono()
 export const blogStatsOwnerRoutes = new Hono().get(
   '/',
   validate('query', statsQuerySchema),
-  async (c) => c.json(await findBlogs(c.req.valid('query')), 200),
+  async (c) => c.json(await listBlogStats(c.req.valid('query')), 200),
 );

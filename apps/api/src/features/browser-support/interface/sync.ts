@@ -2,8 +2,10 @@
 // して interface 間 import を許容する。application 層は SyncNotifier に依存するだけ。
 import { sendPushNotification } from '../../push-notification/interface/commands';
 import { syncBrowserSupport } from '../application/sync-browser-support';
-import type { SyncSummary } from '../application/sync-browser-support';
-import type { BrowserSupportSyncTrigger } from '../infrastructure/browser-support-repository';
+import type {
+  BrowserSupportSyncTrigger,
+  SyncSummary,
+} from '../application/sync-browser-support';
 
 // 警報のリンク先も公開側に寄せる。/browser-support は鮮度(データ基準日)を常時表示
 // しており、api のデプロイ URL に依存せず状況を確認できる。

@@ -3,17 +3,17 @@
 export {
   getBrowserSupportSnapshot,
   loadFeatureStatusLookup,
-} from './features/browser-support/application/browser-support-snapshot';
-export { getPublicPushLogs } from './features/push-notification/application/public-push-logs';
+} from './features/browser-support/interface/queries';
+export { getPublicPushLogs } from './features/push-notification/interface/queries';
 export {
   getPublishedBlogs,
   getPublishedSlides,
   getTags,
   getTalks,
-} from './features/site-content/application/site-content';
+} from './features/site-content/interface/queries';
 export type {
   PublishedBlog,
   PublishedSlide,
   Tag,
   Talk,
-} from './features/site-content/application/site-content';
+} from './features/site-content/interface/queries';

@@ -3,6 +3,8 @@ import type { SummaryProgress } from '../infrastructure/reading-list-repository'
 import { readingWindowStart } from './reading-window';
 import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
 
+export type { SummaryProgress } from '../infrastructure/reading-list-repository';
+
 export const getSummaryProgress = (): Promise<SummaryProgress> =>
   countSummaryProgress(
     readingWindowStart(Date.now()).toISOString(),

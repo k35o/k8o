@@ -47,6 +47,8 @@ const SUPPORTED_MAJOR = 3;
 // 故障のどちらかなので、情報として警報する。
 const UPSTREAM_STALE_DAYS = 45;
 
+export type { BrowserSupportSyncTrigger } from '../infrastructure/browser-support-repository';
+
 export type SyncNotifier = (notification: SyncNotification) => Promise<void>;
 
 export type SyncSummary = BaselineDiffCounts & {

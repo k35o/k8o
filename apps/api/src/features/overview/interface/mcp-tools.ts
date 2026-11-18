@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { READ_ONLY_TOOL_ANNOTATIONS } from '../../../shared/mcp/read-only-annotations';
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { getOverview } from './get-overview';
+import { getOverview } from '../application/get-overview';
 
 export const registerOverviewTools = (server: McpServer): void => {
   server.registerTool(

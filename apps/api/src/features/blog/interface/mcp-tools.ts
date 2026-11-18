@@ -9,7 +9,7 @@ import {
   BLOG_STATS_PAGE_SIZE_MAX,
   BLOG_STATUSES,
 } from '../application/blog-stats';
-import { findBlogs } from '../infrastructure/blog-repository';
+import { listBlogStats } from '../application/list-blog-stats';
 
 export const registerBlogTools = (server: McpServer): void => {
   server.registerTool(
@@ -39,6 +39,6 @@ export const registerBlogTools = (server: McpServer): void => {
       }),
       annotations: READ_ONLY_TOOL_ANNOTATIONS,
     },
-    async (input) => toolResult(await findBlogs(input)),
+    async (input) => toolResult(await listBlogStats(input)),
   );
 };
