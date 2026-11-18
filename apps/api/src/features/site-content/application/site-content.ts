@@ -1,6 +1,5 @@
 import {
   findPublishedBlogRows,
-  findPublishedSlideRows,
   findTagRows,
   findTalkRows,
 } from '../infrastructure/site-content-repository';
@@ -11,13 +10,8 @@ export type PublishedBlog = {
   id: number;
   slug: string;
   tags: TagRef[];
-  slideUrl: string | null;
-};
-
-export type PublishedSlide = {
-  id: number;
-  slug: string;
-  tags: string[];
+  // 記事を解説に持つトークの、k8o.me のデッキの名前と外のスライドの URL
+  talk: { slug: string | null; slideUrl: string | null } | null;
 };
 
 export type Tag = {
@@ -30,13 +24,13 @@ export type Tag = {
 export type Talk = {
   id: number;
   title: string;
+  slug: string | null;
   eventUrl: string;
   eventName: string;
   eventDate: string;
   eventLocation: string | null;
-  slideUrl: string;
-  blogId: number;
-  blog: { id: number; slug: string };
+  slideUrl: string | null;
+  blog: { id: number; slug: string } | null;
   tags: TagRef[];
 };
 
@@ -46,14 +40,7 @@ export const getPublishedBlogs = async (): Promise<PublishedBlog[]> =>
     id: row.id,
     slug: row.slug,
     tags: row.blogTag.map(({ tag }) => tag),
-    slideUrl: row.talks[0]?.slideUrl ?? null,
-  }));
-
-export const getPublishedSlides = async (): Promise<PublishedSlide[]> =>
-  (await findPublishedSlideRows()).map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    tags: row.slideTag.map(({ tag }) => tag.name),
+    talk: row.talks[0] ?? null,
   }));
 
 export const getTags = async (): Promise<Tag[]> =>
@@ -70,12 +57,12 @@ export const getTalks = async (): Promise<Talk[]> =>
   (await findTalkRows()).map((row) => ({
     id: row.id,
     title: row.title,
+    slug: row.slug,
     eventUrl: row.eventUrl,
     eventName: row.eventName,
     eventDate: row.eventDate,
     eventLocation: row.eventLocation,
     slideUrl: row.slideUrl,
-    blogId: row.blogId,
     blog: row.blog,
     tags: row.talkTag.map(({ tag }) => tag),
   }));
