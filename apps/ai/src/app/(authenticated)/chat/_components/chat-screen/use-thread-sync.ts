@@ -2,15 +2,15 @@
 
 import { useEffect, useEffectEvent } from 'react';
 
-import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import type {
+  AgentUIMessage,
+  ServerSync,
+  ThreadRead,
+} from '@/features/agent/interface/conversation';
 import {
   nextSyncStep,
   syncRetryDelayMs,
-} from '@/features/agent/application/thread-sync';
-import type {
-  ServerSync,
-  ThreadRead,
-} from '@/features/agent/application/thread-sync';
+} from '@/features/agent/interface/conversation';
 import type { ThreadSnapshot } from '@/features/agent/interface/thread-snapshot';
 
 const readThread = async (

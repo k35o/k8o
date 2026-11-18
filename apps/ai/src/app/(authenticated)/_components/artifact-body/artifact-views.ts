@@ -1,4 +1,4 @@
-import type { ArtifactKind } from '@/features/artifacts/application/artifact-kind';
+import type { ArtifactKind } from '@/features/artifacts/interface/artifact-kind';
 
 export type ArtifactView = 'preview' | 'spec' | 'tsx' | 'markdown';
 

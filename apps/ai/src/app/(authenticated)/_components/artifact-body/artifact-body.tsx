@@ -6,8 +6,8 @@ import { DeckPreview } from '@/app/_components/deck-preview';
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { SpecPreview } from '@/app/_components/spec-preview';
-import type { PartialArtifactContent } from '@/features/artifacts/application/artifact-kind';
-import { specToTsx } from '@/features/generation/application/spec-to-tsx';
+import type { PartialArtifactContent } from '@/features/artifacts/interface/artifact-kind';
+import { specToTsx } from '@/features/generation/interface/spec-to-tsx';
 
 import { CodeView } from '../code-view';
 import { PreviewLoading } from '../preview-loading';

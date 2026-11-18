@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import type { FC } from 'react';
 
-import { withTouchedThreads } from '@/features/agent/application/touched-threads';
+import { withTouchedThreads } from '@/features/agent/interface/conversation';
 import type { ThreadListItem } from '@/features/agent/interface/queries';
 
 import { useOpeningThread } from '../opening-thread';

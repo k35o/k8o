@@ -12,7 +12,7 @@ import {
   Stage,
   useKeyboardNav,
 } from '@/app/_components/slide-deck';
-import { parseDeck } from '@/features/slides/application/parse-deck';
+import { parseDeck } from '@/features/slides/interface/deck';
 
 import styles from './deck-preview.module.css';
 

@@ -6,15 +6,17 @@ import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { isStaticToolUIPart } from 'ai';
 import type { FC, Ref } from 'react';
 
-import { messageTextOf } from '@/features/agent/application/agent-message';
+import {
+  MAX_STEPS,
+  messageTextOf,
+  WITHHELD_OUTPUT_TEXT,
+} from '@/features/agent/interface/conversation';
 import type {
   AgentUIMessage,
+  ChatArtifact,
   RunEnd,
-} from '@/features/agent/application/agent-message';
-import { MAX_STEPS } from '@/features/agent/application/agent-run';
-import type { ChatArtifact } from '@/features/agent/application/chat-artifacts';
-import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
-import { MONTHLY_BUDGET_USD } from '@/features/usage/application/budget';
+} from '@/features/agent/interface/conversation';
+import { MONTHLY_BUDGET_USD } from '@/features/usage/interface/pricing';
 
 import { ArtifactCard } from '../artifact-card';
 import { MarkdownText } from '../markdown-text';

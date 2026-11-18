@@ -7,7 +7,7 @@ import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
 import { HighlightedTokens } from '@/app/_components/highlighted-code';
-import type { DeckSlide } from '@/features/slides/application/parse-deck';
+import type { DeckSlide } from '@/features/slides/interface/deck';
 
 import { Cover, CoverSubtitle, CoverText, CoverTitle } from '../cover';
 import {

@@ -5,11 +5,11 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
-import { deckCodeBlocks } from '@/features/slides/application/parse-deck';
+import { deckCodeBlocks } from '@/features/slides/interface/deck';
 import type {
   DeckCodeBlock,
   DeckSlide,
-} from '@/features/slides/application/parse-deck';
+} from '@/features/slides/interface/deck';
 
 import {
   DeckHighlightsContext,

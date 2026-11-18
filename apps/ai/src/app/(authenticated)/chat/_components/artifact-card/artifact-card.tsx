@@ -2,7 +2,7 @@ import { Badge, Button, Card, Spinner } from '@k8ordo/ui';
 import { PaletteIcon, PresentationIcon } from '@k8ordo/ui/icons';
 import type { FC, Ref } from 'react';
 
-import type { ChatArtifact } from '@/features/agent/application/chat-artifacts';
+import type { ChatArtifact } from '@/features/agent/interface/conversation';
 
 import styles from './artifact-card.module.css';
 

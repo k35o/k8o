@@ -7,29 +7,27 @@ import type { FC } from 'react';
 import { flushSync } from 'react-dom';
 
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
-import { threadTitleFrom } from '@/features/agent/application/agent-message';
-import type { AgentUIMessage } from '@/features/agent/application/agent-message';
 import {
   artifactLiveOf,
   chatArtifactsOf,
-  lastCallKeyOf,
-  paneVersionsOf,
-  shownArtifact,
-} from '@/features/agent/application/chat-artifacts';
-import type { PaneSelection } from '@/features/agent/application/chat-artifacts';
-import {
   createdAtAfterSync,
   deferredStopAfter,
   isStopping,
+  lastCallKeyOf,
+  paneVersionsOf,
   serverSyncAfter,
+  shownArtifact,
   stopRequestAfterFailedSend,
   stopRequestOnPress,
+  threadTitleFrom,
   unsavedUserText,
-} from '@/features/agent/application/thread-sync';
+} from '@/features/agent/interface/conversation';
 import type {
+  AgentUIMessage,
+  PaneSelection,
   ServerSync,
   StopRequest,
-} from '@/features/agent/application/thread-sync';
+} from '@/features/agent/interface/conversation';
 import { highlightGenerated } from '@/features/highlight/interface/actions';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';

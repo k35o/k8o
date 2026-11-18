@@ -7,9 +7,11 @@ import { BotMessageIcon } from '@k8ordo/ui/icons';
 import { useId } from 'react';
 import type { FC, Ref } from 'react';
 
-import type { AgentUIMessage } from '@/features/agent/application/agent-message';
-import type { ChatArtifact } from '@/features/agent/application/chat-artifacts';
-import { PRICE_PER_MTOK_USD } from '@/features/usage/application/pricing';
+import type {
+  AgentUIMessage,
+  ChatArtifact,
+} from '@/features/agent/interface/conversation';
+import { PRICE_PER_MTOK_USD } from '@/features/usage/interface/pricing';
 import {
   GENERATION_MODEL_LABELS,
   GENERATION_MODELS,

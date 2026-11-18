@@ -9,8 +9,8 @@ import type { HighlightFn } from '@/app/_components/highlighted-code';
 import type {
   PaneArtifact,
   PaneVersion,
-} from '@/features/agent/application/chat-artifacts';
-import type { ArtifactKind } from '@/features/artifacts/application/artifact-kind';
+} from '@/features/agent/interface/conversation';
+import type { ArtifactKind } from '@/features/artifacts/interface/artifact-kind';
 
 import {
   ARTIFACT_VIEW_OPTIONS,

@@ -8,7 +8,7 @@ import type { FC } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { PrintButton } from '@/app/_components/print-button';
-import { ARTIFACT_KIND_LABELS } from '@/features/artifacts/application/artifact-kind';
+import { ARTIFACT_KIND_LABELS } from '@/features/artifacts/interface/artifact-kind';
 import type { ArtifactForRoute } from '@/features/artifacts/interface/queries';
 
 import {
