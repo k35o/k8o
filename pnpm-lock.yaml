@@ -705,15 +705,6 @@ importers:
 
   packages/code-highlight:
     dependencies:
-      '@shikijs/core':
-        specifier: 4.6.0
-        version: 4.6.0
-      '@shikijs/engine-javascript':
-        specifier: 4.6.0
-        version: 4.6.0
-      '@shikijs/langs':
-        specifier: 4.6.0
-        version: 4.6.0
       '@shikijs/rehype':
         specifier: 4.6.0
         version: 4.6.0
