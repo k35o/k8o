@@ -3,7 +3,7 @@ import type { FC } from 'react';
 
 import type { ThreadListItem } from '@/features/agent/interface/queries';
 
-import { SidebarList } from '../../../_components/sidebar-list';
+import { SidebarList } from '../sidebar-list';
 
 type ThreadListProps = {
   threads: ThreadListItem[];

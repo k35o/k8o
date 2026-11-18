@@ -40,13 +40,13 @@ import {
 } from '../../../_components/artifact-body';
 import type { ArtifactView } from '../../../_components/artifact-body';
 import { useDeckHighlight } from '../../../_components/deck-highlight';
+import { useOpeningThread } from '../../../_components/opening-thread';
 import { ToolHeader } from '../../../_components/tool-frame';
+import { useTouchedThreads } from '../../../_components/touched-threads';
 import { ViewTabs } from '../../../_components/view-tabs';
 import { ArtifactPane } from '../artifact-pane';
 import { ChatPanes, usePaneFocus } from '../chat-panes';
 import { ChatHeader, ChatView } from '../chat-view';
-import { useOpeningThread } from '../opening-thread';
-import { useTouchedThreads } from '../touched-threads';
 import { usePanePin } from './use-pane-pin';
 import { useThreadSync } from './use-thread-sync';
 

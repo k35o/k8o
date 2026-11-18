@@ -3,7 +3,7 @@ import { expect, within } from 'storybook/test';
 
 import type { ThreadListItem } from '@/features/agent/interface/queries';
 
-import preview from '../../../../../../.storybook/preview';
+import preview from '../../../../../.storybook/preview';
 import { ThreadList } from './thread-list';
 
 import styles from './thread-list.stories.module.css';

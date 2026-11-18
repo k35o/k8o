@@ -6,8 +6,8 @@ import type { FC } from 'react';
 import { withTouchedThreads } from '@/features/agent/application/touched-threads';
 import type { ThreadListItem } from '@/features/agent/interface/queries';
 
-import { useSidebarMenu } from '../../../_components/tool-frame';
 import { useOpeningThread } from '../opening-thread';
+import { useSidebarMenu } from '../tool-frame';
 import { useTouchedThreads } from '../touched-threads';
 import { threadIdFromPathname } from './thread-id-from-pathname';
 import { ThreadList } from './thread-list';

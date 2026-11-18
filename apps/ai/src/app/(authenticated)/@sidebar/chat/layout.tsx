@@ -4,11 +4,11 @@ import type { ReactNode } from 'react';
 import { listThreadsForRoute } from '@/features/agent/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
 
+import { ThreadListSlot } from '../../_components/thread-list';
 import {
   SidebarListSkeleton,
   SidebarSection,
 } from '../../_components/tool-frame';
-import { ThreadListSlot } from '../../chat/_components/thread-list';
 
 const Threads = async () => {
   await verifySession();

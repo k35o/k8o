@@ -5,7 +5,7 @@ import type { ThreadListItem } from '@/features/agent/interface/queries';
 
 import preview from '../../../../../.storybook/preview';
 import { ChatHeader } from '../../chat/_components/chat-view';
-import { ThreadList } from '../../chat/_components/thread-list';
+import { ThreadList } from '../thread-list';
 import { SidebarSection } from './sidebar-section';
 import { ToolFrame } from './tool-frame';
 import { ToolHeader } from './tool-header';
