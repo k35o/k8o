@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
-import type { ThreadListItem } from '@/features/agent/application/threads';
+import type { ThreadListItem } from '@/features/agent/interface/queries';
 
 import preview from '../../../../../.storybook/preview';
 import { ChatHeader } from '../../chat/_components/chat-view';

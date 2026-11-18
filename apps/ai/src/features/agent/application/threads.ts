@@ -16,28 +16,9 @@ import {
 import type { ThreadRow } from '../infrastructure/thread-repository';
 import type { AgentUIMessage } from './agent-message';
 import { heartbeatStaleBeforeIso, isRunActive } from './agent-run';
+import type { LoadedThread, ThreadListItem, ThreadSnapshot } from './thread';
 
 export type { ThreadRow } from '../infrastructure/thread-repository';
-
-export type ThreadSnapshot =
-  | { running: true }
-  | { running: false; messages: AgentUIMessage[] };
-
-export type ThreadListItem = {
-  id: string;
-  title: string;
-  model: GenerationModel | null;
-  updatedAt: string;
-  running: boolean;
-};
-
-export type LoadedThread = {
-  id: string;
-  title: string;
-  model: GenerationModel;
-  running: boolean;
-  messages: AgentUIMessage[];
-};
 
 const toIso = (time: number): string => new Date(time).toISOString();
 

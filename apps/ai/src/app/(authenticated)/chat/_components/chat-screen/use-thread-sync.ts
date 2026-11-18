@@ -11,7 +11,7 @@ import type {
   ServerSync,
   ThreadRead,
 } from '@/features/agent/application/thread-sync';
-import type { ThreadSnapshot } from '@/features/agent/application/threads';
+import type { ThreadSnapshot } from '@/features/agent/interface/thread-snapshot';
 
 const readThread = async (
   threadId: string,

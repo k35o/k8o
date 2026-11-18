@@ -1,4 +1,4 @@
-import type { ThreadListItem } from './threads';
+import type { ThreadListItem } from './thread';
 
 const isNewer = (thread: ThreadListItem, than: ThreadListItem): boolean =>
   Date.parse(thread.updatedAt) > Date.parse(than.updatedAt);

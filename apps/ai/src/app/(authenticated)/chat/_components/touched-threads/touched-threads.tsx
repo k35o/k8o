@@ -3,8 +3,8 @@
 import { createContext, use, useMemo, useReducer } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import type { ThreadListItem } from '@/features/agent/application/threads';
 import { withTouchedThreads } from '@/features/agent/application/touched-threads';
+import type { ThreadListItem } from '@/features/agent/interface/queries';
 
 type TouchedThreads = {
   threads: ThreadListItem[];

@@ -1,7 +1,7 @@
 import { Badge } from '@k8ordo/ui';
 import type { FC } from 'react';
 
-import type { ThreadListItem } from '@/features/agent/application/threads';
+import type { ThreadListItem } from '@/features/agent/interface/queries';
 
 import { SidebarList } from '../../../_components/sidebar-list';
 

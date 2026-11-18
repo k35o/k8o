@@ -3,8 +3,8 @@
 import { usePathname } from 'next/navigation';
 import type { FC } from 'react';
 
-import type { ThreadListItem } from '@/features/agent/application/threads';
 import { withTouchedThreads } from '@/features/agent/application/touched-threads';
+import type { ThreadListItem } from '@/features/agent/interface/queries';
 
 import { useSidebarMenu } from '../../../_components/tool-frame';
 import { useOpeningThread } from '../opening-thread';

@@ -1,7 +1,7 @@
 import type { ChatOnFinishCallback, ChatStatus } from 'ai';
 
 import type { AgentUIMessage } from './agent-message';
-import type { ThreadSnapshot } from './threads';
+import type { ThreadSnapshot } from './thread';
 
 type ChatFinish = Parameters<ChatOnFinishCallback<AgentUIMessage>>[0];
 
