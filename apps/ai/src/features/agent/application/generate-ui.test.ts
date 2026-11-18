@@ -2,8 +2,8 @@ import type { Spec } from '@json-render/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  findUiVersion,
-  saveUiVersion,
+  findArtifactVersion,
+  saveArtifactVersion,
 } from '@/features/artifacts/application/artifacts';
 import { streamUiSpec } from '@/features/generation/application/stream-ui-spec';
 import type { UiSpecDraft } from '@/features/generation/application/ui-spec';
@@ -14,7 +14,7 @@ import {
   updateUsageCost,
 } from '@/features/usage/infrastructure/usage-repository';
 
-import { generateUi, generateUiModelOutput } from './generate-ui';
+import { generateUi } from './generate-ui';
 import type { GenerateUiOutput } from './generate-ui';
 
 vi.mock('server-only', () => ({}));
@@ -22,8 +22,8 @@ vi.mock('@/features/generation/application/stream-ui-spec', () => ({
   streamUiSpec: vi.fn(),
 }));
 vi.mock('@/features/artifacts/application/artifacts', () => ({
-  findUiVersion: vi.fn(),
-  saveUiVersion: vi.fn(),
+  findArtifactVersion: vi.fn(),
+  saveArtifactVersion: vi.fn(),
 }));
 vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
   insertUsageWithinLimits: vi.fn(),
@@ -144,13 +144,14 @@ beforeEach(() => {
   vi.mocked(insertUsageWithinLimits).mockResolvedValue(7);
   vi.mocked(selectCostSinceMicroUsd).mockResolvedValue(0);
   vi.mocked(updateUsageCost).mockResolvedValue();
-  vi.mocked(findUiVersion).mockResolvedValue({
+  vi.mocked(findArtifactVersion).mockResolvedValue({
     id: 12,
     artifactId: 'a1b2c3d4e5f6',
     title: '確認ボタン',
+    kind: 'ui',
     spec: BUTTON,
   });
-  vi.mocked(saveUiVersion).mockResolvedValue({
+  vi.mocked(saveArtifactVersion).mockResolvedValue({
     artifactId: 'a1b2c3d4e5f6',
     version: 1,
   });
@@ -183,14 +184,14 @@ describe('generateUi', () => {
           userPrompt: 'OK のボタンを置く',
         }),
       );
-      expect(saveUiVersion).toHaveBeenCalledExactlyOnceWith({
+      expect(saveArtifactVersion).toHaveBeenCalledExactlyOnceWith({
         userId: 'u1',
         threadId: 'thread-1',
         base: null,
         title: '確認ボタン',
         instruction: 'OK のボタンを置く',
         summary: 'OK のボタンを置きました。',
-        spec: BUTTON,
+        content: { kind: 'ui', spec: BUTTON },
       });
     });
 
@@ -221,7 +222,7 @@ describe('generateUi', () => {
       for await (const output of run()) {
         writtenWhenYielded.push([
           output.status,
-          vi.mocked(saveUiVersion).mock.calls.length,
+          vi.mocked(saveArtifactVersion).mock.calls.length,
           vi.mocked(updateUsageCost).mock.calls.length,
         ]);
       }
@@ -235,7 +236,7 @@ describe('generateUi', () => {
 
     it('直すときは、持ち主の土台の版を読み、土台から描き始めて、その版の次として保存する', async () => {
       mockAttempts(succeeded(LARGE_BUTTON));
-      vi.mocked(saveUiVersion).mockResolvedValue({
+      vi.mocked(saveArtifactVersion).mockResolvedValue({
         artifactId: 'a1b2c3d4e5f6',
         version: 3,
       });
@@ -249,10 +250,11 @@ describe('generateUi', () => {
         }),
       );
 
-      expect(findUiVersion).toHaveBeenCalledExactlyOnceWith({
+      expect(findArtifactVersion).toHaveBeenCalledExactlyOnceWith({
         artifactId: 'a1b2c3d4e5f6',
         version: 2,
         userId: 'u1',
+        kind: 'ui',
       });
       expect(outputs[0]).toStrictEqual({
         status: 'generating',
@@ -268,10 +270,10 @@ describe('generateUi', () => {
           ),
         }),
       );
-      expect(saveUiVersion).toHaveBeenCalledExactlyOnceWith(
+      expect(saveArtifactVersion).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({
           base: expect.objectContaining({ id: 12, artifactId: 'a1b2c3d4e5f6' }),
-          spec: LARGE_BUTTON,
+          content: { kind: 'ui', spec: LARGE_BUTTON },
         }),
       );
     });
@@ -346,7 +348,7 @@ describe('generateUi', () => {
 
   describe('異常系', () => {
     it('土台の版が読めなければ、予約せずに見つからないエラーにする', async () => {
-      vi.mocked(findUiVersion).mockResolvedValue(null);
+      vi.mocked(findArtifactVersion).mockResolvedValue(null);
 
       await expect(
         collect(
@@ -377,7 +379,7 @@ describe('generateUi', () => {
       await expect(collect(run())).rejects.toThrow(
         'UI は変わりませんでした: どの画面の UI か教えてください。',
       );
-      expect(saveUiVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
     });
 
     it('修復しても検証に落ちたら、保存せずに直せなかったエラーにする', async () => {
@@ -389,7 +391,7 @@ describe('generateUi', () => {
       await expect(collect(run())).rejects.toThrow(
         'UI の検証エラーを直せませんでした: Root element "missing" not found in elements map.',
       );
-      expect(saveUiVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
       expect(updateUsageCost).toHaveBeenCalledTimes(2);
     });
 
@@ -404,7 +406,7 @@ describe('generateUi', () => {
         'UI の生成でエラーが起きました: Overloaded',
       );
       expect(updateUsageCost).toHaveBeenCalledOnce();
-      expect(saveUiVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
     });
 
     it('組み上がったあとで止められたら、保存せずに中断のエラーにする', async () => {
@@ -421,7 +423,7 @@ describe('generateUi', () => {
       expect(vi.mocked(streamUiSpec).mock.calls[0]?.[0].abortSignal).toBe(
         controller.signal,
       );
-      expect(saveUiVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
       expect(updateUsageCost).toHaveBeenCalledOnce();
     });
   });
@@ -432,8 +434,8 @@ describe('generateUi', () => {
 
       await collect(run({ input: { base: null } }));
 
-      expect(findUiVersion).not.toHaveBeenCalled();
-      expect(saveUiVersion).toHaveBeenCalledWith(
+      expect(findArtifactVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).toHaveBeenCalledWith(
         expect.objectContaining({ base: null }),
       );
     });
@@ -519,58 +521,6 @@ describe('generateUi', () => {
         status: 'done',
         summary: `${'あ'.repeat(300)}…`,
       });
-    });
-  });
-});
-
-describe('generateUiModelOutput', () => {
-  const done: GenerateUiOutput = {
-    status: 'done',
-    artifactId: 'a1b2c3d4e5f6',
-    version: 2,
-    summary: 'ボタンを大きくしました。',
-    spec: BUTTON,
-  };
-
-  describe('正常系', () => {
-    it('保存した版の artifactId・版・タイトルと要約を、Claude に返す文にする', () => {
-      expect(generateUiModelOutput({ input, output: done })).toStrictEqual({
-        type: 'text',
-        value:
-          'UI「確認ボタン」を artifactId: a1b2c3d4e5f6 の版 2 として保存し、利用者の画面のプレビューに出しました。\nボタンを大きくしました。',
-      });
-    });
-
-    it('DB の JSON から戻した値でも、同じ文を返す', () => {
-      // oxlint-disable-next-line unicorn/prefer-structured-clone -- DB の JSON の列と同じく、JSON で往復させる
-      const restored = JSON.parse(
-        JSON.stringify({ input, output: done }),
-      ) as Parameters<typeof generateUiModelOutput>[0];
-
-      expect(generateUiModelOutput(restored)).toStrictEqual(
-        generateUiModelOutput({ input, output: done }),
-      );
-    });
-  });
-
-  describe('エッジケース', () => {
-    it('要約が空なら、保存したことだけを返す', () => {
-      expect(
-        generateUiModelOutput({ input, output: { ...done, summary: '' } }),
-      ).toStrictEqual({
-        type: 'text',
-        value:
-          'UI「確認ボタン」を artifactId: a1b2c3d4e5f6 の版 2 として保存し、利用者の画面のプレビューに出しました。',
-      });
-    });
-
-    it('生成中の出力には、完了していないことを返す', () => {
-      expect(
-        generateUiModelOutput({
-          input,
-          output: { status: 'generating', phase: 'drawing', spec: null },
-        }),
-      ).toStrictEqual({ type: 'text', value: 'UI の生成は完了していません' });
     });
   });
 });

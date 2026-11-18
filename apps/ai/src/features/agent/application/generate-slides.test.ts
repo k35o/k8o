@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  findSlidesVersion,
-  saveSlidesVersion,
+  findArtifactVersion,
+  saveArtifactVersion,
 } from '@/features/artifacts/application/artifacts';
 import { streamSlidesDeck } from '@/features/generation/application/stream-slides-deck';
 import type { UsageTokens } from '@/features/usage/application/pricing';
@@ -12,7 +12,7 @@ import {
   updateUsageCost,
 } from '@/features/usage/infrastructure/usage-repository';
 
-import { generateSlides, generateSlidesModelOutput } from './generate-slides';
+import { generateSlides } from './generate-slides';
 import type { GenerateSlidesOutput } from './generate-slides';
 
 vi.mock('server-only', () => ({}));
@@ -20,8 +20,8 @@ vi.mock('@/features/generation/application/stream-slides-deck', () => ({
   streamSlidesDeck: vi.fn(),
 }));
 vi.mock('@/features/artifacts/application/artifacts', () => ({
-  findSlidesVersion: vi.fn(),
-  saveSlidesVersion: vi.fn(),
+  findArtifactVersion: vi.fn(),
+  saveArtifactVersion: vi.fn(),
 }));
 vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
   insertUsageWithinLimits: vi.fn(),
@@ -133,13 +133,14 @@ beforeEach(() => {
   vi.mocked(insertUsageWithinLimits).mockResolvedValue(7);
   vi.mocked(selectCostSinceMicroUsd).mockResolvedValue(0);
   vi.mocked(updateUsageCost).mockResolvedValue();
-  vi.mocked(findSlidesVersion).mockResolvedValue({
+  vi.mocked(findArtifactVersion).mockResolvedValue({
     id: 12,
     artifactId: 'a1b2c3d4e5f6',
     title: 'LT の資料',
+    kind: 'slides',
     source: BASE_DECK,
   });
-  vi.mocked(saveSlidesVersion).mockResolvedValue({
+  vi.mocked(saveArtifactVersion).mockResolvedValue({
     artifactId: 'a1b2c3d4e5f6',
     version: 1,
   });
@@ -175,14 +176,14 @@ describe('generateSlides', () => {
           userPrompt: '2枚のスライドにする',
         }),
       );
-      expect(saveSlidesVersion).toHaveBeenCalledExactlyOnceWith({
+      expect(saveArtifactVersion).toHaveBeenCalledExactlyOnceWith({
         userId: 'u1',
         threadId: 'thread-1',
         base: null,
         title: 'LT の資料',
         instruction: '2枚のスライドにする',
         summary: '2枚のスライドにしました。',
-        source: DECK,
+        content: { kind: 'slides', source: DECK },
       });
     });
 
@@ -213,7 +214,7 @@ describe('generateSlides', () => {
       for await (const output of run()) {
         writtenWhenYielded.push([
           output.status,
-          vi.mocked(saveSlidesVersion).mock.calls.length,
+          vi.mocked(saveArtifactVersion).mock.calls.length,
           vi.mocked(updateUsageCost).mock.calls.length,
         ]);
       }
@@ -228,7 +229,7 @@ describe('generateSlides', () => {
     it('直すときは、持ち主の土台の版を user の文に置き、考えているあいだは土台を流さず、その版の次として保存する', async () => {
       const controller = new AbortController();
       mockAttempt(succeeded());
-      vi.mocked(saveSlidesVersion).mockResolvedValue({
+      vi.mocked(saveArtifactVersion).mockResolvedValue({
         artifactId: 'a1b2c3d4e5f6',
         version: 3,
       });
@@ -243,10 +244,11 @@ describe('generateSlides', () => {
         }),
       );
 
-      expect(findSlidesVersion).toHaveBeenCalledExactlyOnceWith({
+      expect(findArtifactVersion).toHaveBeenCalledExactlyOnceWith({
         artifactId: 'a1b2c3d4e5f6',
         version: 2,
         userId: 'u1',
+        kind: 'slides',
       });
       expect(outputs[0]).toStrictEqual({
         status: 'generating',
@@ -260,10 +262,10 @@ describe('generateSlides', () => {
         ),
         abortSignal: controller.signal,
       });
-      expect(saveSlidesVersion).toHaveBeenCalledExactlyOnceWith(
+      expect(saveArtifactVersion).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({
           base: expect.objectContaining({ id: 12, artifactId: 'a1b2c3d4e5f6' }),
-          source: DECK,
+          content: { kind: 'slides', source: DECK },
         }),
       );
     });
@@ -307,7 +309,7 @@ describe('generateSlides', () => {
 
   describe('異常系', () => {
     it('土台の版が読めなければ、予約せずに見つからないエラーにする', async () => {
-      vi.mocked(findSlidesVersion).mockResolvedValue(null);
+      vi.mocked(findArtifactVersion).mockResolvedValue(null);
 
       await expect(
         collect(
@@ -335,7 +337,7 @@ describe('generateSlides', () => {
       await expect(collect(run())).rejects.toThrow(
         'スライドは変わりませんでした: どの記事のスライドか教えてください。',
       );
-      expect(saveSlidesVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
       expect(updateUsageCost).toHaveBeenCalledOnce();
     });
 
@@ -352,7 +354,7 @@ describe('generateSlides', () => {
       ).rejects.toThrow(
         'スライドは変わりませんでした: 直すところはありませんでした。',
       );
-      expect(saveSlidesVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
     });
 
     it('外側が3つのバッククォートで、中のコードブロックのフェンスでデッキが切れたら、保存せずに読み取れなかったエラーにする', async () => {
@@ -380,7 +382,7 @@ describe('generateSlides', () => {
       await expect(collect(run())).rejects.toThrow(
         'スライドを読み取れませんでした: デッキを囲むフェンスが閉じていないか、中のコードブロックで切れています',
       );
-      expect(saveSlidesVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
       expect(updateUsageCost).toHaveBeenCalledOnce();
     });
 
@@ -393,7 +395,7 @@ describe('generateSlides', () => {
       await expect(collect(run())).rejects.toThrow(
         'スライドを読み取れませんでした: デッキの中のコードブロックが閉じていません',
       );
-      expect(saveSlidesVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
     });
 
     it('生成が失敗しても、その呼び出しの usage を記録してからエラーにする', async () => {
@@ -407,7 +409,7 @@ describe('generateSlides', () => {
         'スライドの生成でエラーが起きました: Overloaded',
       );
       expect(updateUsageCost).toHaveBeenCalledOnce();
-      expect(saveSlidesVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
     });
 
     it('書き終えたあとで止められたら、保存せずに中断のエラーにし、usage は記録する', async () => {
@@ -421,7 +423,7 @@ describe('generateSlides', () => {
       await expect(
         collect(run({ abortSignal: controller.signal })),
       ).rejects.toThrow(expect.objectContaining({ name: 'AbortError' }));
-      expect(saveSlidesVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).not.toHaveBeenCalled();
       expect(updateUsageCost).toHaveBeenCalledOnce();
     });
   });
@@ -432,8 +434,8 @@ describe('generateSlides', () => {
 
       await collect(run({ input: { base: null } }));
 
-      expect(findSlidesVersion).not.toHaveBeenCalled();
-      expect(saveSlidesVersion).toHaveBeenCalledWith(
+      expect(findArtifactVersion).not.toHaveBeenCalled();
+      expect(saveArtifactVersion).toHaveBeenCalledWith(
         expect.objectContaining({ base: null }),
       );
     });
@@ -499,61 +501,6 @@ describe('generateSlides', () => {
           (source) => /## (?<heading>\d)/u.exec(source)?.groups?.['heading'],
         ),
       ).toStrictEqual(['1', '3']);
-    });
-  });
-});
-
-describe('generateSlidesModelOutput', () => {
-  const done: GenerateSlidesOutput = {
-    status: 'done',
-    artifactId: 'a1b2c3d4e5f6',
-    version: 2,
-    summary: 'まとめに振り返りを足しました。',
-    source: DECK,
-  };
-
-  describe('正常系', () => {
-    it('保存した版の artifactId・版・タイトルと要約を、Claude に返す文にする', () => {
-      expect(generateSlidesModelOutput({ input, output: done })).toStrictEqual({
-        type: 'text',
-        value:
-          'スライド「LT の資料」を artifactId: a1b2c3d4e5f6 の版 2 として保存し、利用者の画面のプレビューに出しました。\nまとめに振り返りを足しました。',
-      });
-    });
-
-    it('DB の JSON から戻した値でも、同じ文を返す', () => {
-      // oxlint-disable-next-line unicorn/prefer-structured-clone -- DB の JSON の列と同じく、JSON で往復させる
-      const restored = JSON.parse(
-        JSON.stringify({ input, output: done }),
-      ) as Parameters<typeof generateSlidesModelOutput>[0];
-
-      expect(generateSlidesModelOutput(restored)).toStrictEqual(
-        generateSlidesModelOutput({ input, output: done }),
-      );
-    });
-  });
-
-  describe('エッジケース', () => {
-    it('要約が空なら、保存したことだけを返す', () => {
-      expect(
-        generateSlidesModelOutput({ input, output: { ...done, summary: '' } }),
-      ).toStrictEqual({
-        type: 'text',
-        value:
-          'スライド「LT の資料」を artifactId: a1b2c3d4e5f6 の版 2 として保存し、利用者の画面のプレビューに出しました。',
-      });
-    });
-
-    it('生成中の出力には、完了していないことを返す', () => {
-      expect(
-        generateSlidesModelOutput({
-          input,
-          output: { status: 'generating', phase: 'writing', source: DECK },
-        }),
-      ).toStrictEqual({
-        type: 'text',
-        value: 'スライドの生成は完了していません',
-      });
     });
   });
 });

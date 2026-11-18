@@ -8,12 +8,10 @@ import {
   selectVersion,
 } from '../infrastructure/artifact-repository';
 import {
-  findSlidesVersion,
-  findUiVersion,
+  findArtifactVersion,
   forkVersion,
   loadArtifact,
-  saveSlidesVersion,
-  saveUiVersion,
+  saveArtifactVersion,
   versionFromParam,
 } from './artifacts';
 
@@ -37,8 +35,8 @@ const generated = {
   title: '問い合わせフォーム',
   instruction: 'ボタンを大きくする',
   summary: 'ボタンを大きくしました。',
-  spec: SPEC,
-};
+  content: { kind: 'ui', spec: SPEC },
+} as const;
 
 beforeEach(() => {
   vi.mocked(insertArtifactWithFirstVersion).mockResolvedValue();
@@ -52,10 +50,10 @@ beforeEach(() => {
   });
 });
 
-describe('saveUiVersion', () => {
+describe('saveArtifactVersion（ui）', () => {
   describe('正常系', () => {
     it('土台が無ければ、12文字の id を振った ui の生成物を版 1 で作り、その id と版を返す', async () => {
-      const saved = await saveUiVersion({ ...generated, base: null });
+      const saved = await saveArtifactVersion({ ...generated, base: null });
 
       expect(saved).toStrictEqual({
         artifactId: expect.stringMatching(/^[0-9a-f]{12}$/),
@@ -77,7 +75,7 @@ describe('saveUiVersion', () => {
 
     it('土台があれば、その生成物に土台の版を親にした次の版を足し、その番号を返す', async () => {
       await expect(
-        saveUiVersion({
+        saveArtifactVersion({
           ...generated,
           base: { id: 12, artifactId: 'a1b2c3d4e5f6' },
         }),
@@ -96,15 +94,21 @@ describe('saveUiVersion', () => {
   });
 });
 
-describe('findUiVersion', () => {
-  const query = { artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u1' };
+describe('findArtifactVersion（ui）', () => {
+  const query = {
+    artifactId: 'a1b2c3d4e5f6',
+    version: 2,
+    userId: 'u1',
+    kind: 'ui',
+  } as const;
 
   describe('正常系', () => {
     it('持ち主の ui の版を読み、その id・生成物・タイトル・spec を返す', async () => {
-      await expect(findUiVersion(query)).resolves.toStrictEqual({
+      await expect(findArtifactVersion(query)).resolves.toStrictEqual({
         id: 12,
         artifactId: 'a1b2c3d4e5f6',
         title: '問い合わせフォーム',
+        kind: 'ui',
         spec: SPEC,
       });
       expect(selectVersion).toHaveBeenCalledExactlyOnceWith({
@@ -119,7 +123,7 @@ describe('findUiVersion', () => {
     it('版が見つからなければ null を返す', async () => {
       vi.mocked(selectVersion).mockResolvedValue(null);
 
-      await expect(findUiVersion(query)).resolves.toBeNull();
+      await expect(findArtifactVersion(query)).resolves.toBeNull();
     });
 
     it('slides の生成物の版なら null を返す', async () => {
@@ -131,7 +135,7 @@ describe('findUiVersion', () => {
         content: { source: '## まとめ' },
       });
 
-      await expect(findUiVersion(query)).resolves.toBeNull();
+      await expect(findArtifactVersion(query)).resolves.toBeNull();
     });
 
     it.each([
@@ -148,12 +152,12 @@ describe('findUiVersion', () => {
         content,
       });
 
-      await expect(findUiVersion(query)).resolves.toBeNull();
+      await expect(findArtifactVersion(query)).resolves.toBeNull();
     });
   });
 });
 
-describe('saveSlidesVersion', () => {
+describe('saveArtifactVersion（slides）', () => {
   const deck = '<Cover>\n# 発表\n</Cover>\n\n---\n\n## まとめ';
   const slides = {
     userId: 'u1',
@@ -161,12 +165,12 @@ describe('saveSlidesVersion', () => {
     title: 'LT の資料',
     instruction: '5枚のスライドにする',
     summary: '5枚のスライドにしました。',
-    source: deck,
-  };
+    content: { kind: 'slides', source: deck },
+  } as const;
 
   describe('正常系', () => {
     it('土台が無ければ、12文字の id を振った slides の生成物を、デッキの source を中身にして版 1 で作る', async () => {
-      const saved = await saveSlidesVersion({ ...slides, base: null });
+      const saved = await saveArtifactVersion({ ...slides, base: null });
 
       expect(saved).toStrictEqual({
         artifactId: expect.stringMatching(/^[0-9a-f]{12}$/),
@@ -187,7 +191,7 @@ describe('saveSlidesVersion', () => {
 
     it('土台があれば、その生成物に土台の版を親にした次の版を足し、その番号を返す', async () => {
       await expect(
-        saveSlidesVersion({
+        saveArtifactVersion({
           ...slides,
           base: { id: 12, artifactId: 'a1b2c3d4e5f6' },
         }),
@@ -205,8 +209,13 @@ describe('saveSlidesVersion', () => {
   });
 });
 
-describe('findSlidesVersion', () => {
-  const query = { artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u1' };
+describe('findArtifactVersion（slides）', () => {
+  const query = {
+    artifactId: 'a1b2c3d4e5f6',
+    version: 2,
+    userId: 'u1',
+    kind: 'slides',
+  } as const;
 
   describe('正常系', () => {
     it('持ち主の slides の版を読み、その id・生成物・タイトル・source を返す', async () => {
@@ -218,10 +227,11 @@ describe('findSlidesVersion', () => {
         content: { source: '## まとめ' },
       });
 
-      await expect(findSlidesVersion(query)).resolves.toStrictEqual({
+      await expect(findArtifactVersion(query)).resolves.toStrictEqual({
         id: 12,
         artifactId: 'a1b2c3d4e5f6',
         title: 'LT の資料',
+        kind: 'slides',
         source: '## まとめ',
       });
       expect(selectVersion).toHaveBeenCalledExactlyOnceWith({
@@ -236,11 +246,11 @@ describe('findSlidesVersion', () => {
     it('版が見つからなければ null を返す', async () => {
       vi.mocked(selectVersion).mockResolvedValue(null);
 
-      await expect(findSlidesVersion(query)).resolves.toBeNull();
+      await expect(findArtifactVersion(query)).resolves.toBeNull();
     });
 
     it('ui の生成物の版なら null を返す', async () => {
-      await expect(findSlidesVersion(query)).resolves.toBeNull();
+      await expect(findArtifactVersion(query)).resolves.toBeNull();
     });
 
     it.each([
@@ -258,7 +268,7 @@ describe('findSlidesVersion', () => {
         content,
       });
 
-      await expect(findSlidesVersion(query)).resolves.toBeNull();
+      await expect(findArtifactVersion(query)).resolves.toBeNull();
     });
   });
 });

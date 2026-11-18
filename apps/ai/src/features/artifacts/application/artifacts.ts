@@ -19,10 +19,6 @@ type StoredVersion = {
   title: string;
 };
 
-type UiVersion = StoredVersion & { spec: Spec };
-
-type SlidesVersion = StoredVersion & { source: string };
-
 type VersionInput = {
   userId: string;
   threadId: string;
@@ -40,11 +36,14 @@ type VersionQuery = {
   userId: string;
 };
 
-type ArtifactContent =
+export type ArtifactContent =
   | { kind: 'ui'; spec: Spec }
   | { kind: 'slides'; source: string };
 
 export type ArtifactVersion = ArtifactContent & { title: string };
+
+export type StoredArtifactVersion<Kind extends AiArtifactKind> = StoredVersion &
+  Extract<ArtifactContent, { kind: Kind }>;
 
 export type ArtifactListItem = {
   id: string;
@@ -83,22 +82,23 @@ export type LoadedArtifact = ArtifactHistory & {
 const newArtifactId = (): string =>
   randomUUID().replaceAll('-', '').slice(0, 12);
 
-const saveVersion = async (
-  input: VersionInput & { kind: AiArtifactKind; content: unknown },
+export const saveArtifactVersion = async (
+  input: VersionInput & { content: ArtifactContent },
 ): Promise<SavedVersion> => {
+  const { kind, ...content } = input.content;
   const values = {
     threadId: input.threadId,
     title: input.title,
     instruction: input.instruction,
     summary: input.summary,
-    content: input.content,
+    content,
   };
   if (input.base === null) {
     const artifactId = newArtifactId();
     await insertArtifactWithFirstVersion({
       id: artifactId,
       userId: input.userId,
-      kind: input.kind,
+      kind,
       parentId: null,
       ...values,
     });
@@ -161,46 +161,22 @@ const readVersion = async (
   return version === null ? null : { id: row.id, version };
 };
 
-export const saveUiVersion = ({
-  spec,
-  ...input
-}: VersionInput & { spec: Spec }): Promise<SavedVersion> =>
-  saveVersion({ ...input, kind: 'ui', content: { spec } });
+const isKind = <Kind extends AiArtifactKind>(
+  version: ArtifactVersion,
+  kind: Kind,
+): version is Extract<ArtifactVersion, { kind: Kind }> => version.kind === kind;
 
-export const findUiVersion = async (
-  input: VersionQuery,
-): Promise<UiVersion | null> => {
-  const stored = await readVersion(input);
-  if (stored?.version.kind !== 'ui') {
+export const findArtifactVersion = async <Kind extends AiArtifactKind>({
+  kind,
+  ...query
+}: VersionQuery & {
+  kind: Kind;
+}): Promise<StoredArtifactVersion<Kind> | null> => {
+  const stored = await readVersion(query);
+  if (stored === null || !isKind(stored.version, kind)) {
     return null;
   }
-  return {
-    id: stored.id,
-    artifactId: input.artifactId,
-    title: stored.version.title,
-    spec: stored.version.spec,
-  };
-};
-
-export const saveSlidesVersion = ({
-  source,
-  ...input
-}: VersionInput & { source: string }): Promise<SavedVersion> =>
-  saveVersion({ ...input, kind: 'slides', content: { source } });
-
-export const findSlidesVersion = async (
-  input: VersionQuery,
-): Promise<SlidesVersion | null> => {
-  const stored = await readVersion(input);
-  if (stored?.version.kind !== 'slides') {
-    return null;
-  }
-  return {
-    id: stored.id,
-    artifactId: input.artifactId,
-    title: stored.version.title,
-    source: stored.version.source,
-  };
+  return { id: stored.id, artifactId: query.artifactId, ...stored.version };
 };
 
 export const forkVersion = async (

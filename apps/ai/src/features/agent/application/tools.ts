@@ -9,17 +9,12 @@ import {
   fetchOwnerBlogs,
 } from '../infrastructure/owner-api';
 import type { OwnerBlog } from '../infrastructure/owner-api';
-import { artifactToolContextSchema } from './artifact-tool';
 import {
-  generateSlides,
-  generateSlidesInputSchema,
-  generateSlidesModelOutput,
-} from './generate-slides';
-import {
-  generateUi,
-  generateUiInputSchema,
-  generateUiModelOutput,
-} from './generate-ui';
+  artifactModelOutput,
+  artifactToolContextSchema,
+} from './artifact-tool';
+import { generateSlides, generateSlidesInputSchema } from './generate-slides';
+import { generateUi, generateUiInputSchema } from './generate-ui';
 import { githubTools } from './github-tools';
 import { siteTools } from './site-tools';
 import { webTools } from './web-tools';
@@ -83,7 +78,7 @@ export const agentTools = {
       generateUi({ input, context, abortSignal }),
     // 関数をそのまま渡すと、tool() が input と output の型を推論できなくなる
     toModelOutput: ({ input, output }) =>
-      generateUiModelOutput({ input, output }),
+      artifactModelOutput('ui', { input, output }),
   }),
   generate_slides: tool({
     description:
@@ -94,7 +89,7 @@ export const agentTools = {
       generateSlides({ input, context, abortSignal }),
     // 関数をそのまま渡すと、tool() が input と output の型を推論できなくなる
     toModelOutput: ({ input, output }) =>
-      generateSlidesModelOutput({ input, output }),
+      artifactModelOutput('slides', { input, output }),
   }),
   ...githubTools,
   ...siteTools,
