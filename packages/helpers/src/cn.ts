@@ -1,7 +1,6 @@
-import { clsx } from 'clsx';
-import type { ClassValue } from 'clsx';
-
-export const cn = (...inputs: ClassValue[]): string => clsx(inputs);
+export const cn = (
+  ...classNames: Array<string | false | null | undefined>
+): string => classNames.filter(Boolean).join(' ');
 
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest;
