@@ -61,7 +61,8 @@ export const Primary = meta.story({
     ).toStrictEqual(['html', 'css', 'js']);
     await expect(canvas.getByText('結果')).toBeVisible();
     const frame = frameOf(canvasElement);
-    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts');
+    // allow-same-origin が入ると、例は記事の origin で動く
+    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-forms');
     await expect(frame).not.toHaveAttribute('src');
     // 例の URL から読んだ文書を、origin を持たせずに srcdoc で描く
     await waitFor(async () => {

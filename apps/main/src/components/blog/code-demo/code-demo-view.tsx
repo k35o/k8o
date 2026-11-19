@@ -107,7 +107,10 @@ export const CodeDemoView: FC<Props> = ({
               className={styles.preview}
               key={runCount}
               ref={connectFrame}
-              sandbox="allow-scripts"
+              // allow-forms は <form method="dialog"> と submit のイベントのため。送信は例の文書の
+              // form-action 'none' が止める。allow-same-origin を足すと、例が記事の origin で動き、
+              // 自分の sandbox を外せる
+              sandbox="allow-scripts allow-forms"
               // @types/react の srcDoc は文字列だけを受けるが、React は値を変えずに setAttribute に
               // 渡すので、Trusted Types の受け口に TrustedHTML のまま届く
               srcDoc={demoDocument as string | undefined}
