@@ -23,22 +23,14 @@ import sample from './_images/sample.avif';
 
 値を`true`にすると、要素の中身を書式ごと自由に編集できます。
 
-```html
+```html demo="editable"
+<p><b style="background-color: gold; color: black">コピーする文字</b></p>
 <div contenteditable="true">
   ここを編集できます
 </div>
 ```
 
-<Playground
-  headingLevel="h4"
-  title={'div要素にcontenteditable="true"を付けた例'}
->
-  <div contentEditable="true" suppressContentEditableWarning>
-    ここを編集できます
-  </div>
-</Playground>
-
-例の文字は、選んで書き換えられます。例の上の題をコピーして貼り付けると、文字と一緒に背景色と太字も入ります。
+結果の欄の文字は、選んで書き換えられます。その上の背景色と太字の付いた文字をコピーして貼り付けると、文字と一緒に背景色と太字も入ります。
 
 下の画像のように、Baselineの表示をそのまま貼り付けることもでき、画像も入ります。
 
@@ -55,28 +47,14 @@ import sample from './_images/sample.avif';
 
 値を`plaintext-only`にすると、要素の中のテキストだけを編集できます。
 
-```html
+```html demo="plaintext-only"
 <!-- [!og] -->
 <div contenteditable="plaintext-only">
   ここを編集できます
 </div>
 ```
 
-<Playground
-  headingLevel="h4"
-  title={
-    'div要素にcontenteditable="plaintext-only"を付けた例'
-  }
->
-  <div
-    contentEditable="plaintext-only"
-    suppressContentEditableWarning
-  >
-    ここを編集できます
-  </div>
-</Playground>
-
-上と同じように題をコピーして貼り付けると、文字だけが入り、背景色と太字は入りません。テキストしか入らないので、`true`のときより、実装で考えるケースが減ります。
+上の例と同じ文字をコピーして貼り付けると、文字だけが入り、背景色と太字は入りません。テキストしか入らないので、`true`のときより、実装で考えるケースが減ります。
 
 `document.execCommand('bold')`のような書式のコマンドも、`plaintext-only`では効かずに`false`を返し、`insertHTML`で入れたタグも落ちて文字だけが入ります。
 
