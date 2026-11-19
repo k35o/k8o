@@ -264,7 +264,7 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
 
 `path()`と`shape()`で、同じ三角形を書き比べます。
 
-```css
+```css demo="path-shape"
 .path-triangle {
   /* path()では固定のピクセル値しか使えない */
   clip-path: path('M 0 0 L 200 64 L 0 128 Z');
@@ -274,13 +274,47 @@ SVGを用意せずにCSSだけで、曲線のある図形を要素の大きさ�
   /* shape()ならパーセンテージが使える */
   clip-path: shape(from 0% 0%, line to 100% 50%, line to 0% 100%, close);
 }
+
+.path-triangle,
+.shape-triangle {
+  height: 128px;
+  background-color: teal;
+}
+
+.frame {
+  width: 300px;
+  max-width: 100%;
+  background-color: light-dark(gainsboro, dimgray);
+}
+```
+
+```html demo="path-shape"
+<label>
+  幅
+  <input id="width" type="range" min="100" max="300" value="300" />
+</label>
+<p>path()</p>
+<div class="frame">
+  <div class="path-triangle"></div>
+</div>
+<p>shape()</p>
+<div class="frame">
+  <div class="shape-triangle"></div>
+</div>
+```
+
+```js demo="path-shape"
+const frames = document.querySelectorAll('.frame');
+document.querySelector('#width').addEventListener('input', (event) => {
+  for (const frame of frames) {
+    frame.style.width = `${event.target.value}px`;
+  }
+});
 ```
 
 `path()`の座標は固定のピクセル値なので要素の大きさに追従せず、`shape()`の座標は要素の幅と高さに追従します。
 
-<PlaygroundEmbed demo="path()とshape()の比較" headingLevel="h4" sectionId="shape-function" />
-
-スライダーで幅を変えても、`path()`の三角形は幅200pxのままで、枠が200pxより狭くなると先が切れて台形になります。`shape()`の三角形は、幅に合わせて伸び縮みします。
+結果の欄のスライダーで幅を変えても、`path()`の三角形は幅200pxのままで、枠が200pxより狭くなると先が切れて台形になります。`shape()`の三角形は、幅に合わせて伸び縮みします。
 
 ## おわりに
 
