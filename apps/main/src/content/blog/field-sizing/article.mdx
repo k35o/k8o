@@ -19,7 +19,71 @@ featureIds:
 
 ## デモ
 
-<PlaygroundEmbed demo="field-sizing: contentの挙動" headingLevel="h4" sectionId="field-sizing" />
+```css demo="content-fixed"
+.content {
+  input,
+  textarea,
+  select {
+    field-sizing: content;
+  }
+}
+
+textarea {
+  max-height: 10lh;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+  margin-block-end: 0.5rem;
+}
+```
+
+```html demo="content-fixed"
+<label>
+  field-sizing
+  <select id="value">
+    <option>content</option>
+    <option>fixed</option>
+  </select>
+</label>
+<div id="fields" class="content">
+  <label>
+    テキスト入力
+    <input type="text" value="短いテキスト" />
+  </label>
+  <label>
+    プレースホルダー付きの入力
+    <input type="text" placeholder="例: example@k8o.me" />
+  </label>
+  <label>
+    テキストエリア
+    <textarea rows="2">ここに入力すると、内容に合わせて高さが伸び縮みします。</textarea>
+  </label>
+  <label>
+    セレクトボックス
+    <select>
+      <option>りんご</option>
+      <option selected>ぶどう</option>
+      <option>パイナップル</option>
+      <option>ドラゴンフルーツ</option>
+    </select>
+  </label>
+</div>
+```
+
+```js demo="content-fixed"
+const fields = document.querySelector('#fields');
+document.querySelector('#value').addEventListener('change', (event) => {
+  fields.className = event.target.value;
+});
+```
 
 `content`のまま、テキストエリアで改行すると高さが伸び、セレクトボックスで選択肢を選ぶと幅がその選択肢に合います。`fixed`に切り替えると、どのコントロールも入力に関わらず大きさが変わらなくなります。
 
