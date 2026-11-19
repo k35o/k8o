@@ -666,6 +666,13 @@
       "when": 1795006414254,
       "tag": "0094_drop_slides",
       "breakpoints": true
+    },
+    {
+      "idx": 95,
+      "version": "6",
+      "when": 1795054965946,
+      "tag": "0095_talks_jsconf_jp_2026",
+      "breakpoints": true
     }
   ]
 }
