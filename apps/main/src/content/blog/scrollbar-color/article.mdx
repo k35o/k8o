@@ -21,17 +21,61 @@ featureIds:
 
 `scrollbar-color`には、つまみの色とトラックの色をこの順に書きます。
 
-```css
+```css demo="picker"
 .container {
   scrollbar-color: #6366f1 #e2e8f0;
 }
+
+.container {
+  height: 12rem;
+  overflow-y: scroll;
+  padding-inline: 1rem;
+  border: 1px solid GrayText;
+}
+
+label {
+  margin-inline-end: 1rem;
+}
+```
+
+```html demo="picker"
+<label>
+  つまみ（thumb）
+  <input id="thumb" type="color" value="#6366f1" />
+</label>
+<label>
+  トラック（track）
+  <input id="track" type="color" value="#e2e8f0" />
+</label>
+<p><code id="declaration"></code></p>
+<div class="container" tabindex="0"></div>
+```
+
+```js demo="picker"
+const container = document.querySelector('.container');
+const thumb = document.querySelector('#thumb');
+const track = document.querySelector('#track');
+const declaration = document.querySelector('#declaration');
+
+for (let i = 1; i <= 20; i++) {
+  const item = document.createElement('p');
+  item.textContent = `アイテム ${i}`;
+  container.append(item);
+}
+
+const update = () => {
+  const value = `${thumb.value} ${track.value}`;
+  container.style.scrollbarColor = value;
+  declaration.textContent = `scrollbar-color: ${value};`;
+};
+thumb.addEventListener('input', update);
+track.addEventListener('input', update);
+update();
 ```
 
 色は2つとも書く必要があり、`scrollbar-color: red`のように1つだけ書くと無効になります。値を`auto`にすると、ブラウザの既定の色に戻ります。つまみの位置が見分けられるよう、つまみとトラックの色には十分なコントラストを付けます。
 
-<PlaygroundEmbed demo="scrollbar-colorプロパティ" headingLevel="h4" sectionId="scrollbar-color" />
-
-デモのカラーピッカーで色を選ぶと、下の枠のスクロールバーにすぐ反映されます。macOSで、スクロールしたときだけスクロールバーを出す設定にしていると、枠をスクロールしたときに色が見えます。Chromeでは、スクロールバーにマウスを合わせるまでトラックは描かれません。
+結果の欄のカラーピッカーで色を選ぶと、下の枠のスクロールバーにすぐ反映されます。macOSで、スクロールしたときだけスクロールバーを出す設定にしていると、枠をスクロールしたときに色が見えます。Chromeでは、スクロールバーにマウスを合わせるまでトラックは描かれません。
 
 ### ダークモードに合わせる
 
