@@ -40,7 +40,9 @@ const resolveInSrc = (rel: string, specifier: string): string | null => {
 export type FeatureImportViolation =
   | 'outsideInterfaceOnly'
   | 'interfaceToInfrastructure'
-  | 'crossFeatureInfrastructure';
+  | 'crossFeatureInfrastructure'
+  | 'infrastructureToUpperLayer'
+  | 'applicationToInterface';
 
 export const judgeFeatureImport = (
   filename: string,
@@ -62,11 +64,17 @@ export const judgeFeatureImport = (
   if (from === null) {
     return to.layer === 'interface' ? null : 'outsideInterfaceOnly';
   }
+  if (from.layer === 'infrastructure' && to.layer !== 'infrastructure') {
+    return 'infrastructureToUpperLayer';
+  }
   if (from.feature !== to.feature) {
     return to.layer === 'infrastructure' ? 'crossFeatureInfrastructure' : null;
   }
-  return from.layer === 'interface' && to.layer === 'infrastructure'
-    ? 'interfaceToInfrastructure'
+  if (from.layer === 'interface' && to.layer === 'infrastructure') {
+    return 'interfaceToInfrastructure';
+  }
+  return from.layer === 'application' && to.layer === 'interface'
+    ? 'applicationToInterface'
     : null;
 };
 
@@ -84,6 +92,10 @@ export const featureLayerBoundary: Rule = {
         "interface から infrastructure は直に読まない。'{{specifier}}' を呼ぶユースケースを同じ feature の application に置き、interface はそれを呼ぶ。",
       crossFeatureInfrastructure:
         "別の feature の infrastructure は import しない。'{{specifier}}' の読み書きは、その feature の application か interface の関数を通す。",
+      infrastructureToUpperLayer:
+        "infrastructure から application と interface は読まない。'{{specifier}}' の型や定数は infrastructure に置くか、呼び出す application から引数で渡す。",
+      applicationToInterface:
+        "application から同じ feature の interface は読まない。'{{specifier}}' の関数や型は application に置き、interface がそれを読む。",
     },
   },
   create(context) {
