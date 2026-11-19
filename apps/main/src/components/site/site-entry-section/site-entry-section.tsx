@@ -6,7 +6,6 @@ import {
   CodeIcon,
   ColorScaleIcon,
   ContrastIcon,
-  FlaskIcon,
   PackageIcon,
   PaintBucketIcon,
   PaletteIcon,
@@ -36,7 +35,6 @@ const ICON: Record<SiteEntryIcon, ReactNode> = {
   fluida: <PaletteIcon size="md" />,
   blog: <BookTextIcon size="md" />,
   talks: <PresentationIcon size="md" />,
-  playgrounds: <FlaskIcon size="md" />,
   artifacts: <PackageIcon size="md" />,
   readings: <BellIcon size="md" />,
 };

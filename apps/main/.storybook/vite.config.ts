@@ -14,9 +14,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('../src', import.meta.url)),
-      '@playgrounds': fileURLToPath(
-        new URL('../src/playgrounds', import.meta.url),
-      ),
     },
   },
   plugins: [betterCssModules()],

@@ -43,7 +43,6 @@ const deployTarget: DeployTarget =
 const alias = {
   '@': fileURLToPath(new URL('./src', import.meta.url)),
   '@content': fileURLToPath(new URL('./src/content', import.meta.url)),
-  '@playgrounds': fileURLToPath(new URL('./src/playgrounds', import.meta.url)),
 };
 
 // 設定のバンドルは workspace の @repo/* を外に出し、Node がそのまま読むと拡張子の無い import で落ちるので、

@@ -1,9 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip/schema.json",
-  "ignore": [
-    "apps/main/public/sw.js",
-    "apps/main/public/playgrounds/shared-worker.worker.js"
-  ],
+  "ignore": ["apps/main/public/sw.js"],
   "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
   "ignoreBinaries": ["fnox", "mise", "vercel"],

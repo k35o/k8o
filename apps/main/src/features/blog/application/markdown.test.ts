@@ -11,14 +11,14 @@ describe('mdxToMarkdown', () => {
         '---',
         '',
         "import { BrowserSupportStatus } from '@k8ordo/ui';",
-        "import { Playground } from '@/app/_components/playgrounds';",
+        "import { Image } from '@/components/blog/image/image';",
         '',
         '# 見出し',
         '',
         '本文です。',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
+      expect(mdxToMarkdown(source)).toBe(
         ['# 見出し', '', '本文です。', ''].join('\n'),
       );
     });
@@ -26,53 +26,14 @@ describe('mdxToMarkdown', () => {
     it('LinkCardをオートリンクへ変換する', () => {
       const source = '<LinkCard href="https://example.com/page" />\n';
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
-        '<https://example.com/page>\n',
-      );
+      expect(mdxToMarkdown(source)).toBe('<https://example.com/page>\n');
     });
 
     it('LinkCardの相対hrefはサイトURLを前置する', () => {
       const source = '<LinkCard href="/blog/other-article" />\n';
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
+      expect(mdxToMarkdown(source)).toBe(
         '<https://k8o.me/blog/other-article>\n',
-      );
-    });
-
-    it('PlaygroundをWeb版への案内に置き換える', () => {
-      const source = [
-        '<Playground title="デモのタイトル">',
-        '  <Demo />',
-        '</Playground>',
-      ].join('\n');
-
-      expect(mdxToMarkdown(source, 'sample')).toBe(
-        '> インタラクティブデモ「デモのタイトル」はWeb版で試せます: <https://k8o.me/blog/sample>\n',
-      );
-    });
-
-    it('titleのないPlaygroundも案内に置き換える', () => {
-      const source = '<Playground>\n  <Demo />\n</Playground>\n';
-
-      expect(mdxToMarkdown(source, 'sample')).toBe(
-        '> インタラクティブデモはWeb版で試せます: <https://k8o.me/blog/sample>\n',
-      );
-    });
-
-    it('PlaygroundEmbedをPlaygroundページへの案内に置き換える', () => {
-      const source =
-        '<PlaygroundEmbed demo="基本デモ" sectionId="view-transitions" />\n';
-
-      expect(mdxToMarkdown(source, 'sample')).toBe(
-        '> インタラクティブデモ「基本デモ」はWeb版で試せます: <https://k8o.me/playgrounds/view-transitions>\n',
-      );
-    });
-
-    it('demoのないPlaygroundEmbedも案内に置き換える', () => {
-      const source = '<PlaygroundEmbed sectionId="popover" />\n';
-
-      expect(mdxToMarkdown(source, 'sample')).toBe(
-        '> インタラクティブデモはWeb版で試せます: <https://k8o.me/playgrounds/popover>\n',
       );
     });
 
@@ -83,7 +44,7 @@ describe('mdxToMarkdown', () => {
         '<Image src={monitor} alt="アクティビティモニタの画面" />',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
+      expect(mdxToMarkdown(source)).toBe(
         '（画像: アクティビティモニタの画面）\n',
       );
     });
@@ -97,7 +58,7 @@ describe('mdxToMarkdown', () => {
         '本文です。',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
+      expect(mdxToMarkdown(source)).toBe(
         ['# 見出し', '', '本文です。', ''].join('\n'),
       );
     });
@@ -105,7 +66,7 @@ describe('mdxToMarkdown', () => {
     it('Alertをmessageの引用に置き換える', () => {
       const source = '<Alert tone="warning" message="注意してください。" />\n';
 
-      expect(mdxToMarkdown(source, 'sample')).toBe('> 注意してください。\n');
+      expect(mdxToMarkdown(source)).toBe('> 注意してください。\n');
     });
 
     it('コードブロック内の注釈ディレクティブを整理する', () => {
@@ -119,7 +80,7 @@ describe('mdxToMarkdown', () => {
         '```',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
+      expect(mdxToMarkdown(source)).toBe(
         [
           '```css',
           '.button {',
@@ -139,29 +100,29 @@ describe('mdxToMarkdown', () => {
         '```tsx',
         "import { useState } from 'react';",
         '',
-        'const App = () => <Playground title="デモ" />;',
+        'const App = () => <Image alt="デモ" />;',
         '```',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(`${source}\n`);
+      expect(mdxToMarkdown(source)).toBe(`${source}\n`);
     });
 
     it('MDXのコメント式を削除する', () => {
       const source = ['{/* TODO: あとで直す */}', '', '本文です。'].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe('本文です。\n');
+      expect(mdxToMarkdown(source)).toBe('本文です。\n');
     });
 
     it('未知のコンポーネントは子要素だけ残す', () => {
       const source = ['<Wrapper>', '本文です。', '</Wrapper>'].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe('本文です。\n');
+      expect(mdxToMarkdown(source)).toBe('本文です。\n');
     });
 
     it('子のない未知のコンポーネントは削除する', () => {
       const source = ['<CustomDemo />', '', '本文です。'].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe('本文です。\n');
+      expect(mdxToMarkdown(source)).toBe('本文です。\n');
     });
 
     it('小文字のHTMLタグは残しつつ中のJSXは変換する', () => {
@@ -171,7 +132,7 @@ describe('mdxToMarkdown', () => {
         '</figure>',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(
+      expect(mdxToMarkdown(source)).toBe(
         ['<figure>', '  <https://example.com>', '</figure>', ''].join('\n'),
       );
     });
@@ -190,7 +151,7 @@ describe('mdxToMarkdown', () => {
         '- リスト2',
       ].join('\n');
 
-      expect(mdxToMarkdown(source, 'sample')).toBe(`${source}\n`);
+      expect(mdxToMarkdown(source)).toBe(`${source}\n`);
     });
   });
 });

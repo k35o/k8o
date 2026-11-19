@@ -4,8 +4,7 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"],
-      "@content/*": ["./src/content/*"],
-      "@playgrounds/*": ["./src/playgrounds/*"]
+      "@content/*": ["./src/content/*"]
     },
     "types": ["node", "vite/client", "vitest/importMeta"],
     "rootDirs": [".", "./__generated__"]

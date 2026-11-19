@@ -12,18 +12,6 @@ vi.mock('@/features/blog/interface/queries', () => ({
 vi.mock('@/features/talks/interface/queries', () => ({
   getTalks: vi.fn(),
 }));
-vi.mock('@playgrounds/sections', () => ({
-  playgroundSections: [
-    {
-      id: 'sample-demo',
-      title: 'サンプルデモ',
-      description: 'デモの説明。',
-      category: 'css',
-      demos: [],
-      type: 'standalone',
-    },
-  ],
-}));
 vi.mock('@/shared/site/site-entries', () => ({
   siteEntries: [
     {
@@ -39,13 +27,6 @@ vi.mock('@/shared/site/site-entries', () => ({
       description: 'トークの説明。',
       kind: 'reading',
       icon: 'talks',
-    },
-    {
-      title: 'Playgrounds',
-      link: '/playgrounds',
-      description: 'Playgroundsの説明。',
-      kind: 'reading',
-      icon: 'playgrounds',
     },
     {
       title: 'External Tool',
@@ -121,14 +102,6 @@ describe('generateLlmsContent', () => {
       );
       expect(content).toContain(
         '### [External Tool](https://example.com/tool)\n外部ツールの説明。',
-      );
-    });
-
-    it('PlaygroundsのエントリにセクションのMarkdownリンクを載せるべき', async () => {
-      const content = await generateLlmsContent();
-
-      expect(content).toContain(
-        '#### [サンプルデモ](https://k8o.me/playgrounds/sample-demo)\nデモの説明。',
       );
     });
 
