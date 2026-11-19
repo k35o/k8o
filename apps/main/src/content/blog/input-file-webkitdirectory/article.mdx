@@ -7,8 +7,6 @@ featureIds:
   - input-file-webkitdirectory
 ---
 
-import { WebkitDirectoryInputExample } from './_components/file-input-examples';
-
 # webkitdirectoryでinputからフォルダを選択する
 
 <BrowserSupportStatus featureId="input-file-webkitdirectory" />
@@ -18,13 +16,11 @@ import { WebkitDirectoryInputExample } from './_components/file-input-examples';
 
 ファイルを1つ、または`multiple`で複数選ばせるのは、`type="file"`でできます。`<input>`でフォルダを丸ごと選ばせて、どのファイルがどのサブフォルダにあったかまで受け取るのは、`webkitdirectory`でしかできません。
 
-```html
+```html demo="directory"
 <!-- [!og] -->
 <!-- ディレクトリ選択 -->
 <input type="file" webkitdirectory />
 ```
-
-<WebkitDirectoryInputExample />
 
 ボタンを押すと、ファイルではなくフォルダを選ぶダイアログが開きます。フォルダを選ぶと、中のファイルがまとめて`files`に入ります。
 
