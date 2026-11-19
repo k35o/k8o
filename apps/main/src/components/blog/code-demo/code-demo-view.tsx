@@ -6,6 +6,7 @@ import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
+import { toDemoAllow } from '@/shared/demo/demo-allow';
 import { DEMO_MESSAGE, readDemoFrameMessage } from '@/shared/demo/demo-message';
 import { withDemoOrigin } from '@/shared/demo/demo-origin';
 import { toDemoTrustedHTML } from '@/shared/demo/demo-trusted-html';
@@ -15,6 +16,8 @@ import styles from './code-demo-view.module.css';
 type Props = {
   name: string;
   src: string;
+  // コードブロックのメタの allow に書いた、例に渡す権限
+  allow?: string | undefined;
   replayIcon: ReactNode;
   children?: ReactNode;
 };
@@ -22,6 +25,7 @@ type Props = {
 export const CodeDemoView: FC<Props> = ({
   name,
   src,
+  allow,
   replayIcon,
   children,
 }) => {
@@ -107,6 +111,7 @@ export const CodeDemoView: FC<Props> = ({
               </Button>
             </div>
             <iframe
+              allow={toDemoAllow(allow)}
               className={styles.preview}
               key={runCount}
               ref={connectFrame}

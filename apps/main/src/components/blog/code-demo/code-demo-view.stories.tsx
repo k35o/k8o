@@ -70,6 +70,7 @@ export const Primary = meta.story({
     // allow-same-origin が入ると、例は記事の origin で動く
     await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-forms');
     await expect(frame).not.toHaveAttribute('src');
+    await expect(frame).not.toHaveAttribute('allow');
     // 例の URL から読んだ文書を、origin を持たせずに srcdoc で描く
     await waitFor(async () => {
       await expect(frame).toHaveAttribute('srcdoc', demoDocument);
@@ -105,6 +106,16 @@ export const ReloadsOnReplay = meta.story({
     await expect(frameOf(canvasElement)).toHaveAttribute(
       'srcdoc',
       demoDocument,
+    );
+  },
+});
+
+export const AllowsDeclaredPermissions = meta.story({
+  args: { allow: 'clipboard-read clipboard-write screen-wake-lock' },
+  play: async ({ canvasElement }) => {
+    await expect(frameOf(canvasElement)).toHaveAttribute(
+      'allow',
+      'clipboard-read; clipboard-write; screen-wake-lock *',
     );
   },
 });

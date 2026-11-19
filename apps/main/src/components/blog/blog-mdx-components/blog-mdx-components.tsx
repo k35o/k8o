@@ -19,8 +19,16 @@ export const blogMdxComponents = (slug: string): MDXComponents => ({
   LinkCard,
   Playground: LazyPlayground,
   PlaygroundEmbed,
-  'code-demo': ({ name, children }: { name: string; children?: ReactNode }) => (
-    <CodeDemo name={name} slug={slug}>
+  'code-demo': ({
+    name,
+    allow,
+    children,
+  }: {
+    name: string;
+    allow?: string;
+    children?: ReactNode;
+  }) => (
+    <CodeDemo allow={allow} name={name} slug={slug}>
       {children}
     </CodeDemo>
   ),

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseDemoName } from './demo.ts';
+import { parseDemoAllow, parseDemoName } from './demo.ts';
 
 describe('parseDemoName', () => {
   describe('正常系', () => {
@@ -34,6 +34,45 @@ describe('parseDemoName', () => {
 
     it('data-demo のように demo で終わる別の名前は読まない', () => {
       expect(parseDemoName('data-demo="dots"')).toBeUndefined();
+    });
+  });
+});
+
+describe('parseDemoAllow', () => {
+  describe('正常系', () => {
+    it('allow="..." の権限を、空白で区切って返す', () => {
+      expect(
+        parseDemoAllow('demo="copy" allow="clipboard-read clipboard-write"'),
+      ).toStrictEqual(['clipboard-read', 'clipboard-write']);
+    });
+
+    it("シングルクォートの allow='...' も読む", () => {
+      expect(
+        parseDemoAllow("demo='lock' allow='screen-wake-lock'"),
+      ).toStrictEqual(['screen-wake-lock']);
+    });
+  });
+
+  describe('異常系', () => {
+    it('決めた権限のほかは投げる', () => {
+      expect(() => parseDemoAllow('demo="cam" allow="camera"')).toThrow(
+        /allow="camera"/u,
+      );
+      expect(() =>
+        parseDemoAllow('demo="copy" allow="clipboard-read; clipboard-write"'),
+      ).toThrow(/allow="clipboard-read;"/u);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('メタが無い、または allow を含まないときは空を返す', () => {
+      expect(parseDemoAllow(undefined)).toStrictEqual([]);
+      expect(parseDemoAllow(null)).toStrictEqual([]);
+      expect(parseDemoAllow('demo="dots"')).toStrictEqual([]);
+    });
+
+    it('data-allow のように allow で終わる別の名前は読まない', () => {
+      expect(parseDemoAllow('data-allow="camera"')).toStrictEqual([]);
     });
   });
 });

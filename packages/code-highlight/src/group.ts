@@ -41,12 +41,30 @@ const createGroup = (blocks: Element[]): Element => ({
   children: blocks,
 });
 
-const createDemo = (name: string, children: Element[]): Element => ({
-  type: 'element',
-  tagName: DEMO_TAG,
-  properties: { name },
-  children,
-});
+// 権限はどのブロックのメタに書いてもよく、例のブロックに書かれたものを合わせる
+const allowOf = (blocks: readonly Element[]): string =>
+  [
+    ...new Set(
+      blocks.flatMap((block) => {
+        const raw = block.properties['data-demo-allow'];
+        return typeof raw === 'string' ? raw.split(' ') : [];
+      }),
+    ),
+  ].join(' ');
+
+const createDemo = (
+  name: string,
+  blocks: readonly Element[],
+  children: Element[],
+): Element => {
+  const allow = allowOf(blocks);
+  return {
+    type: 'element',
+    tagName: DEMO_TAG,
+    properties: { name, ...(allow === '' ? {} : { allow }) },
+    children,
+  };
+};
 
 export const groupAdjacentCodeBlocks = (tree: Root | Parent): void => {
   const next: Nodes[] = [];
@@ -59,7 +77,7 @@ export const groupAdjacentCodeBlocks = (tree: Root | Parent): void => {
     if (demo === undefined) {
       next.push(...blocks);
     } else {
-      next.push(createDemo(demo, blocks));
+      next.push(createDemo(demo, run, blocks));
     }
     next.push(...pendingBlank);
     run = [];

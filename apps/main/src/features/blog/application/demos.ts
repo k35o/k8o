@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import { parseDemoName } from '@repo/code-highlight/demo';
+import { parseDemoAllow, parseDemoName } from '@repo/code-highlight/demo';
 import { parseAnnotations } from '@repo/code-highlight/parser';
 import type { RootContent } from 'mdast';
 
@@ -36,6 +36,8 @@ export const readDemos = (source: string): BlogDemo[] => {
     for (const node of nodes) {
       const name = node.type === 'code' ? parseDemoName(node.meta) : undefined;
       if (node.type === 'code' && name !== undefined) {
+        // 権限の書き誤りを、記事を描く前に見つける
+        parseDemoAllow(node.meta);
         const demo = demos.get(name);
         if (demo !== undefined && previous !== name) {
           throw new Error(
