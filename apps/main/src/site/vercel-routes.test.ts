@@ -137,6 +137,17 @@ describe('vercel() の規則', () => {
       );
     });
 
+    it('例だけが使うファイルは、origin を持たない例が CORS で読めるように返す', () => {
+      expect(
+        headersOf('/demos/async-clipboard/mint.png')[
+          'Access-Control-Allow-Origin'
+        ],
+      ).toBe('*');
+      expect(
+        headersOf('/icon.png')['Access-Control-Allow-Origin'],
+      ).toBeUndefined();
+    });
+
     it('記事の動く例の文書は、ページと同じ CSP で返す（埋め込ませない）', () => {
       expect(
         headersOf('/blog/abs-sign/demos/dots/document.txt')[

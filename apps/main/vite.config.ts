@@ -21,6 +21,7 @@ import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-scri
 import { blogDemoScripts, demoBundler } from './src/site/blog-demo-scripts.ts';
 import type { TsxDemo } from './src/site/blog-demo-scripts.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
+import { demoAssetsCors } from './src/site/demo-assets.ts';
 import { inlineScriptHashes } from './src/site/inline-script-hashes.ts';
 import {
   blobStore,
@@ -224,6 +225,7 @@ const config: UserConfigFnPromise = async ({ command, isPreview }) => ({
     }),
     betterCssModules(),
     blogDemoScripts(readTsxDemos, bundleTsxDemo),
+    demoAssetsCors,
   ],
   css: {
     transformer: 'lightningcss',

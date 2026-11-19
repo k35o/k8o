@@ -1,5 +1,6 @@
 import type { VercelRoute } from '@k8ordo/framework/vercel';
 
+import { DEMO_ASSETS, DEMO_ASSETS_HEADERS } from './demo-assets.ts';
 import { ARTICLE, SLUG } from './patterns.ts';
 
 const ACCEPTS_MARKDOWN = [
@@ -38,6 +39,7 @@ export const BEFORE_FILES: readonly VercelRoute[] = [
     continue: true,
     caseSensitive: true,
   },
+  { src: `^${DEMO_ASSETS}.+$`, headers: DEMO_ASSETS_HEADERS, continue: true },
   {
     src: '^/reading-list/feed$',
     headers: {
