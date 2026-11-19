@@ -39,6 +39,15 @@ describe('judgeFeatureImport', () => {
       ).toBeNull();
     });
 
+    test('同じ feature の infrastructure どうしは import できる', () => {
+      expect(
+        judgeFeatureImport(
+          file('apps/api/src/features/blog/infrastructure/view-repository.ts'),
+          './blog-repository',
+        ),
+      ).toBeNull();
+    });
+
     test('別の feature の interface と application は import できる', () => {
       expect(
         judgeFeatureImport(
@@ -149,6 +158,38 @@ describe('judgeFeatureImport', () => {
           '../../browser-support/infrastructure/browser-support-repository',
         ),
       ).toBe('crossFeatureInfrastructure');
+    });
+
+    test('infrastructure から application と interface を import すると違反', () => {
+      expect(
+        judgeFeatureImport(
+          file('apps/api/src/features/blog/infrastructure/blog-repository.ts'),
+          '../application/blog-stats',
+        ),
+      ).toBe('infrastructureToUpperLayer');
+      expect(
+        judgeFeatureImport(
+          file('apps/api/src/features/blog/infrastructure/blog-repository.ts'),
+          '../interface/owner-routes',
+        ),
+      ).toBe('infrastructureToUpperLayer');
+      expect(
+        judgeFeatureImport(
+          file(
+            'apps/ai/src/features/agent/infrastructure/thread-repository.ts',
+          ),
+          '@/features/artifacts/application/artifacts',
+        ),
+      ).toBe('infrastructureToUpperLayer');
+    });
+
+    test('同じ feature の application から interface を import すると違反', () => {
+      expect(
+        judgeFeatureImport(
+          file('apps/api/src/features/blog/application/list-blogs.ts'),
+          '../interface/owner-routes',
+        ),
+      ).toBe('applicationToInterface');
     });
   });
 

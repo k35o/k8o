@@ -227,6 +227,23 @@ describe('GET /owner/blogs', () => {
       });
     });
   });
+
+  describe('エッジケース', () => {
+    it('slug の形に合わないリンクの項目は一覧に入れない', async () => {
+      fetchMock.mockResolvedValue(
+        new Response(`<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>k8o Blog</title><link>https://k8o.me/blog</link>
+<item><title>タグの一覧</title><link>https://k8o.me/blog/tags/css</link></item>
+<item><title>大文字の slug</title><link>https://k8o.me/blog/Uppercase</link></item>
+</channel></rss>`),
+      );
+
+      const res = await ownerRequest('/owner/blogs', AI_TOKEN);
+
+      expect(res.status).toBe(200);
+      await expect(res.json()).resolves.toStrictEqual({ items: [] });
+    });
+  });
 });
 
 describe('GET /owner/blogs/:slug', () => {
