@@ -24,21 +24,14 @@ import detailsSlot from './_images/details-slot.avif';
 `details`要素は、アコーディオンのように折りたたみ可能なコンテンツを作成するためのHTML要素です。
 `summary`要素と組み合わせて使用され、ユーザーのアクションに合わせてコンテンツが開閉するUIを提供します。
 
-```html
+```html demo="details"
 <details>
   <summary>詳細を見る</summary>
   <p>ここに詳細が記述されます。</p>
 </details>
 ```
 
-上記のhtmlは、以下のように表示されます。
-
-<Playground headingLevel="h4" title="details要素とsummary要素を使った例">
-  <details>
-    <summary>詳細を見る</summary>
-    <p>ここに詳細が記述されます。</p>
-  </details>
-</Playground>
+上記のhtmlは、結果の欄のように表示されます。
 
 開発者ツールなどを確認すると、コンテンツ部分が`slot`要素として表示されていることがわかります。
 
@@ -51,7 +44,34 @@ import detailsSlot from './_images/details-slot.avif';
 
 `::details-content`擬似要素は、この`slot`要素に対してスタイルを付与できます。
 
-<PlaygroundEmbed demo="スタイリング例" headingLevel="h4" sectionId="details-content" />
+```html demo="border"
+<details class="children">
+  <summary>detailsの子要素全てにスタイルを割り当て</summary>
+  <p>p要素1</p>
+  <p>p要素2</p>
+  <p>p要素3</p>
+</details>
+<details class="content">
+  <summary>::details-contentを用いてslot要素に割り当て</summary>
+  <p>p要素1</p>
+  <p>p要素2</p>
+  <p>p要素3</p>
+</details>
+```
+
+```css demo="border"
+.children > :not(summary) {
+  border: 2px solid steelblue;
+}
+
+.content::details-content {
+  border: 2px solid steelblue;
+}
+
+details {
+  padding: 1rem;
+}
+```
 
 上記の例は`details`の子要素（`summary`要素を除いたもの）に対してスタイルを適用した場合（前者）と、`::details-content`擬似要素に対してスタイルを適用した場合（後者）の違いを示しています。
 
@@ -93,9 +113,7 @@ details[open]::details-content {
 `details`要素が持つ`[open]`という状態は、即座に変化するため、アニメーションを適用するのは困難でした。
 しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`の切り替えに合わせて、中身の見た目にトランジションを付けられます。
 
-<PlaygroundEmbed demo="アニメーション実装パターン" headingLevel="h4" sectionId="details-content" />
-
-```css
+```css demo="animation"
 details::details-content {
   opacity: 0;
   transition: opacity 0.5s, content-visibility 0.5s allow-discrete;
@@ -106,13 +124,20 @@ details[open]::details-content {
 }
 ```
 
+```html demo="animation"
+<details>
+  <summary>::details-contentによるアニメーション</summary>
+  <p>想定した通りにアニメーションが適用されます</p>
+</details>
+```
+
 どのブラウザでも、開くときは中身が少しずつ現れ、閉じるときは少しずつ消えていきました。なめらかに変わるのは中身の`opacity`だけで、`details`の高さは一度に切り替わります。
 
 `content-visibility`にも`allow-discrete`でトランジションを付けると、閉じるときに中身が消えるのを`opacity`が0になるまで待ちます。付けないと、閉じた直後に中身が消えます。
 
 ### 動きを減らす設定に合わせる
 
-デモの注記のとおり、この例は動きを減らす設定（`prefers-reduced-motion`）に対応していません。対応するには、`transition`だけをメディアクエリの中に移します。
+この例は動きを減らす設定（`prefers-reduced-motion`）に対応していません。対応するには、`transition`だけをメディアクエリの中に移します。
 
 ```css
 details::details-content {
