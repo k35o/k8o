@@ -1,6 +1,6 @@
 ---
 name: blog-prep
-description: k8o のブログ記事を新しく書き始めるときに使う。記事の決まり（検索結果での見せ方、冒頭、中身）を示す。あわせて、article.mdx の雛形と Playground のデモ、DB のマイグレーションを用意する。「ブログを書きたい」「記事の準備をして」「〇〇の記事を書く」と言われたときにも使う。本文の執筆そのものは行わない。
+description: k8o のブログ記事を新しく書き始めるときに使う。記事の決まり（検索結果での見せ方、冒頭、中身）を示す。あわせて、article.mdx の雛形と DB のマイグレーションを用意する。「ブログを書きたい」「記事の準備をして」「〇〇の記事を書く」と言われたときにも使う。本文の執筆そのものは行わない。
 ---
 
 # ブログ記事準備スキル
@@ -46,7 +46,6 @@ apps/main/src/content/blog/{slug}/
 | ファイル | 必須 |
 |---------|------|
 | `article.mdx` | ✅ |
-| Playground (`apps/main/src/playgrounds/{feature-name}/`) | デモがある場合 |
 | マイグレーション (`packages/database/migrations/`) | ✅ |
 
 記事のページ（`/blog/{slug}`）のレイアウトとメタデータ、OGP画像（`/blog/{slug}/og.png`）は、`apps/main/src/routes/blog/[slug]/` が全記事に共通で作る。記事ごとの route ファイルは作らない。
@@ -75,16 +74,16 @@ featureIds:
 
 {/* 最初の2節以内に、デモか、貼れば動く最小のコードを置く。デモなら何を押すと何が見えるか、コードなら何が出るかを書く */}
 
-<PlaygroundEmbed demo="デモタイトル" headingLevel="h4" sectionId="my-feature" />
+```html demo="my-demo"
+<button type="button">押す</button>
+```
 ```
 
-- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/components/blog/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる。
+- 記事で使う部品（`BrowserSupportStatus`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/components/blog/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる。
 - 記事の画像は `_images/` に、この記事だけの部品は `_components/` に置き、`./_images/...`・`./_components/...` の相対パスで import する。
 - `_images/` の画像は、`pnpm run -F main optimize:image <元の画像> src/content/blog/{slug}/_images/{名前}.avif --max-width 1920` で AVIF にして置く（パスは `apps/main` からの相対か絶対パス）。元の PNG や JPG はコミットしない。出力された `width={...} height={...}` を `<Image src={...} alt="..." width={...} height={...} />` に書き、画面の最初に見える画像には `loading="eager"` を足す。`FloatImage` は表示したい大きさの width と height を、画像と同じ縦横比で書く。縦横比が画像と合わないと `features/blog/application/article-files.test.ts` が落ちる。
 - `<LinkCard href="..." />` を足したら、`pnpm run -F main generate:link-card-metadata` を流し、更新された `apps/main/src/content/link-card-metadata.json` もコミットする。カードはこの JSON の OGP で描き、ビルドではリンク先へ取りに行かない。流し忘れは `features/blog/application/article-files.test.ts` が落とす。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出る URL（`http://` や OGP を持たないページ）は `{}` のままでよい。`--refresh` は使わない。
 - `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない。
-- `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、`<PlaygroundEmbed>` を書かない。
-- `<PlaygroundEmbed>` と `<Playground>` の `headingLevel` には、置いた節の見出しの一つ下の段を書く。`##` は h3 で描かれるので、`##` の節の中は `h4`、`###` の中は `h5`、`####` の中は `h6`、最初の `##` より前は `h3`。書き忘れと段の取り違えは `components/site/mdx-base/article-outline.test.ts` が落とす。
 - OGP画像には記事のタイトルが入る。コードが主役の記事では、載せたいコードブロックの1つに `// [!og]` を書くと、そのコードも描かれる。
 
 ### 2. 数式を使う記事
@@ -93,9 +92,9 @@ featureIds:
 
 カンマで区切った数は、`$(64, 128, 192)$` のようにカンマの後ろに空白を書く。空白が無いと Temml が `64,128,192` を1つの数にまとめ、カンマの後ろが詰まる。
 
-### 3. 動く例（HTML・CSS・JS・React で書けるデモ）
+### 3. 動く例
 
-HTML・CSS・JS か、React の部品（tsx）で書けるデモは、記事のコードブロックのメタに `demo="<名前>"` を書く。記事に見せたコードがそのまま動くので、Playground や `_components` を作らない。
+記事のデモは、コードブロックのメタに `demo="<名前>"` を書いた HTML・CSS・JS か React の部品（tsx）で書く。記事に見せたコードがそのまま動く。
 
 ````mdx
 ```html demo="dots"
@@ -116,12 +115,11 @@ HTML・CSS・JS か、React の部品（tsx）で書けるデモは、記事の�
 - 言語は `html`・`css`・`js`・`tsx`。`js` は module の script として、HTML の後に動く。1つの例に `js` と `tsx` の両方は書かない
 - `tsx` は React の部品を `export default` で書く。描く（`createRoot`）のはビルドが足すので、記事には書かない。React はサイトと同じ安定版で、`react` と `react-dom` のほかは import できない（ビルドが止まる）。ビルドが本番版の React ごと束ね、例の文書は gzip で 70kB ほどになる
 - 例に固有の見た目（大きさ・色・並べ方）はすべてコードに書き、要の行は `[!hl]` で強調する。サイトのトークンは使えない。テーマで変える色は `light-dark()` で書く（記事のテーマが例に届く）
-- 名前は URL（`/blog/{slug}/demos/{名前}`）になるので、小文字の英数字とハイフンで書く。離れたブロックに同じ名前を付けると、`features/blog/application/article-files.test.ts` が落ちる
-- 例は sandbox の iframe（origin を持たない）で動き、外へは何も読みに行けない。localStorage・クリップボード・Wake Lock のように origin や権限が要るデモは Playground で作る
-
-### 4. Playgroundコンポーネント（動く例で作れないデモ）
-
-デモは `apps/main/src/playgrounds/{feature-name}/` に置く。置くのは、デモ本体と CSS Modules、Story、セクションの定義（`index.ts`）。作るときは [references/playground.md](references/playground.md) を読む。
+- 名前は URL（`/blog/{slug}/demos/{名前}/document.txt`）になるので、小文字の英数字とハイフンで書く。離れたブロックに同じ名前を付けると、`features/blog/application/article-files.test.ts` が落ちる
+- 例は sandbox の iframe（origin を持たない）で動く。fetch・worker・localStorage・cookie は使えない。読めるのはサイトの画像・音源・フォントだけで、例だけが使うファイルは `apps/main/public/demos/{slug}/` に置き、`/demos/{slug}/{名前}` で読む。canvas に描いて読み出す画像は `<img crossorigin="anonymous">` で読む
+- クリップボードと Wake Lock を使う例は、メタに `allow="clipboard-read clipboard-write"`・`allow="screen-wake-lock"` を書く（書けるのはこの3つ）。SharedWorker のように origin が要るものは動かないので、コードで説明する
+- dialog や popover のように top layer に出るものは例の高さに数えられないので、`body { min-height: …; }` を例の css に書く
+- 例のコードは `innerHTML` を使わず、`textContent` と `createElement` で組む。`location` の query と hash は読まない
 
 ## データベースマイグレーション
 
@@ -193,8 +191,6 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] `apps/main/src/content/blog/{slug}/article.mdx` 雛形作成（Web 機能の記事なら `featureIds` と `<BrowserSupportStatus>` の ID をそろえる）
 - [ ] `<LinkCard>` を使う場合: `pnpm run -F main generate:link-card-metadata` を流し（「OGP が取れなかった」が出たら時間をおいて流し直す）、`link-card-metadata.json` をコミット
 - [ ] HTML・CSS・JS・React（tsx）で書けるデモは、コードブロックに `demo="<名前>"` を書く（必要な場合）
-- [ ] Playgroundのデモと `.module.css` 作成（origin や権限が要るデモなど、動く例で作れない場合）
-- [ ] Storybookストーリー作成（必要な場合）
 
 ### データベース
 
