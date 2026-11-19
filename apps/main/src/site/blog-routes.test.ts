@@ -9,9 +9,8 @@ import {
 } from '@/features/blog/interface/queries';
 
 import { GET as getArticleMarkdown } from '../routes/blog/[slug]/article.md/route';
-import { GET as getDemo } from '../routes/blog/[slug]/demos/[demo]/route';
+import { GET as getDemo } from '../routes/blog/[slug]/demos/[demo]/document.txt/route';
 import { GET as getOgImage } from '../routes/blog/[slug]/og.png/route';
-import { DEMO_CONTENT_SECURITY_POLICY } from './security-headers';
 
 vi.mock('@/features/blog/interface/queries', () => ({
   findBlogContent: vi.fn(),
@@ -73,22 +72,21 @@ describe('GET /blog/:slug/article.md', () => {
 
 const requestDemo = async (slug: string, demo: string): Promise<Response> =>
   getDemo({
-    request: new Request(`http://k8ordo.localhost/blog/${slug}/demos/${demo}`),
+    request: new Request(
+      `http://k8ordo.localhost/blog/${slug}/demos/${demo}/document.txt`,
+    ),
     params: { slug, demo },
   });
 
-describe('GET /blog/:slug/demos/:demo', () => {
+describe('GET /blog/:slug/demos/:demo/document.txt', () => {
   describe('正常系', () => {
-    it('例の文書を、型と例の CSP を書いた HTML で返す', async () => {
+    it('例の文書を、URL を直に開いても動かない text/plain で返す', async () => {
       vi.mocked(findBlogDemoDocument).mockResolvedValue('<!doctype html>');
 
       const res = await requestDemo('blog-a', 'dots');
 
       expect(res.status).toBe(200);
-      expect(res.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
-      expect(res.headers.get('Content-Security-Policy')).toBe(
-        DEMO_CONTENT_SECURITY_POLICY,
-      );
+      expect(res.headers.get('Content-Type')).toBe('text/plain; charset=utf-8');
       await expect(res.text()).resolves.toBe('<!doctype html>');
       expect(findBlogDemoDocument).toHaveBeenCalledWith('blog-a', 'dots');
     });

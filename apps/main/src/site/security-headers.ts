@@ -63,26 +63,16 @@ export const securityHeaders = (
   };
 };
 
-// 記事の動く例（/blog/:slug/demos/:demo）の文書は、inline の script と style だけを動かし、外へは
-// 何も読みに行かない
-const DEMO_DIRECTIVES = [
+// 記事の動く例の文書の頭の <meta> の CSP。文書は inline の script と style だけを動かし、外へは何も
+// 読みに行かない。記事は文書を fetch して iframe の srcdoc に入れ、文書は応答の頭を通らないので、
+// 制限は文書が自分で持つ
+export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue([
   "default-src 'none'",
   "script-src 'unsafe-inline'",
   "style-src 'unsafe-inline'",
   "base-uri 'none'",
   "form-action 'none'",
-];
-
-// 例の URL の応答に、ページの CSP に代えて付ける。記事は文書を fetch して iframe の srcdoc に入れるので、
-// URL はどのページにも埋め込ませない
-export const DEMO_CONTENT_SECURITY_POLICY = toHeaderValue([
-  ...DEMO_DIRECTIVES,
-  "frame-ancestors 'none'",
 ]);
-
-// 例の文書の頭の <meta> の CSP。文書を応答の頭を通さずに読んでも同じ制限が効く。frame-ancestors は
-// <meta> では効かない
-export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue(DEMO_DIRECTIVES);
 
 // framework() が書き出す各ページの <meta> の CSP。framework は payload と React の inline の script の
 // ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュを渡す。記事の動く例の文書は

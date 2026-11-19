@@ -15,7 +15,7 @@ export const CodeDemo: FC<Props> = ({ slug, name, children }) => (
   <CodeDemoView
     name={name}
     replayIcon={<RefreshIcon size="sm" />}
-    src={href('/blog/:slug/demos/:demo', { slug, demo: name })}
+    src={href('/blog/:slug/demos/:demo/document.txt', { slug, demo: name })}
   >
     {children}
   </CodeDemoView>

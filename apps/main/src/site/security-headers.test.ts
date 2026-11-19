@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  DEMO_CONTENT_SECURITY_POLICY,
   DEMO_META_CONTENT_SECURITY_POLICY,
   pagePolicy,
   securityHeaders,
@@ -112,30 +111,9 @@ describe('securityHeaders', () => {
   });
 });
 
-describe('DEMO_CONTENT_SECURITY_POLICY', () => {
-  describe('正常系', () => {
-    it('例の inline の script と style だけを動かし、外へは何も読みに行かない', () => {
-      expect(directivesOf(DEMO_CONTENT_SECURITY_POLICY)).toStrictEqual([
-        "default-src 'none'",
-        "script-src 'unsafe-inline'",
-        "style-src 'unsafe-inline'",
-        "base-uri 'none'",
-        "form-action 'none'",
-        "frame-ancestors 'none'",
-      ]);
-    });
-  });
-
-  describe('エッジケース', () => {
-    it('記事は例の URL を iframe に埋め込まずに fetch で読むので、ページの connect-src が自分のオリジンを許す', () => {
-      expect(directive(csp, 'connect-src')).toContain("'self'");
-    });
-  });
-});
-
 describe('DEMO_META_CONTENT_SECURITY_POLICY', () => {
   describe('正常系', () => {
-    it('例の URL の頭と同じ制限を持ち、meta では効かない frame-ancestors だけを外す', () => {
+    it('例の inline の script と style だけを動かし、外へは何も読みに行かない', () => {
       expect(directivesOf(DEMO_META_CONTENT_SECURITY_POLICY)).toStrictEqual([
         "default-src 'none'",
         "script-src 'unsafe-inline'",
@@ -143,6 +121,12 @@ describe('DEMO_META_CONTENT_SECURITY_POLICY', () => {
         "base-uri 'none'",
         "form-action 'none'",
       ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('記事は例の URL を iframe に埋め込まずに fetch で読むので、ページの connect-src が自分のオリジンを許す', () => {
+      expect(directive(csp, 'connect-src')).toContain("'self'");
     });
   });
 });
