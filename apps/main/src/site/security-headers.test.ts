@@ -113,11 +113,13 @@ describe('securityHeaders', () => {
 
 describe('DEMO_META_CONTENT_SECURITY_POLICY', () => {
   describe('正常系', () => {
-    it('例の inline の script と style だけを動かし、外へは何も読みに行かない', () => {
+    it('例の inline の script と style だけを動かし、読みに行けるのはサイトの画像と音源だけにする', () => {
       expect(directivesOf(DEMO_META_CONTENT_SECURITY_POLICY)).toStrictEqual([
         "default-src 'none'",
         "script-src 'unsafe-inline'",
         "style-src 'unsafe-inline'",
+        'img-src https://k8o-demo-origin.invalid blob:',
+        'media-src https://k8o-demo-origin.invalid',
         "base-uri 'none'",
         "form-action 'none'",
       ]);

@@ -1,3 +1,4 @@
+import { DEMO_ORIGIN_PLACEHOLDER } from '../shared/demo/demo-origin.ts';
 import { DEMO_TRUSTED_TYPES_POLICY } from '../shared/demo/demo-trusted-html.ts';
 
 export type DeployTarget = 'preview' | 'production';
@@ -63,13 +64,15 @@ export const securityHeaders = (
   };
 };
 
-// 記事の動く例の文書の頭の <meta> の CSP。文書は inline の script と style だけを動かし、外へは何も
-// 読みに行かない。記事は文書を fetch して iframe の srcdoc に入れ、文書は応答の頭を通らないので、
+// 記事の動く例の文書の頭の <meta> の CSP。文書は inline の script と style だけを動かし、読みに行けるのは
+// サイトの画像と音源だけ（connect-src は閉じたまま）。blob: の画像は、例が自分で作った画像を描くため。記事は文書を fetch して iframe の srcdoc に入れ、文書は応答の頭を通らないので、
 // 制限は文書が自分で持つ
 export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue([
   "default-src 'none'",
   "script-src 'unsafe-inline'",
   "style-src 'unsafe-inline'",
+  `img-src ${DEMO_ORIGIN_PLACEHOLDER} blob:`,
+  `media-src ${DEMO_ORIGIN_PLACEHOLDER}`,
   "base-uri 'none'",
   "form-action 'none'",
 ]);

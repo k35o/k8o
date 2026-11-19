@@ -7,6 +7,7 @@ import { useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { DEMO_MESSAGE, readDemoFrameMessage } from '@/shared/demo/demo-message';
+import { withDemoOrigin } from '@/shared/demo/demo-origin';
 import { toDemoTrustedHTML } from '@/shared/demo/demo-trusted-html';
 
 import styles from './code-demo-view.module.css';
@@ -34,7 +35,9 @@ export const CodeDemoView: FC<Props> = ({
     if (!response.ok) {
       throw new Error(`${src} を読めなかった: ${response.status}`);
     }
-    setDemoDocument(toDemoTrustedHTML(await response.text()));
+    setDemoDocument(
+      toDemoTrustedHTML(withDemoOrigin(await response.text(), location.origin)),
+    );
   };
 
   // 例の文書は、結果の欄が画面に近づいてから読む
