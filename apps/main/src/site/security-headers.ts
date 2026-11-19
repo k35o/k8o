@@ -65,7 +65,7 @@ export const securityHeaders = (
 };
 
 // 記事の動く例の文書の頭の <meta> の CSP。文書は inline の script と style だけを動かし、読みに行けるのは
-// サイトの画像と音源だけ（connect-src は閉じたまま）。blob: の画像は、例が自分で作った画像を描くため。記事は文書を fetch して iframe の srcdoc に入れ、文書は応答の頭を通らないので、
+// サイトの画像・音源・フォントだけ（connect-src は閉じたまま）。blob: の画像は、例が自分で作った画像を描くため。記事は文書を fetch して iframe の srcdoc に入れ、文書は応答の頭を通らないので、
 // 制限は文書が自分で持つ
 export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue([
   "default-src 'none'",
@@ -73,6 +73,7 @@ export const DEMO_META_CONTENT_SECURITY_POLICY = toHeaderValue([
   "style-src 'unsafe-inline'",
   `img-src ${DEMO_ORIGIN_PLACEHOLDER} blob:`,
   `media-src ${DEMO_ORIGIN_PLACEHOLDER}`,
+  `font-src ${DEMO_ORIGIN_PLACEHOLDER}`,
   "base-uri 'none'",
   "form-action 'none'",
 ]);
