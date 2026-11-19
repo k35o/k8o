@@ -75,26 +75,47 @@ featureIds:
 
 次のHTMLでは、`.article`の中の`<img>`にスタイルが当たり、`.nested-content`の中の`<img>`には当たりません。
 
-```html
+```html demo="donut"
+<label><input type="checkbox" id="scoped" checked /> @scopeを使う</label>
 <div class="container">
   <article class="article">
     <p>この記事の内容</p>
     <!-- スタイルが反映される -->
-    <img src="image1.jpg" alt="記事の画像1" />
+    <img src="/icon.png" alt="記事の画像1" width="64" height="64" />
     <div class="nested-content">
       <p>ネストされたコンテンツ</p>
       <!-- スタイルが反映されない -->
-      <img src="image2.jpg" alt="記事の画像2" />
+      <img src="/icon.png" alt="記事の画像2" width="64" height="64" />
     </div>
   </article>
   <!-- スタイルが反映されない -->
-  <img src="image3.jpg" alt="記事の画像3" />
+  <img src="/icon.png" alt="記事の画像3" width="64" height="64" />
 </div>
 ```
 
-<PlaygroundEmbed demo="ドーナツスコープ" headingLevel="h4" sectionId="scope" />
+```css demo="donut"
+@scope (.article) to (.nested-content) {
+  img {
+    border: 4px solid steelblue;
+    border-radius: 0.5rem;
+  }
+}
 
-ボタンで`@scope`をOFFにして`.article img`に切り替えると、`.nested-content`の中の画像にもボーダーが付きます。
+/* チェックを外しているあいだは、@scopeを使わない.article imgも当てる */
+body:has(#scoped:not(:checked)) .article img {
+  border: 4px solid steelblue;
+  border-radius: 0.5rem;
+}
+
+.article,
+.nested-content {
+  margin-block: 0.5rem;
+  padding-inline: 1rem;
+  border: 1px dashed GrayText;
+}
+```
+
+結果の欄でチェックを外して`.article img`に切り替えると、`.nested-content`の中の画像にもボーダーが付きます。
 
 ## :scope疑似クラス
 
@@ -125,35 +146,58 @@ featureIds:
 }
 ```
 
-```html
+```html demo="limit"
+<label><input type="checkbox" id="child" checked /> :scope &gt; を付ける</label>
 <div class="container">
   <article class="article">
     <p>この記事の内容</p>
     <!-- スタイルが反映される -->
-    <img src="image1.jpg" alt="記事の画像1" />
+    <img src="/icon.png" alt="記事の画像1" width="64" height="64" />
     <div class="nested-content">
       <p>ネストされたコンテンツ</p>
       <!-- スタイルが反映されない -->
-      <img src="image2.jpg" alt="記事の画像2" />
+      <img src="/icon.png" alt="記事の画像2" width="64" height="64" />
     </div>
     <div>
       <div class="nested-content">
         <p>ネストされたコンテンツ</p>
         <!-- スタイルが反映される -->
-        <img src="image2.jpg" alt="記事の画像2" />
+        <img src="/icon.png" alt="記事の画像2" width="64" height="64" />
       </div>
     </div>
   </article>
   <!-- スタイルが反映されない -->
-  <img src="image3.jpg" alt="記事の画像3" />
+  <img src="/icon.png" alt="記事の画像3" width="64" height="64" />
 </div>
+```
+
+```css demo="limit"
+/* チェックを入れているあいだは、直接の子の.nested-contentだけを下限にする */
+@scope (body:has(#child:checked) .article) to (:scope > .nested-content) {
+  img {
+    border: 4px solid steelblue;
+    border-radius: 0.5rem;
+  }
+}
+
+@scope (body:has(#child:not(:checked)) .article) to (.nested-content) {
+  img {
+    border: 4px solid steelblue;
+    border-radius: 0.5rem;
+  }
+}
+
+.article,
+.nested-content {
+  margin-block: 0.5rem;
+  padding-inline: 1rem;
+  border: 1px dashed GrayText;
+}
 ```
 
 1つ目の`.nested-content`は`.article`の直接の子なので、中の`<img>`にはスタイルが当たりません。2つ目は`<div>`を挟んだ孫なので下限にならず、中の`<img>`にもスタイルが当たります。
 
-<PlaygroundEmbed demo=":scopeを使ったスコープリミット" headingLevel="h4" sectionId="scope" />
-
-ボタンを押して下限を`to (.nested-content)`に切り替えると、孫の`.nested-content`の中の画像からもボーダーが消えます。
+結果の欄でチェックを外して下限を`to (.nested-content)`に切り替えると、孫の`.nested-content`の中の画像からもボーダーが消えます。
 
 ## スコープの近接性
 
@@ -175,7 +219,8 @@ featureIds:
 }
 ```
 
-```html
+```html demo="proximity"
+<label><input type="checkbox" id="scoped" checked /> @scopeを使う</label>
 <div class="info-box">
   <p class="message">情報メッセージ</p>
   <div class="warning-box">
@@ -187,11 +232,49 @@ featureIds:
 </div>
 ```
 
+```css demo="proximity"
+@scope (.info-box) {
+  .message {
+    color: white;
+    background-color: steelblue;
+  }
+}
+
+@scope (.warning-box) {
+  .message {
+    color: black;
+    background-color: gold;
+  }
+}
+
+/* チェックを外しているあいだは、詳細度の高い子孫セレクタの規則が上の規則に勝つ */
+body:has(#scoped:not(:checked)) {
+  .info-box .message {
+    color: white;
+    background-color: steelblue;
+  }
+
+  .warning-box .message {
+    color: black;
+    background-color: gold;
+  }
+}
+
+.info-box,
+.warning-box {
+  margin-block: 0.5rem;
+  padding-inline: 1rem;
+  border: 1px dashed GrayText;
+}
+
+.message {
+  padding: 0.5rem;
+}
+```
+
 いちばん内側の`.message`は、`.warning-box`より`.info-box`のほうが近いので、`.info-box`のスタイルになります。`@scope`を使わずに`.info-box .message`と`.warning-box .message`で書くと、詳細度が同じなので、後に書いた`.warning-box`のスタイルになります。
 
-<PlaygroundEmbed demo="スコープの近接性" headingLevel="h4" sectionId="scope" />
-
-ボタンで`@scope`をOFFにすると、いちばん内側のメッセージが警告の色に変わります。
+結果の欄でチェックを外して`@scope`を使わない書き方に切り替えると、いちばん内側のメッセージが警告の色に変わります。
 
 近接性が効くのは、詳細度が同じときだけです。`@scope`の中の`h2`の詳細度は`h2`の分だけで、スコープルートの`.card`は足されません。
 
