@@ -2,7 +2,8 @@ import { db } from '@repo/database';
 import { count, desc, eq, inArray } from '@repo/database/orm';
 import type { SQL } from '@repo/database/orm';
 
-import type { BlogSort, BlogStatus } from '../application/blog-stats';
+export type BlogStatus = 'all' | 'published' | 'draft';
+export type BlogSort = 'recent' | 'views';
 
 type BlogRecord = {
   slug: string;

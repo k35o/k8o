@@ -1,7 +1,5 @@
 import Parser from 'rss-parser';
 
-import { BLOG_SLUG_PATTERN } from '../application/blog-slug';
-
 // 記事の本文とタイトルは main の MDX にあり DB には無いので、main の公開ページから読む
 const MAIN_BLOG_URL = 'https://k8o.me/blog';
 const FETCH_TIMEOUT_MS = 10_000;
@@ -17,13 +15,10 @@ export type BlogEntry = {
   url: string;
 };
 
-const slugFromLink = (link: string | undefined): string | null => {
-  if (link === undefined || !link.startsWith(`${MAIN_BLOG_URL}/`)) {
-    return null;
-  }
-  const slug = link.slice(MAIN_BLOG_URL.length + 1);
-  return BLOG_SLUG_PATTERN.test(slug) ? slug : null;
-};
+const slugFromLink = (link: string | undefined): string | null =>
+  link?.startsWith(`${MAIN_BLOG_URL}/`) === true
+    ? link.slice(MAIN_BLOG_URL.length + 1)
+    : null;
 
 export async function fetchPublishedBlogs(): Promise<BlogEntry[]> {
   const response = await fetch(`${MAIN_BLOG_URL}/feed`, {
