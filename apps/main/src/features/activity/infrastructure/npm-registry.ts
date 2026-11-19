@@ -16,7 +16,7 @@ export const fetchPublishedVersions = async (
   packageName: string,
 ): Promise<PublishedVersion[]> => {
   const response = await fetch(
-    `https://registry.npmjs.org/${packageName.replace('/', '%2F')}`,
+    `https://registry.npmjs.org/${encodeURIComponent(packageName)}`,
     { signal: AbortSignal.timeout(TIMEOUT_MS) },
   );
   if (!response.ok) {
