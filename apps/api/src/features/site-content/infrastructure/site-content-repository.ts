@@ -6,7 +6,7 @@ export const findPublishedBlogRows = () =>
     where: (blog, { eq }) => eq(blog.published, true),
     with: {
       blogTag: { with: { tag: { columns: { id: true, name: true } } } },
-      talks: { columns: { slug: true, slideUrl: true } },
+      talks: { columns: { slug: true } },
     },
     orderBy: (blog, { desc }) => [desc(blog.createdAt), desc(blog.id)],
   });

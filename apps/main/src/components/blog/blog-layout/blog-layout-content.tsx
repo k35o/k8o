@@ -69,8 +69,8 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                   <span>約{readingTime}分で読めます</span>
                 </div>
                 <div className={styles.actions}>
-                  {blog.slideUrl !== null && (
-                    <SlideLinkButton href={blog.slideUrl} />
+                  {blog.slidesHref !== null && (
+                    <SlideLinkButton href={blog.slidesHref} />
                   )}
                   <CopyMarkdownButton slug={slug} />
                 </div>

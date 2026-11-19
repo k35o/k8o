@@ -659,6 +659,13 @@
       "when": 1794988000614,
       "tag": "0093_talks_deck_published_at",
       "breakpoints": true
+    },
+    {
+      "idx": 94,
+      "version": "6",
+      "when": 1795006414254,
+      "tag": "0094_drop_slides",
+      "breakpoints": true
     }
   ]
 }

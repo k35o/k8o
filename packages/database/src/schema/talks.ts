@@ -25,6 +25,7 @@ export const talks = sqliteTable(
     eventName: text('event_name').notNull(),
     eventDate: text('event_date').notNull(),
     eventLocation: text('event_location'),
+    // どのコードも読まない。使わないコードが本番に出たあとの migration で消す
     slideUrl: text('slide_url'),
     blogId: integer('blog_id').references(() => blogs.id),
   },

@@ -13,8 +13,6 @@ import { feedbacks, feedbacksRelations } from './feedback.ts';
 import { pushLogs } from './push-logs.ts';
 import { pushSubscriptions } from './push-subscriptions.ts';
 import { reportingReports } from './reporting-reports.ts';
-import { slideTag, slideTagRelations } from './slide-tag.ts';
-import { slides, slidesRelations } from './slides.ts';
 import { tags, tagsRelations } from './tags.ts';
 import { talkTag, talkTagRelations } from './talk-tag.ts';
 import { talks, talksRelations } from './talks.ts';
@@ -36,8 +34,6 @@ export const schema = {
   blogComment,
   talks,
   talkTag,
-  slides,
-  slideTag,
   articleSources,
   articles,
 };
@@ -51,8 +47,6 @@ export const relations = {
   blogCommentRelations,
   talksRelations,
   talkTagRelations,
-  slidesRelations,
-  slideTagRelations,
   articleSourcesRelations,
   articlesRelations,
 };

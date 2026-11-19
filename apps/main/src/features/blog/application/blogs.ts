@@ -10,7 +10,7 @@ export type Blog = {
   id: number;
   slug: string;
   tags: TagRef[];
-  slideUrl: string | null;
+  slidesHref: string | null;
   title: string;
   description: string | null;
   createdAt: string;
@@ -30,7 +30,7 @@ export const getBlogs = async (): Promise<Blog[]> => {
         id: blog.id,
         slug: blog.slug,
         tags: blog.tags,
-        slideUrl: blog.talk === null ? null : await findSlidesHref(blog.talk),
+        slidesHref: blog.talk === null ? null : await findSlidesHref(blog.talk),
         title: metadata.title,
         description: metadata.description,
         createdAt: metadata.createdAt,
