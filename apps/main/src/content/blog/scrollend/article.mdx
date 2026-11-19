@@ -64,13 +64,129 @@ element.addEventListener('scrollend', () => {
 
 待つ時間を決める必要はありません。
 
-<PlaygroundEmbed demo="scrollendイベント" headingLevel="h4" sectionId="scrollend" />
+```html demo="count"
+<p>scroll: <output id="scroll-count">0</output>回</p>
+<p>scrollend: <output id="scrollend-count">0</output>回</p>
+<button id="reset" type="button">リセット</button>
+<div id="list" tabindex="0">
+  <p>アイテム 1</p>
+  <p>アイテム 2</p>
+  <p>アイテム 3</p>
+  <p>アイテム 4</p>
+  <p>アイテム 5</p>
+  <p>アイテム 6</p>
+  <p>アイテム 7</p>
+  <p>アイテム 8</p>
+  <p>アイテム 9</p>
+  <p>アイテム 10</p>
+  <p>アイテム 11</p>
+  <p>アイテム 12</p>
+</div>
+```
+
+```css demo="count"
+#list {
+  height: 10rem;
+  margin-block-start: 0.5rem;
+  overflow-y: auto;
+  border: 1px solid GrayText;
+}
+```
+
+```js demo="count"
+const list = document.querySelector('#list');
+const scrollCount = document.querySelector('#scroll-count');
+const scrollendCount = document.querySelector('#scrollend-count');
+
+list.addEventListener('scroll', () => {
+  scrollCount.value = Number(scrollCount.value) + 1;
+});
+list.addEventListener('scrollend', () => {
+  scrollendCount.value = Number(scrollendCount.value) + 1;
+});
+
+document.querySelector('#reset').addEventListener('click', () => {
+  scrollCount.value = 0;
+  scrollendCount.value = 0;
+});
+```
+
+結果の欄で枠の中をスクロールすると、`scroll`の回数は動いているあいだ増え続け、`scrollend`の回数は止まったときに1だけ増えます。
 
 ### 発火条件
 
 `scrollend`イベントは、指やホイール、キーボードでのスクロールが終わったときに発火します。`scrollTo()`や`scrollBy()`による移動や、scroll-snapでスナップ位置へ動き終わったときにも発火します。スクロール位置が変わらなかったときは発火しません。
 
-<PlaygroundEmbed demo="発火条件" headingLevel="h5" sectionId="scrollend" />
+```html demo="triggers"
+<p>scrollend: <output id="count">0</output>回</p>
+<p>最後に止まった枠: <output id="last">なし</output></p>
+<button id="to-top" type="button">先頭へ</button>
+<button id="to-bottom" type="button">末尾へ</button>
+<div id="list" tabindex="0">
+  <p>アイテム 1</p>
+  <p>アイテム 2</p>
+  <p>アイテム 3</p>
+  <p>アイテム 4</p>
+  <p>アイテム 5</p>
+  <p>アイテム 6</p>
+  <p>アイテム 7</p>
+  <p>アイテム 8</p>
+  <p>アイテム 9</p>
+  <p>アイテム 10</p>
+</div>
+<div id="carousel" tabindex="0">
+  <div>1</div>
+  <div>2</div>
+  <div>3</div>
+  <div>4</div>
+</div>
+```
+
+```css demo="triggers"
+#list {
+  height: 8rem;
+  margin-block: 0.5rem;
+  overflow-y: auto;
+  border: 1px solid GrayText;
+}
+
+#carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  border: 1px solid GrayText;
+}
+
+#carousel > * {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  padding-block: 2rem;
+  text-align: center;
+}
+```
+
+```js demo="triggers"
+const list = document.querySelector('#list');
+const carousel = document.querySelector('#carousel');
+const count = document.querySelector('#count');
+const last = document.querySelector('#last');
+
+const record = (label) => () => {
+  count.value = Number(count.value) + 1;
+  last.value = label;
+};
+list.addEventListener('scrollend', record('scrollTo()'));
+carousel.addEventListener('scrollend', record('scroll-snap'));
+
+document.querySelector('#to-top').addEventListener('click', () => {
+  list.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.querySelector('#to-bottom').addEventListener('click', () => {
+  list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
+});
+```
+
+結果の欄でボタンを押すか、下の枠を横にスクロールすると、動き終わったときに回数が1だけ増えます。
 
 要素の`scrollTo({ top: 500, behavior: 'smooth' })`を呼ぶと、`scroll`イベントは何度も届き、`scrollend`イベントは止まったときに1回だけ届きます。`scrollTop`に続けて3回代入したときも、`scroll`と`scrollend`は1回ずつです。すでにその位置にいるときの`scrollTo()`では、どちらも発火しません。
 
