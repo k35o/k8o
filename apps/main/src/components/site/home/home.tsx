@@ -1,10 +1,10 @@
 import { Heading, Separator, Stack } from '@k8ordo/ui';
 import type { FC } from 'react';
 
-import type { BlogSummary } from '@/features/blog/interface/queries';
+import type { ActivityItem } from '@/features/activity/interface/queries';
 
+import { ActivityFeed } from '../activity-feed/activity-feed';
 import { EmailTooltip } from '../email-tooltip/email-tooltip';
-import { RecentBlogs } from '../recent-blogs/recent-blogs';
 import { SiteEntrySection } from '../site-entry-section/site-entry-section';
 import { SocialIcons } from '../social-icons/social-icons';
 // 小さい版は data: URI になり、srcset に入れると HTML と preload とペイロードに埋まるので、ファイルで配る
@@ -14,11 +14,14 @@ import k8o from './k8o.avif';
 
 import styles from './home.module.css';
 
+const ACTIVITY_COUNT = 8;
+
 type HomeProps = {
-  blogs: BlogSummary[];
+  // 新しい順
+  activity: ActivityItem[];
 };
 
-export const Home: FC<HomeProps> = ({ blogs }) => (
+export const Home: FC<HomeProps> = ({ activity }) => (
   <div className={styles.root}>
     <div className={styles.sections}>
       <header className={styles.header}>
@@ -51,9 +54,11 @@ export const Home: FC<HomeProps> = ({ blogs }) => (
       <Stack gap="lg">
         <div>
           <Heading level="h2">Activity</Heading>
-          <p className={styles.activityLead}>最近の発信の記録。</p>
+          <p className={styles.activityLead}>
+            記事・登壇・パッケージのリリースの記録。
+          </p>
         </div>
-        <RecentBlogs blogs={blogs.slice(0, 3)} />
+        <ActivityFeed items={activity.slice(0, ACTIVITY_COUNT)} />
       </Stack>
 
       <SiteEntrySection kind="reading" />
