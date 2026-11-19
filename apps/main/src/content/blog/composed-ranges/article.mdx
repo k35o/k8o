@@ -58,9 +58,94 @@ const ranges = window.getSelection()?.getComposedRanges({ shadowRoots: [shadowRo
 
 オプションの`shadowRoots`には、中の位置を見てよい`ShadowRoot`の配列を渡します。渡した`ShadowRoot`の中にある端は、Shadow DOMの中の位置で返ります。渡していない`ShadowRoot`の中にある端はShadow DOMの外に出され、ホスト要素の親と、その中でのホスト要素の位置で返ります。
 
-<PlaygroundEmbed demo="getRangeAtとgetComposedRangesの比較" headingLevel="h4" sectionId="composed-ranges" />
+```html demo="compare"
+<div id="sample">
+  <p id="heading">サンプルテキスト</p>
+  <p id="host">あさ、眼をさますときの気持は、面白い。かくれんぼのとき、押入れの真っ暗い中に、じっと、しゃがんで隠れていて、突然、でこちゃんに、がらっと襖をあけられ、日の光がどっと来て、でこちゃんに、「見つけた！」と大声で言われて、まぶしさ、それから、へんな間の悪さ、それから、胸がどきどきして、着物のまえを合せたりして、ちょっと、てれくさく、押入れから出て来て、急にむかむか腹立たしく、あの感じ、いや、ちがう、あの感じでもない、なんだか、もっとやりきれない。</p>
+</div>
+<p>本文の一部をドラッグして選ぶと、範囲が指す文字が下に出ます。</p>
+<dl>
+  <dt>getRangeAt(0)</dt>
+  <dd id="range-at"></dd>
+  <dt>getComposedRanges({ shadowRoots })</dt>
+  <dd id="with-roots"></dd>
+  <dt>getComposedRanges()</dt>
+  <dd id="without-roots"></dd>
+</dl>
+```
 
-このデモの本文は、閉じたShadow DOM（`mode: 'closed'`）の中にあります。本文の一部を選ぶと、3つの方法で取り出した範囲が、どの文字を指しているかが出ます。`getRangeAt(0)`は、Firefoxでは選んだ文字を指しますが、ChromeとSafariでは空の範囲になり、どこを選んだのか分かりません。`ShadowRoot`を渡した`getComposedRanges()`は、選んだ文字をそのまま指します。渡さないと、範囲の端がShadow DOMの外に出され、本文の段落まるごとを指します。
+```css demo="compare"
+#heading {
+  font-weight: bold;
+}
+
+dt {
+  font-family: monospace;
+}
+
+dd {
+  min-height: 1lh;
+  margin-block-end: 0.5rem;
+}
+```
+
+```js demo="compare"
+const sample = document.querySelector('#sample');
+const heading = document.querySelector('#heading');
+const host = document.querySelector('#host');
+
+// 本文のテキストノードを、閉じたShadow DOMの中へ移す
+const body = host.firstChild;
+const shadowRoot = host.attachShadow({ mode: 'closed' });
+shadowRoot.append(body);
+
+const headingLength = heading.textContent.length;
+const text = heading.textContent + body.data;
+
+// 範囲の端を、見出しと本文をつないだ文字列の中の位置に直す
+const toIndex = (node, offset) => {
+  if (node === heading.firstChild) return offset;
+  if (node === body) return headingLength + offset;
+  if (node === heading) return offset * headingLength;
+  if (node === shadowRoot) return headingLength + offset * body.length;
+  if (node === host) return headingLength;
+  // 残りは #sample か、その子の空白のテキストノード。手前にある子から数える
+  const children = [...sample.childNodes];
+  const before = children.slice(0, node === sample ? offset : children.indexOf(node));
+  return (
+    (before.includes(heading) ? headingLength : 0) +
+    (before.includes(host) ? body.length : 0)
+  );
+};
+
+const covered = (range) =>
+  text.slice(
+    toIndex(range.startContainer, range.startOffset),
+    toIndex(range.endContainer, range.endOffset),
+  );
+
+const describe = (range) => {
+  if (!range) return 'rangeCountが0で、取り出せません';
+  return covered(range) || '（空の範囲）';
+};
+
+document.addEventListener('selectionchange', () => {
+  const selection = document.getSelection();
+  const [composed] = selection.getComposedRanges({ shadowRoots: [shadowRoot] });
+  // 見出しと本文を選んでいないときは、前の結果を残す
+  if (!composed || covered(composed) === '') return;
+
+  document.querySelector('#range-at').textContent = describe(
+    selection.rangeCount > 0 ? selection.getRangeAt(0) : undefined,
+  );
+  document.querySelector('#with-roots').textContent = describe(composed);
+  document.querySelector('#without-roots').textContent = describe(
+    selection.getComposedRanges()[0],
+  );
+});
+```
+
+結果の欄の本文は、閉じたShadow DOM（`mode: 'closed'`）の中にあります。本文の一部を選ぶと、3つの方法で取り出した範囲が、どの文字を指しているかが出ます。`getRangeAt(0)`は、Firefoxでは選んだ文字を指しますが、ChromeとSafariでは空の範囲になり、どこを選んだのか分かりません。`ShadowRoot`を渡した`getComposedRanges()`は、選んだ文字をそのまま指します。渡さないと、範囲の端がShadow DOMの外に出され、本文の段落まるごとを指します。
 
 見出しから本文までまたいで選ぶと、`getRangeAt(0)`の結果はブラウザでばらばらです。Chromeでは見出しの文字だけを、Firefoxでは本文の文字だけを指し、Safariでは`rangeCount`が0になって取り出せません。`ShadowRoot`を渡した`getComposedRanges()`なら、見出しの文字から本文の選んだ文字までを指します。
 
