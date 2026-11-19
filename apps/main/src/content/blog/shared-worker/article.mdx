@@ -18,10 +18,6 @@ SharedWorkerは、同じオリジンの複数のタブやiframeから1つのWork
 
 ページの裏で処理を回すときは、通常の`Worker`（Dedicated Worker）を使います。ただし、Dedicated Workerはそれを生成したドキュメント1つにだけ紐づき、別のタブやiframeから直接アクセスすることはできません。タブ間でメッセージを送り合うのは`BroadcastChannel`でもできますが、状態はタブごとに持つことになります。1つの状態や接続を全部のタブで持ちたいときにSharedWorkerを使います。
 
-<PlaygroundEmbed demo="タブ間カウンタ" headingLevel="h4" sectionId="shared-worker" />
-
-このページを別のタブでもう一度開くと、Worker起動時刻が両方のタブで一致し、接続中のタブ数が2になります。どちらかのタブで+1を押すと、両方のタブのカウンタが同じ値に変わります。
-
 ## SharedWorkerの基本
 
 SharedWorkerはページ側とWorker側のコードがペアで動きます。
@@ -106,10 +102,10 @@ const analytics = new SharedWorker('./worker.js', { name: 'analytics' });
 
 ## タブ間で同期するカウンタ
 
-はじめにのPlaygroundのWorker側のコードは、次のとおりです。
+複数のタブで1つのカウンタを持つWorkerのコードは、次のとおりです。Workerが起動した時刻とカウンタ、接続中のタブの数を、つないだ全部のタブに配ります。
 
 ```js
-// /playgrounds/shared-worker.worker.js
+// worker.js
 // [!hl]
 const STARTED_AT = Date.now();
 let count = 0;
@@ -153,7 +149,7 @@ self.addEventListener('connect', (event) => {
 
 Worker側には、タブが閉じたことやページを移ったことを知らせるイベントがありません。どのブラウザでも`MessagePort`に`close`イベントは無く、つないでいたiframeを消しても、ページを移っても、Worker側には何も届きません。そのままでは`ports`に閉じたタブのポートが残り、接続数も減りません。
 
-そこでPlaygroundでは、ページ側で`pagehide`のときに`disconnect`を送り、Worker側が`ports`から外しています。デモはReactで書いていて、`useEffect`のクリーンアップはページの再読み込みや移動では呼ばれないので、`pagehide`でも送ります。
+そこで、ページ側で`pagehide`のときに`disconnect`を送り、Worker側が`ports`から外します。
 
 ```js
 // page.js
