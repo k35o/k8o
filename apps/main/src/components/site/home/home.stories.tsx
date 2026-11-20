@@ -121,6 +121,15 @@ export const ShowsNewestEightActivities = meta.story({
   },
 });
 
+export const KeepsActivityHeadingForHeadingNavigation = meta.story({
+  play: async ({ canvas }) => {
+    // 見た目には出さないが、月の見出し（h3）の親として読み上げには残す
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: 'Activity' }),
+    ).toBeInTheDocument();
+  },
+});
+
 export const LoadsIconAtDisplaySize = meta.story({
   play: async ({ canvas }) => {
     const icon = canvas.getByRole('img', { name: 'k8oのアイコン' });

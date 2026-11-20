@@ -1,4 +1,4 @@
-import { Heading, Separator, Stack } from '@k8ordo/ui';
+import { Heading, Separator } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { ActivityItem } from '@/features/activity/interface/queries';
@@ -51,15 +51,10 @@ export const Home: FC<HomeProps> = ({ activity }) => (
 
       <Separator color="subtle" />
 
-      <Stack gap="lg">
-        <div>
-          <Heading level="h2">Activity</Heading>
-          <p className={styles.activityLead}>
-            記事・登壇・パッケージのリリースの記録。
-          </p>
-        </div>
+      <section>
+        <h2 className={styles.activityHeading}>Activity</h2>
         <ActivityFeed items={activity.slice(0, ACTIVITY_COUNT)} />
-      </Stack>
+      </section>
 
       <SiteEntrySection kind="reading" />
       <SiteEntrySection kind="tool" />
