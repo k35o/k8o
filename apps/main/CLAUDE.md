@@ -1,6 +1,6 @@
 # apps/main CLAUDE.md
 
-k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発者向けツール群を、k8ordo（`@k8ordo/framework` の `mode: 'static'`）で静的に書き出す。Vercel には `.github/workflows/vercel-prebuilt.yml` が GitHub Actions でビルドした成果物を出す。k8ordo の使い方は `node_modules/@k8ordo/framework/docs/` を読む。
+k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、Lab の小さな実験を、k8ordo（`@k8ordo/framework` の `mode: 'static'`）で静的に書き出す。Vercel には `.github/workflows/vercel-prebuilt.yml` が GitHub Actions でビルドした成果物を出す。k8ordo の使い方は `node_modules/@k8ordo/framework/docs/` を読む。
 
 ## 置き場（src/）
 
@@ -34,6 +34,9 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 - head の CSS の並びは k8ordo の docs の routing.md の「How a page is sent」のとおり（サーバーの部品の CSS が前、クライアントの部品の CSS が後）。framework が並びのために head に書く中身の無い `<style>` を、CSP は `style-src` の `'unsafe-inline'` で通す。src の CSS Modules は、記事のものも含めて `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS と同じ層なので、同じ詳細度の規則の勝ち負けはその並びで決まる。同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように外から class を受ける部品）は、両方で同じプロパティを書かない
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`・`PdfDeckArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
+- サイトの行き先（Blog・Talks・Artifacts・Readings と、押すとパネルが開く Lab）は `components/site/global-layout/site-destinations.tsx` に置き、48rem 以上ではヘッダーのナビ（`header-nav`）が、それより狭い幅では画面の下に固定するドック（`dock`）が描く。どちらも HTML にあり、幅で片方を `display: none` にする。今いる区画に `aria-current` を付ける（入口のページは `page`、その下のページは `true`）。Lab のパネルの中身は `lab-links` で、行き先を選ぶとパネルを閉じる
+- ドックは下へのスクロールで画面の外へ引っ込み、上へのスクロールで戻る（ヘッダーと同じ `useIsScrollingDown`）。キーボードでフォーカスが中に入ったときと、Lab を開いているあいだは引っ込まない。ドックがフッターとフォーカスした要素を覆わないよう、`GlobalLayout` の下の余白と `globals.css` の `scroll-padding-bottom` を取る
+- ページが自分の項目をドックに足すときは、`dock-slot.ts` の `useDockSlot` が返す置き場へ `createPortal` で `DockMenu` を描く。記事のもくじ（`components/blog/blog-layout/table-of-contents`）がそうしていて、80rem より狭い幅でだけ出す（広い幅では本文の横のもくじが出る）。足した項目があるあいだ、ドックは引っ込まず、その項目だけを同じ位置の帯として残す（字は `pinnedLabel`。もくじはいま読んでいる見出し）。48rem 以上ではドックの行き先を描かないので、足した項目はいつも右下の帯になる。置き場は HTML には無く、項目は hydrate のあとに出る
 - ヘッダーのお問い合わせ（`components/site/contact-to-me`）は、`HeaderActions` が Suspense で包まずに描くので、HTML のヘッダーにボタンと閉じた dialog が出る。JS なしでもボタンは出て、押しても dialog は開かない（テーマのボタンと同じ）
 - お問い合わせのフォームは `@k8ordo/form` に載せる。schema（`contact-to-me/contact-fields.ts`。api の `/public/inquiries` と同じ長さの決まり）から `formFields` で導いた fields を、サーバーの部品の `HeaderActions` が props で渡し、`ContactToMe` が `useForm` で属性とエラーを出す（zod はクライアントに渡らない）。static mode には Server Action が無いので、送信は `useActionState` の関数がブラウザから api を呼び、送れなかったときは本文を `values` で、失敗の文言を `errors` で返す
 
@@ -65,20 +68,12 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 - static mode では HTML は既定値（全件）で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す（`shared/browser/replay-typed-value.ts` を欄の `ref` に渡す）
 - 一覧のカードのリンクは `href()` で組んだ素の `<a>` にする。`components/site/content-card` の `ContentCard` は、呼ぶ側が `href()` で組んだパスを `href` で受ける
 
-## ツールの URL の状態（`/palette-maker`・`/html-nest`・`/radius-maker`）
-
-- 値は区画の `search-params` の `definePageState` の url に文字列のまま置き、`readPaletteUrl` などが読むときに解く。数は `Number()` で読み、数にならない値（大きさと id は整数にならない値）は既定にして、範囲の外は端に寄せる（`?h=400` は 360、`?h=12abc` と `?h=` は既定）。範囲の外や壊れた数の文字列は、ほかの値を書いても URL に残り、既定と同じ文字列（`?h=250`）と `s` の表に無い値（`?s=foo`）は消える。読みの約束は `search-params.test.ts` の表に書く。schema を `z.pipe`・`z.transform`・`z.number`・`z.refine` にしないのは、zod の本体が入る `frame-*.js` が大きくなり、どのページも +0.7kB 読むから
-- 値は入力ごと・選ぶごとに `update()`（既定の replace）で書く。続く replace の書き込みは `@k8ordo/state` が 100ms で間引くので、動かしている間の値を別に持たない。画面の値は待たずに変わり、URL には少し遅れて入る
-- トークン名は、名前として使える値のときだけ書く（`isTokenName`）。欄には打った文字がそのまま残る
-- html-nest は下書きを持たず、`update({ el }, { history: 'push' })` で書く。戻る・進むは store が URL を読み直すので、書くものは無い。値が変わらない `update()` は push しない
-- static mode の HTML は url の state を既定値で描き、URL の値で開いたときに既定の色や形が一度出るので、本文は `components/site/browser-only` の `BrowserOnly` でブラウザでだけ描く。`fallback` を渡さないので、HTML の `<main>` は見出しと空の digest の `<!--$!-->` になる
-
 ## 日々の表示（`/reading-list`・`/browser-support`・`/notifications`）
 
 - `/browser-support` と `/notifications` は、ページがビルドで api の関数から読み（`features/*/interface` の関数）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。「直近1週間」の基準の時刻（`nowMs`）もビルドの値に入れて渡す
 - `/reading-list` は直近 90 日の記事をすべて描くので、ビルドの値を HTML とペイロードに埋めず（埋めると数百件を HTML と api で 2 回送る）、ブラウザで `GET /public/reading-list` を読む（`components/reading-list/reading-list-source`）。届くまでは `BrowserOnly` の骨組みのまま待ち、読めなければ読み直しを案内する（`ReadingListLoader`）。一度読んだ一覧の覚え方と、読めなかったときの読み直しは `reading-list-source` の注釈のとおり
 - HTML を読むうちに api を取り始める `preload`（`as: 'fetch'`）は、client の部品の `ReadingListPreload` が描くときに書く。Server Component で書くとペイロードの hint にも入り、Readings へのリンクを先読みしただけで api を読む
-- 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は「ツールの URL の状態」と同じく文字列のまま持ち、読むときに解く。`z.array` は書くときと同じカンマ区切りの `?source=1,2` を読めず、`z.stringbool` は `?widely=1` も真に読むので、真偽はアプリが書く `true` だけを真にする
+- 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は文字列のまま持ち、読むときに解く。`z.array` は書くときと同じカンマ区切りの `?source=1,2` を読めず、`z.stringbool` は `?widely=1` も真に読むので、真偽はアプリが書く `true` だけを真にする
 - 一覧は `BrowserOnly` でブラウザでだけ描き、骨組み（`ReadingListSkeleton`・`BrowserSupportFeatureListSkeleton`）を `fallback` に渡す。骨組みは HTML の client-rendered の境界（`<!--$!-->`）の中に出る。骨組みを `loading.tsx` として route に置かないのは、static mode では HTML にも遷移にもほぼ出ず、layout と同じくその CSS をどのページも読むから
 - ブラウザ最低版のフロア（`features/browser-support/infrastructure/browser-min-versions.json`）は、ルートレイアウトが読み、ビルドのターゲット（`site/browser-targets.ts`）も作る、コミットした生成物。`pnpm run -F main generate:browser-min-versions [version]` で作り直す。同じ版からリポジトリ直下の `.browserslistrc`（ai の Next.js の Lightning CSS / SWC のターゲット）も書くので、どちらも手で編集しない。api の active データセットとずれると、外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で作り直しの PR を作り、自動マージする
 - 購読の VAPID の公開鍵は、`routes/notifications/page.tsx` がビルドの描画で `process.env` から読み、props で渡す。`import.meta.env` でクライアントへ渡すと、名前を `VITE_` に替えることになる
@@ -107,6 +102,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 - デッキのページと OG（`/talks/:slug`・`/talks/:slug/og.png`）は、`routes/talks/[slug]/paths.ts` が一覧と sitemap と同じ、`slug` を持ち中身（MDX か PDF のマニフェスト）のあるトークの一覧1つ（`features/talks/interface/queries.ts` の `getTalkDecks`）から作る。`slug` の無いトークと中身の無いトークのデッキは 404 になる（手順は `components/talks/README.md`）
 - PDF から作ったデッキの中身はコミットせず、`upload:talk-deck` が Vercel Blob の非公開ストアに置く。`vite.config.ts` の `k8o:pdf-deck-sync` が、ビルドと dev の初めに、`slug` を持ち MDX の無いトークの中身を `site/pdf-deck-sync.ts` でストアから `public/talks/<slug>/`（git は見ない）へ取り込み、挙がっていない slug のディレクトリを消す。取り込むのは `BLOB_READ_WRITE_TOKEN` のあるビルドと dev で、本番のビルドは、トークンが無いかストアに中身が無い PDF のデッキがあると止まる。トークンの無い preview と手元は、手元に無いデッキだけを k8o.me に公開されているファイルから写す（`publicSiteStore`）。`/talks/:slug` は値が 1 つも無いとビルドが止まるので、ストアを読めないビルドにも公開済みのデッキを持たせている。手元の `upload:talk-deck` が書いたデッキは置き換えない。まだ公開されていないデッキは写せず、そのトークはデッキもスライドへのリンクも出さない。`deck_published_at` が先の時刻のトークは、api が `slug` を返さないので、ビルドは取り込まずページも作らない。時刻を過ぎたあとは、`vercel-prebuilt.yml` の定期実行（`due-decks`）が本番の main を建て直して出す
 - ホームの Activity は、記事・登壇と、Artifacts の npm のパッケージのリリースを新しい順に混ぜる（`features/activity/interface/queries.ts` の `getActivity`）。リリースはビルドが npm のレジストリから読み、同じパッケージの同じ月（日本時間）の版を 1 行にまとめる。読めなかったパッケージは警告を出してリリースを出さず、ビルドは止めない。新しいリリースと、登壇前のトークの「予定」が画面で変わるのは、main のデプロイのとき
+- `/artifacts` は `components/artifacts/artifacts/artifacts.ts` の一覧を、まとまり（`ARTIFACT_GROUPS`）ごとの棚に並べる。各項目の最後の版と公開日は、ビルドが npm のレジストリから読む（`getLatestReleases`。プレリリースは数えない）。レジストリの読み取りはビルドの中で覚え、ホームの Activity と分け合う。`@k8ordo/*` は同じ版でそろって出るので、k8ordo は `@k8ordo/ui` の版で代表する。読めなかったパッケージは警告を出して版を出さず、ビルドは止めない。デザインシステムに無いアイコンは `components/artifacts/artifact-icons` に、同じ升目と線の太さで描く
 - `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事の更新日とトークの登壇の日から決め、ビルドの時刻は使わない。route.ts があるので、framework は `sitemap.xml` を書かない
 - `paths.ts` はページと同じバンドルで走るので、alias と `@repo/*` をそのまま import でき、覚えた一覧（`memoizeInBuild`）をページと分け合う
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く

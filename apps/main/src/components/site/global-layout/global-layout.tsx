@@ -6,8 +6,10 @@ import { Logo } from '@/components/site/brand-icons/logo';
 
 import { BrowserSupportNotice } from '../browser-support-notice/browser-support-notice';
 import { Background } from './background/background';
+import { Dock } from './dock/dock';
 import { Footer } from './footer/footer';
 import { HeaderActions } from './header-actions/header-actions';
+import { HeaderNav } from './header-nav/header-nav';
 import { Header } from './header/header';
 
 import styles from './global-layout.module.css';
@@ -42,11 +44,13 @@ export const GlobalLayout: FC<{
           <Logo className={styles.logo} />
         </h1>
       </a>
+      <HeaderNav />
       <HeaderActions />
     </Header>
     <main className={styles.main} id={MAIN_ID} tabIndex={-1}>
       {children}
     </main>
     <Footer />
+    <Dock />
   </div>
 );

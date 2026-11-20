@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
-import { getArtifacts } from './artifacts';
+import { ARTIFACT_GROUPS, getArtifacts } from './artifacts';
 
 describe('getArtifacts', () => {
   it('公開している制作物一覧を返す', () => {
     const projects = getArtifacts();
 
-    expect(projects).toHaveLength(14);
+    expect(projects).toHaveLength(13);
     expect(projects).toStrictEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: '@k8ordo/ui',
+          name: 'k8ordo',
           githubUrl: 'https://github.com/k35o/k8ordo',
-          websiteUrl: 'https://ordo.k8o.me',
+          websiteUrl: 'https://ordo.k8o.me/ja/',
           npmPackageName: '@k8ordo/ui',
         }),
         expect.objectContaining({
@@ -26,12 +26,6 @@ describe('getArtifacts', () => {
           githubUrl: 'https://github.com/k35o/patrol-board',
           websiteUrl: null,
           npmPackageName: null,
-        }),
-        expect.objectContaining({
-          name: '@k8o/html-nest',
-          githubUrl: 'https://github.com/k35o/html-nest',
-          websiteUrl: 'https://k8o.me/html-nest',
-          npmPackageName: '@k8o/html-nest',
         }),
         expect.objectContaining({
           name: 'pnpm-release-action',
@@ -74,9 +68,16 @@ describe('getArtifacts', () => {
           githubUrl: expect.stringMatching(
             /^https:\/\/github\.com\//u,
           ) as string,
-          tags: expect.any(Array) as string[],
         }),
       );
     }
+  });
+
+  it('どの制作物も、一覧に並べるまとまりのどれかに入る', () => {
+    const groups = new Set(ARTIFACT_GROUPS.map(({ group }) => group));
+
+    expect(
+      getArtifacts().filter(({ group }) => !groups.has(group)),
+    ).toStrictEqual([]);
   });
 });

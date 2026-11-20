@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-k8oは個人ポートフォリオサイト。k8ordo の static（main）、Next.js App Router（ai）と Hono（api）の Turborepo モノレポ。ブログ(MDX)、トーク、開発者向けツール群、AIツール群を提供する。
+k8oは個人ポートフォリオサイト。k8ordo の static（main）、Next.js App Router（ai）と Hono（api）の Turborepo モノレポ。ブログ(MDX)、トーク、Lab の小さな実験、AIツール群を提供する。
 
 ## コマンド
 

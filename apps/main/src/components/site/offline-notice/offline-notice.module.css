@@ -1,7 +1,7 @@
 .root {
   position: fixed;
   inset-inline: 0;
-  bottom: calc(var(--spacing) * 4);
+  bottom: calc(var(--spacing) * 24);
   z-index: var(--z-index-overlay);
   width: 100%;
   max-width: 36rem;

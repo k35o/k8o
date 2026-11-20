@@ -1,5 +1,6 @@
 import { expect } from 'storybook/test';
 
+import { Dock } from '@/components/site/global-layout/dock/dock';
 import type { HeadingTree } from '@/features/blog/interface/queries';
 
 import preview from '../../../../../.storybook/preview';
@@ -60,36 +61,55 @@ const headingTree: HeadingTree = {
 const meta = preview.meta({
   title: 'app/blog/blog-layout/table-of-contents',
   component: TableOfContents,
+  // 行き先とページの項目が並ぶのは狭い幅のドック
+  globals: { viewport: { value: 'mobile1' } },
   args: { headingTree },
+  decorators: [
+    (Story) => (
+      <>
+        <Dock />
+        <Story />
+      </>
+    ),
+  ],
 });
 
-export const Primary = meta.story();
-
-// 下に固定したもくじが、フォーカスした要素とページの最後のフッターを覆わない
-export const ReservesSpaceBelow = meta.story({
-  parameters: { vrt: { skip: true } },
-  play: async ({ canvasElement }) => {
-    const toc = canvasElement.querySelector('details');
-    if (toc === null) {
-      throw new Error('もくじがありません');
-    }
-    const occupied = window.innerHeight - toc.getBoundingClientRect().top;
-
+export const Primary = meta.story({
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(
+      await canvas.findByRole('button', { name: /もくじ/ }),
+    );
     await expect(
-      Number.parseFloat(
-        getComputedStyle(document.documentElement).scrollPaddingBottom,
-      ),
-    ).toBeGreaterThanOrEqual(occupied);
+      await canvas.findByRole('navigation', { name: 'もくじ' }),
+    ).toBeVisible();
   },
 });
 
-// 見出しの無い記事ではもくじを出さないので、余白も取らない
+// 見出しを選ぶと、パネルを閉じてドックを元に戻す
+export const ClosesOnNavigate = meta.story({
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas, userEvent }) => {
+    const trigger = await canvas.findByRole('button', { name: /もくじ/ });
+    await userEvent.click(trigger);
+    const [link] = await canvas.findAllByRole('link', { name: /タイトル/ });
+    if (link === undefined) {
+      throw new Error('見出しのリンクがありません');
+    }
+    // vitest のブラウザの殻は <base target="_parent"> を置き、リンクが親の枠を移して試験が切れる
+    link.setAttribute('target', '_self');
+    await userEvent.click(link);
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  },
+});
+
+// 見出しの無い記事では、ドックにもくじを足さない
 export const NoHeadings = meta.story({
   args: { headingTree: { depth: 0, children: [] } },
   parameters: { vrt: { skip: true } },
-  play: async () => {
+  play: async ({ canvas }) => {
     await expect(
-      getComputedStyle(document.documentElement).scrollPaddingBottom,
-    ).toBe('auto');
+      canvas.getByRole('navigation', { name: 'メイン' }),
+    ).toBeVisible();
+    await expect(canvas.queryByRole('button', { name: /もくじ/ })).toBeNull();
   },
 });

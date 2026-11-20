@@ -1,18 +1,37 @@
 .root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 10);
   width: 100%;
-  max-width: 80rem;
+  max-width: 64rem;
   margin-inline: auto;
 }
 
-.section {
-  display: grid;
-  gap: calc(var(--spacing) * 8);
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
 
-  @media (width >= 48rem) {
+.title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-lg);
+}
+
+.tiles {
+  display: grid;
+  gap: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (width >= 64rem) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+.featured {
+  grid-column: 1 / -1;
 }

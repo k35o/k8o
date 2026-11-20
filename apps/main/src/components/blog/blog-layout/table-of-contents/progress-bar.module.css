@@ -3,6 +3,11 @@
   flex-shrink: 0;
   width: calc(var(--spacing) * 8);
   height: calc(var(--spacing) * 8);
+
+  &[data-size='sm'] {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+  }
 }
 
 .srOnly {
@@ -21,6 +26,15 @@
   width: 100%;
   height: 100%;
   rotate: -90deg;
+}
+
+.track {
+  stroke: var(--color-bg-raised);
+
+  /* ドックの面は raised に近く、同じ色の輪は見えない */
+  [data-size='sm'] & {
+    stroke: var(--color-border-base);
+  }
 }
 
 .progress {

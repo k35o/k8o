@@ -11,7 +11,9 @@ import styles from './progress-bar.module.css';
 export const ProgressBar: FC<{
   activeId: string;
   headingTree: HeadingTree;
-}> = ({ activeId, headingTree }) => {
+  /** `sm` は輪だけを描き、数字を出さない */
+  size?: 'md' | 'sm';
+}> = ({ activeId, headingTree, size = 'md' }) => {
   const currentPercentage = useMemo(() => {
     if (activeId === END_OF_CONTENT_ID) {
       return 100;
@@ -23,15 +25,15 @@ export const ProgressBar: FC<{
   const offset = circumference * (1 - currentPercentage / 100);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-size={size}>
       <span className={styles.srOnly}>読了率 {currentPercentage}%</span>
       <svg aria-hidden="true" className={styles.ring} viewBox="0 0 32 32">
         <circle
+          className={styles.track}
           cx="16"
           cy="16"
           fill="none"
           r={radius}
-          stroke="var(--color-bg-raised)"
           strokeWidth="3"
         />
         <circle
@@ -46,9 +48,11 @@ export const ProgressBar: FC<{
           strokeWidth="3"
         />
       </svg>
-      <div aria-hidden="true" className={styles.value}>
-        {currentPercentage}
-      </div>
+      {size === 'md' && (
+        <div aria-hidden="true" className={styles.value}>
+          {currentPercentage}
+        </div>
+      )}
     </div>
   );
 };

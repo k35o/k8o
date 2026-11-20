@@ -1,142 +1,177 @@
+export type ArtifactGroup =
+  | 'k8ordo'
+  | 'storybook'
+  | 'lint'
+  | 'config'
+  | 'actions';
+
+export type ArtifactIcon =
+  | 'jellyfish'
+  | 'calendar'
+  | 'image'
+  | 'dice'
+  | 'flame'
+  | 'rocket'
+  | 'search'
+  | 'paint'
+  | 'settings'
+  | 'refresh'
+  | 'monitor'
+  | 'pullRequest'
+  | 'clipboardCheck';
+
 export type Artifact = {
   name: string;
   description: string;
+  group: ArtifactGroup;
+  icon: ArtifactIcon;
   githubUrl: string;
   websiteUrl: string | null;
+  // @k8ordo/* は同じ版でそろって出るので、k8ordo は @k8ordo/ui の版で代表する
   npmPackageName: string | null;
-  tags: string[];
 };
 
+// 一覧に並べる順
+export const ARTIFACT_GROUPS: ReadonlyArray<{
+  group: ArtifactGroup;
+  // 1 つだけのまとまりは見出しを出さず、大きなタイルで描く
+  title: string | null;
+}> = [
+  { group: 'k8ordo', title: null },
+  { group: 'storybook', title: 'Storybook' },
+  { group: 'lint', title: 'Lint・CSS' },
+  { group: 'config', title: 'Config' },
+  { group: 'actions', title: 'GitHub Actions' },
+];
+
 export const getArtifacts = (): Artifact[] => [
-  // デザインシステム
   {
-    name: '@k8ordo/ui',
+    name: 'k8ordo',
+    group: 'k8ordo',
+    icon: 'jellyfish',
     description:
-      'k8oのデザインシステム。Reactコンポーネントとデザイントークンに加え、LLM駆動でUIを生成するアダプタを備える。',
+      'Baselineに入った機能を待たずに使う、Reactのライブラリ群。UIコンポーネント、フレームワーク、ルーター、状態、フォームなど7つのパッケージからなる。',
     githubUrl: 'https://github.com/k35o/k8ordo',
-    websiteUrl: 'https://ordo.k8o.me',
+    websiteUrl: 'https://ordo.k8o.me/ja/',
     npmPackageName: '@k8ordo/ui',
-    tags: ['Design System', 'React', 'Generative UI'],
   },
-  // Storybook 系
   {
     name: 'storybook-addon-mock-date',
+    group: 'storybook',
+    icon: 'calendar',
     description:
-      'Storybookのストーリー単位でDateやタイマーをモックし、時刻に依存するコンポーネントを決定的に表示するアドオン。',
+      'Storybookのストーリー単位でDateやTemporal、タイマーをモックし、時刻に依存するコンポーネントを決定的に表示するアドオン。',
     githubUrl: 'https://github.com/k35o/storybook-addon-mock-date',
     websiteUrl: null,
     npmPackageName: 'storybook-addon-mock-date',
-    tags: ['Storybook', 'Date', 'Mock'],
   },
   {
     name: 'storybook-addon-vrt',
+    group: 'storybook',
+    icon: 'image',
     description:
       'Vitestのブラウザモード上でStorybookのストーリーごとにスクリーンショットを撮り、ビジュアルリグレッションテストを行うツール。',
     githubUrl: 'https://github.com/k35o/storybook-addon-vrt',
     websiteUrl: null,
     npmPackageName: 'storybook-addon-vrt',
-    tags: ['Storybook', 'Vitest', 'VRT'],
   },
   {
     name: 'storybook-addon-determinism',
+    group: 'storybook',
+    icon: 'dice',
     description:
-      'StorybookのストーリーでMath.randomやcryptoをシードし、スナップショットやVRTを決定的にするアドオン。',
+      'StorybookのストーリーでMath.randomやcryptoをシードし、スナップショットやビジュアルリグレッションテストを決定的にするアドオン。',
     githubUrl: 'https://github.com/k35o/storybook-addon-determinism',
     websiteUrl: null,
     npmPackageName: 'storybook-addon-determinism',
-    tags: ['Storybook', 'Determinism', 'VRT'],
   },
   {
     name: 'storybook-framework-hono-vite',
+    group: 'storybook',
+    icon: 'flame',
     description:
-      'Hono JSXで書いたコンポーネントを@storybook/react-viteと同じ感覚で扱うためのStorybookフレームワーク。',
+      'Hono JSXのコンポーネントを、ViteビルダーのStorybookで描画するためのフレームワーク。',
     githubUrl: 'https://github.com/k35o/storybook-framework-hono-vite',
     websiteUrl: null,
     npmPackageName: 'storybook-framework-hono-vite',
-    tags: ['Storybook', 'Hono', 'Vite'],
   },
-  // HTML / oxlint
-  {
-    name: '@k8o/html-nest',
-    description:
-      'WHATWG HTML仕様の要素の内包関係を構造化データとして提供するエンジンと、JSXのネスト違反を検出するoxlintプラグイン。',
-    githubUrl: 'https://github.com/k35o/html-nest',
-    websiteUrl: 'https://k8o.me/html-nest',
-    npmPackageName: '@k8o/html-nest',
-    tags: ['HTML', 'oxlint', 'JSX'],
-  },
-  // Vite+ / ビルドツール 系
   {
     name: '@k8o/create',
+    group: 'config',
+    icon: 'rocket',
     description:
-      'vp create @k8oで、k8oの規約一式が入ったリポジトリの雛形を生成するプロジェクトジェネレーター。',
+      'vp create @k8oで、k8oの規約一式が入ったリポジトリの雛形を生成する。',
     githubUrl: 'https://github.com/k35o/templates',
     websiteUrl: null,
     npmPackageName: '@k8o/create',
-    tags: ['Vite+', 'Generator', 'Tool'],
   },
   {
     name: 'vite-plus-inspector',
+    group: 'lint',
+    icon: 'search',
     description:
-      'vite-plusの設定をブラウザで可視化するinspector。oxlintのルールの重大度や適用状況を確認できる。',
+      'Vite+の設定をブラウザで見られるようにするツール。oxlintのルールの重大度と、ファイルごとの適用状況を確認できる。',
     githubUrl: 'https://github.com/k35o/vite-plus-inspector',
     websiteUrl: null,
     npmPackageName: 'vite-plus-inspector',
-    tags: ['Vite+', 'oxlint', 'CLI'],
   },
   {
     name: 'better-css-modules',
+    group: 'lint',
+    icon: 'paint',
     description:
-      'CSS Modulesから型定義を自動生成し、未使用クラスを検出して開発体験を高めるツールキット。',
+      'CSS Modulesの型定義を生成し、未使用のクラスや、デザイントークンにない値を検出するツール。',
     githubUrl: 'https://github.com/k35o/better-css-modules',
     websiteUrl: null,
     npmPackageName: '@better-css-modules/core',
-    tags: ['CSS Modules', 'TypeScript', 'Vite', 'webpack'],
   },
-  // 共通設定 / Personal
   {
     name: '@k8o/oxc-config',
+    group: 'lint',
+    icon: 'settings',
     description:
-      'oxlintとoxfmtの共有設定パッケージ。TypeScriptやReact、Next.jsなど用途別のプリセットを提供する。',
+      'Vite+で使う、oxlintとoxfmtの共有プリセット。TypeScriptやReact、Next.jsなど用途別に組み合わせる。',
     githubUrl: 'https://github.com/k35o/oxc-config',
     websiteUrl: null,
     npmPackageName: '@k8o/oxc-config',
-    tags: ['oxlint', 'oxfmt', 'Config'],
   },
   {
     name: 'renovate-config',
-    description: 'Renovateの設定を共通化するためのconfigリポジトリ。',
+    group: 'config',
+    icon: 'refresh',
+    description: 'Renovateの共有設定。',
     githubUrl: 'https://github.com/k35o/renovate-config',
     websiteUrl: null,
     npmPackageName: null,
-    tags: ['Renovate', 'Config', 'Personal'],
   },
   {
     name: 'dotfiles',
+    group: 'config',
+    icon: 'monitor',
     description:
-      'chezmoiで管理する開発環境の設定一式。zshやmise、ターミナル周りの設定をまとめている。',
+      'chezmoiで管理する、macOSの開発環境の設定一式。zshやgit、mise、Claude Codeの設定をまとめている。',
     githubUrl: 'https://github.com/k35o/dotfiles',
     websiteUrl: null,
     npmPackageName: null,
-    tags: ['Dotfiles', 'chezmoi', 'Shell', 'Personal'],
   },
-  // 自動化 / GitHub Actions
   {
     name: 'pnpm-release-action',
+    group: 'actions',
+    icon: 'pullRequest',
     description:
-      'pnpm組み込みのリリース管理をCIへつなぎ、リリースPRの作成からnpm publish・タグ・GitHub Releasesの作成までを行うGitHub Action。',
+      'pnpm組み込みのリリース管理をCIで動かすGitHub Action。リリースPRを作り、マージされたらnpmへの公開とタグ、GitHub Releasesの作成までを行う。',
     githubUrl: 'https://github.com/k35o/pnpm-release-action',
     websiteUrl: null,
     npmPackageName: null,
-    tags: ['GitHub Actions', 'pnpm', 'Release'],
   },
   {
     name: 'patrol-board',
+    group: 'actions',
+    icon: 'clipboardCheck',
     description:
       'スクリプトを定期実行し、結果をGitHub Issueにダッシュボードとして表示するGitHub Action。',
     githubUrl: 'https://github.com/k35o/patrol-board',
     websiteUrl: null,
     npmPackageName: null,
-    tags: ['GitHub Actions', 'Automation'],
   },
 ];

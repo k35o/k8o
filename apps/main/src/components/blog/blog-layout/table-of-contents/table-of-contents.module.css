@@ -1,89 +1,16 @@
 .root {
-  position: fixed;
-  right: calc(var(--spacing) * 4);
-  bottom: calc(var(--spacing) * 4);
-  width: calc(var(--spacing) * 80);
-  border-radius: var(--radius-xl);
-  background-color: var(--color-bg-raised);
-  box-shadow: var(--shadow-md);
-
-  @media (width < 40rem) {
-    &[open] {
-      right: 0;
-      bottom: 0;
-    }
-  }
-
-  @media (width >= 40rem) {
-    right: calc(var(--spacing) * 16);
-    bottom: calc(var(--spacing) * 8);
-  }
+  display: contents;
 
   @media (width >= 80rem) {
     display: none;
   }
-
-  @media print {
-    display: none;
-  }
-
-  &[open]::details-content {
-    padding: calc(var(--spacing) * 4);
-    padding-top: 0;
-    border-top-width: 1px;
-    border-top-style: solid;
-    border-color: var(--color-border-mute);
-  }
-}
-
-@media screen and (width < 80rem) {
-  /* better-css-modules-disable-next-line pure/global -- もくじが覆うフォーカスとフッターはこの部品の外にあるので、文書の側にもくじの高さぶんの余白を取る */
-  :global(html):has(.root) {
-    scroll-padding-bottom: calc(var(--spacing) * 20);
-
-    @media (width >= 40rem) {
-      scroll-padding-bottom: calc(var(--spacing) * 24);
-    }
-  }
-
-  /* better-css-modules-disable-next-line pure/global -- フッターは body の中の最後にあるので、body の下にもくじの高さぶんの余白を取る */
-  :global(body):has(.root) {
-    padding-bottom: calc(var(--spacing) * 20);
-
-    @media (width >= 40rem) {
-      padding-bottom: calc(var(--spacing) * 24);
-    }
-  }
-}
-
-.summary {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) * 2);
-  padding: calc(var(--spacing) * 4);
-  color: var(--color-primary-fg);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-md);
-  font-weight: var(--font-weight-bold);
-
-  @media (width >= 40rem) {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-lg);
-  }
-}
-
-.summaryText {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  max-height: 75vh;
-  padding: calc(var(--spacing) * 2);
-  overflow-y: scroll;
+  max-height: 60vh;
+  overflow-y: auto;
   color: var(--color-fg-base);
 }
 
@@ -138,10 +65,7 @@
   }
 
   &[aria-current='location'] {
-    @media (width >= 80rem) {
-      background-color: var(--color-primary-bg);
-      color: var(--color-fg-base);
-      font-weight: var(--font-weight-bold);
-    }
+    color: var(--color-primary-fg);
+    font-weight: var(--font-weight-bold);
   }
 }

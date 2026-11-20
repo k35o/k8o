@@ -87,11 +87,11 @@ describe('PageMeta', () => {
     });
 
     it('noindex でなければ、canonical をパスの絶対 URL で書く', () => {
-      const tags = tagsOf({ path: '/palette-maker' });
+      const tags = tagsOf({ path: '/color-quiz' });
 
       expect(linkOf(tags, 'canonical')).toStrictEqual({
         rel: 'canonical',
-        href: 'https://k8o.me/palette-maker',
+        href: 'https://k8o.me/color-quiz',
       });
     });
 

@@ -5,7 +5,6 @@ import type { ActivityItem } from '@/features/activity/interface/queries';
 
 import { ActivityFeed } from '../activity-feed/activity-feed';
 import { EmailTooltip } from '../email-tooltip/email-tooltip';
-import { SiteEntrySection } from '../site-entry-section/site-entry-section';
 import { SocialIcons } from '../social-icons/social-icons';
 // 小さい版は data: URI になり、srcset に入れると HTML と preload とペイロードに埋まるので、ファイルで配る
 import k8o128 from './k8o.128w.avif?no-inline';
@@ -53,9 +52,6 @@ export const Home: FC<HomeProps> = ({ activity }) => (
         <h2 className={styles.activityHeading}>Activity</h2>
         <ActivityFeed items={activity.slice(0, ACTIVITY_COUNT)} />
       </section>
-
-      <SiteEntrySection kind="reading" />
-      <SiteEntrySection kind="tool" />
     </div>
   </div>
 );
