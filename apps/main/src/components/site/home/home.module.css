@@ -58,8 +58,14 @@
   }
 }
 
-.activityLead {
-  color: var(--color-fg-mute);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
+.activityHeading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
 }

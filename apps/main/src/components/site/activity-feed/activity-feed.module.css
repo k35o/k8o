@@ -1,0 +1,283 @@
+.root {
+  position: relative;
+
+  @media (width >= 48rem) {
+    margin-inline: calc(var(--spacing) * -4);
+  }
+
+  /* 行の上をポインターとフォーカスが移るのに合わせて、1 枚の下地を行から行へ滑らせる */
+  @supports (anchor-name: --activity-active) {
+    &::before {
+      position: absolute;
+      top: anchor(top);
+      right: anchor(right);
+      bottom: anchor(bottom);
+      left: anchor(left);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-bg-mute);
+      content: '';
+      opacity: 0;
+      pointer-events: none;
+      position-anchor: --activity-active;
+    }
+
+    &:has(.link:focus-visible)::before {
+      opacity: 1;
+    }
+
+    @media (hover: hover) {
+      &:has(.item:hover)::before {
+        opacity: 1;
+        transition:
+          top var(--duration-moderate) var(--easing-out),
+          bottom var(--duration-moderate) var(--easing-out);
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
+      }
+    }
+  }
+}
+
+.item {
+  display: grid;
+  position: relative;
+  grid-template-columns: auto 1fr;
+  column-gap: calc(var(--spacing) * 4);
+  row-gap: var(--spacing);
+  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+  border-radius: var(--radius-xl);
+
+  @media (width >= 40rem) {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  /* 印の下から行の終わりまでの線。次の行があれば、その印まで延ばす */
+  &::after {
+    position: absolute;
+    top: calc(var(--spacing) * 11);
+    bottom: 0;
+    left: calc(var(--spacing) * 8);
+    border-left: thin solid var(--color-border-base);
+    content: '';
+    pointer-events: none;
+    translate: -50% 0;
+  }
+
+  &:not(:last-child)::after {
+    bottom: calc(var(--spacing) * -3);
+  }
+
+  .group:last-child &:last-child::after {
+    content: none;
+  }
+
+  &[data-upcoming='true']::after {
+    border-left-style: dashed;
+  }
+
+  &:has(.link:focus-visible) {
+    box-shadow: var(--shadow-ring-info);
+    anchor-name: --activity-active;
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      anchor-name: --activity-active;
+
+      /* 強制カラーでは下地の色が出ないので、行を囲んで示す */
+      @media (forced-colors: active) {
+        outline: thin solid var(--color-system-highlight);
+      }
+    }
+  }
+
+  @supports not (anchor-name: --activity-active) {
+    &:has(.link:focus-visible) {
+      background-color: var(--color-bg-mute);
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--color-bg-mute);
+      }
+    }
+  }
+
+  @supports (animation-delay: calc(sibling-index() * 1ms)) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: enter var(--duration-slow) var(--easing-out) backwards;
+      animation-delay: calc(var(--duration-fast) * 0.4 * sibling-index());
+    }
+  }
+}
+
+.month {
+  display: flex;
+  position: relative;
+  align-items: center;
+  gap: calc(var(--spacing) * 7);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-sm);
+
+  /* 月の点から、その月の最初の印までの線 */
+  &::before {
+    position: absolute;
+    top: 50%;
+    bottom: calc(var(--spacing) * -3);
+    left: calc(var(--spacing) * 8);
+    border-left: thin solid var(--color-border-base);
+    content: '';
+    pointer-events: none;
+    translate: -50% 0;
+  }
+
+  .group:not(:first-child) > &::before {
+    top: 0;
+  }
+
+  .group:has(.item:first-child[data-upcoming='true']) > &::before {
+    border-left-style: dashed;
+  }
+}
+
+.monthDot {
+  position: relative;
+  width: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
+  margin-left: calc(var(--spacing) * 3);
+  border-radius: var(--radius-full);
+  background-color: var(--color-fg-subtle);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--spacing) * 2);
+  }
+}
+
+/* 発信の記事と登壇は近い色（緑と青緑）にそろえ、リリースは色相の離れたピンクで分ける */
+.node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+  border-radius: var(--radius-full);
+  background-color: color-mix(
+    in oklab,
+    var(--color-group-primary) 14%,
+    var(--color-bg-base)
+  );
+  color: var(--color-group-primary);
+
+  [data-kind='talk'] > & {
+    background-color: color-mix(
+      in oklab,
+      var(--color-group-secondary) 14%,
+      var(--color-bg-base)
+    );
+    color: var(--color-group-secondary);
+  }
+
+  [data-kind='release'] > & {
+    background-color: color-mix(
+      in oklab,
+      var(--color-group-tertiary) 14%,
+      var(--color-bg-base)
+    );
+    color: var(--color-group-tertiary);
+  }
+
+  /* 登壇前の印は破線で囲む。色は印の文字色に合わせる */
+  [data-upcoming='true'] > & {
+    outline: thin dashed currentcolor;
+    outline-offset: calc(var(--spacing) * 0.5);
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  min-width: 0;
+}
+
+.link {
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-relaxed);
+  transition: color var(--duration-fast) var(--easing-out);
+
+  /* 行のどこを押しても移れるように、リンクを行いっぱいに広げる */
+  &::after {
+    position: absolute;
+    content: '';
+    inset: 0;
+  }
+
+  /* フォーカスの輪は、リンクが広がっている行に描く */
+  &:focus-visible {
+    outline-style: none;
+  }
+
+  .item:hover &,
+  &:focus-visible {
+    color: var(--color-primary-fg);
+  }
+}
+
+.external {
+  display: inline-flex;
+  margin-left: var(--spacing);
+  color: var(--color-fg-mute);
+  vertical-align: middle;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: calc(var(--spacing) * 2);
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.kind {
+  color: var(--color-fg-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.date {
+  grid-column: 2;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-relaxed);
+
+  @media (width >= 40rem) {
+    grid-column: auto;
+  }
+}
