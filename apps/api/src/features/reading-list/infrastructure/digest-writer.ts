@@ -59,15 +59,25 @@ export type DigestOutcome =
   | { kind: 'written'; digest: z.infer<typeof digestSchema> }
   | { kind: 'failed'; reason: string };
 
+// 記事の題や本文は外から来る。タグを閉じて別の記事や指示に見せかけられないよう、区切りの字を実体参照にする
+const escapeMarkup = (text: string): string =>
+  text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+
 const buildPrompt = (articles: DigestSourceArticle[]): string =>
   [
     '<articles>',
     ...articles.map((article) =>
       [
-        `<article id="${article.id}" source="${article.sourceTitle}">`,
-        `<title>${article.title}</title>`,
+        `<article id="${article.id}" source="${escapeMarkup(article.sourceTitle)}">`,
+        `<title>${escapeMarkup(article.title)}</title>`,
         // UTF-16 の単位で切るとサロゲートペアの片割れが残り、API が JSON として受け付けない
-        (article.text ?? '').slice(0, MAX_ARTICLE_CHARS).toWellFormed(),
+        escapeMarkup(
+          (article.text ?? '').slice(0, MAX_ARTICLE_CHARS).toWellFormed(),
+        ),
         '</article>',
       ].join('\n'),
     ),
