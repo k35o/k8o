@@ -3,6 +3,7 @@ import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic';
 import { generateText } from 'ai';
 
 import { fetchArticleText } from './article-text';
+import { escapeMarkup } from './prompt-markup';
 
 const MODEL_ID = 'claude-sonnet-5-5';
 const MAX_INPUT_CHARS = 30_000;
@@ -41,10 +42,10 @@ const failed = (reason: string): SummaryOutcome => ({ kind: 'failed', reason });
 const buildPrompt = (title: string, text: string): string => {
   const truncated = text.length > MAX_INPUT_CHARS;
   return [
-    `<title>${title}</title>`,
+    `<title>${escapeMarkup(title)}</title>`,
     `<article${truncated ? ' truncated="true"' : ''}>`,
     // UTF-16 の単位で切るとサロゲートペアの片割れが残り、API が JSON として受け付けない
-    text.slice(0, MAX_INPUT_CHARS).toWellFormed(),
+    escapeMarkup(text.slice(0, MAX_INPUT_CHARS).toWellFormed()),
     '</article>',
   ].join('\n');
 };

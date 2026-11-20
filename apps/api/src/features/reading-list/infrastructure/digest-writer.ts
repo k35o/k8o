@@ -4,6 +4,8 @@ import { READING_DIGEST_KINDS } from '@repo/database/schema';
 import { generateText, Output } from 'ai';
 import * as z from 'zod';
 
+import { escapeMarkup } from './prompt-markup';
+
 // 記事の要約（Sonnet）と違い、何が大きいかの判断が要で、呼ぶのは 1 日に数回
 const MODEL_ID = 'claude-opus-5-5';
 // 1 件の要約は長くても 600 字。記事の多い日でも入力が膨らまないよう、判断に足りる長さで切る
@@ -58,14 +60,6 @@ export type DigestSourceArticle = {
 export type DigestOutcome =
   | { kind: 'written'; digest: z.infer<typeof digestSchema> }
   | { kind: 'failed'; reason: string };
-
-// 記事の題や本文は外から来る。タグを閉じて別の記事や指示に見せかけられないよう、区切りの字を実体参照にする
-const escapeMarkup = (text: string): string =>
-  text
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
 
 const buildPrompt = (articles: DigestSourceArticle[]): string =>
   [
