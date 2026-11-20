@@ -23,7 +23,7 @@ export const siteEntries: readonly SiteEntry[] = [
   {
     title: 'Readings',
     link: '/reading-list',
-    description: '気になっている記事を集めて、あとから探せるようにしています。',
+    description: 'AIとWebフロントエンドまわりの記事を集めています。',
   },
   {
     title: 'Browser Support',

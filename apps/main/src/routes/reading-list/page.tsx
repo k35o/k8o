@@ -5,7 +5,7 @@ export default function ReadingListPage() {
   return (
     <>
       <PageMeta
-        description="気になっている記事を集めて、あとから探せるようにしています。"
+        description="AIとWebフロントエンドまわりの記事を集めています。"
         path="/reading-list"
         rssFeedPath="/reading-list/feed"
         title="Readings"
