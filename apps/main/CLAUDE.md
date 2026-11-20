@@ -1,6 +1,6 @@
 # apps/main CLAUDE.md
 
-k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発者向けツール群を、k8ordo（`@k8ordo/framework` の `mode: 'static'`）で静的に書き出す。Vercel には `.github/workflows/vercel-prebuilt.yml` が GitHub Actions でビルドした成果物を出す。k8ordo の使い方は `node_modules/@k8ordo/framework/docs/` を読む。
+k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、Lab の小さな実験を、k8ordo（`@k8ordo/framework` の `mode: 'static'`）で静的に書き出す。Vercel には `.github/workflows/vercel-prebuilt.yml` が GitHub Actions でビルドした成果物を出す。k8ordo の使い方は `node_modules/@k8ordo/framework/docs/` を読む。
 
 ## 置き場（src/）
 
@@ -65,20 +65,12 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 - static mode では HTML は既定値（全件）で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す（`shared/browser/replay-typed-value.ts` を欄の `ref` に渡す）
 - 一覧のカードのリンクは `href()` で組んだ素の `<a>` にする。`components/site/content-card` の `ContentCard` は、呼ぶ側が `href()` で組んだパスを `href` で受ける
 
-## ツールの URL の状態（`/palette-maker`・`/html-nest`・`/radius-maker`）
-
-- 値は区画の `search-params` の `definePageState` の url に文字列のまま置き、`readPaletteUrl` などが読むときに解く。数は `Number()` で読み、数にならない値（大きさと id は整数にならない値）は既定にして、範囲の外は端に寄せる（`?h=400` は 360、`?h=12abc` と `?h=` は既定）。範囲の外や壊れた数の文字列は、ほかの値を書いても URL に残り、既定と同じ文字列（`?h=250`）と `s` の表に無い値（`?s=foo`）は消える。読みの約束は `search-params.test.ts` の表に書く。schema を `z.pipe`・`z.transform`・`z.number`・`z.refine` にしないのは、zod の本体が入る `frame-*.js` が大きくなり、どのページも +0.7kB 読むから
-- 値は入力ごと・選ぶごとに `update()`（既定の replace）で書く。続く replace の書き込みは `@k8ordo/state` が 100ms で間引くので、動かしている間の値を別に持たない。画面の値は待たずに変わり、URL には少し遅れて入る
-- トークン名は、名前として使える値のときだけ書く（`isTokenName`）。欄には打った文字がそのまま残る
-- html-nest は下書きを持たず、`update({ el }, { history: 'push' })` で書く。戻る・進むは store が URL を読み直すので、書くものは無い。値が変わらない `update()` は push しない
-- static mode の HTML は url の state を既定値で描き、URL の値で開いたときに既定の色や形が一度出るので、本文は `components/site/browser-only` の `BrowserOnly` でブラウザでだけ描く。`fallback` を渡さないので、HTML の `<main>` は見出しと空の digest の `<!--$!-->` になる
-
 ## 日々の表示（`/reading-list`・`/browser-support`・`/notifications`）
 
 - `/browser-support` と `/notifications` は、ページがビルドで api の関数から読み（`features/*/interface` の関数）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。「直近1週間」の基準の時刻（`nowMs`）もビルドの値に入れて渡す
 - `/reading-list` は直近 90 日の記事をすべて描くので、ビルドの値を HTML とペイロードに埋めず（埋めると数百件を HTML と api で 2 回送る）、ブラウザで `GET /public/reading-list` を読む（`components/reading-list/reading-list-source`）。届くまでは `BrowserOnly` の骨組みのまま待ち、読めなければ読み直しを案内する（`ReadingListLoader`）。一度読んだ一覧の覚え方と、読めなかったときの読み直しは `reading-list-source` の注釈のとおり
 - HTML を読むうちに api を取り始める `preload`（`as: 'fetch'`）は、client の部品の `ReadingListPreload` が描くときに書く。Server Component で書くとペイロードの hint にも入り、Readings へのリンクを先読みしただけで api を読む
-- 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は「ツールの URL の状態」と同じく文字列のまま持ち、読むときに解く。`z.array` は書くときと同じカンマ区切りの `?source=1,2` を読めず、`z.stringbool` は `?widely=1` も真に読むので、真偽はアプリが書く `true` だけを真にする
+- 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は文字列のまま持ち、読むときに解く。`z.array` は書くときと同じカンマ区切りの `?source=1,2` を読めず、`z.stringbool` は `?widely=1` も真に読むので、真偽はアプリが書く `true` だけを真にする
 - 一覧は `BrowserOnly` でブラウザでだけ描き、骨組み（`ReadingListSkeleton`・`BrowserSupportFeatureListSkeleton`）を `fallback` に渡す。骨組みは HTML の client-rendered の境界（`<!--$!-->`）の中に出る。骨組みを `loading.tsx` として route に置かないのは、static mode では HTML にも遷移にもほぼ出ず、layout と同じくその CSS をどのページも読むから
 - ブラウザ最低版のフロア（`features/browser-support/infrastructure/browser-min-versions.json`）は、ルートレイアウトが読み、ビルドのターゲット（`site/browser-targets.ts`）も作る、コミットした生成物。`pnpm run -F main generate:browser-min-versions [version]` で作り直す。同じ版からリポジトリ直下の `.browserslistrc`（ai の Next.js の Lightning CSS / SWC のターゲット）も書くので、どちらも手で編集しない。api の active データセットとずれると、外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で作り直しの PR を作り、自動マージする
 - 購読の VAPID の公開鍵は、`routes/notifications/page.tsx` がビルドの描画で `process.env` から読み、props で渡す。`import.meta.env` でクライアントへ渡すと、名前を `VITE_` に替えることになる

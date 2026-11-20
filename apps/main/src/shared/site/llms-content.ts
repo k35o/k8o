@@ -53,7 +53,7 @@ k8o.me は k8o（Webフロントエンドエンジニア）の個人サイトで
 
 - Webフロントエンドやブラウザの新機能（CSS・HTML・JavaScript・Web API）についての日本語の解説記事を探す → [Blog](${SITE_URL}/blog)
 - k8o の人物・活動・連絡手段を確認する → [About](${SITE_URL}/about) / [Contact](${SITE_URL}/contact)
-- 色変換・コントラスト比計算などのWeb開発向けツールを使う → 下記ページ一覧の Tools
+- 色のクイズなど、触って遊べる小さな実験を試す → [カラーHexクイズ](${SITE_URL}/color-quiz)
 
 各ブログ記事は URL の末尾に \`.md\` を付ける（例: ${SITE_URL}/blog/example.md）か、\`Accept: text/markdown\` ヘッダを付けてリクエストすると Markdown 形式で取得できます。
 

@@ -188,9 +188,6 @@ catalogs:
     '@better-css-modules/vite':
       specifier: 0.4.1
       version: 0.4.1
-    '@k8o/html-nest':
-      specifier: 0.2.0
-      version: 0.2.0
     '@k8o/oxc-config':
       specifier: 1.1.0
       version: 1.1.0
@@ -523,9 +520,6 @@ importers:
       '@fontsource-variable/m-plus-2':
         specifier: 5.3.1
         version: 5.3.1
-      '@k8o/html-nest':
-        specifier: 'catalog:'
-        version: 0.2.0
       '@k8ordo/color-scheme':
         specifier: 'catalog:'
         version: 3.0.0(@k8ordo/state@3.0.0(@k8ordo/router@3.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
@@ -7137,7 +7131,8 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  '@k8o/html-nest@0.2.0': {}
+  '@k8o/html-nest@0.2.0':
+    optional: true
 
   '@k8o/oxc-config@1.1.0(@k8o/html-nest@0.2.0)(vite-plus@1.6.0(@types/node@26.6.6)(@vitest/browser-playwright@5.1.0)(@vitest/ui@5.1.0)(@voidzero-dev/vite-plus-core@1.6.0(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(playwright@1.65.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))':
     dependencies:

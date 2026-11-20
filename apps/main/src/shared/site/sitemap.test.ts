@@ -24,29 +24,21 @@ vi.mock('@/shared/site/site-entries', () => ({
       title: 'Blog',
       link: '/blog',
       description: 'ブログの説明。',
-      kind: 'reading',
-      icon: 'blog',
     },
     {
       title: 'Talks',
       link: '/talks',
       description: 'トークの説明。',
-      kind: 'reading',
-      icon: 'talks',
     },
     {
       title: 'External Tool',
       link: 'https://example.com/tool',
       description: '外部ツールの説明。',
-      kind: 'tool',
-      icon: 'fluida',
     },
     {
-      title: 'カラーコード職人',
-      link: '/color-converter',
-      description: '色変換の説明。',
-      kind: 'tool',
-      icon: 'colorConverter',
+      title: 'カラーHexクイズ',
+      link: '/color-quiz',
+      description: 'クイズの説明。',
     },
   ],
 }));
@@ -156,7 +148,7 @@ describe('generateSitemap', () => {
 <loc>https://k8o.me/talks</loc>
 </url>
 <url>
-<loc>https://k8o.me/color-converter</loc>
+<loc>https://k8o.me/color-quiz</loc>
 </url>
 </urlset>
 `);
@@ -188,7 +180,7 @@ describe('generateSitemap', () => {
 
       expect(locsOf(xml).slice(-2)).toStrictEqual([
         'https://k8o.me/talks',
-        'https://k8o.me/color-converter',
+        'https://k8o.me/color-quiz',
       ]);
       expect(xml).not.toContain('https://example.com/tool');
       expect(
@@ -207,7 +199,7 @@ describe('generateSitemap', () => {
         'https://k8o.me/blog',
         'https://k8o.me/tags',
         'https://k8o.me/talks',
-        'https://k8o.me/color-converter',
+        'https://k8o.me/color-quiz',
       ]);
     });
   });

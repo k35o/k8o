@@ -41,30 +41,6 @@
       "types": "./src/cn.ts",
       "default": "./src/cn.ts"
     },
-    "./color/calc-apca": {
-      "types": "./src/color/calc-apca.ts",
-      "default": "./src/color/calc-apca.ts"
-    },
-    "./color/calc-contrast": {
-      "types": "./src/color/calc-contrast.ts",
-      "default": "./src/color/calc-contrast.ts"
-    },
-    "./color/spaces": {
-      "types": "./src/color/spaces.ts",
-      "default": "./src/color/spaces.ts"
-    },
-    "./color/gamut": {
-      "types": "./src/color/gamut.ts",
-      "default": "./src/color/gamut.ts"
-    },
-    "./color/parse": {
-      "types": "./src/color/parse.ts",
-      "default": "./src/color/parse.ts"
-    },
-    "./color/format": {
-      "types": "./src/color/format.ts",
-      "default": "./src/color/format.ts"
-    },
     "./date/format": {
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"

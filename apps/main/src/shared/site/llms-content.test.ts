@@ -18,22 +18,16 @@ vi.mock('@/shared/site/site-entries', () => ({
       title: 'Blog',
       link: '/blog',
       description: 'ブログの説明。',
-      kind: 'reading',
-      icon: 'blog',
     },
     {
       title: 'Talks',
       link: '/talks',
       description: 'トークの説明。',
-      kind: 'reading',
-      icon: 'talks',
     },
     {
       title: 'External Tool',
       link: 'https://example.com/tool',
       description: '外部ツールの説明。',
-      kind: 'tool',
-      icon: 'fluida',
     },
   ],
 }));
