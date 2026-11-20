@@ -1,7 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PublishedVersion } from '../infrastructure/npm-registry';
-import { groupReleasesByMonth, loadReleases } from './releases';
+import {
+  groupReleasesByMonth,
+  latestReleaseOf,
+  loadLatestReleases,
+  loadReleases,
+} from './releases';
 
 const source = {
   packageName: '@k8ordo/ui',
@@ -119,6 +124,61 @@ describe('loadReleases', () => {
       expect(releases.map(({ packageName }) => packageName)).toStrictEqual([
         'fine',
       ]);
+      warn.mockRestore();
+    });
+  });
+});
+
+describe('latestReleaseOf', () => {
+  describe('正常系', () => {
+    it('最後に公開された版を返す', () => {
+      expect(
+        latestReleaseOf([
+          { version: '3.0.0', publishedAt: '2026-11-13T02:00:00.000Z' },
+          { version: '2.3.1', publishedAt: '2026-11-06T05:00:00.000Z' },
+        ]),
+      ).toStrictEqual({
+        version: '3.0.0',
+        publishedAt: '2026-11-13T02:00:00.000Z',
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('プレリリースは数えない', () => {
+      expect(
+        latestReleaseOf([
+          { version: '3.0.0', publishedAt: '2026-11-13T02:00:00.000Z' },
+          {
+            version: '4.0.0-beta.1',
+            publishedAt: '2026-11-18T02:00:00.000Z',
+          },
+        ])?.version,
+      ).toBe('3.0.0');
+    });
+
+    it('版が無ければ null を返す', () => {
+      expect(latestReleaseOf([])).toBeNull();
+    });
+  });
+});
+
+describe('loadLatestReleases', () => {
+  describe('異常系', () => {
+    it('読めなかったパッケージを除いて、読めたパッケージの版を返す', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const releases = await loadLatestReleases(
+        ['broken', 'fine'],
+        fakeRegistry({
+          fine: [{ version: '1.0.0', publishedAt: '2026-05-01T00:00:00.000Z' }],
+        }),
+      );
+
+      expect(releases).toStrictEqual({
+        fine: { version: '1.0.0', publishedAt: '2026-05-01T00:00:00.000Z' },
+      });
+      expect(warn).toHaveBeenCalledOnce();
       warn.mockRestore();
     });
   });

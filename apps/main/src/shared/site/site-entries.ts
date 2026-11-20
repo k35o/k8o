@@ -18,7 +18,7 @@ export const siteEntries: readonly SiteEntry[] = [
   {
     title: 'Artifacts',
     link: '/artifacts',
-    description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
+    description: '自作のライブラリやツール、設定をまとめています。',
   },
   {
     title: 'Readings',

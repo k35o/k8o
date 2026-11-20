@@ -16,7 +16,21 @@ export type ReleaseGroup = {
   href: string;
 };
 
+export type LatestRelease = {
+  version: string;
+  publishedAt: string;
+};
+
 const STABLE_VERSION = /^\d+\.\d+\.\d+$/u;
+
+// 最後に公開された版。プレリリースは数えない
+export const latestReleaseOf = (
+  versions: PublishedVersion[],
+): LatestRelease | null =>
+  versions
+    .filter(({ version }) => STABLE_VERSION.test(version))
+    .toSorted((a, b) => Date.parse(a.publishedAt) - Date.parse(b.publishedAt))
+    .at(-1) ?? null;
 
 // 同じパッケージの同じ月（日本時間）の版は、最後の版だけを残す。プレリリースは数えない
 export const groupReleasesByMonth = (
@@ -74,4 +88,28 @@ export const loadReleases = async (
     }),
   );
   return groups.flat();
+};
+
+// パッケージの名前ごとの最後の版。レジストリを読めなかったパッケージと、版の無いパッケージは入らない
+export const loadLatestReleases = async (
+  packageNames: string[],
+  fetchVersions: (
+    packageName: string,
+  ) => Promise<PublishedVersion[]> = fetchPublishedVersions,
+): Promise<Record<string, LatestRelease>> => {
+  const entries = await Promise.all(
+    packageNames.map(async (packageName) => {
+      try {
+        const latest = latestReleaseOf(await fetchVersions(packageName));
+        return latest === null ? [] : [[packageName, latest] as const];
+      } catch (error) {
+        console.warn(
+          `${packageName} の版を npm から読めなかったため、Artifacts に出しません`,
+          error,
+        );
+        return [];
+      }
+    }),
+  );
+  return Object.fromEntries(entries.flat());
 };
