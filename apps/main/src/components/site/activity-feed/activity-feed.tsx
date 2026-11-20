@@ -1,4 +1,4 @@
-import { Badge, Card } from '@k8ordo/ui';
+import { Badge } from '@k8ordo/ui';
 import {
   BookTextIcon,
   ExternalLinkIcon,
@@ -69,22 +69,20 @@ export const ActivityFeed: FC<ActivityFeedProps> = ({ items }) => {
     formatDate(new Date(item.date), 'yyyy年M月'),
   );
   return (
-    <Card variant="shadow">
-      <div className={styles.root}>
-        {[...months.entries()].map(([month, rows]) => (
-          <section className={styles.group} key={month}>
-            <h3 className={styles.month}>
-              <span aria-hidden="true" className={styles.monthDot} />
-              {month}
-            </h3>
-            <ul>
-              {rows.map((item) => (
-                <Row item={item} key={item.id} />
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
-    </Card>
+    <div className={styles.root}>
+      {[...months.entries()].map(([month, rows]) => (
+        <section className={styles.group} key={month}>
+          <h3 className={styles.month}>
+            <span aria-hidden="true" className={styles.monthDot} />
+            {month}
+          </h3>
+          <ul>
+            {rows.map((item) => (
+              <Row item={item} key={item.id} />
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
   );
 };

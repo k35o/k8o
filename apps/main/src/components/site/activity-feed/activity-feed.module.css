@@ -1,6 +1,9 @@
 .root {
   position: relative;
-  padding: calc(var(--spacing) * 3);
+
+  @media (width >= 48rem) {
+    margin-inline: calc(var(--spacing) * -4);
+  }
 
   /* 行の上をポインターとフォーカスが移るのに合わせて、1 枚の下地を行から行へ滑らせる */
   @supports (anchor-name: --activity-active) {
