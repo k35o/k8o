@@ -1,5 +1,3 @@
-import { playgroundSections } from '@playgrounds/sections';
-
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalkDecks } from '@/features/talks/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
@@ -67,9 +65,6 @@ export async function generateSitemap(): Promise<string> {
     ...tags
       .filter((tag) => tag.blogCount + tag.talkCount > 0)
       .map((tag) => ({ loc: `${SITE_URL}/tags/${tag.id.toString()}` })),
-    ...playgroundSections.map((section) => ({
-      loc: `${SITE_URL}/playgrounds/${section.id}`,
-    })),
     ...siteEntries
       .filter(
         (entry) => !entry.link.startsWith('https://') && entry.link !== '/blog',

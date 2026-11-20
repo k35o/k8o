@@ -9,9 +9,6 @@ export default defineConfig({
   test: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@playgrounds': fileURLToPath(
-        new URL('./src/playgrounds', import.meta.url),
-      ),
     },
     projects: [
       {
@@ -39,14 +36,6 @@ export default defineConfig({
           // load-section の試験がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
           server: { deps: { inline: ['@k8ordo/ui'] } },
           include: ['src/components/**/*.test.{ts,tsx}'],
-        },
-      },
-      {
-        test: {
-          name: { label: 'playgrounds test', color: 'yellow' },
-          include: ['src/playgrounds/**/*.test.ts'],
-          // sections.ts がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
-          server: { deps: { inline: ['@k8ordo/ui'] } },
         },
       },
       {

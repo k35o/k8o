@@ -149,6 +149,18 @@ describe('annotateTransformer', () => {
 
       expect(wrapperElement(tree)?.properties['data-demo']).toBe('dots');
     });
+
+    it('メタの allow="..." をラッパーの data-demo-allow にする', async () => {
+      const tree = await toHast(
+        'await navigator.clipboard.readText();',
+        'demo="copy" allow="clipboard-read clipboard-write"',
+        'js',
+      );
+
+      expect(wrapperElement(tree)?.properties['data-demo-allow']).toBe(
+        'clipboard-read clipboard-write',
+      );
+    });
   });
 
   describe('エッジケース', () => {

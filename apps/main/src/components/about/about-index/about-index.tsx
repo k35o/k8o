@@ -24,9 +24,7 @@ export const AboutIndex: FC = () => (
           k8o.meは、k8oの活動と制作物をまとめた個人サイトです。Webフロントエンドを中心とした
           <Anchor href={href('/blog')}>ブログ</Anchor>
           、過去の<Anchor href={href('/talks')}>登壇資料へのリンク</Anchor>
-          、色変換やコントラスト比計算などの開発者向けツール、ブログ記事に関連する試作品を集めた
-          <Anchor href={href('/playgrounds')}>Playgrounds</Anchor>
-          を公開しています。
+          、色変換やコントラスト比計算などの開発者向けツールを公開しています。
         </p>
         <p className={styles.paragraph}>
           このサイト自体も自作のReactフレームワークk8ordoで静的に書き出すTurborepoモノレポとして開発しており、ソースコードは

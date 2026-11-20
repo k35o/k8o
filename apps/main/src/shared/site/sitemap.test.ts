@@ -18,26 +18,6 @@ vi.mock('@/features/talks/interface/queries', () => ({
   getTalks: vi.fn(),
   getTalkDecks: vi.fn(),
 }));
-vi.mock('@playgrounds/sections', () => ({
-  playgroundSections: [
-    {
-      id: 'zeta-demo',
-      title: 'Zetaのデモ',
-      description: 'デモの説明。',
-      category: 'css',
-      demos: [],
-      type: 'standalone',
-    },
-    {
-      id: 'alpha-demo',
-      title: 'Alphaのデモ',
-      description: 'デモの説明。',
-      category: 'css',
-      demos: [],
-      type: 'standalone',
-    },
-  ],
-}));
 vi.mock('@/shared/site/site-entries', () => ({
   siteEntries: [
     {
@@ -173,12 +153,6 @@ describe('generateSitemap', () => {
 <loc>https://k8o.me/tags/3</loc>
 </url>
 <url>
-<loc>https://k8o.me/playgrounds/zeta-demo</loc>
-</url>
-<url>
-<loc>https://k8o.me/playgrounds/alpha-demo</loc>
-</url>
-<url>
 <loc>https://k8o.me/talks</loc>
 </url>
 <url>
@@ -232,8 +206,6 @@ describe('generateSitemap', () => {
         'https://k8o.me/privacy',
         'https://k8o.me/blog',
         'https://k8o.me/tags',
-        'https://k8o.me/playgrounds/zeta-demo',
-        'https://k8o.me/playgrounds/alpha-demo',
         'https://k8o.me/talks',
         'https://k8o.me/color-converter',
       ]);

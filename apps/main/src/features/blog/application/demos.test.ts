@@ -94,6 +94,14 @@ describe('readDemos', () => {
       expect(() => readDemos(source)).toThrow(/js と tsx/u);
     });
 
+    it('決めた権限のほかを allow に書くと投げる', () => {
+      const source = article(
+        fence('js', 'demo="cam" allow="camera"', 'console.log(1);'),
+      );
+
+      expect(() => readDemos(source)).toThrow(/allow="camera"/u);
+    });
+
     it('HTML・CSS・JS・tsx 以外の言語は投げる', () => {
       const source = article(fence('ts', 'demo="dots"', 'const a = 1;'));
 

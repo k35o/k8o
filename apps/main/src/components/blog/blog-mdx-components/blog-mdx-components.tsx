@@ -5,8 +5,6 @@ import type { ReactNode } from 'react';
 import { CodeDemo } from '@/components/blog/code-demo/code-demo';
 import { FloatImage, Image } from '@/components/blog/image/image';
 import { LinkCard } from '@/components/blog/link-card/link-card';
-import { LazyPlayground } from '@/components/playgrounds/lazy-playground';
-import { PlaygroundEmbed } from '@/components/playgrounds/playground-embed/playground-embed';
 import { BrowserSupportStatus } from '@/components/site/browser-support-status/browser-support-status';
 
 // 動く例（@repo/code-highlight が demo のメタを書いたコードブロックを包む code-demo）は、
@@ -17,10 +15,16 @@ export const blogMdxComponents = (slug: string): MDXComponents => ({
   FloatImage,
   Image,
   LinkCard,
-  Playground: LazyPlayground,
-  PlaygroundEmbed,
-  'code-demo': ({ name, children }: { name: string; children?: ReactNode }) => (
-    <CodeDemo name={name} slug={slug}>
+  'code-demo': ({
+    name,
+    allow,
+    children,
+  }: {
+    name: string;
+    allow?: string;
+    children?: ReactNode;
+  }) => (
+    <CodeDemo allow={allow} name={name} slug={slug}>
       {children}
     </CodeDemo>
   ),

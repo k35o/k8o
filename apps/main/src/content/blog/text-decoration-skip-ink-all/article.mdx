@@ -33,11 +33,43 @@ p {
 }
 ```
 
-<PlaygroundEmbed
-  demo="skip-ink値の比較"
-  headingLevel="h4"
-  sectionId="text-decoration-skip-ink-all"
-/>
+```html demo="values"
+<label>
+  text-decoration-skip-ink
+  <select id="value">
+    <option>auto</option>
+    <option>none</option>
+    <option selected>all</option>
+  </select>
+</label>
+<p id="sample">
+  日本語の文章にunderlineを引くと、漢字の下端やぐ・ゆなどに線が触れて読みづらくなりがちです。Latin
+  script: jumping typography.
+</p>
+```
+
+```css demo="values"
+@font-face {
+  font-family: 'M PLUS 2';
+  src: url('/demos/text-decoration-skip-ink-all/m-plus-2-subset.ttf');
+}
+
+#sample {
+  font-family: 'M PLUS 2', sans-serif;
+  font-size: 1.125rem;
+  text-decoration: underline;
+  text-decoration-skip-ink: all;
+}
+```
+
+```js demo="values"
+const select = document.querySelector('#value');
+const sample = document.querySelector('#sample');
+
+select.addEventListener('change', () => {
+  sample.style.textDecorationSkipInk = select.value;
+});
+```
 
 セレクトで`auto`と`none`、`all`を切り替えると、下線の切れ方が変わります。英文の`j`や`p`の下は`auto`と`all`で切れ、`none`にすると切れずにつながります。日本語の部分は、このページの書体（M PLUS 2）で描いています。`all`を選ぶと、Chromeでは漢字に加えて`く`や`ぐ`、`ゆ`のようなかなの下でも線が切れます。Firefoxで切れるのは、`章`など数文字の下だけです。
 

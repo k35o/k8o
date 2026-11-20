@@ -7,10 +7,6 @@ featureIds:
   - popover
 ---
 
-import { Button } from '@k8ordo/ui';
-
-import styles from './article.module.css';
-
 # Popover APIでツールチップやドロップダウンをJSなしで作る
 
 <BrowserSupportStatus featureId="popover"></BrowserSupportStatus>
@@ -21,21 +17,21 @@ Popover APIは、`popover`属性を付けた要素を、`popovertarget`属性を
 
 ページの流れの中で中身を開閉するときは、`details`要素を使います。ツールチップやドロップダウンメニューのように、ほかの要素の上に重ねて出し、外側のクリックで閉じるUIは、これまでJavaScriptやライブラリで作っていました。Popover APIを使うと、重ねて出すことと閉じることを、HTMLの属性だけで書けます。
 
-```html
+```html demo="hello"
 <button popovertarget="hello">開く</button>
 <div id="hello" popover>外側をクリックするかESCキーで閉じます</div>
 ```
 
-<Playground headingLevel="h4" title="ボタンで開くポップオーバー">
-  <Button popoverTarget="hello">開く</Button>
-  <div className={styles.popover} id="hello" popover="auto">
-    外側をクリックするかESCキーで閉じます
-  </div>
-</Playground>
+```css demo="hello"
+/* 開いたポップオーバーが収まる高さを取る */
+body {
+  min-height: 8rem;
+}
+```
 
-ボタンを押すと、画面の中央に枠の付いた箱が出ます。外側をクリックするか、ESCキーを押すか、もう一度ボタンを押すと閉じます。
+ボタンを押すと、結果の欄の中央に枠の付いた箱が出ます。外側をクリックするか、ESCキーを押すか、もう一度ボタンを押すと閉じます。
 
-画面の中央に枠付きで出るのは、ブラウザがポップオーバーに当てる既定のスタイル（`margin: auto`と枠）によるものです。すべての要素の`margin`や`border`を0にするリセットのCSSを当てたページでは、左上に枠の無い箱で出ます。上の例では、このページのリセットを打ち消すために`margin: auto`と枠を当て直しています。
+画面の中央に枠付きで出るのは、ブラウザがポップオーバーに当てる既定のスタイル（`margin: auto`と枠）によるものです。すべての要素の`margin`や`border`を0にするリセットのCSSを当てたページでは、左上に枠の無い箱で出ます。
 
 ## Popover APIの全体像
 
@@ -103,9 +99,7 @@ Popover APIで使うのは、HTMLの`popover`と`popovertarget`、`popovertarget
 
 次の例では、3つのボタンにそれぞれ別の`popovertargetaction`を付け、`:popover-open`と`@starting-style`で、開くときに少しずつ現れるようにしています。
 
-<PlaygroundEmbed demo="基本的なポップオーバー" headingLevel="h5" sectionId="popover" />
-
-```html
+```html demo="actions"
 <div class="wrapper">
   <button popovertarget="popover1" popovertargetaction="toggle">
     popovertargetaction: toggle
@@ -123,7 +117,12 @@ Popover APIで使うのは、HTMLの`popover`と`popovertarget`、`popovertarget
 </p>
 ```
 
-```css
+```css demo="actions"
+/* 開いたポップオーバーが収まる高さを取る */
+body {
+  min-height: 16rem;
+}
+
 .wrapper {
   display: flex;
   flex-wrap: wrap;

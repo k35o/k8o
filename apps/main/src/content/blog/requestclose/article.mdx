@@ -49,11 +49,54 @@ featureIds:
 
 次のデモでは、名前の入力欄に文字があるあいだ、閉じるボタンでも`Escape`キーでもダイアログを閉じられません。
 
-<PlaygroundEmbed
-  demo="ダイアログの閉じる動作検知"
-  headingLevel="h5"
-  sectionId="requestclose"
-/>
+```html demo="confirm"
+<button type="button" id="open">ダイアログを開く</button>
+<ul id="log"></ul>
+
+<dialog id="dialog">
+  <form method="dialog">
+    <label>名前 <input id="name" /></label>
+    <button type="button" id="close">閉じる</button>
+    <button>送信</button>
+  </form>
+</dialog>
+```
+
+```css demo="confirm"
+/* 開いたダイアログが収まる高さを取る */
+body {
+  min-height: 10rem;
+}
+```
+
+```js demo="confirm"
+const dialog = document.getElementById('dialog');
+const input = document.getElementById('name');
+const log = document.getElementById('log');
+
+const addLog = (message) => {
+  const item = document.createElement('li');
+  item.textContent = message;
+  log.prepend(item);
+};
+
+dialog.addEventListener('cancel', (event) => {
+  addLog('cancel');
+  // 入力中なら閉じない
+  if (input.value !== '') event.preventDefault();
+});
+dialog.addEventListener('close', () => {
+  addLog('close');
+  input.value = '';
+});
+
+document.getElementById('open').addEventListener('click', () => {
+  dialog.showModal();
+});
+document.getElementById('close').addEventListener('click', () => {
+  dialog.requestClose();
+});
+```
 
 名前を入れたまま閉じるを押すと、ログには`cancel`イベントの1行だけが増え、ダイアログは開いたままです。名前を消してから押すと、`cancel`イベントと`close`イベントの2行が増えて閉じます。
 

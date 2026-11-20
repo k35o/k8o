@@ -41,9 +41,50 @@ observer.observe({ type: 'largest-contentful-paint', buffered: true });
 
 開いているページのDevToolsのコンソールにこのコードを貼ると、そのページを読み込んだときのLCPの時刻と要素、面積が出ます。`buffered: true`を付けているので、読み込みが終わった後に貼っても、それまでに記録されたエントリが届きます。TypeScriptでは`getEntries()`が`PerformanceEntry`の配列を返すので、`list.getEntries() as LargestContentfulPaint[]`と型を絞ってから`element`や`size`を読みます。
 
-下のデモは、この記事のページを読み込んだときのLCPと、それまでの候補を表示します。
+下の例は、結果の欄の文書を読み込んだときのLCPの候補を、届いた順に表示します。最初のテキストが1つ目の候補になり、1秒後に描く大きなテキストが2つ目の候補として届きます。やり直すと、文書を読み込み直して測り直します。Safari 27.2は、結果の欄のようなiframeの中の文書にはエントリを届けないので、候補は出ません。
 
-<PlaygroundEmbed demo="LCP計測" headingLevel="h4" sectionId="largest-contentful-paint" />
+```html demo="candidates"
+<p class="first">最初に描かれるテキスト</p>
+<p>届いたLCPの候補</p>
+<ol id="entries"></ol>
+```
+
+```js demo="candidates"
+const entries = document.querySelector('#entries');
+
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    const item = document.createElement('li');
+    item.textContent = `${Math.round(entry.startTime)}ms ${entry.element?.tagName} ${entry.size}px²`;
+    entries.append(item);
+  }
+});
+
+if (PerformanceObserver.supportedEntryTypes.includes('largest-contentful-paint')) {
+  observer.observe({ type: 'largest-contentful-paint', buffered: true });
+} else {
+  entries.textContent = 'このブラウザはLCPのエントリに対応していません';
+}
+
+// 1秒後に大きな要素を描くと、新しい候補が届く
+setTimeout(() => {
+  const later = document.createElement('p');
+  later.className = 'later';
+  later.textContent = '後から描かれる大きなテキスト';
+  entries.before(later);
+}, 1000);
+```
+
+```css demo="candidates"
+.first {
+  font-size: 1.25rem;
+}
+
+.later {
+  font-size: 2rem;
+  font-weight: bold;
+}
+```
 
 ### LCPが確定するとき
 

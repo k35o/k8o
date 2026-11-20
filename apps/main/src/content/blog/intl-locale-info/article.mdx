@@ -201,7 +201,78 @@ new Intl.Locale('ja-JP-u-fw-mon').getWeekInfo(); // { firstDay: 1, weekend: [6, 
 
 ロケールを選ぶか識別子を入力すると、7つのメソッドが返す値を見られます。
 
-<PlaygroundEmbed demo="ロケールごとの返り値を確認する" headingLevel="h4" sectionId="intl-locale-info" />
+```html demo="locale"
+<label>
+  ロケール識別子
+  <input id="tag" type="text" value="ja-JP" />
+</label>
+<p id="presets">
+  <button type="button">ja-JP</button>
+  <button type="button">en-US</button>
+  <button type="button">en-GB</button>
+  <button type="button">ar-EG</button>
+  <button type="button">zh-Hant-TW</button>
+  <button type="button">ja-JP-u-ca-japanese</button>
+</p>
+<p id="error" hidden>ロケール識別子として解釈できません</p>
+<dl id="results"></dl>
+```
+
+```css demo="locale"
+dl {
+  font-family: monospace;
+}
+
+dd {
+  margin-block-end: 0.5rem;
+  word-break: break-all;
+}
+```
+
+```js demo="locale"
+const input = document.querySelector('#tag');
+const error = document.querySelector('#error');
+const results = document.querySelector('#results');
+
+const methods = [
+  'getWeekInfo',
+  'getTextInfo',
+  'getCalendars',
+  'getHourCycles',
+  'getNumberingSystems',
+  'getCollations',
+  'getTimeZones',
+];
+
+const update = () => {
+  results.replaceChildren();
+  let locale;
+  try {
+    locale = new Intl.Locale(input.value.trim());
+  } catch {
+    error.hidden = false;
+    return;
+  }
+  error.hidden = true;
+
+  for (const method of methods) {
+    const name = document.createElement('dt');
+    name.textContent = `${method}()`;
+    const value = document.createElement('dd');
+    // JSON.stringify(undefined) は文字列ではなく undefined を返す
+    value.textContent = JSON.stringify(locale[method]()) ?? 'undefined';
+    results.append(name, value);
+  }
+};
+
+input.addEventListener('input', update);
+document.querySelector('#presets').addEventListener('click', (event) => {
+  if (!(event.target instanceof HTMLButtonElement)) return;
+  input.value = event.target.textContent;
+  update();
+});
+update();
+```
 
 ## おわりに
 

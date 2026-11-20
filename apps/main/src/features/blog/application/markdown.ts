@@ -20,9 +20,8 @@ const nodeRange = (node: RootContent): [number, number] | undefined => {
 // MDX記事のソースをCommonMarkとして読める素のmarkdownへ変換する。
 // 全体を再シリアライズせず、MDX固有ノードのスパンだけを元テキストから置換することで、
 // 本文のフォーマットを原文のまま保つ。
-export const mdxToMarkdown = (source: string, slug: string): string => {
+export const mdxToMarkdown = (source: string): string => {
   const tree: Root = mdxParser.parse(source);
-  const articleUrl = `${SITE_URL}/blog/${slug}`;
   const edits: Edit[] = [];
 
   const replace = (range: [number, number], text: string): void => {
@@ -31,29 +30,6 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
 
   const handleJsx = (node: MdxJsxElement, range: [number, number]): void => {
     const { name } = node;
-    if (name === 'Playground') {
-      const title = stringAttribute(node, 'title');
-      const label =
-        title === undefined
-          ? 'インタラクティブデモ'
-          : `インタラクティブデモ「${title}」`;
-      replace(range, `> ${label}はWeb版で試せます: <${articleUrl}>`);
-      return;
-    }
-    if (name === 'PlaygroundEmbed') {
-      const sectionId = stringAttribute(node, 'sectionId');
-      const demo = stringAttribute(node, 'demo');
-      const url =
-        sectionId === undefined
-          ? articleUrl
-          : `${SITE_URL}/playgrounds/${sectionId}`;
-      const label =
-        demo === undefined
-          ? 'インタラクティブデモ'
-          : `インタラクティブデモ「${demo}」`;
-      replace(range, `> ${label}はWeb版で試せます: <${url}>`);
-      return;
-    }
     if (name === 'LinkCard') {
       const href = stringAttribute(node, 'href');
       if (href === undefined) {
@@ -139,4 +115,4 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
 };
 
 export const getMarkdown = async (slug: string): Promise<string> =>
-  mdxToMarkdown(await readFile(blogPath(slug), 'utf-8'), slug);
+  mdxToMarkdown(await readFile(blogPath(slug), 'utf-8'));

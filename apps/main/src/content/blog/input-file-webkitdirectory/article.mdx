@@ -7,8 +7,6 @@ featureIds:
   - input-file-webkitdirectory
 ---
 
-import { WebkitDirectoryInputExample } from './_components/file-input-examples';
-
 # webkitdirectoryでinputからフォルダを選択する
 
 <BrowserSupportStatus featureId="input-file-webkitdirectory" />
@@ -18,13 +16,11 @@ import { WebkitDirectoryInputExample } from './_components/file-input-examples';
 
 ファイルを1つ、または`multiple`で複数選ばせるのは、`type="file"`でできます。`<input>`でフォルダを丸ごと選ばせて、どのファイルがどのサブフォルダにあったかまで受け取るのは、`webkitdirectory`でしかできません。
 
-```html
+```html demo="directory"
 <!-- [!og] -->
 <!-- ディレクトリ選択 -->
 <input type="file" webkitdirectory />
 ```
-
-<WebkitDirectoryInputExample />
 
 ボタンを押すと、ファイルではなくフォルダを選ぶダイアログが開きます。フォルダを選ぶと、中のファイルがまとめて`files`に入ります。
 
@@ -80,7 +76,34 @@ photos/sub/deeper/c.txt
 
 下記の例では渡したディレクトリに含まれるファイルの`webkitRelativePath`プロパティを表示しています。
 
-<PlaygroundEmbed demo="webkitRelativePathの例" headingLevel="h5" sectionId="input-file-webkitdirectory" />
+```html demo="relative-path"
+<form>
+  <label>
+    ディレクトリ選択
+    <input type="file" id="directory" webkitdirectory />
+  </label>
+  <button type="reset">すべて解除</button>
+</form>
+<ul id="paths"></ul>
+```
+
+```js demo="relative-path"
+const input = document.getElementById('directory');
+const paths = document.getElementById('paths');
+
+input.addEventListener('change', () => {
+  const items = Array.from(input.files, (file) => {
+    const item = document.createElement('li');
+    item.textContent = file.webkitRelativePath;
+    return item;
+  });
+  paths.replaceChildren(...items);
+});
+
+input.form.addEventListener('reset', () => {
+  paths.replaceChildren();
+});
+```
 
 ボタンを押してフォルダを選ぶと、中の各ファイルが`webkitRelativePath`のパスと一緒に一覧になります。
 

@@ -1,5 +1,3 @@
-import { playgroundSections } from '@playgrounds/sections';
-
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
@@ -30,17 +28,9 @@ export async function generateLlmsContent(): Promise<string> {
     })
     .join('\n\n');
 
-  const playgroundContent = playgroundSections
-    .map((section) => {
-      const url = `${SITE_URL}/playgrounds/${section.id}`;
-      return `#### [${section.title}](${url})\n${section.description}`;
-    })
-    .join('\n\n');
-
   const dynamicContent = new Map<string, string>([
     ['/blog', blogContent],
     ['/talks', talkContent],
-    ['/playgrounds', playgroundContent],
   ]);
 
   const entriesContent = siteEntries

@@ -50,11 +50,115 @@ Safari 27.2とFirefox 159は、7つとも`CSS.supports()`で`true`を返しま�
 
 冒頭の例のように、これらの疑似クラスはメディア要素そのものよりも周りのUIに当てる場面がほとんどです。`<video>`は置換要素なので再生ボタンやスピナーは兄弟要素として重ねるしかなく、`<audio>`にいたっては`controls`属性がなければ描画すらされません。そこで`:has()`で状態を親のプレイヤーまで持ち上げます。こうすると`play`と`pause`のイベントリスナーは要らなくなります。ネイティブのコントロールから操作してもスクリプトから`play()`を呼んでも、`paused`プロパティが変わりさえすればCSSが追従します。
 
-<PlaygroundEmbed
-  demo=":playingで再生中のUIを動かす"
-  headingLevel="h4"
-  sectionId="media-pseudos"
-/>
+```html demo="playing"
+<div class="player">
+  <div class="bars">
+    <span></span>
+    <span style="animation-delay: 90ms"></span>
+    <span style="animation-delay: 180ms"></span>
+    <span style="animation-delay: 270ms"></span>
+    <span style="animation-delay: 360ms"></span>
+  </div>
+  <audio controls loop src="/demos/media-pseudos/tone.wav"></audio>
+  <ul class="chips">
+    <li class="chip-playing">:playing</li>
+    <li class="chip-paused">:paused</li>
+    <li class="chip-muted">:muted</li>
+  </ul>
+</div>
+<button id="play" type="button">play()</button>
+<button id="pause" type="button">pause()</button>
+<button id="toggle" type="button">mutedを反転</button>
+```
+
+```css demo="playing"
+@keyframes bounce {
+  from {
+    scale: 1 0.15;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+.bars span {
+  transform-origin: bottom;
+  animation: bounce 480ms ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.player:has(audio:playing) .bars span {
+  animation-play-state: running;
+}
+
+.player:has(audio:muted) .bars span {
+  opacity: 0.3;
+}
+
+.chips li {
+  opacity: 0.35;
+}
+
+.player:has(audio:playing) .chip-playing,
+.player:has(audio:paused) .chip-paused,
+.player:has(audio:muted) .chip-muted {
+  opacity: 1;
+}
+
+.player {
+  margin-block-end: 1rem;
+}
+
+.bars {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 4rem;
+}
+
+.bars span {
+  width: 0.75rem;
+  height: 100%;
+  border-radius: 1rem;
+  background-color: light-dark(teal, turquoise);
+}
+
+audio {
+  width: 100%;
+  margin-block: 1rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 0.125rem 0.75rem;
+  border: 1px solid;
+  border-radius: 1rem;
+  font-family: monospace;
+}
+```
+
+```js demo="playing"
+const audio = document.querySelector('audio');
+
+document.querySelector('#play').addEventListener('click', () => {
+  audio.play();
+});
+document.querySelector('#pause').addEventListener('click', () => {
+  audio.pause();
+});
+document.querySelector('#toggle').addEventListener('click', () => {
+  audio.muted = !audio.muted;
+});
+```
 
 SafariかFirefoxで再生するか`play()`を押すと、5本のバーが上下に動き、`:playing`のチップが点灯します。`muted`を反転すると、バーが薄くなります。Chrome 156では、どの操作でもバーは止まったままで、チップはどれも点灯しません。
 
@@ -86,7 +190,64 @@ Safari 27.2とFirefox 159で試すと、`muted`属性を書いた`<audio>`から
 
 自動再生が成功したかどうかを`play()`の戻り値のPromiseで判定し、失敗時にボタンを出すコードを書く必要がなくなります。
 
-<PlaygroundEmbed demo=":mutedとmuted属性のずれ" headingLevel="h4" sectionId="media-pseudos" />
+```html demo="muted"
+<div class="player">
+  <audio controls loop src="/demos/media-pseudos/tone.wav"></audio>
+  <ul class="chips">
+    <li class="chip-attribute">audio[muted]</li>
+    <li class="chip-pseudo">audio:muted</li>
+  </ul>
+</div>
+<button id="property" type="button">mutedプロパティを反転</button>
+<button id="attribute" type="button">muted属性を付け外し</button>
+```
+
+```css demo="muted"
+.chips li {
+  opacity: 0.35;
+}
+
+.player:has(audio[muted]) .chip-attribute,
+.player:has(audio:muted) .chip-pseudo {
+  opacity: 1;
+}
+
+.player {
+  margin-block-end: 1rem;
+}
+
+audio {
+  width: 100%;
+  margin-block-end: 1rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 0.125rem 0.75rem;
+  border: 1px solid;
+  border-radius: 1rem;
+  font-family: monospace;
+}
+```
+
+```js demo="muted"
+const audio = document.querySelector('audio');
+
+document.querySelector('#property').addEventListener('click', () => {
+  audio.muted = !audio.muted;
+});
+document.querySelector('#attribute').addEventListener('click', () => {
+  audio.toggleAttribute('muted');
+});
+```
 
 ## Chromeではまだ動かない
 

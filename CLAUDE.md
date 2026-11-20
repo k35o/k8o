@@ -57,7 +57,7 @@ features の層（`interface`・`application`・`infrastructure`）をまたぐ 
 | 対象 | 手法 | 場所 |
 |------|------|------|
 | Helpers | In-source testing (`if (import.meta.vitest)`) | `packages/helpers/src/**/*.ts` |
-| Components | Storybook stories + play関数 | `apps/main/src/components/**/*.stories.tsx`・`apps/main/src/playgrounds/**/*.stories.tsx` |
+| Components | Storybook stories + play関数 | `apps/main/src/components/**/*.stories.tsx` |
 | Features | Vitest unit tests | `apps/main/src/features/**/*.test.ts` |
 | Shared | Vitest unit tests | `apps/main/src/shared/**/*.test.ts` |
 

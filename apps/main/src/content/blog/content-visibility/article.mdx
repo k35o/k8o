@@ -37,7 +37,54 @@ section {
 
 描かれていない間も、`hidden`と違って中身はアクセシビリティツリーに残るので、スクリーンリーダーは読めます。ページ内検索でも見つかり、画面外の`auto`の中身の文字列は`window.find()`で見つかりますが、`hidden`の中身は見つかりません。
 
-<PlaygroundEmbed demo="hiddenとautoの違い" headingLevel="h4" sectionId="content-visibility" />
+```css demo="hidden-auto"
+.hidden {
+  content-visibility: hidden;
+}
+
+.auto {
+  content-visibility: auto;
+}
+
+.visible {
+  content-visibility: visible;
+}
+
+.card {
+  padding: 10px;
+  border: 2px solid gray;
+  background: light-dark(whitesmoke, #333);
+}
+```
+
+```html demo="hidden-auto"
+<p>
+  <code>content-visibility: hidden</code>
+  <button type="button" value="hidden">visibleに変更する</button>
+</p>
+<div class="card hidden">
+  <p>サンプルコンテンツ</p>
+  <p>この文が、content-visibilityで描かれたり省かれたりする中身です。</p>
+</div>
+<p>
+  <code>content-visibility: auto</code>
+  <button type="button" value="auto">visibleに変更する</button>
+</p>
+<div class="card auto">
+  <p>サンプルコンテンツ</p>
+  <p>この文が、content-visibilityで描かれたり省かれたりする中身です。</p>
+</div>
+```
+
+```js demo="hidden-auto"
+for (const button of document.querySelectorAll('button')) {
+  const card = document.querySelector(`.${button.value}`);
+  button.addEventListener('click', () => {
+    const visible = card.classList.toggle('visible');
+    button.textContent = `${visible ? button.value : 'visible'}に変更する`;
+  });
+}
+```
 
 `hidden`のカードは中身が描かれず、ボーダーと背景だけの細い帯になります。`auto`のカードは画面の中にあるので、中身が描かれます。
 
