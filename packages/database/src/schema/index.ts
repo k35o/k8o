@@ -12,6 +12,7 @@ import { comments, commentsRelations } from './comments.ts';
 import { feedbacks, feedbacksRelations } from './feedback.ts';
 import { pushLogs } from './push-logs.ts';
 import { pushSubscriptions } from './push-subscriptions.ts';
+import { readingDigests } from './reading-digests.ts';
 import { reportingReports } from './reporting-reports.ts';
 import { tags, tagsRelations } from './tags.ts';
 import { talkTag, talkTagRelations } from './talk-tag.ts';
@@ -36,6 +37,7 @@ export const schema = {
   talkTag,
   articleSources,
   articles,
+  readingDigests,
 };
 
 export const relations = {
