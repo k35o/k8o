@@ -1,0 +1,207 @@
+.root {
+  position: fixed;
+  bottom: calc(var(--spacing) * 4);
+  left: 50%;
+  z-index: var(--z-index-overlay);
+  display: flex;
+  gap: calc(var(--spacing) * 0.5);
+  max-width: calc(100vw - var(--spacing) * 4);
+  padding: calc(var(--spacing) * 1.5);
+  border-radius: var(--radius-2xl);
+  background-color: color-mix(in oklab, var(--color-bg-base) 70%, transparent);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(12px);
+  translate: -50% 0;
+  transition:
+    translate var(--duration-slow) var(--easing-in-out),
+    background-color var(--duration-moderate) var(--easing-out),
+    box-shadow var(--duration-moderate) var(--easing-out);
+
+  &[data-scrolling-down='true']:not(:has(.slot > *)) {
+    translate: -50% calc(100% + var(--spacing) * 4);
+  }
+
+  @media (width < 48rem) {
+    /* ページが足した項目（記事のもくじ）は読み進めるあいだも使うので、その項目だけを同じ位置に残す。
+       ほかの項目は描かないだけでフォーカスは受け、キーボードでフォーカスが入ればドックを元に戻す。
+       :focus-within で戻すと、押した瞬間に項目が動いてクリックが外れる */
+    &[data-scrolling-down='true']:has(.slot > *):not(
+        :has(.item:focus-visible),
+        :has(.lab [aria-expanded='true'])
+      ) {
+      background-color: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+      pointer-events: none;
+
+      & .item {
+        opacity: 0;
+      }
+
+      /* 項目を絶対配置にしても、ドックの幅を変えない */
+      & .slot {
+        display: block;
+        min-width: min(calc(var(--spacing) * 11), 12vw);
+      }
+
+      & .slot .item {
+        position: absolute;
+        inset: auto 0 0;
+        min-height: calc(var(--spacing) * 12);
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: calc(var(--spacing) * 3);
+        padding-inline: calc(var(--spacing) * 3);
+        border-radius: var(--radius-full);
+        background-color: var(--color-bg-raised);
+        box-shadow: var(--shadow-lg);
+        color: var(--color-fg-base);
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-sm);
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      & .slot .label {
+        display: none;
+      }
+
+      & .slot .pinnedLabel {
+        display: block;
+      }
+    }
+  }
+
+  /* キーボードでドックへ移ったときと、パネルを開いているあいだは常に表示する (WCAG 2.4.11) */
+  &:focus-within,
+  &:has([aria-expanded='true']) {
+    translate: -50% 0;
+  }
+
+  /* 広い幅ではヘッダーのナビが行き先を持つので、ページが足した項目だけを右下の帯として出す */
+  @media (width >= 48rem) {
+    right: calc(var(--spacing) * 16);
+    bottom: calc(var(--spacing) * 8);
+    left: auto;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    translate: none;
+
+    & .slot .item {
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: calc(var(--spacing) * 3);
+      width: calc(var(--spacing) * 80);
+      min-height: calc(var(--spacing) * 12);
+      padding-inline: calc(var(--spacing) * 3);
+      border-radius: var(--radius-full);
+      background-color: var(--color-bg-raised);
+      box-shadow: var(--shadow-lg);
+      color: var(--color-fg-base);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-sm);
+    }
+
+    & .slot .label {
+      display: none;
+    }
+
+    & .slot .pinnedLabel {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+.nav {
+  @media (width >= 48rem) {
+    display: none;
+  }
+}
+
+.list {
+  display: flex;
+  gap: calc(var(--spacing) * 0.5);
+}
+
+.slot {
+  display: contents;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 0.5);
+  min-width: min(calc(var(--spacing) * 11), 12vw);
+  min-height: calc(var(--spacing) * 13);
+  padding-inline: calc(var(--spacing) * 0.5);
+  border-radius: var(--radius-xl);
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+  white-space: nowrap;
+  transition:
+    color var(--duration-fast) var(--easing-out),
+    background-color var(--duration-fast) var(--easing-out),
+    opacity var(--duration-moderate) var(--easing-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--color-bg-mute);
+      color: var(--color-fg-base);
+    }
+  }
+
+  &:focus-visible {
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+
+  &[aria-current],
+  &[data-current='true'],
+  &[aria-expanded='true'] {
+    background-color: var(--color-primary-bg-subtle);
+    color: var(--color-primary-fg);
+  }
+}
+
+.panel {
+  width: calc(var(--spacing) * 80);
+  max-width: calc(100vw - var(--spacing) * 8);
+  padding: calc(var(--spacing) * 2);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-raised);
+  box-shadow: var(--shadow-lg);
+}
+
+.label {
+  display: block;
+}
+
+.pinnedLabel {
+  display: none;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

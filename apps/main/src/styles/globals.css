@@ -9,6 +9,7 @@
 
 html {
   scroll-padding-top: calc(var(--spacing) * 24);
+  scroll-padding-bottom: calc(var(--spacing) * 24);
 }
 
 @media (prefers-reduced-motion) {

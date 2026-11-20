@@ -1,0 +1,79 @@
+/* 狭い幅ではドックが行き先を持つ */
+.root {
+  display: none;
+
+  @media (width >= 48rem) {
+    display: block;
+    margin-right: auto;
+    margin-left: calc(var(--spacing) * 6);
+  }
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing);
+}
+
+.link {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  gap: var(--spacing);
+  min-height: calc(var(--spacing) * 11);
+  padding-inline: calc(var(--spacing) * 3);
+  border-radius: var(--radius-md);
+  color: var(--color-fg-mute);
+  font-weight: var(--font-weight-medium);
+  transition:
+    color var(--duration-fast) var(--easing-out),
+    background-color var(--duration-fast) var(--easing-out);
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--color-bg-mute);
+      color: var(--color-fg-base);
+    }
+  }
+
+  &:focus-visible {
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+
+  &[aria-current],
+  &[data-current='true'],
+  &[aria-expanded='true'] {
+    color: var(--color-fg-base);
+  }
+
+  /* 今いる区画の下線 */
+  &[aria-current]::after,
+  &[data-current='true']::after {
+    position: absolute;
+    right: calc(var(--spacing) * 3);
+    bottom: calc(var(--spacing) * 1.5);
+    left: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 0.5);
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-bg);
+    content: '';
+
+    @media (forced-colors: active) {
+      background-color: var(--color-system-highlight);
+    }
+  }
+}
+
+.panel {
+  width: calc(var(--spacing) * 80);
+  padding: calc(var(--spacing) * 2);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-raised);
+  box-shadow: var(--shadow-lg);
+}
