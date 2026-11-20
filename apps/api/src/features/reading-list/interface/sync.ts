@@ -3,6 +3,8 @@
 import { sendPushNotification } from '../../push-notification/interface/commands';
 import { enrichArticleMetadata } from '../application/enrich-articles';
 import type { EnrichResult } from '../application/enrich-articles';
+import { generateDigests } from '../application/generate-digests';
+import type { DigestResult } from '../application/generate-digests';
 import { READING_LIST_URL } from '../application/reading-list-url';
 import { summarizeArticles } from '../application/summarize-articles';
 import type { SummarizeResult } from '../application/summarize-articles';
@@ -12,8 +14,13 @@ import type { SyncResult } from '../application/sync-articles';
 // 関数の上限（Vercel Hobby で300秒）から、締め切りの直前に始めた1件（本文の取得と生成で
 // 最大約70秒）と、通知の分を残す
 const SUMMARY_DEADLINE_MS = 180_000;
+// 日ごとの話題は要約のあとに作る。締め切りの直前に始めた 1 日（生成で最大約 60 秒）を残す
+const DIGEST_DEADLINE_MS = 225_000;
 
-export type ArticleSyncSummary = SyncResult & EnrichResult & SummarizeResult;
+export type ArticleSyncSummary = SyncResult &
+  EnrichResult &
+  SummarizeResult &
+  DigestResult;
 
 export async function runArticleSync(): Promise<ArticleSyncSummary> {
   const startedAt = Date.now();
@@ -29,6 +36,15 @@ export async function runArticleSync(): Promise<ArticleSyncSummary> {
           failedSummaries: 0,
           summaryAborted: true,
         };
+      },
+    );
+
+  const { writtenDigests, failedDigests, digestAborted } =
+    await generateDigests(startedAt, startedAt + DIGEST_DEADLINE_MS).catch(
+      (error: unknown) => {
+        // 記事の取り込みは済んでいるので、話題の失敗で通知を止めない
+        console.error('日ごとの話題の生成に失敗しました:', error);
+        return { writtenDigests: 0, failedDigests: 0, digestAborted: true };
       },
     );
 
@@ -63,6 +79,9 @@ export async function runArticleSync(): Promise<ArticleSyncSummary> {
     summarizedArticles,
     failedSummaries,
     summaryAborted,
+    writtenDigests,
+    failedDigests,
+    digestAborted,
     failedSources,
   };
 }

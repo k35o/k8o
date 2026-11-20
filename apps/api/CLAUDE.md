@@ -13,7 +13,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 ## cron
 
-`vercel.json` の `crons` が `/cron/sync-articles`（00:00 UTC）と `/cron/sync-browser-support`（06:00 UTC）を叩く。`/cron/sync-articles` は RSS の取り込みと OGP の補完のあと、未要約の記事を Claude で要約する。1回の件数と経過時間で打ち切り、残りは翌日に回す。進み具合は MCP の `get_overview` かオーナー API の `GET /owner/overview` で見る（Hobby の Vercel のログは1時間で消える）。`/cron/sync-browser-support` は `trigger=monitor|manual` と `force=true` も受け、外形監視（`.github/workflows/browser-support-monitor.yml`）の自走復旧と、workflow_dispatch からの強制再同期に使われる。外形監視は `GET /public/browser-support/health` で同期の状態を読む。
+`vercel.json` の `crons` が `/cron/sync-articles`（00:00 UTC）と `/cron/sync-browser-support`（06:00 UTC）を叩く。`/cron/sync-articles` は RSS の取り込みと OGP の補完のあと、未要約の記事を Claude で要約する。1回の件数と経過時間で打ち切り、残りは翌日に回す。そのあと、日本時間の日ごとに、その日のまとめを Claude（Opus 5.5）で作る（`reading_digests`）。まとめは、その日の全体像の文、特に見てほしい記事（0〜3 件と理由）、残りの記事を束ねた話題（性質・1 文の見出し・記事の id）で、どの記事もどちらか 1 か所に入る。何を大きいとするかの物差しは `digest-writer.ts` の指示に書く。まとめの無い日を新しい日から 1 回に 10 日分まで作り、直近 3 日は記事が増えていたら作り直す。`GET /public/reading-list` は記事・ソースと一緒にまとめを返す。進み具合は MCP の `get_overview` かオーナー API の `GET /owner/overview` で見る（Hobby の Vercel のログは1時間で消える）。`/cron/sync-browser-support` は `trigger=monitor|manual` と `force=true` も受け、外形監視（`.github/workflows/browser-support-monitor.yml`）の自走復旧と、workflow_dispatch からの強制再同期に使われる。外形監視は `GET /public/browser-support/health` で同期の状態を読む。
 
 ## 公開ルート
 

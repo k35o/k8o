@@ -19,6 +19,7 @@ import {
   deleteSubscription,
   insertSubscription,
 } from './features/push-notification/infrastructure/subscription-repository';
+import { findDigestsSince } from './features/reading-list/infrastructure/digest-repository';
 import {
   findArticleSources,
   findRecentArticles,
@@ -66,6 +67,9 @@ vi.mock(
     findArticleSources: vi.fn(),
   }),
 );
+vi.mock('./features/reading-list/infrastructure/digest-repository', () => ({
+  findDigestsSince: vi.fn(),
+}));
 vi.mock('./features/reports/infrastructure/report-repository', () => ({
   insertReports: vi.fn(),
   findReports: vi.fn(),
@@ -1387,10 +1391,25 @@ describe('公開 API', () => {
     beforeEach(() => {
       vi.useFakeTimers({ toFake: ['Date'] });
       vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+      vi.mocked(findDigestsSince).mockResolvedValue([]);
     });
 
     describe('正常系', () => {
-      it('直近90日の記事とソースの一覧を返す', async () => {
+      it('直近90日の記事・ソース・日ごとの話題を返す', async () => {
+        const digest: Awaited<ReturnType<typeof findDigestsSince>>[number] = {
+          date: '2026-07-19',
+          overview: 'CSS の話が中心の日。',
+          picks: [{ articleId: 2, reason: '書き方が変わる。' }],
+          topics: [
+            {
+              kind: 'explainer',
+              headline: 'CSS の解説が出た',
+              articleIds: [1],
+            },
+          ],
+        };
+        vi.mocked(findDigestsSince).mockResolvedValue([digest]);
+
         const res = await app.request('/public/reading-list');
 
         expect(res.status).toBe(200);
@@ -1398,6 +1417,7 @@ describe('公開 API', () => {
         await expect(res.json()).resolves.toStrictEqual({
           articles: [SUMMARIZED_ARTICLE, DESCRIBED_ARTICLE, BARE_ARTICLE],
           sources: [{ id: 1, title: 'Example & Blog' }],
+          digests: [digest],
         });
         expect(findRecentArticles).toHaveBeenCalledWith(
           '2026-04-21T00:00:00.000Z',
@@ -1438,6 +1458,7 @@ describe('公開 API', () => {
         await expect(res.json()).resolves.toStrictEqual({
           articles: [SUMMARIZED_ARTICLE],
           sources: [{ id: 1, title: 'Example & Blog' }],
+          digests: [],
         });
       });
 
@@ -1484,7 +1505,7 @@ describe('公開 API', () => {
             '<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">' +
             '<channel>' +
             '<title>k8o Readings</title>' +
-            '<description>気になっている記事を集めて、あとから探せるようにしています。</description>' +
+            '<description>AIとWebフロントエンドまわりの記事を集めています。</description>' +
             '<link>https://k8o.me/reading-list</link>' +
             '<atom:link href="https://k8o.me/reading-list/feed" rel="self" type="application/rss+xml"/>' +
             '<language>ja</language>' +

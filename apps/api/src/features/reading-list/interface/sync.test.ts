@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sendPushNotification } from '../../push-notification/interface/commands';
 import { enrichArticleMetadata } from '../application/enrich-articles';
+import { generateDigests } from '../application/generate-digests';
 import { summarizeArticles } from '../application/summarize-articles';
 import { syncArticles } from '../application/sync-articles';
 import { runArticleSync } from './sync';
@@ -11,6 +12,9 @@ vi.mock('../../push-notification/interface/commands', () => ({
 }));
 vi.mock('../application/enrich-articles', () => ({
   enrichArticleMetadata: vi.fn(),
+}));
+vi.mock('../application/generate-digests', () => ({
+  generateDigests: vi.fn(),
 }));
 vi.mock('../application/summarize-articles', () => ({
   summarizeArticles: vi.fn(),
@@ -37,6 +41,11 @@ describe('runArticleSync', () => {
       failedSummaries: 1,
       summaryAborted: false,
     });
+    vi.mocked(generateDigests).mockResolvedValue({
+      writtenDigests: 2,
+      failedDigests: 0,
+      digestAborted: false,
+    });
   });
 
   afterEach(() => {
@@ -55,6 +64,9 @@ describe('runArticleSync', () => {
         summarizedArticles: 3,
         failedSummaries: 1,
         summaryAborted: false,
+        writtenDigests: 2,
+        failedDigests: 0,
+        digestAborted: false,
         failedSources: [],
       });
       expect(sendPushNotification).toHaveBeenCalledOnce();
@@ -83,9 +95,36 @@ describe('runArticleSync', () => {
 
       expect(summarizeArticles).toHaveBeenCalledWith(NOW.getTime() + 180_000);
     });
+
+    it('日ごとの話題は要約のあとに作り、締め切りは同期を始めてから225秒後にする', async () => {
+      await runArticleSync();
+
+      expect(generateDigests).toHaveBeenCalledWith(
+        NOW.getTime(),
+        NOW.getTime() + 225_000,
+      );
+      expect(
+        vi.mocked(summarizeArticles).mock.invocationCallOrder[0],
+      ).toBeLessThan(
+        Number(vi.mocked(generateDigests).mock.invocationCallOrder[0]),
+      );
+    });
   });
 
   describe('異常系', () => {
+    it('日ごとの話題の生成が投げても、同期の結果を返して通知を送る', async () => {
+      vi.mocked(generateDigests).mockRejectedValue(new Error('db'));
+
+      const result = await runArticleSync();
+
+      expect(result).toMatchObject({
+        newArticles: 2,
+        writtenDigests: 0,
+        digestAborted: true,
+      });
+      expect(sendPushNotification).toHaveBeenCalledOnce();
+    });
+
     it('取得に失敗したソースがあれば、ソース名を出さずに件数だけを失敗として通知する', async () => {
       vi.spyOn(console, 'warn').mockImplementation(() => undefined);
       vi.mocked(syncArticles).mockResolvedValue({
