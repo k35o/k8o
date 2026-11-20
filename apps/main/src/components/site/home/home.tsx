@@ -1,4 +1,4 @@
-import { Heading, Separator } from '@k8ordo/ui';
+import { Heading } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { ActivityItem } from '@/features/activity/interface/queries';
@@ -48,8 +48,6 @@ export const Home: FC<HomeProps> = ({ activity }) => (
           デザインとの境界にも興味があり、デザインシステム@k8ordo/uiを育てています。
         </p>
       </header>
-
-      <Separator color="subtle" />
 
       <section>
         <h2 className={styles.activityHeading}>Activity</h2>
