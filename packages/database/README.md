@@ -160,6 +160,15 @@ erDiagram
     text created_at
     text updated_at
   }
+  reading_digests {
+    text date PK
+    text overview
+    text picks
+    text topics
+    text article_key
+    text created_at
+    text updated_at
+  }
   reporting_reports {
     integer id PK
     text type

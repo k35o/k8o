@@ -42,6 +42,9 @@ const articleSummary = {
   summarizedArticles: 3,
   failedSummaries: 1,
   summaryAborted: false,
+  writtenDigests: 1,
+  failedDigests: 0,
+  digestAborted: false,
   failedSources: [],
 };
 
@@ -128,6 +131,21 @@ describe('cron ルート', () => {
       vi.mocked(runArticleSync).mockResolvedValue({
         ...articleSummary,
         failedSources: ['example'],
+      });
+
+      const res = await cronRequest(
+        '/cron/sync-articles',
+        `Bearer ${CRON_SECRET}`,
+      );
+
+      expect(res.status).toBe(200);
+      await expect(res.json()).resolves.toMatchObject({ ok: false });
+    });
+
+    it('日ごとの話題を途中で打ち切ったら 200 のまま ok を false にする', async () => {
+      vi.mocked(runArticleSync).mockResolvedValue({
+        ...articleSummary,
+        digestAborted: true,
       });
 
       const res = await cronRequest(

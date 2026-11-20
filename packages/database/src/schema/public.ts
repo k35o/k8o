@@ -7,3 +7,9 @@ export type {
   BrowserSupportSyncResult,
   BrowserSupportSyncTrigger,
 } from './browser-support-sync-runs.ts';
+export { READING_DIGEST_KINDS } from './reading-digests.ts';
+export type {
+  ReadingDigestKind,
+  ReadingDigestPick,
+  ReadingDigestTopic,
+} from './reading-digests.ts';

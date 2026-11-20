@@ -49,6 +49,7 @@ const readingList: ReadingList = {
     { id: 1, title: 'Zenn' },
     { id: 2, title: 'web.dev' },
   ],
+  digests: [],
 };
 
 const seriesOf = (length: number): ReadingList => ({
@@ -63,6 +64,7 @@ const seriesOf = (length: number): ReadingList => ({
     source: zenn,
   })),
   sources: readingList.sources,
+  digests: [],
 });
 
 // 初めの描画で先頭だけを描く件数より多い
@@ -132,8 +134,12 @@ const meta = preview.meta({
   beforeEach: mountStoryUrl,
 });
 
+// 記事を直に並べるのは、絞り込みか並べ替えをしているあいだ。初めの表示は日ごとの話題になる
+const LISTING = 'sort=oldest';
+
 export const RendersAllArticles = meta.story({
   args: { readingList: series },
+  parameters: { query: LISTING },
   play: async ({ canvas }) => {
     await expect(await canvas.findByText('連載 第30回')).toBeInTheDocument();
     await expect(canvas.getAllByRole('link')).toHaveLength(30);
@@ -144,7 +150,7 @@ export const RendersAllArticles = meta.story({
 // 正常系: 初めは先頭の 20 件だけを描き、フレームが来るたびに 50 件ずつ足す
 export const AddsBatchPerFrame = meta.story({
   args: { readingList: longSeries },
-  parameters: { vrt: { skip: true } },
+  parameters: { query: LISTING, vrt: { skip: true } },
   beforeEach: holdFrames,
   play: async ({ canvas }) => {
     await expect(await canvas.findAllByRole('link')).toHaveLength(20);
@@ -167,7 +173,7 @@ export const AddsBatchPerFrame = meta.story({
 // エッジケース: 描き終える前にフレームが続けて来ても、足すのは 1 回分の 50 件だけ
 export const AddsOneBatchUntilRendered = meta.story({
   args: { readingList: longSeries },
-  parameters: { vrt: { skip: true } },
+  parameters: { query: LISTING, vrt: { skip: true } },
   beforeEach: holdFrames,
   play: async ({ canvas }) => {
     await expect(await canvas.findAllByRole('link')).toHaveLength(20);
@@ -186,7 +192,7 @@ export const AddsOneBatchUntilRendered = meta.story({
 // 正常系: 戻る・進むで開いたときは、router が前の位置へ戻す前に全件を描いておく
 export const ShowsAllOnTraverse = meta.story({
   args: { readingList: series },
-  parameters: { vrt: { skip: true } },
+  parameters: { query: LISTING, vrt: { skip: true } },
   beforeEach: () => {
     // <Router> は表に無い pathname では何も描かないので、一覧の pathname で始める
     history.replaceState(
@@ -298,5 +304,46 @@ export const WriteOverOtherKeys = meta.story({
     await expect(location.search).toMatch(
       /[?&]zz=1&q=a&source=1%2Cabc&sort=oldest$/u,
     );
+  },
+});
+
+// 正常系: 絞り込みも並べ替えもしていないあいだは、日ごとの話題で見せる
+export const ShowsDigestByDefault = meta.story({
+  args: {
+    readingList: {
+      ...readingList,
+      digests: [
+        {
+          date: '2026-10-20',
+          overview: 'ルーティングの記事が1件の日。',
+          picks: [],
+          topics: [
+            {
+              kind: 'explainer',
+              headline: 'TanStack Router の使い方の紹介が出た',
+              articleIds: [2],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  play: async ({ canvas, userEvent: user }) => {
+    const topic = await canvas.findByRole('button', {
+      name: /TanStack Router の使い方の紹介が出た/u,
+    });
+    await expect(
+      canvas.queryByRole('link', {
+        name: 'TanStack Routerで型安全なルーティング',
+      }),
+    ).toBeNull();
+
+    await user.click(topic);
+
+    await expect(
+      canvas.getByRole('link', {
+        name: 'TanStack Routerで型安全なルーティング',
+      }),
+    ).toBeVisible();
   },
 });

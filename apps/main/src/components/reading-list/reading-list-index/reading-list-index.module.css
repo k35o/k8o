@@ -9,3 +9,13 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.lead {
+  color: var(--color-fg-mute);
+}

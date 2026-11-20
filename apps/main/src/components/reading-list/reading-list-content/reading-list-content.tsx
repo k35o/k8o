@@ -17,6 +17,7 @@ import type { FC, ReactNode } from 'react';
 import type { SortOrder } from '../constants/constants';
 import { FilterBar } from '../filter-bar/filter-bar';
 import { ReadingCard } from '../reading-card/reading-card';
+import { ReadingDigestList } from '../reading-digest-list/reading-digest-list';
 import type { ReadingList } from '../reading-list-source/reading-list-source';
 import {
   readingListState,
@@ -25,6 +26,8 @@ import {
 import { filterReadings } from './filter-readings';
 
 import styles from './reading-list-content.module.css';
+
+const EMPTY_DIGESTS: ReadingList['digests'] = [];
 
 const FIRST_PAINT_COUNT = 20;
 const BATCH_COUNT = 50;
@@ -83,6 +86,9 @@ export const ReadingListContent: FC<{
   filterIcon: ReactNode;
 }> = ({ readingList, filterIcon }) => {
   const { articles, sources } = readingList;
+  // api の応答は CDN に 1 時間残り、main と api は別々に出る。話題を持たない前の形の応答でも描く
+  const digests =
+    (readingList as Partial<ReadingList>).digests ?? EMPTY_DIGESTS;
   const [params, update] = useAppState(readingListState);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -118,6 +124,10 @@ export const ReadingListContent: FC<{
     () => filterReadings(articles, { query, sourceIds, sortOrder }),
     [articles, query, sourceIds, sortOrder],
   );
+
+  // 絞り込みも並べ替えもしていないあいだは、日ごとの話題で見せる。探しているあいだは記事を直に並べる
+  const showsDigest =
+    query === '' && sourceIds.length === 0 && sortOrder === 'newest';
 
   const shownCount = useShownCount(filteredArticles.length);
   const shownArticles = filteredArticles.slice(0, shownCount);
@@ -177,6 +187,8 @@ export const ReadingListContent: FC<{
             icon={<BookmarkIcon size="lg" />}
             title="条件に一致する記事がありません"
           />
+        ) : showsDigest ? (
+          <ReadingDigestList articles={filteredArticles} digests={digests} />
         ) : (
           <Stack gap="md">
             {shownArticles.map((article) => (

@@ -38,6 +38,7 @@ const readingList: ReadingList = {
     { id: 1, title: 'Zenn' },
     { id: 2, title: 'web.dev' },
   ],
+  digests: [],
 };
 
 const requested = fn();
@@ -77,8 +78,8 @@ export const Loaded = meta.story({
   play: async ({ canvas }) => {
     await expect(await canvas.findByText('2件の記事')).toBeInTheDocument();
     await expect(
-      canvas.getByText('TanStack Routerで型安全なルーティング'),
-    ).toBeInTheDocument();
+      canvas.getAllByRole('button', { name: /この日の記事/u }),
+    ).toHaveLength(2);
     await expect(requested).toHaveBeenCalledOnce();
   },
 });

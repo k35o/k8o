@@ -72,6 +72,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、Lab の�
 
 - `/browser-support` と `/notifications` は、ページがビルドで api の関数から読み（`features/*/interface` の関数）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。「直近1週間」の基準の時刻（`nowMs`）もビルドの値に入れて渡す
 - `/reading-list` は直近 90 日の記事をすべて描くので、ビルドの値を HTML とペイロードに埋めず（埋めると数百件を HTML と api で 2 回送る）、ブラウザで `GET /public/reading-list` を読む（`components/reading-list/reading-list-source`）。届くまでは `BrowserOnly` の骨組みのまま待ち、読めなければ読み直しを案内する（`ReadingListLoader`）。一度読んだ一覧の覚え方と、読めなかったときの読み直しは `reading-list-source` の注釈のとおり
+- `/reading-list` は、絞り込みも並べ替えもしていないあいだ、記事を日本時間の日ごとに分けて、api が返すその日のまとめを描く（`components/reading-list/reading-digest-list`）。1 日は、全体像の文・特に見てほしい記事（畳まない）・残りの話題（押すとその話題の記事が開く）の順に並ぶ。まとめをまだ作っていない日は、その日の記事をまとめた 1 行にする。検索・ソースの絞り込み・古い順のあいだは、記事のカードを直に並べる。ページの背景の飾りに文字を直に載せないよう、1 日ごとに薄い下地を敷く
 - HTML を読むうちに api を取り始める `preload`（`as: 'fetch'`）は、client の部品の `ReadingListPreload` が描くときに書く。Server Component で書くとペイロードの hint にも入り、Readings へのリンクを先読みしただけで api を読む
 - 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は文字列のまま持ち、読むときに解く。`z.array` は書くときと同じカンマ区切りの `?source=1,2` を読めず、`z.stringbool` は `?widely=1` も真に読むので、真偽はアプリが書く `true` だけを真にする
 - 一覧は `BrowserOnly` でブラウザでだけ描き、骨組み（`ReadingListSkeleton`・`BrowserSupportFeatureListSkeleton`）を `fallback` に渡す。骨組みは HTML の client-rendered の境界（`<!--$!-->`）の中に出る。骨組みを `loading.tsx` として route に置かないのは、static mode では HTML にも遷移にもほぼ出ず、layout と同じくその CSS をどのページも読むから

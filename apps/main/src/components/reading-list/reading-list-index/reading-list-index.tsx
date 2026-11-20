@@ -16,9 +16,14 @@ import styles from './reading-list-index.module.css';
 export const ReadingListIndex: FC = () => (
   <div className={styles.root}>
     <Stack gap="xl">
-      <div className={styles.header}>
-        <Heading level="h2">Readings</Heading>
-        <RssLink />
+      <div className={styles.intro}>
+        <div className={styles.header}>
+          <Heading level="h2">Readings</Heading>
+          <RssLink />
+        </div>
+        <p className={styles.lead}>
+          AIとWebフロントエンドまわりの記事を集めています。
+        </p>
       </div>
       <ReadingListPreload />
       <BrowserOnly fallback={<ReadingListSkeleton />}>
