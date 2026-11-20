@@ -67,7 +67,51 @@ span {
 
 `r`の付いた4つの単位は、同じものをルート要素のフォントで測ります。どの要素の中で使っても値が変わらないので、ページ全体で同じ長さを書けます。行の高さの`lh`にも、Baseline 2023に入ったルート版の`rlh`があります。
 
-<PlaygroundEmbed demo="通常版とルート版の違い" headingLevel="h4" sectionId="root-font-units" />
+```css demo="font-size"
+:root {
+  font-family: system-ui, sans-serif;
+}
+
+#sample {
+  font-size: 16px;
+}
+
+.ch {
+  width: 10ch;
+  background: gold;
+}
+
+.rch {
+  width: 10rch;
+  background: skyblue;
+}
+
+.ch,
+.rch {
+  height: 0.5rem;
+  margin-block-end: 0.5rem;
+}
+```
+
+```html demo="font-size"
+<label>
+  font-size
+  <input id="size" type="number" min="8" max="48" value="16" />
+  px
+</label>
+<div id="sample">
+  <p>0123456789</p>
+  <div class="ch"></div>
+  <div class="rch"></div>
+</div>
+```
+
+```js demo="font-size"
+const sample = document.querySelector('#sample');
+document.querySelector('#size').addEventListener('input', (event) => {
+  sample.style.fontSize = `${event.target.value}px`;
+});
+```
 
 `font-size`の値を変えると、`ch`のバーは文字サイズに合わせて伸び縮みし、`rch`のバーは長さが変わりません。
 
@@ -133,7 +177,75 @@ span {
 
 ### 単位の比較
 
-<PlaygroundEmbed demo="単位の比較" headingLevel="h5" sectionId="root-font-units" />
+```css demo="units"
+:root {
+  font-family: system-ui, sans-serif;
+}
+
+.glyph {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.bar {
+  display: inline-block;
+  background: steelblue;
+}
+
+.ric {
+  width: 4ric;
+  height: 0.5rem;
+}
+
+.rch {
+  width: 4rch;
+  height: 0.5rem;
+}
+
+.rcap {
+  width: 0.5rem;
+  height: 4rcap;
+}
+
+.rex {
+  width: 0.5rem;
+  height: 4rex;
+}
+
+body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.width {
+  display: grid;
+  justify-items: start;
+}
+```
+
+```html demo="units"
+<div class="width">
+  <span class="glyph">水</span>
+  <span class="bar ric"></span>
+  4ric
+</div>
+<div class="width">
+  <span class="glyph">0</span>
+  <span class="bar rch"></span>
+  4rch
+</div>
+<div>
+  <span class="glyph">H</span>
+  <span class="bar rcap"></span>
+  4rcap
+</div>
+<div>
+  <span class="glyph">x</span>
+  <span class="bar rex"></span>
+  4rex
+</div>
+```
 
 ## おわりに
 

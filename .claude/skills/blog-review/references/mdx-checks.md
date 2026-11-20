@@ -22,15 +22,13 @@
 | コンポーネント | 主なprops |
 |---------------|-----------|
 | `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
-| `PlaygroundEmbed` | `sectionId`（必須。`apps/main/src/playgrounds/<id>/`のディレクトリ名＝セクションの`id`） / `headingLevel`（必須。置いた節の一つ下の段） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
-| `Playground` | `title`（必須） / `headingLevel`（記事の中では必須。置いた節の一つ下の段）。子にデモ |
 | `LinkCard` | `href`（必須） / `variant?` |
 | `Image` / `FloatImage` | `src`・`alt`・`width`・`height`（すべて必須。width と height は画像の縦横比に合わせる） / `loading?` |
 | `Alert` | `tone`（`warning`等） / `message` |
 
-- **動く例**: コードブロックのメタに`demo="<名前>"`を書いた HTML・CSS・JS・tsx は、記事の中で動く。説明に要る見た目（大きさ・色・並べ方）がコードに書いてあり、要の行が`[!hl]`で強調されているかを見る。tsx は部品を`export default`で書き、`react`と`react-dom`のほかを import していないかを見る。HTML・CSS・JS・React で書けるのに Playground や`_components`で動かしているデモは、動く例に替えられないかを指摘する。
+- **動く例**: コードブロックのメタに`demo="<名前>"`を書いた HTML・CSS・JS・tsx は、記事の中で動く。説明に要る見た目（大きさ・色・並べ方）がコードに書いてあり、要の行が`[!hl]`で強調されているかを見る。tsx は部品を`export default`で書き、`react`と`react-dom`のほかを import していないかを見る。`_components`で動かしているデモは、動く例に替えられないかを指摘する。
 - 見出し・段落・リンク・インラインコードは`apps/main/src/components/site/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
-- **import検証**: MDXが`@/`・`next`・`next-themes`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`apps/main/src/playgrounds/<id>/`のディレクトリ名（セクションの`id`）と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないとビルドの描画で落ちる）。
+- **import検証**: MDXが`@/`・`next`・`next-themes`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。
 - **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。
 
 ## ブログ固有4: frontmatter整合性

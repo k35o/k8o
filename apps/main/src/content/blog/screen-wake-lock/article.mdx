@@ -23,7 +23,29 @@ Screen Wake Lock APIは、ページを表示しているあいだ、端末の画
 
 Screen Wake Lock APIを使用してスリープのロックを要求するボタンを用意しました。
 
-<PlaygroundEmbed demo="スクリーンスリープ防止" headingLevel="h4" sectionId="screen-wake-lock" />
+```html demo="lock" allow="screen-wake-lock"
+<button id="lock" type="button">スリープ機能をロックする</button>
+```
+
+```js demo="lock"
+const button = document.querySelector('#lock');
+let wakeLock = null;
+
+button.disabled = !('wakeLock' in navigator);
+button.addEventListener('click', async () => {
+  if (wakeLock !== null) {
+    await wakeLock.release();
+    return;
+  }
+  wakeLock = await navigator.wakeLock.request('screen');
+  button.textContent = 'スリープ機能のロックを解除する';
+  // release() を呼んだときも、タブを離れてブラウザが解除したときも届く
+  wakeLock.addEventListener('release', () => {
+    wakeLock = null;
+    button.textContent = 'スリープ機能をロックする';
+  });
+});
+```
 
 ボタンを押してロックを取ると、ボタンの文言がロックを解除する文言に切り替わります。
 

@@ -4,6 +4,7 @@ import { expect, waitFor, within } from 'storybook/test';
 import { CodeBlock } from '@/components/site/code-block/code-block';
 import { CodeGroup } from '@/components/site/code-block/code-group';
 import { buildDemoDocument } from '@/features/blog/application/demo-document';
+import { DEMO_ORIGIN_PLACEHOLDER } from '@/shared/demo/demo-origin';
 
 import preview from '../../../../.storybook/preview';
 import { CodeDemoView } from './code-demo-view';
@@ -20,8 +21,13 @@ const demo = {
 };
 
 // Storybook には例の route が無いので、同じ文書を data: の URL から fetch する
-const demoDocument = buildDemoDocument(demo);
-const src = `data:text/html;charset=utf-8,${encodeURIComponent(demoDocument)}`;
+const fetched = buildDemoDocument(demo);
+const src = `data:text/plain;charset=utf-8,${encodeURIComponent(fetched)}`;
+// 記事は、読んだ文書の CSP の origin の置き場を自分の origin にして描く
+const demoDocument = fetched.replaceAll(
+  DEMO_ORIGIN_PLACEHOLDER,
+  window.location.origin,
+);
 
 // rehype が出力する形に合わせ、data-label を持つ div で pre を包む
 const blocks = [
@@ -61,8 +67,10 @@ export const Primary = meta.story({
     ).toStrictEqual(['html', 'css', 'js']);
     await expect(canvas.getByText('結果')).toBeVisible();
     const frame = frameOf(canvasElement);
-    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts');
+    // allow-same-origin が入ると、例は記事の origin で動く
+    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-forms');
     await expect(frame).not.toHaveAttribute('src');
+    await expect(frame).not.toHaveAttribute('allow');
     // 例の URL から読んだ文書を、origin を持たせずに srcdoc で描く
     await waitFor(async () => {
       await expect(frame).toHaveAttribute('srcdoc', demoDocument);
@@ -98,6 +106,16 @@ export const ReloadsOnReplay = meta.story({
     await expect(frameOf(canvasElement)).toHaveAttribute(
       'srcdoc',
       demoDocument,
+    );
+  },
+});
+
+export const AllowsDeclaredPermissions = meta.story({
+  args: { allow: 'clipboard-read clipboard-write screen-wake-lock' },
+  play: async ({ canvasElement }) => {
+    await expect(frameOf(canvasElement)).toHaveAttribute(
+      'allow',
+      'clipboard-read; clipboard-write; screen-wake-lock *',
     );
   },
 });

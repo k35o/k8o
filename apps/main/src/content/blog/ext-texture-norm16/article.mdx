@@ -19,7 +19,139 @@ featureIds:
 
 一方で、もっと細かく値を持つデータもあります。たとえば標高データは、1画素を16bit、つまり65536段階で持つことがよくあります。値の範囲が広いうえに、その中のわずかな差に意味があるからです。0〜3776m（富士山の高さ）の範囲を256段階に分けると、1段階は約15mになり、数mの堤防や段差は記録できません。65536段階なら1段階は約6cmです。こうした16bitのデータを、細かさを保ったままWebGLで描くときにこの拡張を使います。
 
-<PlaygroundEmbed demo="同じ16bitの高さデータを3つの形式で比べる" headingLevel="h4" sectionId="ext-texture-norm16" />
+```html demo="compare"
+<figure>
+  <canvas id="r8" width="256" height="256"></canvas>
+  <figcaption>R8（8bitの正規化形式）</figcaption>
+</figure>
+<figure>
+  <canvas id="r16f" width="256" height="256"></canvas>
+  <figcaption>R16F（16bitの浮動小数点数）</figcaption>
+</figure>
+<figure>
+  <canvas id="r16" width="256" height="256"></canvas>
+  <figcaption>R16_EXT（16bitの正規化形式）</figcaption>
+</figure>
+```
+
+```css demo="compare"
+body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+figure {
+  margin: 0;
+}
+
+canvas {
+  width: 100%;
+}
+```
+
+```js demo="compare"
+const SIZE = 256;
+
+// 高さ32768の平地に、小さな丘とくぼみがある16bitの高さデータ
+const heights = new Uint16Array(SIZE * SIZE);
+for (let y = 0; y < SIZE; y++) {
+  for (let x = 0; x < SIZE; x++) {
+    const u = x / (SIZE - 1);
+    const v = y / (SIZE - 1);
+    const hill = Math.exp(-((u - 0.35) ** 2 + (v - 0.4) ** 2) / 0.04);
+    const hollow = Math.exp(-((u - 0.7) ** 2 + (v - 0.65) ** 2) / 0.03);
+    heights[y * SIZE + x] = Math.round(32768 + 150 * (hill - 0.7 * hollow));
+  }
+}
+
+const vertexShaderSource = `#version 300 es
+in vec2 a_position;
+out vec2 v_uv;
+
+void main() {
+  v_uv = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+
+const fragmentShaderSource = `#version 300 es
+precision highp float;
+
+uniform highp sampler2D u_heights;
+in vec2 v_uv;
+out vec4 outColor;
+
+void main() {
+  float height = texture(u_heights, v_uv).r;
+  // くぼみの底の32664を黒、丘のてっぺんの32918を白にする
+  float low = 32664.0 / 65535.0;
+  float high = 32918.0 / 65535.0;
+  outColor = vec4(vec3((height - low) / (high - low)), 1.0);
+}`;
+
+// canvas の全面に、これから入れるテクスチャを描く用意をする
+const setup = (canvas) => {
+  const gl = canvas.getContext('webgl2');
+
+  const program = gl.createProgram();
+  for (const [type, source] of [
+    [gl.VERTEX_SHADER, vertexShaderSource],
+    [gl.FRAGMENT_SHADER, fragmentShaderSource],
+  ]) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    gl.attachShader(program, shader);
+  }
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+    gl.STATIC_DRAW,
+  );
+  const position = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(position);
+  gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+  // Firefox は R16_EXT を LINEAR で読むと0を返す
+  // 同じ大きさの canvas に描くので、NEAREST でも見た目は変わらない
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  return gl;
+};
+
+// テクスチャにデータを入れて描く
+const draw = (gl, format, type, data) => {
+  gl.texImage2D(gl.TEXTURE_2D, 0, format, SIZE, SIZE, 0, gl.RED, type, data);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+};
+
+// R8: 0〜255に丸めて、Uint8Array で渡す
+{
+  const gl = setup(document.querySelector('#r8'));
+  const data = Uint8Array.from(heights, (h) => Math.round((h / 65535) * 255));
+  draw(gl, gl.R8, gl.UNSIGNED_BYTE, data);
+}
+
+// R16F: 0.0〜1.0の小数にして、Float32Array で渡す
+{
+  const gl = setup(document.querySelector('#r16f'));
+  const data = Float32Array.from(heights, (h) => h / 65535);
+  draw(gl, gl.R16F, gl.FLOAT, data);
+}
+
+// R16_EXT: Uint16Array のまま渡す
+{
+  const gl = setup(document.querySelector('#r16'));
+  const ext = gl.getExtension('EXT_texture_norm16');
+  // 拡張が無いブラウザでは描かない
+  if (ext) draw(gl, ext.R16_EXT, gl.UNSIGNED_SHORT, heights);
+}
+```
 
 上の例は、同じ16bitの高さデータを`R8`と`R16F`、`R16_EXT`の3つの形式のテクスチャに入れて描いたものです。`R8`はべた塗り、`R16F`は等高線のような段差になり、`R16_EXT`だけが滑らかな丘とくぼみになります。
 

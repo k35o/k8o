@@ -45,7 +45,33 @@ await navigator.clipboard.writeText('Hello, world!');
 
 ボタンから`writeText()`と`readText()`を呼ぶデモです。
 
-<PlaygroundEmbed demo="テキストのコピー・ペースト" headingLevel="h5" sectionId="async-clipboard" />
+```html demo="text" allow="clipboard-read clipboard-write"
+<label>
+  テキスト
+  <input id="text" type="text" />
+</label>
+<button id="copy" type="button">クリップボードにコピー</button>
+<button id="paste" type="button">クリップボードからペースト</button>
+```
+
+```js demo="text"
+const input = document.querySelector('#text');
+
+document.querySelector('#copy').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(input.value);
+});
+
+document.querySelector('#paste').addEventListener('click', async () => {
+  input.value += await navigator.clipboard.readText();
+});
+```
+
+```css demo="text"
+label {
+  display: block;
+  margin-block-end: 0.5rem;
+}
+```
 
 入力欄に文字を入れてコピーのボタンを押すと、その文字がクリップボードに入ります。ペーストのボタンを押すと、クリップボードのテキストが入力欄の末尾に足されます。
 
@@ -115,7 +141,116 @@ ClipboardItem.supports('application/json'); // false
 
 選んだ画像をPNGでクリップボードにコピーし、クリップボードのPNG画像を貼り付けるデモです。
 
-<PlaygroundEmbed demo="画像のコピー・ペースト" headingLevel="h5" sectionId="async-clipboard" />
+```html demo="image" allow="clipboard-read clipboard-write"
+<div class="columns">
+  <div class="column">
+    <label>
+      画像を選択する
+      <select id="picker">
+        <option value="/demos/async-clipboard/mint.png">画像1</option>
+        <option value="/demos/async-clipboard/coral.png">画像2</option>
+      </select>
+    </label>
+    <!-- canvas から読み出せるよう、CORS で読む -->
+    <img
+      id="source"
+      src="/demos/async-clipboard/mint.png"
+      alt="コピーする画像"
+      width="100"
+      height="100"
+      crossorigin="anonymous"
+    />
+    <button id="copy" type="button">PNG画像をコピーする</button>
+  </div>
+  <div class="column">
+    <p>ペーストされた画像</p>
+    <img id="pasted" alt="ペーストされた画像" width="100" height="100" hidden />
+    <button id="paste" type="button">保存されたPNG画像を表示する</button>
+  </div>
+</div>
+<p><output id="status"></output></p>
+```
+
+```js demo="image"
+const source = document.querySelector('#source');
+const pasted = document.querySelector('#pasted');
+const status = document.querySelector('#status');
+
+document.querySelector('#picker').addEventListener('change', (event) => {
+  source.src = event.target.value;
+});
+
+const copyImage = async () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = source.naturalWidth;
+  canvas.height = source.naturalHeight;
+  canvas.getContext('2d').drawImage(source, 0, 0);
+  const blob = await new Promise((resolve, reject) => {
+    canvas.toBlob((created) => {
+      if (created === null) {
+        reject(new Error('Blobが取得できませんでした'));
+        return;
+      }
+      resolve(created);
+    });
+  });
+  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+};
+
+// クリップボードにPNG画像があれば表示して true を返す
+const pasteImage = async () => {
+  const items = await navigator.clipboard.read();
+  for (const item of items) {
+    if (!item.types.includes('image/png')) continue;
+    pasted.src = URL.createObjectURL(await item.getType('image/png'));
+    pasted.hidden = false;
+    return true;
+  }
+  return false;
+};
+
+document.querySelector('#copy').addEventListener('click', async () => {
+  try {
+    await copyImage();
+    status.textContent = 'クリップボードにPNG画像をコピーしました';
+  } catch {
+    status.textContent = 'クリップボードにPNG画像をコピーできませんでした';
+  }
+});
+
+document.querySelector('#paste').addEventListener('click', async () => {
+  try {
+    status.textContent = (await pasteImage())
+      ? 'クリップボードのPNG画像を貼り付けました'
+      : 'PNG画像が見つかりませんでした';
+  } catch {
+    status.textContent = 'クリップボードからPNG画像を読み取れませんでした';
+  }
+});
+```
+
+```css demo="image"
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.column p {
+  margin: 0;
+}
+
+img {
+  border-radius: 0.5rem;
+}
+```
 
 画像を選んでコピーのボタンを押すと、その画像がPNGとしてクリップボードに入ります。表示のボタンを押すと、クリップボードにあるPNG画像がペーストされた画像の欄に出ます。
 

@@ -19,7 +19,37 @@ featureIds:
 
 ## sans-serifとの見比べ
 
-<PlaygroundEmbed demo="font-family: mathプロパティ" headingLevel="h4" sectionId="font-family-math" />
+```css demo="compare"
+dd {
+  font-family: sans-serif;
+}
+
+body:has(#math:checked) dd {
+  font-family: math;
+}
+
+dd {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+}
+```
+
+```html demo="compare"
+<label>
+  <input id="math" type="checkbox" checked />
+  mathフォントを適用する
+</label>
+<dl>
+  <dt>ピタゴラスの定理（上付き文字）</dt>
+  <dd>x² + y² = z²</dd>
+  <dt>等差数列（上付き・下付き文字）</dt>
+  <dd>aₙ = a₁ + (n−1)d</dd>
+  <dt>数の集合（Blackboard bold）</dt>
+  <dd>ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ</dd>
+  <dt>積分記号</dt>
+  <dd>∫₀^∞ e⁻ˣ dx = 1</dd>
+</dl>
+```
 
 チェックを外して`sans-serif`にすると、1行の中で字ごとに別のフォントが使われ、字の形がそろわなくなります。`math`のままなら、ほとんどの字が1つの数式用フォントで描かれます。
 

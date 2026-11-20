@@ -54,19 +54,103 @@ featureIds:
 
 要素が増えたり減ったりすると、値は計算し直されます。リストの先頭に要素を差し込むと、後ろの要素の`sibling-index()`はすべて1つずつ増えます。
 
-<PlaygroundEmbed demo="何が番号を消費するか" headingLevel="h4" sectionId="sibling-count-index" />
+```html demo="counting"
+<label><input type="checkbox" id="reveal" /> 画面に出ない子要素も表示する</label>
+<div class="list">
+  <div>りんご</div>
+  <div>みかん</div>
+  <!-- コメント -->
+  <div class="none">ぶどう</div>
+  <div>もも</div>
+  テキストノード
+  <div>なし</div>
+</div>
+```
+
+```css demo="counting"
+.list > * {
+  counter-reset: index sibling-index();
+}
+
+.list > *::before {
+  content: counter(index) ': ';
+}
+
+.none {
+  display: none;
+}
+
+body:has(#reveal:checked) .list > * {
+  display: block;
+}
+
+.list > :is(style, script, .none) {
+  color: GrayText;
+}
+
+.list > style::after {
+  content: '<style>';
+}
+
+.list > script::after {
+  content: '<script>';
+}
+```
+
+```js demo="counting"
+// りんごの前に style を、なしの前に script を置く
+const list = document.querySelector('.list');
+list.prepend(document.createElement('style'));
+list.lastElementChild.before(document.createElement('script'));
+```
+
+結果の欄では、見えている項目の番号が2、3、5、7と飛びます。チェックを入れると、1の`<style>`、4の`display: none`の項目、6の`<script>`が現れて番号がつながります。番号の無い行はテキストノードで、番号を使いません。
 
 ## 順番に応じて遅延をずらす
 
 リストの項目を順に出すには、`animation-delay`を`sibling-index()`から計算します。
 
-```css
+```css demo="stagger"
 /* [!og] */
 li {
   animation: fade-in 320ms backwards;
   animation-delay: calc(sibling-index() * 90ms);
 }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
 ```
+
+```html demo="stagger"
+<label>項目数 <input type="range" id="count" min="2" max="8" value="5" /></label>
+<button type="button" id="replay">もう一度再生</button>
+<ol id="list"></ol>
+```
+
+```js demo="stagger"
+const count = document.querySelector('#count');
+const list = document.querySelector('#list');
+
+// 項目を作り直して、アニメーションを初めから動かす
+function render() {
+  const items = Array.from({ length: count.valueAsNumber }, () => {
+    const item = document.createElement('li');
+    item.textContent = '項目';
+    return item;
+  });
+  list.replaceChildren(...items);
+}
+
+count.addEventListener('input', render);
+document.querySelector('#replay').addEventListener('click', render);
+render();
+```
+
+結果の欄で項目数を変えると、項目が上から順に現れ直します。
 
 これまでは、テンプレートで番号を書き出していました。
 
@@ -77,12 +161,6 @@ li {
 ```
 
 `sibling-index()`を使えば、この`--i`は要りません。項目が増えたり減ったりしても、番号は並びから決まります。
-
-<PlaygroundEmbed
-  demo="sibling-index()で順番にフェードインさせる"
-  headingLevel="h4"
-  sectionId="sibling-count-index"
-/>
 
 ## 兄弟の数から幅を決める
 
@@ -106,11 +184,62 @@ li {
 
 子の数を使うなら、`calc()`は子に書きます。
 
-<PlaygroundEmbed
-  demo="sibling-count()とsibling-index()に追従するバー"
-  headingLevel="h4"
-  sectionId="sibling-count-index"
-/>
+```css demo="bars"
+.chart > * {
+  width: calc(100% / sibling-count());
+  height: calc(100% * sibling-index() / sibling-count());
+  counter-reset: index sibling-index();
+  box-sizing: border-box;
+  border: 1px solid Canvas;
+  background-color: steelblue;
+  color: white;
+  text-align: center;
+  transition:
+    width 0.3s,
+    height 0.3s;
+}
+
+.chart > *::before {
+  content: counter(index);
+}
+
+.chart {
+  display: flex;
+  align-items: end;
+  height: 10rem;
+  margin-top: 1rem;
+}
+```
+
+```html demo="bars"
+<button type="button" id="prepend">先頭に追加</button>
+<button type="button" id="append">末尾に追加</button>
+<button type="button" id="remove">先頭を削除</button>
+<div class="chart">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+```
+
+```js demo="bars"
+const chart = document.querySelector('.chart');
+
+document.querySelector('#prepend').addEventListener('click', () => {
+  chart.prepend(document.createElement('div'));
+});
+document.querySelector('#append').addEventListener('click', () => {
+  chart.append(document.createElement('div'));
+});
+document.querySelector('#remove').addEventListener('click', () => {
+  if (chart.children.length > 1) {
+    chart.firstElementChild.remove();
+  }
+});
+```
+
+結果の欄でバーを足したり消したりすると、幅が数で割り直されます。先頭に足すと、後ろのバーの番号が1つずつ増えて高くなります。
 
 ## カスタムプロパティ経由で子孫に渡す
 

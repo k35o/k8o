@@ -1,4 +1,4 @@
-// 記事の動く例（/blog/:slug/demos/:demo）の iframe と記事のあいだでやりとりする postMessage の形。
+// 記事の動く例の iframe と記事のあいだでやりとりする postMessage の形。
 // iframe は sandbox で origin を持たないので、送る相手は event.source で確かめる
 export const DEMO_MESSAGE = {
   ready: 'k8o-demo:ready',

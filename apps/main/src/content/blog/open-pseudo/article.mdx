@@ -74,20 +74,58 @@ select:open {
 }
 ```
 
-`<select>`や`<input>`のピッカーは要素に重なって開くので、要素に付けた枠線は見えにくくなります。下のデモでは、親に`:has(:open)`で背景色を付けて、開いていることが分かるようにしています。
+`<select>`や`<input>`のピッカーは要素に重なって開くので、要素に付けた枠線は見えにくくなります。下の例では、親に`:has(:open)`で背景色を付けて、開いていることが分かるようにしています。
 
-```css
+```css demo="open"
+:open {
+  outline: 2px solid tomato;
+  outline-offset: 4px;
+}
+
 /* ピッカーが開いているあいだ、親の背景に色を付ける */
 section:has(:open) {
-  background-color: var(--color-accent-subtle);
+  background-color: light-dark(lavender, darkslateblue);
+}
+
+section {
+  padding: 1rem;
 }
 ```
 
-<PlaygroundEmbed
-  demo=":openで開いている要素を一括スタイリング"
-  headingLevel="h4"
-  sectionId="open-pseudo"
-/>
+```html demo="open"
+<section>
+  <details>
+    <summary>details</summary>
+    <p>開いているあいだ、details:openが当たります。</p>
+  </details>
+</section>
+<section>
+  <button type="button" id="show">dialogを開く</button>
+  <dialog>
+    <p>このdialogにも:openが当たっています。</p>
+    <form method="dialog"><button>閉じる</button></form>
+  </dialog>
+</section>
+<section>
+  <label>
+    select
+    <select>
+      <option>選択肢1</option>
+      <option>選択肢2</option>
+      <option>選択肢3</option>
+    </select>
+  </label>
+</section>
+<section>
+  <label>input <input type="color" value="#3b82f6" /></label>
+</section>
+```
+
+```js demo="open"
+document.querySelector('#show').addEventListener('click', () => {
+  document.querySelector('dialog').showModal();
+});
+```
 
 ## おわりに
 

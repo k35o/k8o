@@ -21,9 +21,28 @@ featureIds:
 
 `CSS Custom Highlight API`では、ハイライトする範囲を`Range`で表し、範囲のまとまりを`Highlight`にして、`CSS.highlights`に名前を付けて登録します。登録した名前を`::highlight()`に渡すと、その範囲を装飾できます。`::selection`や`::target-text`のように、ブラウザが決めた範囲を装飾する擬似要素を、JavaScriptで決めた範囲にも使えるようにしたものです。
 
-<PlaygroundEmbed demo="基本的なハイライト" headingLevel="h4" sectionId="highlight" />
+```html demo="basic"
+<p id="text">知らざるを知らずとなす、これ知るなり</p>
+```
 
-デモでは、文の後半の6文字（これ知るなり）だけに背景色が付きます。ハイライトしても`<p>`の子はテキストノード1つのままで、要素は増えません。
+```css demo="basic"
+::highlight(quote) {
+  background-color: yellow;
+  color: black;
+}
+```
+
+```js demo="basic"
+const textNode = document.querySelector('#text').firstChild;
+
+const range = new Range();
+range.setStart(textNode, 12);
+range.setEnd(textNode, textNode.length);
+
+CSS.highlights.set('quote', new Highlight(range));
+```
+
+結果の欄では、文の後半の6文字（これ知るなり）だけに背景色が付きます。ハイライトしても`<p>`の子はテキストノード1つのままで、要素は増えません。
 
 ## 利用方法
 
@@ -122,7 +141,43 @@ highlight.clear(); // すべてのRangeを消す
 
 ハイライトが重なったときは、`highlight.priority = 1`のように設定した`priority`の値が大きいほうが上に描かれます。既定は0で、同じ値のときは`CSS.highlights`に後から登録したほうが優先されます。
 
-<PlaygroundEmbed demo="優先度ベースハイライト" headingLevel="h6" sectionId="highlight" />
+```html demo="priority"
+<p id="text">Imagination is more important than knowledge</p>
+```
+
+```css demo="priority"
+::highlight(blue) {
+  background-color: skyblue;
+  color: black;
+}
+
+::highlight(yellow) {
+  background-color: yellow;
+  color: black;
+}
+
+::highlight(red) {
+  background-color: tomato;
+  color: black;
+}
+```
+
+```js demo="priority"
+const textNode = document.querySelector('#text').firstChild;
+
+const createHighlight = (priority) => {
+  const range = new Range();
+  range.setStart(textNode, 0);
+  range.setEnd(textNode, 11);
+  const highlight = new Highlight(range);
+  highlight.priority = priority;
+  return highlight;
+};
+
+CSS.highlights.set('blue', createHighlight(1));
+CSS.highlights.set('yellow', createHighlight(1));
+CSS.highlights.set('red', createHighlight(0));
+```
 
 上の例では、`Imagination`に優先度1の青と黄、優先度0の赤の3つのハイライトを、この順に登録しています。優先度の大きい青と黄のうち、後から登録した黄が表示されます。
 
@@ -137,7 +192,28 @@ spellErrorHighlight.type = 'spelling-error';
 
 値は、特別な意味の無い既定の`highlight`と、スペルミスを表す`spelling-error`、文法の誤りを表す`grammar-error`の3つです。
 
-<PlaygroundEmbed demo="スペリング・文法エラーハイライト" headingLevel="h6" sectionId="highlight" />
+```html demo="spelling"
+<p id="text">食べれる</p>
+```
+
+```css demo="spelling"
+::highlight(spelling) {
+  background-color: tomato;
+  color: black;
+}
+```
+
+```js demo="spelling"
+const textNode = document.querySelector('#text').firstChild;
+
+const range = new Range();
+range.setStart(textNode, 2);
+range.setEnd(textNode, textNode.length);
+
+const highlight = new Highlight(range);
+highlight.type = 'spelling-error';
+CSS.highlights.set('spelling', highlight);
+```
 
 ### HighlightRegistry
 

@@ -12,7 +12,6 @@ export type SiteEntryIcon =
   | 'fluida'
   | 'blog'
   | 'talks'
-  | 'playgrounds'
   | 'artifacts'
   | 'readings';
 
@@ -124,13 +123,6 @@ const entries: readonly SiteEntry[] = [
     description: '過去の登壇テーマや資料へのリンクをまとめています。',
     kind: 'reading',
     icon: 'talks',
-  },
-  {
-    title: 'Playgrounds',
-    link: '/playgrounds',
-    description: 'ブログ記事や興味のある技術の試作品を集めています。',
-    kind: 'reading',
-    icon: 'playgrounds',
   },
   {
     title: 'Artifacts',

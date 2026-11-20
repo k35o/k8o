@@ -154,3 +154,40 @@ describe.each([
     });
   });
 });
+
+describe('groupAdjacentCodeBlocks（例に渡す権限）', () => {
+  const allowing = (label: string, allow?: string): Element => {
+    const block = codeBlock(label, 'copy');
+    if (allow !== undefined) block.properties['data-demo-allow'] = allow;
+    return block;
+  };
+
+  describe('正常系', () => {
+    it('例のブロックに書かれた権限を、重ねずに合わせて code-demo に渡す', () => {
+      const tree = rootOf([
+        allowing('html'),
+        allowing('css', 'clipboard-write'),
+        allowing('js', 'clipboard-read clipboard-write'),
+      ]);
+
+      groupAdjacentCodeBlocks(tree);
+
+      expect((tree.children[0] as Element).properties).toStrictEqual({
+        name: 'copy',
+        allow: 'clipboard-write clipboard-read',
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('権限を書かない例の code-demo は allow を持たない', () => {
+      const tree = rootOf([allowing('html'), allowing('js')]);
+
+      groupAdjacentCodeBlocks(tree);
+
+      expect((tree.children[0] as Element).properties).toStrictEqual({
+        name: 'copy',
+      });
+    });
+  });
+});

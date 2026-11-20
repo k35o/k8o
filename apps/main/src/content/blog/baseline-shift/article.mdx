@@ -60,7 +60,60 @@ SVGの`<text>`の中の`<tspan>`に`baseline-shift`を当てると、その部�
 
 CSSで書けば、`<tspan>`ごとに属性を書かずにクラスでまとめて指定できます。属性とCSSの両方があるときは、CSSが優先されます。
 
-<PlaygroundEmbed demo="baseline-shift値の比較" headingLevel="h4" sectionId="baseline-shift" />
+```html demo="shift"
+<label>
+  baseline-shift
+  <select id="value">
+    <option value="0">0（既定）</option>
+    <option value="sub">sub</option>
+    <option value="super" selected>super</option>
+    <option value="0.3em">0.3em</option>
+    <option value="-0.3em">-0.3em</option>
+  </select>
+</label>
+<svg viewBox="0 0 360 160" width="360" height="160">
+  <line x1="0" x2="360" y1="40" y2="40" />
+  <text x="0" y="40">水の化学式は H<tspan>2</tspan>O です。</text>
+  <line x1="0" x2="360" y1="90" y2="90" />
+  <text x="0" y="90">面積は 10 m<tspan>2</tspan> です。</text>
+  <line x1="0" x2="360" y1="140" y2="140" />
+  <text x="0" y="140">注釈付きの語<tspan>※1</tspan>を本文に。</text>
+</svg>
+```
+
+```css demo="shift"
+tspan {
+  baseline-shift: var(--shift, super);
+  font-size: 0.8em;
+  font-weight: bold;
+  fill: light-dark(crimson, salmon);
+}
+
+text {
+  font-size: 28px;
+  fill: CanvasText;
+}
+
+/* 親の text のベースライン */
+line {
+  stroke: GrayText;
+  stroke-dasharray: 3;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+}
+```
+
+```js demo="shift"
+const select = document.querySelector('#value');
+const svg = document.querySelector('svg');
+
+select.addEventListener('change', () => {
+  svg.style.setProperty('--shift', select.value);
+});
+```
 
 セレクトで値を切り替えると、赤い数字が灰色の破線（親の`<text>`のベースライン）から上下に動きます。`sub`と`super`は、開いたブラウザによってずれる量が変わります。
 

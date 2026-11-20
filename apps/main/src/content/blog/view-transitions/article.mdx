@@ -19,26 +19,25 @@ View Transition API（View Transitions API）は、DOMを書き換える前の�
 
 1つの要素の色や大きさの変化は、CSSの`transition`で動かせます。並び替えで要素の位置が変わったり、要素を足したり消したりする変化は、`transition`では動かせません。View Transition APIなら、こうした変化もアニメーションにできます。
 
-```html
+```html demo="reverse"
 <button id="reverse">並びを逆にする</button>
 <ul id="list">
   <li style="view-transition-name: a">A</li>
   <li style="view-transition-name: b">B</li>
   <li style="view-transition-name: c">C</li>
 </ul>
-<script>
-  document.getElementById('reverse').addEventListener('click', () => {
-    document.startViewTransition(() => {
-      const list = document.getElementById('list');
-      list.append(...[...list.children].reverse());
-    });
-  });
-</script>
 ```
 
-<PlaygroundEmbed demo="リストの並びを逆にする" headingLevel="h4" sectionId="view-transitions" />
+```js demo="reverse"
+document.getElementById('reverse').addEventListener('click', () => {
+  document.startViewTransition(() => {
+    const list = document.getElementById('list');
+    list.append(...[...list.children].reverse());
+  });
+});
+```
 
-ボタンを押すと、AとCが互いの位置へ0.25秒かけて滑るように動きます。以下では、View Transition APIで動くアニメーションを遷移アニメーションと呼びます。
+結果の欄でボタンを押すと、AとCが互いの位置へ0.25秒かけて滑るように動きます。以下では、View Transition APIで動くアニメーションを遷移アニメーションと呼びます。
 
 ## startViewTransition
 遷移アニメーションは、`document.startViewTransition()`にDOMを書き換える関数を渡して始めます。
@@ -146,9 +145,77 @@ li {
 - `::view-transition-image-pair()`：前と後の画像を重ねる入れ物
 - `::view-transition-old()`と`::view-transition-new()`：前の画面と後の画面の画像。既定では、前の画像が消えながら後の画像が現れる
 
-<PlaygroundEmbed demo="擬似要素を1つずつ見る" headingLevel="h5" sectionId="view-transitions" />
+```html demo="pseudo"
+<label>
+  <input id="group" type="checkbox" />
+  ::view-transition-group() に点線の枠を付ける
+</label>
+<label>
+  <input id="old" type="checkbox" />
+  ::view-transition-old() を隠す
+</label>
+<label>
+  <input id="new" type="checkbox" />
+  ::view-transition-new() を隠す
+</label>
+<button id="resize">大きさを変える</button>
+<div class="stage">
+  <div id="box"></div>
+</div>
+```
 
-デモでは、遷移を1秒にしています。`::view-transition-group()`に枠を付けると、枠が小さい箱の位置と大きさから大きい箱の位置と大きさへ動きます。
+```css demo="pseudo"
+#box {
+  view-transition-name: box;
+  width: 3rem;
+  height: 3rem;
+  background-color: steelblue;
+}
+
+#box.large {
+  width: 6rem;
+  height: 6rem;
+  margin-inline-start: auto;
+  background-color: seagreen;
+}
+
+::view-transition-group(box) {
+  animation-duration: 1s;
+}
+
+:root:has(#group:checked)::view-transition-group(box) {
+  outline: 2px dashed CanvasText;
+}
+
+:root:has(#old:checked)::view-transition-old(box),
+:root:has(#new:checked)::view-transition-new(box) {
+  animation: none;
+  opacity: 0;
+}
+
+label {
+  display: block;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  height: 6rem;
+  margin-block-start: 1rem;
+}
+```
+
+```js demo="pseudo"
+const box = document.getElementById('box');
+
+document.getElementById('resize').addEventListener('click', () => {
+  document.startViewTransition(() => {
+    box.classList.toggle('large');
+  });
+});
+```
+
+結果の欄の例では、遷移を1秒にしています。`::view-transition-group()`に枠を付けると、枠が小さい箱の位置と大きさから大きい箱の位置と大きさへ動きます。
 
 `::view-transition-new()`を隠すと、前の画像だけが、枠に合わせて大きくなりながら消えていきます。反対に`::view-transition-old()`を隠すと、後の画像だけが、透明に近い状態から現れます。
 

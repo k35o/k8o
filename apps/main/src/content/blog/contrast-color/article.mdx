@@ -30,16 +30,56 @@ featureIds:
 
 背景色をカスタムプロパティに入れておくと、背景色を変えるだけで文字色も追従します。
 
-```css
+```css demo="background"
 /* [!og] */
 .button {
   --button-bg: #2563eb;
   background-color: var(--button-bg);
   color: contrast-color(var(--button-bg));
 }
+
+.button {
+  padding: 1.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  margin-block-end: 0.5rem;
+}
 ```
 
-<PlaygroundEmbed demo="contrast-color()のデモ" headingLevel="h4" sectionId="contrast-color" />
+```html demo="background"
+<label>
+  背景色
+  <input id="picker" type="color" value="#2563eb" />
+</label>
+<label>
+  HEX
+  <input id="hex" type="text" value="#2563eb" />
+</label>
+<button class="button" type="button">文字色は contrast-color() が決める</button>
+```
+
+```js demo="background"
+const button = document.querySelector('.button');
+const picker = document.querySelector('#picker');
+const hex = document.querySelector('#hex');
+
+picker.addEventListener('input', () => {
+  hex.value = picker.value;
+  button.style.setProperty('--button-bg', picker.value);
+});
+hex.addEventListener('input', () => {
+  // カラーピッカーが受け取れる6桁のHEXだけを写す
+  if (!/^#[0-9a-f]{6}$/i.test(hex.value)) return;
+  picker.value = hex.value;
+  button.style.setProperty('--button-bg', hex.value);
+});
+```
 
 カラーピッカーかHEXの欄で背景色を変えると、文字色が白と黒で切り替わります。`#2563eb`では白、少し明るい`#2277d3`では黒になります。
 

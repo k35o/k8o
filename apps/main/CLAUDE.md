@@ -1,6 +1,6 @@
 # apps/main CLAUDE.md
 
-k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発者向けツール群、Playground を、k8ordo（`@k8ordo/framework` の `mode: 'static'`）で静的に書き出す。Vercel には `.github/workflows/vercel-prebuilt.yml` が GitHub Actions でビルドした成果物を出す。k8ordo の使い方は `node_modules/@k8ordo/framework/docs/` を読む。
+k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発者向けツール群を、k8ordo（`@k8ordo/framework` の `mode: 'static'`）で静的に書き出す。Vercel には `.github/workflows/vercel-prebuilt.yml` が GitHub Actions でビルドした成果物を出す。k8ordo の使い方は `node_modules/@k8ordo/framework/docs/` を読む。
 
 ## 置き場（src/）
 
@@ -15,11 +15,9 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
   - MDX は `@/` を import しない（記事は `features/blog/application/article-files.test.ts`、デッキは `features/talks/application/deck-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい。`content/` の TS・TSX も同じものを import しない（ルートの `vite.config.ts` の lint が止める）
   - 記事の画像は AVIF にして `_images/` に置き、`Image`・`FloatImage` に width と height を書く。width と height が画像の縦横比と合うことは `article-files.test.ts` が確かめる。`Image`・`FloatImage` は、`_images/` の版（`<名前>.<幅>w.avif`）を glob で拾い、width より狭い版と元の画像（width の幅として）を srcset に挙げるので、記事の MDX には版を書かない
   - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
-- **playgrounds/** - Playground のデモ（`playgrounds/<id>/`）と、それを glob で集めたセクションの一覧 `sections.ts`、枠の `playground.tsx`。デモの id はディレクトリの名前で、`<id>/index.ts` が同じ id のセクションを export する
-  - `@/` を import しない（ルートの `vite.config.ts` の lint が止める）。リンクは素の `a`、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `public/playgrounds/` に置き、URL で読む。サイトの `public` に既にある画像（`/icon.png`）は写さずにその URL を読む
 - **scripts/**（パッケージの直下）- `pnpm run -F main <名前>` で流す道具。`generate:browser-min-versions`・`generate:link-card-metadata`・`optimize:image`・`upload:talk-deck`
 
-記事のページは記事の MDX を alias の `@content`（`src/content`）から import し、markdown・frontmatter・目次のように MDX を文字列で読むところは `shared/site/content-dir.ts` の根から読む。デモは alias の `@playgrounds`（`src/playgrounds`）から読む。
+記事のページは記事の MDX を alias の `@content`（`src/content`）から import し、markdown・frontmatter・目次のように MDX を文字列で読むところは `shared/site/content-dir.ts` の根から読む。
 
 ## 殻とページの head
 
@@ -33,7 +31,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 - page・not-found・route.ts はリクエストが届いたときに読まれ、それが静的に読むクライアントの部品と CSS（サーバーの部品の CSS Modules を含む）は、そのページだけが読む。layout・error が静的に読むものは、どのページも読む（区画の layout のものも、トップと 404 が読む）。殻にはどのページにも要るものだけを置く。区画の見出しと説明と幅のように、その区画のページだけが要る枠も layout.tsx に置かず、部品（`components/tags/tags-frame`・`components/talks/deck-frame`）にしてページが描く
 - クライアントの部品が静的に読むモジュールを、ほかのページか殻のクライアントの部品も読むと、そのモジュールはページのチャンクに入らず、分け合うファイルに入る。@k8ordo/ui のアイコン（`@k8ordo/ui/icons`）は 1 つずつ別のモジュールで、ロゴ類は `components/site/brand-icons` に 1 つずつ置く
 - page・not-found が import する CSS と副作用は、そのページを読んでから効き、読んだあとはそのタブ（ビルドと dev ではそのプロセス）に残ってほかのページにも効く。ほかのページも当てにするもの（`globals.css`・フォント・`@/i18n`）はルートの layout で import する。そのページだけが使う CSS（mdx-base が読む数式とコードハイライトの CSS）はページの側に置く。置けるのは、ほかのページの見た目を変えないものに限る（数式とコードハイライトの CSS が見た目を決めるのは、`math` の要素と、`.math-scroll`・`.shiki`・`.code-annotate-*` などのクラスの要素だけ）
-- head の CSS の並びは k8ordo の docs の routing.md の「How a page is sent」のとおり（サーバーの部品の CSS が前、クライアントの部品の CSS が後）。framework が並びのために head に書く中身の無い `<style>` を、CSP は `style-src` の `'unsafe-inline'` で通す。src の CSS Modules は、記事とデモのものも含めて `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS と同じ層なので、同じ詳細度の規則の勝ち負けはその並びで決まる。同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように外から class を受ける部品）は、両方で同じプロパティを書かない
+- head の CSS の並びは k8ordo の docs の routing.md の「How a page is sent」のとおり（サーバーの部品の CSS が前、クライアントの部品の CSS が後）。framework が並びのために head に書く中身の無い `<style>` を、CSP は `style-src` の `'unsafe-inline'` で通す。src の CSS Modules は、記事のものも含めて `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS と同じ層なので、同じ詳細度の規則の勝ち負けはその並びで決まる。同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように外から class を受ける部品）は、両方で同じプロパティを書かない
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`・`PdfDeckArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
 - ヘッダーのお問い合わせ（`components/site/contact-to-me`）は、`HeaderActions` が Suspense で包まずに描くので、HTML のヘッダーにボタンと閉じた dialog が出る。JS なしでもボタンは出て、押しても dialog は開かない（テーマのボタンと同じ）
@@ -42,32 +40,28 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 ## 記事の MDX
 
 - MDX は `vite.config.ts` の `@mdx-js/rollup`（`enforce: 'pre'`）が JSX にする。remark・rehype は `@repo/mdx-preset` の preset
-- 記事のページ（`routes/blog/[slug]/page.tsx`）は、`components/blog/blog-article` が `import.meta.glob` で集めた MDX を slug ごとに遅れて読み、`components/site/mdx-base` の `MdxContent` で描く。`MdxContent` は mdx-base の部品（見出し・コードブロックなど）に、渡された部品（記事は `components/blog/blog-mdx-components` の `blogMdxComponents(slug)`。BrowserSupportStatus・PlaygroundEmbed・Playground・LinkCard・Image・FloatImage・Alert と、動く例の code-demo）を重ねる
+- 記事のページ（`routes/blog/[slug]/page.tsx`）は、`components/blog/blog-article` が `import.meta.glob` で集めた MDX を slug ごとに遅れて読み、`components/site/mdx-base` の `MdxContent` で描く。`MdxContent` は mdx-base の部品（見出し・コードブロックなど）に、渡された部品（記事は `components/blog/blog-mdx-components` の `blogMdxComponents(slug)`。BrowserSupportStatus・LinkCard・Image・FloatImage・Alert と、動く例の code-demo）を重ねる
 - plugin-rsc が import した CSS を載せる包みを付けるのは、CSS を静的に import する `.tsx` などのモジュールが export する、大文字で始まる関数の部品だけ。包んだ部品が、自分の import の木（build ではそれが入るチャンク）の CSS を載せる。だから、MDX を描く部品と、それが読む CSS（mdx-base の CSS Modules、コードハイライトの `@repo/code-highlight/styles.css`、数式の `@repo/mdx-preset/math.css`）は mdx-base に置く。部品の表だけを export して呼ぶ側で描くと、dev のページにその CSS が載らない
 - `.mdx` が import した CSS（記事の CSS Modules）は、framework がそのファイルを描くページに載せる。glob にクエリは要らない
 - ページの切り替えでは、移る先が `<ViewTransition>`（コードのタブ）を含んでいても、文書の view transition は始まらない。始まるのは、ページの中でタブを切り替えたとき
 
 ## 記事の動く例
 
-- コードブロックのメタの `demo="<名前>"`（`@repo/code-highlight/demo`）が、隣り合う同じ名前の html・css・js・tsx のブロックを1つの例にする。記事では `@repo/code-highlight` がブロックを `code-demo` の要素で包み、`blogMdxComponents(slug)` が `components/blog/code-demo` の部品で描く。例の HTML は `routes/blog/[slug]/demos/[demo]/route.ts` が、記事の MDX の同じブロックから `features/blog/application/demos.ts` で読んで組み立てるので、見せるコードと動くコードは1つの書き方から出る
+- コードブロックのメタの `demo="<名前>"`（`@repo/code-highlight/demo`）が、隣り合う同じ名前の html・css・js・tsx のブロックを1つの例にする。記事では `@repo/code-highlight` がブロックを `code-demo` の要素で包み、`blogMdxComponents(slug)` が `components/blog/code-demo` の部品で描く。例の文書は `routes/blog/[slug]/demos/[demo]/document.txt/route.ts` が、記事の MDX の同じブロックから `features/blog/application/demos.ts` で読んで組み立てるので、見せるコードと動くコードは1つの書き方から出る
 - 例の URL は、`routes/blog/[slug]/demos/[demo]/paths.ts` が記事ごとに例の名前から作る。例を使う記事が1本も無いと、値の無い route としてビルドが止まる。名前の書き誤りと離れたブロックは `readDemos` が投げ、`article-files.test.ts` が落とす
-- 記事は、結果の欄が画面に近づくと例の URL を fetch し、文書を `sandbox="allow-scripts"` の iframe の `srcdoc` に入れる（`code-demo-view.tsx`）。例は origin を持たず、記事の DOM・localStorage・cookie に触れない。iframe に URL を読ませないのは、allow-same-origin の無い sandbox の iframe のリクエストを止める閲覧環境（Claude Desktop のブラウザの欄）でも描くため。例は記事の JS が動いてから出て、JS が無いと出ない。やり直すときは iframe を作り直し、読んだ文書を入れ直す
-- 例の URL は、`framework()` の頭の CSP に代えて `DEMO_CONTENT_SECURITY_POLICY`（`site/security-headers.ts`）で返す。Vercel は `vercel-routes.ts` の規則が、`vite dev` は route.ts の応答の頭が書き換える（ビルドは応答をファイルにして頭を捨てる）。srcdoc の文書はこの頭を通らないので、例の文書は頭の初めに同じ制限の `<meta>`（`DEMO_META_CONTENT_SECURITY_POLICY`）を持つ
+- 記事は、結果の欄が画面に近づくと例の URL を fetch し、文書を `sandbox="allow-scripts allow-forms"` の iframe の `srcdoc` に入れる（`code-demo-view.tsx`）。例は origin を持たず、記事の DOM・localStorage・cookie に触れない。`allow-forms` は `<form method="dialog">` と submit のイベントのためで（Chrome と Firefox は無いと動かさない）、送信は例の文書の `form-action 'none'` が止める。sandbox の値は story（`code-demo-view.stories.tsx`）が固定する。iframe に URL を読ませないのは、allow-same-origin の無い sandbox の iframe のリクエストを止める閲覧環境（Claude Desktop のブラウザの欄）でも描くため。例は記事の JS が動いてから出て、JS が無いと出ない。やり直すときは iframe を作り直し、読んだ文書を入れ直す
+- 例の URL（`/blog/:slug/demos/:demo/document.txt`）は文書を `text/plain` で返す。HTML として配ると、URL を直に開いたときに sandbox の外（サイトの origin）で動くので、拡張子でも応答の型でも HTML にならない形にする。srcdoc の文書は応答の頭を通らないので、例の文書は頭の初めに制限の `<meta>`（`site/security-headers.ts` の `DEMO_META_CONTENT_SECURITY_POLICY`）を持つ
+- 例が読めるのは、サイトの画像・音源・フォントだけ（`img-src`・`media-src`・`font-src` にサイトの origin。`connect-src` は閉じたまま）。例の文書は origin を持たず `'self'` は Firefox で当たらないので、文書は origin の置き場（`shared/demo/demo-origin.ts`）で書き出し、記事が srcdoc に入れるときに自分の origin に置き換える。例だけが使う画像と音源は `public/demos/<slug>/` に置き、例のコードには `/demos/<slug>/<名前>` と書く（srcdoc の相対の URL は記事の URL から解かれる）。`/demos/` の応答には `Access-Control-Allow-Origin: *` を付ける（`site/demo-assets.ts`。Vercel は `vercel-routes.ts` の規則、dev と preview は `vite.config.ts` の plugin）。例から見るとサイトのファイルは別の origin で、canvas に描いて読み出す例は `<img crossorigin="anonymous">` で読む。フォントはいつも CORS で読まれるので、例の `@font-face` が読めるのも `/demos/` のファイルだけ
+- ブラウザの権限は、コードブロックのメタの `allow` に書いた例にだけ渡す（`demo="copy" allow="clipboard-read clipboard-write"`。どのブロックに書いてもよい）。書けるのは `clipboard-read`・`clipboard-write`・`screen-wake-lock` で、ほかは `parseDemoAllow` が投げる。記事の側の iframe の `allow` 属性になり（`shared/demo/demo-allow.ts`）、例のコードからは増やせない。ブラウザの許可はサイトに対して残るので、どの例にも渡すことはしない
+- 例のコードは `innerHTML` を使わず、`textContent` と `createElement` で組む。`location` の query と hash は読まない
 - srcdoc の文書は記事の CSP（頭と `<meta>`）も引き継ぐ。記事の `<meta>` は inline の script をハッシュでだけ許すので、ビルドのときに `vite.config.ts` が全記事の例の文書を route.ts と同じ `buildDemoDocument` で組み立て、その inline の script のハッシュ（`site/inline-script-hashes.ts`）を `pagePolicy` で `<meta>` に足す。router はページを読み直さずに移り、最初に読んだページの `<meta>` が残るので、例の無いページにも同じハッシュを書く。dev の HTML は `<meta>` の CSP を持たないので、ハッシュの抜けは dev では分からず、本番ビルドで確かめる
 - srcdoc は Trusted Types の受け口なので、記事は文書を `shared/demo/demo-trusted-html.ts` の `k8o-demo` の policy で TrustedHTML にして渡す
 - tsx の例は、`vite.config.ts` の `blogDemoScripts`（`site/blog-demo-scripts.ts`）が、export default の部品を描く入口と本番版の React ごと 1 本の JS に束ね、`virtual:blog-demo-scripts` にする。例の iframe は origin を持たず、サイトの共有のファイルを module で読めないので、React も例ごとに文書の中に入れる。束ねた結果は `demoBundler` が tsx の中身ごとに覚え、ハッシュと route.ts の JS に同じ結果を使い、dev では記事を保存すると束ね直す。import は `react` と `react-dom` だけを許す。route は tsx の例を描くときにだけ `features/blog/application/demo-scripts.ts` を読む（テストと Storybook はこのプラグインを持たない）
 - 例の文書は、記事と postMessage で配色と高さをやりとりする（形は `shared/demo/demo-message.ts`、例の側の script は `demo-document.ts`）。Safari は iframe の `prefers-color-scheme` を記事の `color-scheme` に合わせないので、記事が手で選んだ配色を送る
 
-## Playground
+## 一覧（`/blog`）
 
-- デモのセクションは、`components/playgrounds/load-section.ts` が `import.meta.glob('@playgrounds/*/index.ts')` で id ごとに遅れて読む。`/playgrounds/:id` の page と OG の route.ts、記事の `PlaygroundEmbed` は、どれもこれで読む。新しいデモは `playgrounds/<id>/` を置くだけで、どの一覧にも書き足さない
-- デモは、サーバーの部品（`PlaygroundEmbed`・`SectionDemos`）が `@playgrounds/playground` の枠で包んで描く。`'use client'` のデモはクライアントの部品として、それ以外のデモと枠はサーバーの部品として、その CSS がそのページの HTML に載る
-- 記事の部品の表（`blogMdxComponents`）は記事のページが静的に読むので、表に置く `PlaygroundEmbed` と `Playground`（`LazyPlayground`）は、枠とデモを関数の中で読む。静的に読むと、デモの無い記事も枠の CSS を読む
-- `/blog/:slug`・`/playgrounds/:id`・`/playgrounds` の route と、それが静的に読む部品は、`@playgrounds/sections` を静的に読まない。記事と `/playgrounds/:id` で読むと、デモが id ごとのチャンクに分かれず、どのデモのページも全部のデモを読む。デモを描かない一覧（`PlaygroundsIndex`）で読むと、サーバーで描くデモの CSS を一覧も読むので、関数の中で読む。llms.txt と sitemap.xml の route.ts は HTML を書かないので、静的に読んでよい
-
-## 一覧（`/blog`・`/playgrounds`）
-
-- 検索の `q` は一覧ごとの `definePageState` の url に置き、打つたびに `update()`（既定の replace）で書く。入力は `q` をそのまま出し、絞り込みと群（年・カテゴリ）の組み立てだけを `useDeferredValue` で遅らせる
+- 検索の `q` は一覧の `definePageState` の url に置き、打つたびに `update()`（既定の replace）で書く。入力は `q` をそのまま出し、絞り込みと群（年）の組み立てだけを `useDeferredValue` で遅らせる
 - static mode では HTML は既定値（全件）で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す（`shared/browser/replay-typed-value.ts` を欄の `ref` に渡す）
 - 一覧のカードのリンクは `href()` で組んだ素の `<a>` にする。`components/site/content-card` の `ContentCard` は、呼ぶ側が `href()` で組んだパスを `href` で受ける
 
@@ -109,12 +103,11 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 
 - ビルドが DB を読んで書き出すので、talks / tags / blogs と記事の公開・非公開（マイグレーションでだけ変わる）が画面に出るのは、main のデプロイのとき。本番の workflow は、マイグレーションを流してから main をビルドして出す
 - 記事のページと記事の下の URL（`/blog/:slug`・`/blog/:slug/article.md`・`/blog/:slug/og.png`）は、`routes/blog/[slug]/paths.ts` が、フィードと llms.txt と同じ公開済みの記事の一覧1つ（`features/blog/interface/queries.ts` の `getBlogContents`）から作る。下書きと MDX の無い記事は挙がらず、404 になる。列挙した記事の route.ts が 200 を返さなければビルドが止まる
-- Playground のページと OG（`/playgrounds/:id`・`/playgrounds/:id/og.png`）は、`routes/playgrounds/[id]/paths.ts` が `src/playgrounds` の下のディレクトリの名前から作る。記事の `PlaygroundEmbed` が無いセクションやデモを名指すと、描画が投げてビルドが止まる
 - タグのページ（`/tags/:id`）は、`routes/tags/[id]/paths.ts` が DB の全タグの id（`@repo/api/build-data` の `getTags`）から作る。中身が 0 件のタグ（下書きか MDX の無い記事だけのタグ）のページも書き、noindex にして sitemap と `/tags` の一覧から外す。この 3 つは、タグの中身を `shared/site/tag-contents.ts` で、MDX のある公開済みの記事（`getBlogContents`）とトークから数える。id は route の `paramsSchema` で正の整数に読むので、ページも `href('/tags/:id', { id })` も数値を受ける。挙げていない id と数字でない値は、ビルドでも `vite dev` でも 404 になる
 - デッキのページと OG（`/talks/:slug`・`/talks/:slug/og.png`）は、`routes/talks/[slug]/paths.ts` が一覧と sitemap と同じ、`slug` を持ち中身（MDX か PDF のマニフェスト）のあるトークの一覧1つ（`features/talks/interface/queries.ts` の `getTalkDecks`）から作る。`slug` の無いトークと中身の無いトークのデッキは 404 になる（手順は `components/talks/README.md`）
 - PDF から作ったデッキの中身はコミットせず、`upload:talk-deck` が Vercel Blob の非公開ストアに置く。`vite.config.ts` の `k8o:pdf-deck-sync` が、ビルドと dev の初めに、`slug` を持ち MDX の無いトークの中身を `site/pdf-deck-sync.ts` でストアから `public/talks/<slug>/`（git は見ない）へ取り込み、挙がっていない slug のディレクトリを消す。取り込むのは `BLOB_READ_WRITE_TOKEN` のあるビルドと dev で、本番のビルドは、トークンが無いかストアに中身が無い PDF のデッキがあると止まる。トークンの無い preview と手元は、手元に無いデッキだけを k8o.me に公開されているファイルから写す（`publicSiteStore`）。`/talks/:slug` は値が 1 つも無いとビルドが止まるので、ストアを読めないビルドにも公開済みのデッキを持たせている。手元の `upload:talk-deck` が書いたデッキは置き換えない。まだ公開されていないデッキは写せず、そのトークはデッキもスライドへのリンクも出さない。`deck_published_at` が先の時刻のトークは、api が `slug` を返さないので、ビルドは取り込まずページも作らない。時刻を過ぎたあとは、`vercel-prebuilt.yml` の定期実行（`due-decks`）が本番の main を建て直して出す
 - ホームの Activity は、記事・登壇と、Artifacts の npm のパッケージのリリースを新しい順に混ぜる（`features/activity/interface/queries.ts` の `getActivity`）。リリースはビルドが npm のレジストリから読み、同じパッケージの同じ月（日本時間）の版を 1 行にまとめる。読めなかったパッケージは警告を出してリリースを出さず、ビルドは止めない。新しいリリースと、登壇前のトークの「予定」が画面で変わるのは、main のデプロイのとき
-- `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事の更新日とトークの登壇の日から決め、ビルドの時刻は使わない。Playground は `@playgrounds/sections` の並び（ディレクトリの名前の順）。route.ts があるので、framework は `sitemap.xml` を書かない
+- `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事の更新日とトークの登壇の日から決め、ビルドの時刻は使わない。route.ts があるので、framework は `sitemap.xml` を書かない
 - `paths.ts` はページと同じバンドルで走るので、alias と `@repo/*` をそのまま import でき、覚えた一覧（`memoizeInBuild`）をページと分け合う
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 
@@ -129,7 +122,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 
 ## テストと Storybook
 
-- Vitest の project は site・features・shared・components（部品の単体テスト）・playgrounds と storybook
+- Vitest の project は site・features・shared・components（部品の単体テスト）と storybook
 - Storybook は `@storybook/react-vite`（`pnpm -F main storybook`、port 6006）。Storybook MCP は `main-storybook-mcp`（props の確かめ方はルートの CLAUDE.md の「UI共通」）。Storybook と vitest の storybook の project は `.storybook/vite.config.ts` を読み、アプリの `vite.config.ts`（framework()・vercel()）は読まない
 - features を読むサーバーの部品（`BlogLayout`・`BrowserSupportStatus`）は、描く部分（`BlogLayoutContent`・`BrowserSupportStatusLive`）を別の部品にし、story は描く部分を描く。features は `node:fs` などを読むので、Storybook のブラウザでは読めない
 - テーマは toolbar か `parameters.theme` で決め、`ColorSchemeProvider` の `defaultPreference` に渡す。Story ごとに localStorage のテーマと `@k8ordo/state` の状態を消す
@@ -152,4 +145,4 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、開発�
 
 `.k8ordo/` の route の表と型は `vite build`・`vite dev`・`k8ordo generate` が書く（git に入れない）。`k8ordo generate` は DB も `paths.ts` も読まずに書くだけなので、`typegen` の script で流す（static の断りは見ないので、それはビルドで分かる）。check と type-check は先に `typegen` を流す。
 
-llms.txt が Playground のセクションを読むので、type-check はデモの TSX も通る。CSS Modules の型（記事とデモのものを含む）は、`typegen` の `better-css-modules generate` が `__generated__` に書き、`tsconfig.json` の `rootDirs` で読む。型が無いと styles のクラスが `string | undefined` になり、type-aware の lint が誤って落とすので、check の前にも `typegen` を流す。React と DOM の型の補いは `src/react.d.ts`・`src/dom.d.ts` に置く。
+CSS Modules の型（記事のものを含む）は、`typegen` の `better-css-modules generate` が `__generated__` に書き、`tsconfig.json` の `rootDirs` で読む。型が無いと styles のクラスが `string | undefined` になり、type-aware の lint が誤って落とすので、check の前にも `typegen` を流す。React と DOM の型の補いは `src/react.d.ts`・`src/dom.d.ts` に置く。

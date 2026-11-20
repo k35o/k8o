@@ -21,6 +21,7 @@ import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-scri
 import { blogDemoScripts, demoBundler } from './src/site/blog-demo-scripts.ts';
 import type { TsxDemo } from './src/site/blog-demo-scripts.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
+import { demoAssetsCors } from './src/site/demo-assets.ts';
 import { inlineScriptHashes } from './src/site/inline-script-hashes.ts';
 import {
   blobStore,
@@ -42,7 +43,6 @@ const deployTarget: DeployTarget =
 const alias = {
   '@': fileURLToPath(new URL('./src', import.meta.url)),
   '@content': fileURLToPath(new URL('./src/content', import.meta.url)),
-  '@playgrounds': fileURLToPath(new URL('./src/playgrounds', import.meta.url)),
 };
 
 // 設定のバンドルは workspace の @repo/* を外に出し、Node がそのまま読むと拡張子の無い import で落ちるので、
@@ -224,6 +224,7 @@ const config: UserConfigFnPromise = async ({ command, isPreview }) => ({
     }),
     betterCssModules(),
     blogDemoScripts(readTsxDemos, bundleTsxDemo),
+    demoAssetsCors,
   ],
   css: {
     transformer: 'lightningcss',

@@ -52,7 +52,70 @@ featureIds:
 
 スラッシュから後は省けません。`alpha(from red)`は、Safariでは受け付けられて元の色のままになりますが、ChromeとFirefoxでは無効な値として捨てられます。
 
-<PlaygroundEmbed demo="固定値と相対値の違いを見る" headingLevel="h4" sectionId="alpha-function" />
+```css demo="values"
+.samples {
+  --origin: oklch(55% 0.22 270 / 0.6);
+}
+
+.origin {
+  background-color: var(--origin);
+}
+
+.fixed {
+  background-color: alpha(from var(--origin) / var(--percent));
+}
+
+.relative {
+  background-color: alpha(from var(--origin) / calc(alpha * var(--ratio)));
+}
+
+/* 透明度が見えるように市松模様の上に重ねる */
+.checker {
+  background: repeating-conic-gradient(light-dark(#ddd, #444) 0 25%, Canvas 0 50%)
+    0 0 / 1rem 1rem;
+}
+
+.bar {
+  height: 3rem;
+}
+
+p {
+  margin-block: 0.75rem 0.25rem;
+}
+```
+
+```html demo="values"
+<label>
+  アルファ値
+  <input id="alpha" type="range" min="0" max="100" step="5" value="50" />
+</label>
+<div class="samples">
+  <p><code>var(--origin)</code></p>
+  <div class="checker"><div class="bar origin"></div></div>
+  <p><code id="fixed"></code></p>
+  <div class="checker"><div class="bar fixed"></div></div>
+  <p><code id="relative"></code></p>
+  <div class="checker"><div class="bar relative"></div></div>
+</div>
+```
+
+```js demo="values"
+const input = document.querySelector('#alpha');
+const samples = document.querySelector('.samples');
+const fixed = document.querySelector('#fixed');
+const relative = document.querySelector('#relative');
+
+const update = () => {
+  const percent = `${input.value}%`;
+  const ratio = Number(input.value) / 100;
+  samples.style.setProperty('--percent', percent);
+  samples.style.setProperty('--ratio', ratio);
+  fixed.textContent = `alpha(from var(--origin) / ${percent})`;
+  relative.textContent = `alpha(from var(--origin) / calc(alpha * ${ratio}))`;
+};
+input.addEventListener('input', update);
+update();
+```
 
 スライダーを動かすと、固定値の帯はスライダーの値の不透明度になり、相対値の帯は元の0.6にスライダーの値を掛けた不透明度になるので、常に固定値の帯より薄く見えます。
 
@@ -83,7 +146,7 @@ sRGBに書き換わっても、色が丸められるわけではありません�
 
 デザイントークンを1つ決めて、その派生色を`alpha()`で導く形にしておくと、元の色を差し替えたときに派生色が追従します。
 
-```css
+```css demo="tokens"
 :root {
   --brand: oklch(55% 0.22 270);
   --brand-subtle: alpha(from var(--brand) / 12%);
@@ -100,13 +163,53 @@ sRGBに書き換わっても、色が丸められるわけではありません�
   outline: 2px solid var(--brand);
   box-shadow: 0 0 0 4px var(--brand-glow);
 }
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-weight: bold;
+}
+
+.input {
+  /* Safariは、枠を書いていない入力欄にbox-shadowを描かない */
+  border: 1px solid GrayText;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+label {
+  display: block;
+  margin-block-end: 1rem;
+}
 ```
 
-`--brand`を変えると、`--brand-subtle`と`--brand-glow`も同じ色相のまま薄い色に変わります。
+```html demo="tokens"
+<label>
+  --brandの色相
+  <input id="hue" type="range" min="0" max="360" step="10" value="270" />
+  <output id="brand"></output>
+</label>
+<span class="badge">新着</span>
+<input class="input" type="text" aria-label="キーワード" />
+```
+
+```js demo="tokens"
+const hue = document.querySelector('#hue');
+const brand = document.querySelector('#brand');
+
+const update = () => {
+  const color = `oklch(55% 0.22 ${hue.value})`;
+  // 書き換えるのは --brand だけ
+  document.documentElement.style.setProperty('--brand', color);
+  brand.textContent = color;
+};
+hue.addEventListener('input', update);
+update();
+```
+
+結果の欄のスライダーで`--brand`の色相を変えると、`--brand-subtle`と`--brand-glow`も同じ色相のまま薄い色に変わります。光彩は、入力欄にフォーカスすると見えます。
 
 半透明の派生色は装飾に使い、フォーカスの輪郭のように認識に必要な部分には使わないほうが安全です。`oklch(55% 0.22 270)`を40%にすると白背景とのコントラストは1.8:1程度で、非テキストのコントラストの基準である3:1に届きません。上の例で輪郭を不透明な`--brand`にしているのはそのためです。
-
-<PlaygroundEmbed demo="トークンを差し替えて派生色を追従させる" headingLevel="h4" sectionId="alpha-function" />
 
 ## おわりに
 

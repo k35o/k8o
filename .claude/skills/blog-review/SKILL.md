@@ -52,7 +52,7 @@ Web機能やライブラリ、道具の機能を紹介する記事に当てる�
 ### 中身
 
 - **動かして分かったこと**: 1つ以上あるか。1つも無ければ要修正。書けるのは試した本人なので、何を試せば書けるかをレポートで提案する。確かめたブラウザやライブラリの版、確かめた環境を述べる一文があれば、消すよう推奨する（ブラウザで結果が分かれるときのブラウザの名前と、機能が入った版は残す）。
-- **デモのコメント**: Playgroundのデモ（`apps/main/src/playgrounds/<sectionId>/`）のコメントにある落とし穴や回避策が、本文にもあるか。無ければ推奨。
+- **例のコメント**: 動く例（`demo=` のコードブロック）のコメントにある落とし穴や回避策が、本文にもあるか。無ければ推奨。
 - **用途ごとのコード**: 冒頭や「おわりに」の節で挙げた用途ごとに、その用途のコードが本文にあるか。無ければ要修正。
 - **コードが動くか**: 本文のコードを動かして確かめる。JSはscratchpadに書き出してnodeで、ブラウザのAPIやDOMとCSSの挙動は`/agent-browser`で確かめる。動かないコードは要修正。
 - **「おわりに」との食い違い**: 「おわりに」の節が本文と食い違っていたら要修正。
@@ -93,7 +93,7 @@ const found = {};
 for (const line of text.split('---').slice(2).join('---').split('\n')) {
   if (line.startsWith('## ')) section += 1;
   if (!('コード' in found) && /^\s*```/.test(line)) found['コード'] = section;
-  if (!('デモ' in found) && (/<(PlaygroundEmbed|Playground)\b/.test(line) || /^\s*```\w+ demo=/.test(line))) found['デモ'] = section;
+  if (!('デモ' in found) && /^\s*```\w+ demo=/.test(line)) found['デモ'] = section;
 }
 console.log('最初のコード', found['コード'] ?? 'なし', '/ 最初のデモ', found['デモ'] ?? 'なし');
 EOF
@@ -113,7 +113,7 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 > 見出しの**中身**（具体性・オチにしない・二要素を詰め込まない）は `/writing-review`（整合性・流れ）で見る。ここは MDX 描画に絡む**階層**とリンク・画像・テーブル。
 
-- **見出し階層**: `# H1`は記事タイトルの1つだけ（非表示）。実セクションは`##`から。階層を飛ばさない（`##`の次に`####`を置かない）。同名見出しの重複に注意（アンカーID衝突）。`<Playground>`・`<PlaygroundEmbed>`の`headingLevel`が置いた節の一つ下の段か（`##`の中は`h4`、`###`の中は`h5`、`####`の中は`h6`、最初の`##`より前は`h3`）。抜けと取り違えは`components/site/mdx-base/article-outline.test.ts`が落とす。
+- **見出し階層**: `# H1`は記事タイトルの1つだけ（非表示）。実セクションは`##`から。階層を飛ばさない（`##`の次に`####`を置かない）。同名見出しの重複に注意（アンカーID衝突）。段の飛びは`components/site/mdx-base/article-outline.test.ts`が落とす。
 - **テーブルは使わない**（要修正）: markdownテーブル（`| … | … |`）は**横スクロールに弱く、特にモバイルや縦書き表示で崩れる**。本文では使わず、箇条書き・段落・定義（`用語：説明`）、または必要なら画像（`<Image>`）で代替する。機械検出は機械コマンド(4)。
 - **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。`<LinkCard>`を足したら`pnpm run -F main generate:link-card-metadata`を流したか（抜けは`features/blog/application/article-files.test.ts`が落とす）。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出るURL（`http://`やOGPを持たないページ）は`{}`のままでよい。`--refresh`は使わない。
 - **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。`_images/`の画像が`pnpm run -F main optimize:image`で変換したAVIFか。width と height の縦横比は`features/blog/application/article-files.test.ts`が確かめる。
@@ -165,5 +165,5 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 - [ ] 機械的補助コマンド（太字 / 言語なしフェンス / `[!og]` / テーブル / 文字数と最初のコードとデモの位置 / 英日スペース / 文体）を実行した
 - [ ] ブログ固有1: 機能を紹介する記事で、記事の決まりの3つ（見せ方と冒頭と中身）を見て、本文のコードを動かした
 - [ ] ブログ固有2〜4: `references/mdx-checks.md` を読み、コードハイライト（言語・`[!og]`較正・`[!hl]`/`[!callout:]`）、MDXコンポーネントのprops（importしない。MCP不在時は型定義/docsで確認）、frontmatter整合性（必須キー・`featureIds`⇔`BrowserSupportStatus`）を見た
-- [ ] ブログ固有5: 見出し階層（Playgroundの`headingLevel`含む）・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`と`article-outline.test.ts`が通る
+- [ ] ブログ固有5: 見出し階層・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`と`article-outline.test.ts`が通る
 - [ ] 文章面とブログ固有を統合し、重要度つきレポートを出力した（ファイルは変更していない）

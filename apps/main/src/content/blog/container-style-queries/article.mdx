@@ -110,11 +110,73 @@ Container style queriesは、`@container style(--theme: dark)`のように、祖
 
 `container-name`を付けずに`@container style(--theme: dark)`と書くと、スタイルを当てる要素の親を見ます。どの要素もクエリで見る対象になれるので、いちばん近い祖先である親が選ばれるからです。上の例では`article`の`--theme: light`が見えて、`.card`にはdark側が当たりません。テーマのように上から渡す値は、名前を付けて見る祖先を決めておくと、途中の上書きに左右されません。
 
-<PlaygroundEmbed
-  demo="名前を付けたクエリと付けないクエリの比較"
-  headingLevel="h4"
-  sectionId="container-style-queries"
-/>
+```css demo="named-unnamed"
+.theme {
+  container-name: theme;
+}
+
+.card {
+  padding: 0.5rem;
+  border: 1px solid gray;
+  background: white;
+  color: black;
+}
+
+@container theme style(--theme: dark) {
+  .named {
+    background: black;
+    color: white;
+  }
+}
+
+@container style(--theme: dark) {
+  .unnamed {
+    background: black;
+    color: white;
+  }
+}
+
+label {
+  display: block;
+}
+```
+
+```html demo="named-unnamed"
+<label>
+  親の--theme
+  <select id="parent">
+    <option>light</option>
+    <option selected>dark</option>
+  </select>
+</label>
+<label>
+  途中の要素の--theme
+  <select id="middle">
+    <option value="">上書きしない</option>
+    <option selected>light</option>
+    <option>dark</option>
+  </select>
+</label>
+<section class="theme" style="--theme: dark">
+  <article style="--theme: light">
+    <p class="card named">名前を付けたクエリ</p>
+    <p class="card unnamed">名前を付けないクエリ</p>
+  </article>
+</section>
+```
+
+```js demo="named-unnamed"
+const section = document.querySelector('.theme');
+const article = document.querySelector('article');
+
+document.querySelector('#parent').addEventListener('change', (event) => {
+  section.style.setProperty('--theme', event.target.value);
+});
+document.querySelector('#middle').addEventListener('change', (event) => {
+  // 空の文字列を渡すと、--theme の宣言が消える
+  article.style.setProperty('--theme', event.target.value);
+});
+```
 
 親をdark、途中の要素をlightにすると、名前を付けたクエリのカードは親のdarkで、名前を付けないクエリのカードは途中の要素のlightで描かれます。
 

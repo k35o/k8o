@@ -44,7 +44,63 @@ editor.ariaNotify('保存に失敗しました', { priority: 'high' });
 document.ariaNotify('下書きを保存しました');
 ```
 
-<PlaygroundEmbed demo="文字列を読み上げさせる" headingLevel="h4" sectionId="arianotify" />
+```html demo="notify"
+<label>
+  読み上げる文字列
+  <input id="announcement" type="text" value="3件のファイルをアップロードしました" />
+</label>
+<label>
+  priority
+  <select id="priority">
+    <option>normal</option>
+    <option>high</option>
+  </select>
+</label>
+<label>
+  ボタンの親要素のlang属性
+  <select id="lang">
+    <option>ja</option>
+    <option>en</option>
+  </select>
+</label>
+<div id="parent" lang="ja">
+  <button id="notify" type="button">ariaNotify()を呼ぶ</button>
+</div>
+<p>呼び出し履歴</p>
+<ol id="history"></ol>
+```
+
+```css demo="notify"
+label {
+  display: block;
+  margin-block-end: 0.5rem;
+}
+
+#history {
+  font-family: monospace;
+}
+```
+
+```js demo="notify"
+const announcement = document.querySelector('#announcement');
+const priority = document.querySelector('#priority');
+const lang = document.querySelector('#lang');
+const parent = document.querySelector('#parent');
+const button = document.querySelector('#notify');
+const history = document.querySelector('#history');
+
+lang.addEventListener('change', () => {
+  parent.lang = lang.value;
+});
+
+button.addEventListener('click', () => {
+  button.ariaNotify(announcement.value, { priority: priority.value });
+
+  const entry = document.createElement('li');
+  entry.textContent = `button.ariaNotify('${announcement.value}', { priority: '${priority.value}' }) lang="${parent.lang}"`;
+  history.prepend(entry);
+});
+```
 
 ボタンを押すと、入力した文字列をボタンの`ariaNotify()`に渡し、呼び出し履歴に渡した引数と親の`lang`属性が並びます。スクリーンリーダーを起動した状態で押すと、その文字列が読み上げられます。
 

@@ -53,7 +53,7 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 
 **apps/main / apps/ai の配置方針**:
 
-- main の `routes/` - k8ordo の route ファイル（`page.tsx`・`layout.tsx`・`route.ts` など）。部品は `components/<area>/`、記事とスライドは `content/`、デモは `playgrounds/`
+- main の `routes/` - k8ordo の route ファイル（`page.tsx`・`layout.tsx`・`route.ts` など）。部品は `components/<area>/`、記事とスライドは `content/`
 - ai の `app/` - App RouterのentryとUI。UIコンポーネントは `app/**/_components`
 - `features/` - 機能単位の非UIロジック。`interface` / `application` / `infrastructure` に分ける
 - `shared/` - アプリ内で横断利用する非UI共通処理

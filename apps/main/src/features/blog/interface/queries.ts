@@ -89,7 +89,7 @@ export const getBlogContent = async (slug: string): Promise<BlogDetail> => {
 export const findBlogMarkdown = async (slug: string): Promise<string | null> =>
   (await findBlogContent(slug)) === null ? null : getMarkdown(slug);
 
-// 記事の動く例の名前。/blog/:slug/demos/:demo の paths.ts が例の URL を作る
+// 記事の動く例の名前。/blog/:slug/demos/:demo の下の paths.ts が例の URL を作る
 export const getBlogDemoNames = async (slug: string): Promise<string[]> =>
   (await getBlogDemos(slug)).map(({ name }) => name);
 
@@ -104,7 +104,7 @@ const demoScriptOf = async (slug: string, demo: BlogDemo): Promise<string> => {
   return getBundledDemoScript(slug, demo.name);
 };
 
-// 記事の動く例の HTML。下書きの記事と、記事に無い名前の例は null
+// 記事の動く例の文書。下書きの記事と、記事に無い名前の例は null
 export const findBlogDemoDocument = async (
   slug: string,
   name: string,

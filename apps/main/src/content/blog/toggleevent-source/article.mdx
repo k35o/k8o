@@ -63,11 +63,64 @@ Aを押すと結果の欄に`open a`、もう一度Aを押すと`closed a`が出
 
 メンバー一覧の詳細ボタンを押すと、共通のポップオーバーが押されたメンバーの情報に切り替わって表示されます。
 
-<PlaygroundEmbed
-  demo="event.sourceで発火元のボタンを取得"
-  headingLevel="h4"
-  sectionId="toggleevent-source"
-/>
+```html demo="member-card"
+<ul>
+  <li>Alice <button data-member-id="alice">詳細</button></li>
+  <li>Bob <button data-member-id="bob">詳細</button></li>
+  <li>Carol <button data-member-id="carol">詳細</button></li>
+</ul>
+<pre id="state"></pre>
+
+<div id="member-card" popover>
+  <p id="detail"></p>
+  <button popovertarget="member-card" popovertargetaction="hide">閉じる</button>
+</div>
+```
+
+```css demo="member-card"
+/* 開いたポップオーバーがボタンに重ならないように、高さを取って下に寄せる */
+body {
+  min-height: 20rem;
+}
+
+#member-card {
+  margin-block-end: 1rem;
+}
+```
+
+```js demo="member-card"
+const members = {
+  alice: 'Alice（Frontend Engineer）',
+  bob: 'Bob（Designer）',
+  carol: 'Carol（Product Manager）',
+};
+const popover = document.getElementById('member-card');
+const detail = document.getElementById('detail');
+const state = document.getElementById('state');
+
+popover.addEventListener('toggle', (event) => {
+  const { source } = event;
+  const memberId = source?.dataset.memberId ?? null;
+  state.textContent = [
+    `oldState: ${event.oldState}`,
+    `newState: ${event.newState}`,
+    `source.textContent: ${source?.textContent ?? null}`,
+    `source.dataset.memberId: ${memberId}`,
+  ].join('\n');
+
+  if (event.newState === 'open' && memberId) {
+    detail.textContent = members[memberId];
+  }
+});
+
+for (const button of document.querySelectorAll('li button')) {
+  button.addEventListener('click', () => {
+    // 開いたまま別のボタンを押しても切り替わるように、閉じてから開き直す
+    popover.hidePopover();
+    popover.showPopover({ source: button });
+  });
+}
+```
 
 ボタンには`popovertarget`で共通のポップオーバーを指定し、`data-member-id`でどのメンバーかを持たせます。開く操作はブラウザに任せられるので、HTMLは次のように書けます。
 
@@ -104,7 +157,7 @@ aliceのボタンを押すと、ポップオーバーにaliceの詳細と出ま�
 
 デモでは、ボタンの`click`で`hidePopover()`と`showPopover({ source })`を続けて呼び、開いたまま中身を切り替えています。このとき`beforetoggle`は閉じる向きと開く向きの2回届き、`toggle`は`oldState`も`newState`も`open`の1回にまとまります。
 
-Reactの`onToggle`で受け取る合成イベントにも、実行時には`source`が入ります。ただし@types/reactの型には`source`が無いので、TypeScriptでは`event.nativeEvent.source`から読みます。デモもこの書き方です。
+Reactの`onToggle`で受け取る合成イベントにも、実行時には`source`が入ります。ただし@types/reactの型には`source`が無いので、TypeScriptでは`event.nativeEvent.source`から読みます。
 
 ## おわりに
 

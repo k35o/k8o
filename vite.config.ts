@@ -63,7 +63,7 @@ export default defineConfig({
         },
       },
       {
-        files: ['apps/main/src/content/**', 'apps/main/src/playgrounds/**'],
+        files: ['apps/main/src/content/**'],
         rules: {
           // override は規則の設定を丸ごと置き換えるので、apps/** の drizzle の制限も並べる
           'no-restricted-imports': [
@@ -74,7 +74,7 @@ export default defineConfig({
                 {
                   group: ['@/**'],
                   message:
-                    '記事とデモはアプリの中に依らずに描けるように保つ。@/ を import しない。',
+                    '記事はアプリの中に依らずに描けるように保つ。@/ を import しない。',
                 },
               ],
             },
