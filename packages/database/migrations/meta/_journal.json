@@ -680,6 +680,13 @@
       "when": 1795167092179,
       "tag": "0096_reading_digests",
       "breakpoints": true
+    },
+    {
+      "idx": 97,
+      "version": "6",
+      "when": 1795181959242,
+      "tag": "0097_reading_browser_release_sources",
+      "breakpoints": true
     }
   ]
 }

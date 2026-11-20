@@ -1,9 +1,10 @@
 import { db } from '@repo/database';
-import { and, count, desc, eq, gte, isNull, lt } from '@repo/database/orm';
+import { and, count, desc, eq, gte, isNull, lt, ne } from '@repo/database/orm';
 
-export const findFeedSources = () =>
+// 記事を取り込むソース。manual は取り込まない
+export const findSyncSources = () =>
   db.query.articleSources.findMany({
-    where: eq(db._schema.articleSources.type, 'feed'),
+    where: ne(db._schema.articleSources.type, 'manual'),
   });
 
 export type ReadingListArticle = {

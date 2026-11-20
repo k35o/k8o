@@ -147,6 +147,26 @@ describe('fetchArticleText', () => {
         },
       });
     });
+
+    it('Apple のドキュメントのページは、同じ中身の JSON から本文を取り出す', async () => {
+      vi.mocked(safeFetch).mockResolvedValue(
+        Response.json({
+          primaryContentSections: [
+            { content: [{ type: 'heading', text: 'Safari 27.2' }] },
+          ],
+        }),
+      );
+
+      const result = await fetchArticleText(
+        'https://developer.apple.com/documentation/safari-release-notes/safari-27_2-release-notes',
+      );
+
+      expect(result).toStrictEqual({ ok: true, text: 'Safari 27.2' });
+      expect(safeFetch).toHaveBeenLastCalledWith(
+        'https://developer.apple.com/tutorials/data/documentation/safari-release-notes/safari-27_2-release-notes.json',
+        expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      );
+    });
   });
 
   describe('異常系', () => {

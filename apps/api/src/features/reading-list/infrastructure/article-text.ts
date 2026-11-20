@@ -6,6 +6,11 @@ import {
 import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import { parseHTML } from 'linkedom';
 
+import {
+  appleDocumentationDataUrl,
+  extractAppleDocumentationText,
+} from './apple-documentation-text';
+
 const FETCH_TIMEOUT_MS = 8000;
 // 記事の HTML はふつう数百 KB まで。数 MB の HTML は DOM にすると GB 単位のメモリを使い、
 // 関数ごと落ちるので、上限で切って途中までを読む（HTML パーサは途中で切れても読める）
@@ -50,10 +55,28 @@ const readTextWithLimit = async (response: Response): Promise<string> => {
   return text + decoder.decode();
 };
 
+const fetchAppleDocumentationText = async (
+  dataUrl: string,
+): Promise<ArticleTextResult> => {
+  const response = await safeFetch(dataUrl, {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    headers: { 'User-Agent': BOT_USER_AGENT },
+  });
+  if (!response.ok) {
+    return { ok: false, reason: `HTTP ${response.status}` };
+  }
+  const data: unknown = JSON.parse(await readTextWithLimit(response));
+  return { ok: true, text: extractAppleDocumentationText(data) };
+};
+
 export async function fetchArticleText(
   url: string,
 ): Promise<ArticleTextResult> {
   try {
+    const appleDataUrl = appleDocumentationDataUrl(url);
+    if (appleDataUrl !== null) {
+      return await fetchAppleDocumentationText(appleDataUrl);
+    }
     // SSRF 対策: 公開 https URL のみ許可し、リダイレクト先も都度検証する
     const response = await safeFetch(url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),

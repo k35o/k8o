@@ -1,9 +1,10 @@
 import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 
+import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import {
   findArticleTitles,
-  findFeedSources,
+  findSyncSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
@@ -24,13 +25,16 @@ export type SyncResult = {
 };
 
 export async function syncArticles(): Promise<SyncResult> {
-  const sources = await findFeedSources();
+  const sources = await findSyncSources();
 
   const ninetyDaysAgo = readingWindowStart(Date.now());
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {
-      const items = await fetchFeedItems(source.url);
+      const items =
+        source.type === 'browser-releases'
+          ? await fetchBrowserReleaseItems(source.url)
+          : await fetchFeedItems(source.url);
       const candidates: FeedArticle[] = [];
 
       for (const item of items) {

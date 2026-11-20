@@ -10,7 +10,8 @@ import {
 
 import { articles } from './articles.ts';
 
-const ARTICLE_SOURCE_TYPES = ['feed', 'manual'] as const;
+// feed は RSS、browser-releases は browser-compat-data の版の一覧から記事を作る。manual は取り込まない
+const ARTICLE_SOURCE_TYPES = ['feed', 'manual', 'browser-releases'] as const;
 
 export const articleSources = sqliteTable(
   'article_sources',
