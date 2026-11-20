@@ -113,3 +113,23 @@ export const NoHeadings = meta.story({
     await expect(canvas.queryByRole('button', { name: /もくじ/ })).toBeNull();
   },
 });
+
+// ドックの行き先が出ない幅でも、右下に残るもくじの帯がフォーカスした要素を覆わない
+export const BandClearsFocus = meta.story({
+  globals: { viewport: { value: 'tablet' } },
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas }) => {
+    const band = await canvas.findByRole('button', { name: /もくじ/ });
+    const covered = window.innerHeight - band.getBoundingClientRect().top;
+
+    await expect(
+      canvas.queryByRole('navigation', { name: 'メイン' }),
+    ).toBeNull();
+    await expect(covered).toBeGreaterThan(0);
+    await expect(
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).scrollPaddingBottom,
+      ),
+    ).toBeGreaterThanOrEqual(covered);
+  },
+});

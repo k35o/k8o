@@ -61,6 +61,50 @@ export const ScrollPaddingClearsHeader = meta.story({
   },
 });
 
+// フッターの下に GlobalLayout が取っている空き
+const spaceBelowFooter = (footer: HTMLElement): number => {
+  const layout = footer.parentElement;
+  if (layout === null) {
+    throw new Error('フッターの親がありません');
+  }
+  return (
+    layout.getBoundingClientRect().bottom -
+    footer.getBoundingClientRect().bottom
+  );
+};
+
+// 狭い幅では、いちばん下までスクロールしても、ドックがフッターとフォーカスした要素を覆わない
+export const DockClearsFooter = meta.story({
+  globals: { viewport: { value: 'mobile1' } },
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas }) => {
+    const dock = canvas.getByRole('navigation', { name: 'メイン' });
+    const covered = window.innerHeight - dock.getBoundingClientRect().top;
+
+    await expect(covered).toBeGreaterThan(0);
+    await expect(
+      spaceBelowFooter(canvas.getByRole('contentinfo')),
+    ).toBeGreaterThanOrEqual(covered);
+    await expect(
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).scrollPaddingBottom,
+      ),
+    ).toBeGreaterThanOrEqual(covered);
+  },
+});
+
+// 下に固定するものが無い幅では、フッターの下を空けない
+export const NoSpaceBelowFooterOnWide = meta.story({
+  globals: { viewport: { value: 'desktop' } },
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas }) => {
+    await expect(spaceBelowFooter(canvas.getByRole('contentinfo'))).toBe(0);
+    await expect(
+      getComputedStyle(document.documentElement).scrollPaddingBottom,
+    ).toBe('0px');
+  },
+});
+
 // 古いブラウザ判定時: 最上部に常時バナー、ヘッダーに警告マークが出る。
 export const OutdatedBrowser = meta.story({
   args: {

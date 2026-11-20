@@ -7,9 +7,25 @@
     'Yu Gothic UI', 'Yu Gothic', 'Noto Sans CJK JP', sans-serif;
 }
 
+/* 画面の下に固定するドックが覆う高さ。ドックの行き先は 48rem より狭い幅でだけ出て、
+   ページが足した項目（記事のもくじ）の帯は 80rem より狭い幅でだけ出る */
+:root {
+  --spacing-dock-clearance: 0px;
+
+  @media (width < 48rem) {
+    --spacing-dock-clearance: calc(var(--spacing) * 24);
+  }
+
+  @media (width < 80rem) {
+    &:has(#dock-slot > *) {
+      --spacing-dock-clearance: calc(var(--spacing) * 24);
+    }
+  }
+}
+
 html {
   scroll-padding-top: calc(var(--spacing) * 24);
-  scroll-padding-bottom: calc(var(--spacing) * 24);
+  scroll-padding-bottom: var(--spacing-dock-clearance);
 }
 
 @media (prefers-reduced-motion) {

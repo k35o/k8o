@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100svh;
-  padding-bottom: calc(var(--spacing) * 24);
+  padding-bottom: var(--spacing-dock-clearance);
 
   @media print {
     padding-bottom: 0;
