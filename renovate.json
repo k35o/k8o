@@ -59,6 +59,11 @@
       "groupName": "node dependencies"
     },
     {
+      "description": "ai と @ai-sdk/* は同じ @ai-sdk/provider-utils を使う版で揃えないと、ツールの型が解けない",
+      "matchPackageNames": ["/^ai$/", "/^@ai-sdk\\//"],
+      "groupName": "ai sdk dependencies"
+    },
+    {
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "github actions"
