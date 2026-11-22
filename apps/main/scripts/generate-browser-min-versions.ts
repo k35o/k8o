@@ -1,5 +1,6 @@
 // RootLayout が読むブラウザ最低版フロアと、同じ版から作る .browserslistrc の生成。
 // フロアはビルドのターゲットと同じ生成物から読むので、リポジトリにコミットする。
+// 警告の機能検出（baseline-support.ts）がフロアに追いついているかを試験で見るため、フロアを決めた機能も書く。
 // active データセットとずれると外形監視(browser-support-monitor)が版を指定して
 // 再生成し、PR を自動で出す。
 //
@@ -44,6 +45,22 @@ if (!res.ok) {
   throw new Error(`data.json の取得に失敗: HTTP ${String(res.status)}`);
 }
 const { dataset } = transformUpstreamData(await res.json(), version);
+const floorFeatures = Object.fromEntries(
+  Object.entries(dataset.minVersions).map(([browser, floor]) => [
+    browser,
+    Object.fromEntries(
+      dataset.features
+        .filter(
+          (feature) =>
+            feature.status !== 'limited' &&
+            feature.support.some(
+              (row) => row.browser === browser && row.version === floor,
+            ),
+        )
+        .map((feature) => [feature.featureId, feature.name]),
+    ),
+  ]),
+);
 
 const outPath = join(
   import.meta.dirname,
@@ -55,6 +72,7 @@ writeFileSync(
     {
       upstreamVersion: version,
       minVersions: dataset.minVersions,
+      floorFeatures,
     },
     null,
     2,

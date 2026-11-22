@@ -8,5 +8,48 @@
     "firefox_android": "159",
     "safari": "27",
     "safari_ios": "27"
+  },
+  "floorFeatures": {
+    "chrome": {
+      "autocorrect": "autocorrect"
+    },
+    "chrome_android": {
+      "autocorrect": "autocorrect"
+    },
+    "edge": {
+      "autocorrect": "autocorrect"
+    },
+    "firefox": {
+      "ext-texture-norm16": "EXT_texture_norm16 WebGL extension",
+      "scoped-custom-element-registries": "Scoped custom element registries",
+      "scroll-driven-animations": "Scroll-driven animations"
+    },
+    "firefox_android": {
+      "ext-texture-norm16": "EXT_texture_norm16 WebGL extension",
+      "scoped-custom-element-registries": "Scoped custom element registries",
+      "scroll-driven-animations": "Scroll-driven animations"
+    },
+    "safari": {
+      "alpha": "alpha()",
+      "animations-css-animation-accessors": "Animation accessors",
+      "arianotify": "ariaNotify()",
+      "async-iterable-streams": "Asynchronously iterable streams",
+      "light-dark-image": "light-dark() image values",
+      "overflow-anchor": "overflow-anchor",
+      "revert-rule": "revert-rule",
+      "top-level-await": "Top-level await",
+      "wasm-jspi": "JavaScript promise integration (WebAssembly)"
+    },
+    "safari_ios": {
+      "alpha": "alpha()",
+      "animations-css-animation-accessors": "Animation accessors",
+      "arianotify": "ariaNotify()",
+      "async-iterable-streams": "Asynchronously iterable streams",
+      "light-dark-image": "light-dark() image values",
+      "overflow-anchor": "overflow-anchor",
+      "revert-rule": "revert-rule",
+      "top-level-await": "Top-level await",
+      "wasm-jspi": "JavaScript promise integration (WebAssembly)"
+    }
   }
 }
