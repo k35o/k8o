@@ -6,8 +6,8 @@ import { getTalks as readTalks } from '@repo/api/build-data';
 import type { Talk } from '@repo/api/build-data';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { deckMdxPath, pdfDeckPath, pdfPageImagePath } from './path';
-import { findPdfDeck, getTalks, readDeckCover } from './talks';
+import { deckMdxPath, pdfDeckPath } from './path';
+import { findPdfDeck, getTalks } from './talks';
 
 vi.mock('@repo/api/build-data', () => ({ getTalks: vi.fn() }));
 vi.mock('./path');
@@ -62,37 +62,6 @@ describe('findPdfDeck', () => {
       );
 
       await expect(findPdfDeck('broken')).rejects.toThrow('"pages"');
-    });
-  });
-});
-
-describe('readDeckCover', () => {
-  describe('正常系', () => {
-    it('PDF のデッキは、1 ページ目の広いほうの版の画像を返す', async () => {
-      vi.mocked(pdfPageImagePath).mockReturnValue(
-        await writeTemp('001.1920w.avif', '表紙の画像'),
-      );
-
-      const cover = await readDeckCover({ slug: 'my-talk', kind: 'pdf' });
-
-      expect(pdfPageImagePath).toHaveBeenCalledWith('my-talk', 1, 1920);
-      expect(new TextDecoder().decode(cover ?? undefined)).toBe('表紙の画像');
-    });
-
-    it('MDX のデッキは表紙の画像を持たず、null を返す', async () => {
-      await expect(
-        readDeckCover({ slug: 'my-talk', kind: 'mdx' }),
-      ).resolves.toBeNull();
-    });
-  });
-
-  describe('異常系', () => {
-    it('取り込んだデッキに表紙の画像が無ければ投げる', async () => {
-      vi.mocked(pdfPageImagePath).mockReturnValue('/no/such/001.1920w.avif');
-
-      await expect(
-        readDeckCover({ slug: 'my-talk', kind: 'pdf' }),
-      ).rejects.toThrow('ENOENT');
     });
   });
 });

@@ -1,10 +1,15 @@
 import { highlightCode } from '@repo/code-highlight/tokenize';
 
-import { getJellyfishLegsDataUrl } from '@/shared/og/get-jellyfish-legs-data-url';
-import { getIconDataUrl, getJetBrainsMonoFont } from '@/shared/og/og-assets';
+import { getJetBrainsMonoFont } from '@/shared/og/og-assets';
 import { renderOgPng } from '@/shared/og/render-og-png';
 
-import { mPlus2Font, OgFrame, ogTitleWords } from './og-frame';
+import {
+  mPlus2Font,
+  OgFrame,
+  OgJellyfishLegs,
+  OgTitleColumn,
+  ogTitleFontSize,
+} from './og-frame';
 
 type OgCodeImageProps = {
   title: string;
@@ -22,23 +27,8 @@ const CODE_PADDING_Y = 20;
 const CODE_LINE_HEIGHT = 1.5;
 const CODE_CHAR_WIDTH = 0.6;
 
+// カードの幅 1100 から、余白 40 の 2 つ・間 36・パネル・題の列の左の余白 16 を引いた幅
 const TITLE_AREA_WIDTH = 498;
-const TITLE_MAX_HEIGHT = 320;
-const TITLE_LINE_HEIGHT = 1.35;
-
-const calcTitleFontSize = (title: string): number => {
-  let units = 0;
-  for (const char of title) {
-    units += (char.codePointAt(0) ?? 0) < 128 ? 0.55 : 1;
-  }
-  for (const size of [42, 38, 34, 30]) {
-    const lines = Math.ceil((units * 1.3 * size) / TITLE_AREA_WIDTH);
-    if (lines <= 4 && lines * size * TITLE_LINE_HEIGHT <= TITLE_MAX_HEIGHT) {
-      return size;
-    }
-  }
-  return 28;
-};
 
 const calcCodeFontSize = (lineCount: number, maxLineLength: number) => {
   const areaHeight = PANEL_HEIGHT - PANEL_HEADER_HEIGHT - CODE_PADDING_Y * 2;
@@ -55,7 +45,6 @@ export async function OgCodeImage({
   title,
   code,
 }: OgCodeImageProps): Promise<Response> {
-  const iconDataUrl = getIconDataUrl();
   const highlighted = await highlightCode(code.code, code.lang);
 
   const codeLines = code.code.split('\n');
@@ -70,7 +59,12 @@ export async function OgCodeImage({
   );
   const visibleLines = highlighted.tokens.slice(0, maxVisibleLines);
 
-  const titleFontSize = calcTitleFontSize(title);
+  const titleFontSize = ogTitleFontSize(title, {
+    width: TITLE_AREA_WIDTH,
+    maxHeight: 320,
+    sizes: [42, 38, 34, 30],
+    min: 28,
+  });
 
   return renderOgPng(
     <OgFrame
@@ -79,69 +73,8 @@ export async function OgCodeImage({
         padding: 40,
       }}
     >
-      <img
-        alt=""
-        height={230}
-        src={getJellyfishLegsDataUrl()}
-        style={{ position: 'absolute', bottom: 0, left: 0 }}
-        width={230}
-      />
-      {/* flexBasis 0 + minWidth 0 がないとタイトルのmax-content幅でパネルが押し出される */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          flexGrow: 1,
-          flexBasis: 0,
-          minWidth: 0,
-          paddingTop: 24,
-          paddingBottom: 8,
-          paddingLeft: 16,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            flexWrap: 'wrap',
-            alignItems: 'flex-start',
-            color: '#0f172a',
-            fontSize: titleFontSize,
-            lineHeight: TITLE_LINE_HEIGHT,
-            letterSpacing: '-0.02em',
-          }}
-        >
-          {ogTitleWords(title)}
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 20,
-          }}
-        >
-          <img
-            alt="アイコン"
-            height={72}
-            src={iconDataUrl}
-            style={{
-              borderRadius: 9999,
-              objectFit: 'cover',
-              boxShadow: '0 10px 25px -5px #27272a',
-            }}
-            width={72}
-          />
-          <span
-            style={{
-              color: '#18181b',
-              fontSize: 36,
-            }}
-          >
-            k8o
-          </span>
-        </div>
-      </div>
+      <OgJellyfishLegs />
+      <OgTitleColumn fontSize={titleFontSize} title={title} />
       <div
         style={{
           display: 'flex',

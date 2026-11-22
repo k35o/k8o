@@ -126,7 +126,6 @@ describe('GET /blog/:slug/og.png', () => {
 
       expect(res).toBe(image);
       expect(OgImage).toHaveBeenCalledWith({
-        category: 'Blog',
         title: 'タイトル',
         code: undefined,
       });
