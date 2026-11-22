@@ -2,7 +2,6 @@
 
 import { useAppState } from '@k8ordo/state';
 import { Alert } from '@k8ordo/ui';
-import { isBrowserOutdated } from '@repo/helpers/browser/browser-support';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import { useCallback, useState } from 'react';
 import type { FC, ReactNode } from 'react';
@@ -10,14 +9,14 @@ import type { FC, ReactNode } from 'react';
 import { BrowserSupportNoticeModal } from './browser-support-notice-modal';
 import { BROWSER_SUPPORT_MESSAGE } from './messages';
 import { noticeState } from './notice-state';
-import { isNoticeForced, useDetectedBrowser } from './use-detected-browser';
+import { isNoticeForced, useBaselineSupport } from './use-baseline-support';
 
 import styles from './browser-support-notice.module.css';
 
 export const BrowserSupportNotice: FC<{
   minVersions: BrowserMinVersions;
 }> = ({ minVersions }) => {
-  const detected = useDetectedBrowser();
+  const isSupported = useBaselineSupport();
   const [{ dismissed }, updateNotice] = useAppState(noticeState);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -38,7 +37,7 @@ export const BrowserSupportNotice: FC<{
     [],
   );
 
-  if (detected === null || !isBrowserOutdated(detected, minVersions)) {
+  if (isSupported) {
     return null;
   }
 
@@ -60,7 +59,6 @@ export const BrowserSupportNotice: FC<{
         tone="warning"
       />
       <BrowserSupportNoticeModal
-        detected={detected}
         isOpen={isModalOpen}
         minVersions={minVersions}
         onClose={() => {

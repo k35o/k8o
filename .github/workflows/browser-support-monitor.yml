@@ -342,5 +342,5 @@ jobs:
           gh issue create \
             --title "browser-support: データ同期の異常を検知 ($(date -u +%Y-%m-%d))" \
             --label "$label" \
-            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. 同期履歴（browser_support_sync_runs）を確認し、必要ならこの workflow を force 付きで手動実行\n3. Vercel Cron（apps/api をデプロイしているプロジェクト）の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット（Next 同梱の browserslist がフロアを解決できなければ `pnpm update -r caniuse-lite` も）\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
+            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. 同期履歴（browser_support_sync_runs）を確認し、必要ならこの workflow を force 付きで手動実行\n3. Vercel Cron（apps/api をデプロイしているプロジェクト）の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認（baseline-support のテストが落ちていれば、その候補で BASELINE_PROBES を差し替える）。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット（Next 同梱の browserslist がフロアを解決できなければ `pnpm update -r caniuse-lite` も）\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
           exit 1

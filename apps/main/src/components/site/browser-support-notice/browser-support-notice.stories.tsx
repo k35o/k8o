@@ -2,17 +2,13 @@ import { expect } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import { BrowserSupportNotice } from './browser-support-notice';
+import { lackBaseline } from './lack-baseline-story';
 
-// 実際のブラウザより高い最低バージョンを渡し、検出されたブラウザが必ず
-// 「最新ではない」と判定されるようにして、警告が表示される状態を再現する。
-const FORCE_OUTDATED = {
-  chrome: '9999',
-  chrome_android: '9999',
-  edge: '9999',
-  firefox: '9999',
-  firefox_android: '9999',
-  safari: '9999',
-  safari_ios: '9999',
+const MIN_VERSIONS = {
+  chrome: '153',
+  edge: '153',
+  firefox: '159',
+  safari: '27',
 };
 
 const meta = preview.meta({
@@ -21,34 +17,31 @@ const meta = preview.meta({
 });
 
 export const Primary = meta.story({
-  args: {
-    minVersions: FORCE_OUTDATED,
-  },
+  args: { minVersions: MIN_VERSIONS },
+  beforeEach: lackBaseline,
   play: async ({ canvas }) => {
     await expect(await canvas.findByRole('alert')).toBeInTheDocument();
   },
 });
 
 export const OpenModal = meta.story({
-  args: {
-    minVersions: FORCE_OUTDATED,
-  },
+  args: { minVersions: MIN_VERSIONS },
+  beforeEach: lackBaseline,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(
       canvas.getByRole('button', { name: '詳しくはこちら' }),
     );
 
     await expect(
-      await canvas.findByRole('dialog', { name: 'ブラウザの更新について' }),
+      await canvas.findByRole('dialog', { name: '対応ブラウザについて' }),
     ).toBeInTheDocument();
     await expect(canvas.getByText('推奨バージョン')).toBeInTheDocument();
   },
 });
 
 export const Dismiss = meta.story({
-  args: {
-    minVersions: FORCE_OUTDATED,
-  },
+  args: { minVersions: MIN_VERSIONS },
+  beforeEach: lackBaseline,
   play: async ({ canvas, userEvent }) => {
     await expect(await canvas.findByRole('alert')).toBeInTheDocument();
 
@@ -56,6 +49,21 @@ export const Dismiss = meta.story({
       canvas.getByRole('button', { name: 'この通知を閉じる' }),
     );
 
+    await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
+  },
+});
+
+export const SupportedRegardlessOfVersion = meta.story({
+  args: {
+    minVersions: {
+      chrome: '9999',
+      edge: '9999',
+      firefox: '9999',
+      safari: '9999',
+    },
+  },
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas }) => {
     await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
   },
 });

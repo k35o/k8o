@@ -77,6 +77,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、Lab の�
 - 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は文字列のまま持ち、読むときに解く。`z.array` は書くときと同じカンマ区切りの `?source=1,2` を読めず、`z.stringbool` は `?widely=1` も真に読むので、真偽はアプリが書く `true` だけを真にする
 - 一覧は `BrowserOnly` でブラウザでだけ描き、骨組み（`ReadingListSkeleton`・`BrowserSupportFeatureListSkeleton`）を `fallback` に渡す。骨組みは HTML の client-rendered の境界（`<!--$!-->`）の中に出る。骨組みを `loading.tsx` として route に置かないのは、static mode では HTML にも遷移にもほぼ出ず、layout と同じくその CSS をどのページも読むから
 - ブラウザ最低版のフロア（`features/browser-support/infrastructure/browser-min-versions.json`）は、ルートレイアウトが読み、ビルドのターゲット（`site/browser-targets.ts`）も作る、コミットした生成物。`pnpm run -F main generate:browser-min-versions [version]` で作り直す。同じ版からリポジトリ直下の `.browserslistrc`（ai の Next.js の Lightning CSS / SWC のターゲット）も書くので、どちらも手で編集しない。api の active データセットとずれると、外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で作り直しの PR を作り、自動マージする
+- 対応外のブラウザへの警告は、UA と版ではなく機能検出（`features/browser-support/application/baseline-support.ts` の `BASELINE_PROBES`）で出す。対象はこれまでに Baseline に入った全機能で、年では区切らない。検出するのは、生成物の `floorFeatures`（各ブラウザの最低版を決めた機能）からブラウザごとに 1 つ以上を覆う最小の組。最低版が上がって覆えなくなると `baseline-support.test.ts` が作り直しの PR を落とすので、候補からページで検出できる機能を選んで差し替える
 - 購読の VAPID の公開鍵は、`routes/notifications/page.tsx` がビルドの描画で `process.env` から読み、props で渡す。`import.meta.env` でクライアントへ渡すと、名前を `VITE_` に替えることになる
 
 ## トークのデッキ
