@@ -24,7 +24,7 @@
     "@repo/oxlint-plugin": "workspace:*",
     "@types/node": "26.6.6",
     "knip": "6.45.1",
-    "playwright": "1.65.0",
+    "playwright": "1.65.1",
     "portless": "0.17.0",
     "turbo": "2.11.11",
     "typescript": "7.0.2",
