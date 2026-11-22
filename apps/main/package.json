@@ -65,7 +65,7 @@
     "@vercel/blob": "2.9.0",
     "@vitest/browser-playwright": "catalog:",
     "chromatic": "catalog:",
-    "msw": "3.0.5",
+    "msw": "3.0.6",
     "msw-storybook-addon": "3.0.3",
     "oxc-transform-react": "catalog:",
     "pdfjs-dist": "6.5.438",
