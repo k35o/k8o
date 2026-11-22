@@ -1,4 +1,4 @@
-import type { CoreBrowser } from '@repo/helpers/browser/detect-browser';
+import type { CoreBrowser } from '@repo/helpers/browser/core-browsers';
 
 import type { BrowserAvailability } from '@/features/browser-support/interface/queries';
 

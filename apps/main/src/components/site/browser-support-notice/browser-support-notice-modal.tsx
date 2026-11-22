@@ -2,7 +2,7 @@ import { Dialog, Modal, Stack } from '@k8ordo/ui';
 import type {
   BrowserMinVersions,
   CoreBrowser,
-} from '@repo/helpers/browser/detect-browser';
+} from '@repo/helpers/browser/core-browsers';
 import type { FC } from 'react';
 
 import styles from './browser-support-notice-modal.module.css';

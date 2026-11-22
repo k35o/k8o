@@ -2,7 +2,7 @@
 
 import { useAppState } from '@k8ordo/state';
 import { Alert } from '@k8ordo/ui';
-import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
+import type { BrowserMinVersions } from '@repo/helpers/browser/core-browsers';
 import { useCallback, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 

@@ -1,4 +1,4 @@
-import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
+import type { BrowserMinVersions } from '@repo/helpers/browser/core-browsers';
 
 import floorData from '../infrastructure/browser-min-versions.json';
 
