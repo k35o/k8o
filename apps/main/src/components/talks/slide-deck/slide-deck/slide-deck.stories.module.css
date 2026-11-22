@@ -1,0 +1,6 @@
+/* デッキは position: fixed なので、contain が無いと幅を絞っても画面いっぱいに出る */
+.narrow {
+  contain: layout;
+  width: calc(var(--spacing) * 80);
+  height: calc(var(--spacing) * 160);
+}

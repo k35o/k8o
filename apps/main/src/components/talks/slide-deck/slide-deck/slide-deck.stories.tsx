@@ -13,6 +13,8 @@ import { Cover } from '../../slide-mdx/cover/cover';
 import { Notes } from '../../slide-mdx/notes/notes';
 import { SlideDeckShell } from '../../slide-mdx/slide-deck-shell/slide-deck-shell';
 
+import styles from './slide-deck.stories.module.css';
+
 const NOTE = 'これは2枚目のノート。発表者モードでのみ表示される。';
 
 const meta = preview.meta({
@@ -185,6 +187,57 @@ const inGlobalLayout = (Story: FC) => (
     <Story />
   </GlobalLayout>
 );
+
+const LONG_TITLE =
+  '画面の幅に収まらない長い題のスライドでも、枚数と操作は画面の中に残る';
+
+const inNarrowScreen = (Story: FC) => (
+  <div className={styles.narrow} data-testid="screen">
+    <Story />
+  </div>
+);
+
+const expectInOneLine = async (
+  element: Element,
+  screen: HTMLElement,
+): Promise<void> => {
+  const { right, height } = element.getBoundingClientRect();
+  await expect(right).toBeLessThanOrEqual(screen.getBoundingClientRect().right);
+  await expect(height).toBeLessThanOrEqual(
+    Number.parseFloat(getComputedStyle(element).lineHeight) + 1,
+  );
+};
+
+export const ViewerLongTitleOnNarrowScreen = meta.story({
+  args: { title: LONG_TITLE },
+  parameters: { vrt: { skip: true } },
+  decorators: [inNarrowScreen],
+  play: async ({ canvas, canvasElement }) => {
+    const button = await canvas.findByRole('button', { name: '発表者モード' });
+    const screen = canvas.getByTestId('screen');
+
+    await expectInOneLine(button, screen);
+    const counter = counterOf(canvasElement);
+    if (counter === null) throw new Error('枚数の表示が無い');
+    await expectInOneLine(counter, screen);
+  },
+});
+
+export const PresenterLongTitleOnNarrowScreen = meta.story({
+  args: { title: LONG_TITLE },
+  parameters: {
+    query: 'mode=presenter&session=story-session',
+    vrt: { skip: true },
+  },
+  decorators: [inNarrowScreen],
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('region', { name: '現在のスライド' });
+
+    const counter = counterOf(canvasElement);
+    if (counter === null) throw new Error('枚数の表示が無い');
+    await expectInOneLine(counter, canvas.getByTestId('screen'));
+  },
+});
 
 // デッキが画面を覆うページでも、最初の Tab で出たスキップリンクはデッキの上に見え、押すと枚を変えずに
 // デッキへフォーカスを移す
