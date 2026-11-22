@@ -1,0 +1,56 @@
+/* better-css-modules-disable tokens/spacing, tokens/line-height -- 文字の箱は PDF の文字の大きさ（em）に比例させ、行の高さも足さない */
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  transform: scale(var(--fit, 1));
+}
+
+.block {
+  position: static;
+  margin: 0;
+  padding: 0;
+  font-weight: inherit;
+}
+
+.figure {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.line {
+  position: absolute;
+  /* Firefox は行の外から始めたドラッグの起点を層の先頭に置くので、行の前後も行として受ける。伸縮の基点は文字の左端 */
+  padding-inline: 0.4em;
+  margin-inline-start: -0.4em;
+  transform-origin: 0.4em 0;
+  transform: scaleX(var(--stretch, 1));
+  font-family: var(--font-family-m-plus-2);
+  line-height: 1;
+  white-space: pre;
+  color: transparent;
+  forced-color-adjust: none;
+  cursor: text;
+  user-select: text;
+
+  &[data-monospace='true'] {
+    font-family: var(--font-family-mono);
+  }
+
+  &::selection {
+    color: transparent;
+    background-color: color-mix(
+      in srgb,
+      var(--color-primary-border) 45%,
+      transparent
+    );
+  }
+}

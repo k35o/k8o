@@ -17,9 +17,10 @@ export const PdfDeckArticle: FC<{ slug: string; title: string }> = async ({
   const slides = deck.pages.map((page, index) => ({
     content: [
       <PdfPage
-        alt={page.text === '' ? `${(index + 1).toString()}枚目` : page.text}
+        blocks={page.blocks}
         height={page.height}
         key="page"
+        label={`${(index + 1).toString()}枚目`}
         links={page.links}
         {...pdfPageSources(slug, index + 1)}
         width={page.width}

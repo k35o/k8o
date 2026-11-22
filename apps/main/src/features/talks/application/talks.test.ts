@@ -13,7 +13,7 @@ vi.mock('@repo/api/build-data', () => ({ getTalks: vi.fn() }));
 vi.mock('./path');
 
 const manifest = {
-  pages: [{ width: 1920, height: 1080, text: '表紙', notes: '', links: [] }],
+  pages: [{ width: 1920, height: 1080, blocks: [], notes: '', links: [] }],
 };
 
 const writeTemp = async (name: string, content: string): Promise<string> => {

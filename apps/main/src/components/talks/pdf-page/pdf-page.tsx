@@ -1,5 +1,8 @@
 import type { FC } from 'react';
 
+import { PdfPageText } from './pdf-page-text';
+import type { Block } from './pdf-page-text';
+
 import styles from './pdf-page.module.css';
 
 type Link = {
@@ -12,15 +15,16 @@ type Link = {
 
 const percent = (ratio: number): string => `${(ratio * 100).toString()}%`;
 
-// PDF の 1 ページ。画像の上に、PDF のリンクと同じ位置の透明なリンクを重ねる
+// PDF の 1 ページ。画像の上に、PDF と同じ位置の透明な文字とリンクを重ねる。label は文字の無いページの画像の名前
 export const PdfPage: FC<{
-  alt: string;
+  label: string;
+  blocks: readonly Block[];
   src: string;
   srcSet: string;
   width: number;
   height: number;
   links: readonly Link[];
-}> = ({ alt, src, srcSet, width, height, links }) => (
+}> = ({ label, blocks, src, srcSet, width, height, links }) => (
   <div className={styles.root}>
     <div
       className={styles.sheet}
@@ -30,7 +34,7 @@ export const PdfPage: FC<{
           開いた時に全ページの画像を読み、ページ送りを待たせず、発表中に回線が切れても次のページが出る。
           loading を lazy に、fetchPriority を low にすると、その preload が止まる */}
       <img
-        alt={alt}
+        alt={blocks.length === 0 ? label : ''}
         className={styles.image}
         height={height}
         sizes="100vw"
@@ -38,6 +42,9 @@ export const PdfPage: FC<{
         srcSet={srcSet}
         width={width}
       />
+      {blocks.length > 0 && (
+        <PdfPageText blocks={blocks} height={height} width={width} />
+      )}
       {links.map((link, index) => (
         <a
           aria-label={link.href}

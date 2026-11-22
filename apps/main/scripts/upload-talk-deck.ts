@@ -2,7 +2,7 @@
 // デッキの中身はコミットしない。
 //
 // 実行: pnpm run -F main upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local]
-// ページごとの AVIF（960w・1920w）と、ページごとの寸法・文字・リンクの位置を持つ deck.json を
+// ページごとの AVIF（960w・1920w）と、ページごとの寸法・文字とリンクの位置を持つ deck.json を
 // public/talks/<slug>/（git は見ない）に書き、同じものと元の PDF をストアの talks/<slug>/ に置く。元の PDF は
 // 保管のためで、サイトには出ない。ストアに残る前の版のファイルは消す。--notes は発表者ノートのテキストで、--- だけの行でページごとに分ける（n 番目の塊が n ページ目）。
 // --local は書くだけで上げない。上げるには BLOB_READ_WRITE_TOKEN が要る。
@@ -22,6 +22,7 @@ import {
   splitNotes,
 } from '../src/features/talks/application/pdf-deck.ts';
 import type { PdfDeck } from '../src/features/talks/application/pdf-deck.ts';
+import { extractPageBlocks } from '../src/features/talks/application/pdf-page-text.ts';
 import { SLUG } from '../src/site/patterns.ts';
 import {
   PDF_DECK_MANIFEST,
@@ -137,14 +138,12 @@ for (let number = 1; number <= document.numPages; number += 1) {
     .avif()
     .toFile(join(outDir, pdfPageImage(number, narrow)));
 
-  const { items } = await page.getTextContent();
-  const text = items
-    .map((item) =>
-      'str' in item ? `${item.str}${item.hasEOL ? ' ' : ''}` : '',
-    )
-    .join('')
-    .replaceAll(/\s+/gu, ' ')
-    .trim();
+  const { items } = await page.getTextContent({ includeMarkedContent: true });
+  const blocks = extractPageBlocks({
+    view: page.view,
+    items,
+    tree: await page.getStructTree(),
+  });
 
   const links = (await page.getAnnotations()).filter(isLink).map((link) => {
     const [x1, y1] = viewport.convertToViewportPoint(
@@ -166,7 +165,7 @@ for (let number = 1; number <= document.numPages; number += 1) {
     };
   });
 
-  pages.push({ width, height, text, notes: notes[number - 1] ?? '', links });
+  pages.push({ width, height, blocks, notes: notes[number - 1] ?? '', links });
   page.cleanup();
   console.log(`${number.toString()} / ${document.numPages.toString()}`);
 }

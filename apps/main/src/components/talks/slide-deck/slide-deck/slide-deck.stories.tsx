@@ -285,6 +285,32 @@ export const KeysAfterSeek = meta.story({
   },
 });
 
+export const KeysWithModifiersAreLeftToBrowser = meta.story({
+  parameters: { hash: '#2', vrt: { skip: true } },
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', { name: 'スライド機能のご紹介' });
+
+    // ページ内検索・選択の拡大縮小・読み上げソフトと履歴のキー
+    for (const init of [
+      { key: 'f', metaKey: true },
+      { key: 'f', ctrlKey: true },
+      { key: 'ArrowRight', shiftKey: true },
+      { key: 'ArrowUp', shiftKey: true },
+      { key: 'ArrowRight', altKey: true, ctrlKey: true },
+      { key: 'ArrowLeft', metaKey: true },
+    ]) {
+      const event = new KeyboardEvent('keydown', {
+        ...init,
+        bubbles: true,
+        cancelable: true,
+      });
+      canvasElement.dispatchEvent(event);
+      await expect(event.defaultPrevented).toBe(false);
+    }
+    await expect(counterOf(canvasElement)).toHaveTextContent('2 / 3');
+  },
+});
+
 const inGlobalLayout = (Story: FC) => (
   <GlobalLayout>
     <Story />

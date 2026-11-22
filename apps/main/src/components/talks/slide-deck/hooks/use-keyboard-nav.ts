@@ -21,6 +21,8 @@ export const useKeyboardNav = ({
 }) => {
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
     if (event.defaultPrevented) return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.shiftKey && event.key.startsWith('Arrow')) return;
     const { target } = event;
     if (target instanceof HTMLElement) {
       const tag = target.tagName;

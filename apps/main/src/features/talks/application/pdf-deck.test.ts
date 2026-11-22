@@ -15,7 +15,15 @@ const deck = (page: Record<string, unknown> = {}) => ({
     {
       width: 1920,
       height: 1080,
-      text: '表紙',
+      blocks: [
+        {
+          tag: 'h1',
+          lines: [
+            { text: '表紙', left: 0.1, top: 0.2, width: 0.3, height: 0.05 },
+          ],
+        },
+        { tag: 'img', alt: '会社の紹介' },
+      ],
       notes: '',
       links: [link],
       ...page,
@@ -43,6 +51,12 @@ describe('parsePdfDeck', () => {
       expect(() =>
         parsePdfDeck(deck({ links: [{ ...link, left: 1.2 }] })),
       ).toThrow('"left"');
+    });
+
+    it('見出しと段落と画像でない文字のまとまりは通さない', () => {
+      expect(() =>
+        parsePdfDeck(deck({ blocks: [{ tag: 'script', lines: [] }] })),
+      ).toThrow('"blocks"');
     });
 
     it('ページが無いデッキは通さない', () => {
