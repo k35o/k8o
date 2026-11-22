@@ -3,7 +3,9 @@ import { readFile } from 'node:fs/promises';
 
 import { getTalks as readTalks } from '@repo/api/build-data';
 
-import { deckMdxPath, pdfDeckPath } from './path';
+import { PDF_PAGE_WIDTHS } from '@/site/pdf-deck-files';
+
+import { deckMdxPath, pdfDeckPath, pdfPageImagePath } from './path';
 import { parsePdfDeck, pdfPageSources } from './pdf-deck';
 import type { PdfDeck } from './pdf-deck';
 
@@ -69,6 +71,19 @@ const findCover = async (
         width: first.width,
         height: first.height,
       };
+};
+
+// OG に描く表紙の画像。PDF から作ったデッキの 1 ページ目の、広いほうの版で、MDX のデッキは null。
+// 取り込んだデッキに画像が無ければ投げ、ビルドを止める
+export const readDeckCover = async (deck: {
+  slug: string;
+  kind: DeckKind;
+}): Promise<Uint8Array | null> => {
+  if (deck.kind !== 'pdf') {
+    return null;
+  }
+  const [, wide] = PDF_PAGE_WIDTHS;
+  return readFile(pdfPageImagePath(deck.slug, 1, wide));
 };
 
 // api の一覧の並びのまま、トークにデッキの種類・表紙・スライドのリンク先を足す

@@ -8,6 +8,7 @@ import {
 import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
 export { pdfPageSources } from '@/features/talks/application/pdf-deck';
+export { readDeckCover } from '@/features/talks/application/talks';
 
 export const getTalks = memoizeInBuild(_getTalks);
 

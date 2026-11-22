@@ -1,4 +1,5 @@
 import { getIconDataUrl } from '@/shared/og/og-assets';
+import { renderCoverOgPng } from '@/shared/og/render-cover-og-png';
 import { renderOgPng } from '@/shared/og/render-og-png';
 
 import { OgCodeImage } from './og-code-image';
@@ -13,13 +14,19 @@ type OgImageProps = {
         code: string;
       }
     | undefined;
+  // 表紙の画像。渡すと題を描かず、表紙をそのまま OG にする
+  cover?: Uint8Array | undefined;
 };
 
 export async function OgImage({
   title,
   category,
   code,
+  cover,
 }: OgImageProps): Promise<Response> {
+  if (cover) {
+    return renderCoverOgPng(cover);
+  }
   if (code) {
     return OgCodeImage({ title, code });
   }
@@ -29,7 +36,7 @@ export async function OgImage({
 async function OgTextImage({
   title,
   category,
-}: Omit<OgImageProps, 'code'>): Promise<Response> {
+}: Omit<OgImageProps, 'code' | 'cover'>): Promise<Response> {
   const iconDataUrl = getIconDataUrl();
 
   return renderOgPng(

@@ -107,6 +107,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、Lab の�
 - `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事の更新日とトークの登壇の日から決め、ビルドの時刻は使わない。route.ts があるので、framework は `sitemap.xml` を書かない
 - `paths.ts` はページと同じバンドルで走るので、alias と `@repo/*` をそのまま import でき、覚えた一覧（`memoizeInBuild`）をページと分け合う
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
+- PDF から作ったデッキの OG（`/talks/:slug/og.png`）は題を描かず、取り込んだ 1 ページ目の画像（1920w）を sharp で切らずに 1200×630 に収める（`shared/og/render-cover-og-png.ts`）。縦横比の合わない余りは、表紙の縁の画素を伸ばしてぼかしたもので埋める。画像が無ければ GET が reject し、ビルドが止まる。MDX のデッキは題を描く
 
 ## セキュリティヘッダー
 
