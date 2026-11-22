@@ -135,6 +135,8 @@ MDX では import せずに使う。`slide-mdx` の部品を、`slide-article` �
 | `End` | 最後 |
 | `F` | フルスクリーン toggle |
 
+`Cmd` / `Ctrl` / `Alt` を伴うキーと `Shift` + 矢印は、ページ内検索・選択・読み上げソフトのためにブラウザへ渡す。
+
 ## 発表者モード
 
 `/talks/<slug>?mode=presenter` を別タブで開くと、現在スライド + 次スライド + Notes が同時に見える 3 枠レイアウトになる。`BroadcastChannel` で観覧側と双方向同期。
