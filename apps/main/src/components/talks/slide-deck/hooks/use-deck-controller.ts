@@ -69,5 +69,5 @@ export const useDeckController = ({
     onToggleFullscreen: toggleFullscreen,
   });
 
-  return { index, next, prev };
+  return { index, next, prev, goTo };
 };
