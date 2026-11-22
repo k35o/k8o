@@ -15,7 +15,6 @@ export async function GET({
     return new Response('Not Found', { status: 404 });
   }
   return OgImage({
-    category: 'Blog',
     title: blog.title,
     code: (await getBlogOgCode(slug)) ?? undefined,
   });

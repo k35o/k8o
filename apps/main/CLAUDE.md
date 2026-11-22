@@ -106,7 +106,7 @@ k8o.me のアプリ。ブログ(MDX)、トークとそのスライド、Lab の�
 - `/artifacts` は `components/artifacts/artifacts/artifacts.ts` の一覧を、まとまり（`ARTIFACT_GROUPS`）ごとの棚に並べる。各項目の最後の版と公開日は、ビルドが npm のレジストリから読む（`getLatestReleases`。プレリリースは数えない）。レジストリの読み取りはビルドの中で覚え、ホームの Activity と分け合う。`@k8ordo/*` は同じ版でそろって出るので、k8ordo は `@k8ordo/ui` の版で代表する。読めなかったパッケージは警告を出して版を出さず、ビルドは止めない。デザインシステムに無いアイコンは `components/artifacts/artifact-icons` に、同じ升目と線の太さで描く
 - `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く（並び・lastmod・changefreq と XML の形は `sitemap.test.ts`）。lastmod は記事の更新日とトークの登壇の日から決め、ビルドの時刻は使わない。route.ts があるので、framework は `sitemap.xml` を書かない
 - `paths.ts` はページと同じバンドルで走るので、alias と `@repo/*` をそのまま import でき、覚えた一覧（`memoizeInBuild`）をページと分け合う
-- OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
+- OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。絵（`components/site/og-image`）は 1 つの形で、左に題とアイコンを置き、記事の `[!og]` の印を付けたコードがあれば右にそのパネルを置く。パネルの無い OG（トーク・一覧・コードの無い記事など）は、題を横いっぱいに大きく描く。区画の名前（Blog・Talks）は描かない。フォントは `shared/og/fonts` に置いたものだけを使い、ビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 
 ## セキュリティヘッダー
 

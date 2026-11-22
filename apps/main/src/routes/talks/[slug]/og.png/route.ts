@@ -10,5 +10,5 @@ export async function GET({
   if (talk === undefined) {
     return new Response('Not Found', { status: 404 });
   }
-  return OgImage({ category: 'Talks', title: talk.title });
+  return OgImage({ title: talk.title });
 }
