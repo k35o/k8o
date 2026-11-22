@@ -1,6 +1,7 @@
 import * as z from 'zod/mini';
 
-import { PDF_PAGE_WIDTHS, pdfPageImage } from '@/site/pdf-deck-files';
+// upload:talk-deck が素の Node でこのファイルを読むので、@/ の別名を使わず拡張子まで書く
+import { PDF_PAGE_WIDTHS, pdfPageImage } from '../../../site/pdf-deck-files.ts';
 
 // ページの画像の src と srcSet。page は 1 始まり
 export const pdfPageSources = (
