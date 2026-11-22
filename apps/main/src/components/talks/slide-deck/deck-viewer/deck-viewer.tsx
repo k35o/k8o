@@ -27,7 +27,7 @@ export const DeckViewer: FC<{
   bleed?: boolean;
 }> = ({ slug, title, slides, qrUrl, bleed = false }) => {
   const total = slides.length;
-  const { index, next, prev } = useDeckController({
+  const { index, next, prev, goTo } = useDeckController({
     total,
     channelName: `slides:${slug}`,
   });
@@ -127,7 +127,9 @@ export const DeckViewer: FC<{
           </div>
         </header>
       )}
-      {!isMaximized && <ProgressBar current={index} total={total} />}
+      {!isMaximized && (
+        <ProgressBar current={index} onSeek={goTo} total={total} />
+      )}
       <div className={styles.stage} data-maximized={isMaximized}>
         <Stage bleed={bleed} flush={isMaximized} key={index} qrUrl={qrUrl}>
           {current?.content}

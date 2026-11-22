@@ -89,6 +89,24 @@ const sendToDeck = async (message: unknown): Promise<void> => {
   probe.close();
 };
 
+// 進捗バーはヘッダーの直下にあり、左端からの割合（ratio）と線からの上下のずれ（offset）で押す所を決める
+const pressBar = async (
+  canvasElement: HTMLElement,
+  ratio: number,
+  offset = 0,
+): Promise<void> => {
+  const header = counterOf(canvasElement)?.closest('header');
+  if (!header) throw new Error('ヘッダーが無い');
+  const { left, width, bottom } = header.getBoundingClientRect();
+  const coords = {
+    clientX: left + width * ratio,
+    clientY: bottom + 1 + offset,
+  };
+  const target = document.elementFromPoint(coords.clientX, coords.clientY);
+  if (target === null) throw new Error('押す所が画面の外にある');
+  await userEvent.pointer({ keys: '[MouseLeft]', target, coords });
+};
+
 const DECK_PATHNAME = '/talks/sample-deck';
 
 // 着かない移る先。router は移る先の URL を先に書き、着くまでデッキを画面に残す
@@ -179,6 +197,91 @@ export const Presenter = meta.story({
     await expect(
       canvas.getByRole('region', { name: '発表者ノート' }),
     ).toHaveTextContent(NOTE);
+  },
+});
+
+export const SeekByProgressBar = meta.story({
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド機能',
+    });
+    const entries = navigation.entries().length;
+
+    const sent = await sentDuring(async () => {
+      await pressBar(canvasElement, 0.9);
+    });
+
+    await expect(
+      await canvas.findByRole('heading', { name: 'まとめ' }),
+    ).toBeInTheDocument();
+    await expect(location.hash).toBe('#3');
+    await expect(sent).toEqual([{ type: 'sync', index: 2 }]);
+    await expect(navigation.entries()).toHaveLength(entries);
+  },
+});
+
+export const SeekToThePressedSegment = meta.story({
+  parameters: { hash: '#3', vrt: { skip: true } },
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', { name: 'まとめ' });
+    const counter = counterOf(canvasElement);
+
+    // 塗りの 1 区間が 1 枚。3 枚なら 1/3 と 2/3 が境
+    await pressBar(canvasElement, 0.32);
+    await expect(counter).toHaveTextContent('1 / 3');
+    await pressBar(canvasElement, 0.35);
+    await expect(counter).toHaveTextContent('2 / 3');
+    await pressBar(canvasElement, 0.999);
+    await expect(counter).toHaveTextContent('3 / 3');
+    await pressBar(canvasElement, 0.001);
+    await expect(counter).toHaveTextContent('1 / 3');
+  },
+});
+
+export const SeekAroundTheThinBar = meta.story({
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド機能',
+    });
+    const counter = counterOf(canvasElement);
+
+    await pressBar(canvasElement, 0.5, -6);
+    await expect(counter).toHaveTextContent('2 / 3');
+    await pressBar(canvasElement, 0.9, 6);
+    await expect(counter).toHaveTextContent('3 / 3');
+
+    // 広げた押せる範囲は、ヘッダーの操作に被らない
+    for (const control of [
+      canvas.getByRole('link', { name: 'Talks一覧へ戻る' }),
+      canvas.getByRole('button', { name: '発表者モード' }),
+    ]) {
+      const { x, width, bottom } = control.getBoundingClientRect();
+      await expect(
+        control.contains(document.elementFromPoint(x + width / 2, bottom - 1)),
+      ).toBe(true);
+    }
+  },
+});
+
+export const KeysAfterSeek = meta.story({
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド機能',
+    });
+    const counter = counterOf(canvasElement);
+
+    await pressBar(canvasElement, 0.5);
+    await expect(counter).toHaveTextContent('2 / 3');
+    await userEvent.keyboard(' ');
+    await expect(counter).toHaveTextContent('3 / 3');
+    await userEvent.keyboard('{ArrowUp}');
+    await expect(counter).toHaveTextContent('2 / 3');
   },
 });
 

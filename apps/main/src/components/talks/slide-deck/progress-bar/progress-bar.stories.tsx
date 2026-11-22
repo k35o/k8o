@@ -1,9 +1,12 @@
+import { fn } from 'storybook/test';
+
 import preview from '../../../../../.storybook/preview';
 import { ProgressBar } from './progress-bar';
 
 const meta = preview.meta({
   title: 'app/talks/slide-deck/progress-bar',
   component: ProgressBar,
+  args: { onSeek: fn() },
 });
 
 export const Start = meta.story({
