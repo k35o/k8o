@@ -1,0 +1,4 @@
+.frame {
+  width: calc(var(--spacing) * 160);
+  height: calc(var(--spacing) * 90);
+}
