@@ -1,5 +1,5 @@
-import type { BrowserMinVersions, CoreBrowser } from './detect-browser.ts';
-import { CORE_BROWSERS } from './detect-browser.ts';
+import type { BrowserMinVersions, CoreBrowser } from './core-browsers.ts';
+import { CORE_BROWSERS } from './core-browsers.ts';
 
 // browserslist のブラウザ名。モバイルは browserslist 側で別名になる
 const BROWSERSLIST_NAMES: Record<CoreBrowser, string> = {

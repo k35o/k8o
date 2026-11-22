@@ -1,6 +1,6 @@
-import { compareVersions } from '../browser/browser-support.ts';
-import { CORE_BROWSERS } from '../browser/detect-browser.ts';
-import type { BrowserMinVersions } from '../browser/detect-browser.ts';
+import { compareVersions } from '../browser/compare-versions.ts';
+import { CORE_BROWSERS } from '../browser/core-browsers.ts';
+import type { BrowserMinVersions } from '../browser/core-browsers.ts';
 import { isRecord } from './is-record.ts';
 import type {
   BaselineBrowserSupport,

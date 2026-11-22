@@ -25,13 +25,13 @@
       "types": "./src/baseline/transform-upstream.ts",
       "default": "./src/baseline/transform-upstream.ts"
     },
-    "./browser/detect-browser": {
-      "types": "./src/browser/detect-browser.ts",
-      "default": "./src/browser/detect-browser.ts"
+    "./browser/compare-versions": {
+      "types": "./src/browser/compare-versions.ts",
+      "default": "./src/browser/compare-versions.ts"
     },
-    "./browser/browser-support": {
-      "types": "./src/browser/browser-support.ts",
-      "default": "./src/browser/browser-support.ts"
+    "./browser/core-browsers": {
+      "types": "./src/browser/core-browsers.ts",
+      "default": "./src/browser/core-browsers.ts"
     },
     "./browser/browserslist": {
       "types": "./src/browser/browserslist.ts",

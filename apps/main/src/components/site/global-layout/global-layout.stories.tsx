@@ -2,6 +2,7 @@ import type { ComponentProps } from 'react';
 import { expect } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
+import { lackBaseline } from '../browser-support-notice/lack-baseline-story';
 import { GlobalLayout } from './global-layout';
 
 const meta = preview.meta({
@@ -105,19 +106,9 @@ export const NoSpaceBelowFooterOnWide = meta.story({
   },
 });
 
-// 古いブラウザ判定時: 最上部に常時バナー、ヘッダーに警告マークが出る。
-export const OutdatedBrowser = meta.story({
-  args: {
-    minVersions: {
-      chrome: '9999',
-      chrome_android: '9999',
-      edge: '9999',
-      firefox: '9999',
-      firefox_android: '9999',
-      safari: '9999',
-      safari_ios: '9999',
-    },
-  },
+// Baseline の機能が揃っていないブラウザには、最上部に常時バナーが出る。
+export const UnsupportedBrowser = meta.story({
+  beforeEach: lackBaseline,
   // バナーはクライアント側のブラウザ判定後に描画されるため、表示を待ってから
   // VRT のスクリーンショットが撮影されるようにする
   play: async ({ canvas }) => {
