@@ -50,6 +50,7 @@ const readingList: ReadingList = {
     { id: 2, title: 'web.dev' },
   ],
   digests: [],
+  days: [],
 };
 
 const seriesOf = (length: number): ReadingList => ({
@@ -65,6 +66,7 @@ const seriesOf = (length: number): ReadingList => ({
   })),
   sources: readingList.sources,
   digests: [],
+  days: [],
 });
 
 // 初めの描画で先頭だけを描く件数より多い

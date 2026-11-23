@@ -39,6 +39,7 @@ const readingList: ReadingList = {
     { id: 2, title: 'web.dev' },
   ],
   digests: [],
+  days: [],
 };
 
 const requested = fn();

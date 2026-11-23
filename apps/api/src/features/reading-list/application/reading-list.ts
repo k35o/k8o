@@ -10,7 +10,8 @@ import type {
   ReadingListArticle,
   ReadingListSource,
 } from '../infrastructure/reading-list-repository';
-import { digestDateOf } from './digest-days';
+import { digestDateOf, toReadingDays } from './digest-days';
+import type { ReadingDay } from './digest-days';
 import { READING_LIST_FEED_URL, READING_LIST_URL } from './reading-list-url';
 import { readingWindowStart } from './reading-window';
 
@@ -26,13 +27,20 @@ export const getReadingList = async (
   sources: ReadingListSource[];
   // 日ごとの話題。新しい日から。話題をまだ作っていない日は入らない
   digests: ReadingDigest[];
+  // 記事を日ごとのまとめに入れたもの。新しい日から
+  days: ReadingDay[];
 }> => {
   const [articles, sources, digests] = await Promise.all([
     findArticlesSince90Days(nowMs),
     findArticleSources(),
     findDigestsSince(digestDateOf(readingWindowStart(nowMs).toISOString())),
   ]);
-  return { articles, sources, digests };
+  return {
+    articles,
+    sources,
+    digests,
+    days: toReadingDays(articles, digests),
+  };
 };
 
 export const getReadingListFeed = async (nowMs: number): Promise<string> => {

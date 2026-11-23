@@ -204,6 +204,16 @@ const BARE_ARTICLE = {
   summary: null,
   source: SOURCE,
 };
+// 日ごとのまとめの中の記事の形
+const SUMMARIZED_DAY_ARTICLE = {
+  id: 10,
+  title: 'AI が要約した記事',
+  url: 'https://example.com/a',
+  publishedAt: '2026-07-18T09:00:00.000Z',
+  imageUrl: 'https://example.com/a.png',
+  text: '要約 <b>',
+  sourceTitle: 'Example & Blog',
+};
 
 const PUSH_LOG = {
   id: 5,
@@ -1395,18 +1405,12 @@ describe('公開 API', () => {
     });
 
     describe('正常系', () => {
-      it('直近90日の記事・ソース・日ごとの話題を返す', async () => {
+      it('直近90日の記事・ソース・日ごとの話題と、記事を日ごとのまとめに入れたものを返す', async () => {
         const digest: Awaited<ReturnType<typeof findDigestsSince>>[number] = {
-          date: '2026-07-19',
+          date: '2026-07-18',
           overview: 'CSS の話が中心の日。',
-          picks: [{ articleId: 2, reason: '書き方が変わる。' }],
-          topics: [
-            {
-              kind: 'explainer',
-              headline: 'CSS の解説が出た',
-              articleIds: [1],
-            },
-          ],
+          picks: [{ articleId: 10, reason: '書き方が変わる。' }],
+          topics: [],
         };
         vi.mocked(findDigestsSince).mockResolvedValue([digest]);
 
@@ -1418,6 +1422,63 @@ describe('公開 API', () => {
           articles: [SUMMARIZED_ARTICLE, DESCRIBED_ARTICLE, BARE_ARTICLE],
           sources: [{ id: 1, title: 'Example & Blog' }],
           digests: [digest],
+          days: [
+            {
+              date: '2026-07-18',
+              articleCount: 1,
+              overview: 'CSS の話が中心の日。',
+              picks: [
+                { article: SUMMARIZED_DAY_ARTICLE, reason: '書き方が変わる。' },
+              ],
+              topics: [],
+            },
+            {
+              date: '2026-07-17',
+              articleCount: 1,
+              overview: null,
+              picks: [],
+              topics: [
+                {
+                  kind: 'other',
+                  headline: 'この日の記事',
+                  articles: [
+                    {
+                      id: 11,
+                      title: '説明だけの記事',
+                      url: 'https://example.com/b?x=1&y=2',
+                      publishedAt: '2026-07-17T09:00:00.000Z',
+                      imageUrl: null,
+                      text: '元記事の説明',
+                      sourceTitle: 'Example & Blog',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              date: '2026-07-16',
+              articleCount: 1,
+              overview: null,
+              picks: [],
+              topics: [
+                {
+                  kind: 'other',
+                  headline: 'この日の記事',
+                  articles: [
+                    {
+                      id: 12,
+                      title: '説明も要約も無い記事',
+                      url: 'https://example.com/c',
+                      publishedAt: '2026-07-16T09:00:00.000Z',
+                      imageUrl: null,
+                      text: null,
+                      sourceTitle: 'Example & Blog',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         });
         expect(findRecentArticles).toHaveBeenCalledWith(
           '2026-04-21T00:00:00.000Z',
@@ -1459,6 +1520,21 @@ describe('公開 API', () => {
           articles: [SUMMARIZED_ARTICLE],
           sources: [{ id: 1, title: 'Example & Blog' }],
           digests: [],
+          days: [
+            {
+              date: '2026-07-18',
+              articleCount: 1,
+              overview: null,
+              picks: [],
+              topics: [
+                {
+                  kind: 'other',
+                  headline: 'この日の記事',
+                  articles: [SUMMARIZED_DAY_ARTICLE],
+                },
+              ],
+            },
+          ],
         });
       });
 
