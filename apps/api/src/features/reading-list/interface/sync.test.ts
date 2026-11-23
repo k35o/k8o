@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sendPushNotification } from '../../push-notification/interface/commands';
-import { enrichArticleMetadata } from '../application/enrich-articles';
 import { generateDigests } from '../application/generate-digests';
 import { summarizeArticles } from '../application/summarize-articles';
 import { syncArticles } from '../application/sync-articles';
@@ -9,9 +8,6 @@ import { runArticleSync } from './sync';
 
 vi.mock('../../push-notification/interface/commands', () => ({
   sendPushNotification: vi.fn(),
-}));
-vi.mock('../application/enrich-articles', () => ({
-  enrichArticleMetadata: vi.fn(),
 }));
 vi.mock('../application/generate-digests', () => ({
   generateDigests: vi.fn(),
@@ -35,7 +31,6 @@ describe('runArticleSync', () => {
       updatedArticles: 0,
       failedSources: [],
     });
-    vi.mocked(enrichArticleMetadata).mockResolvedValue({ enrichedArticles: 1 });
     vi.mocked(summarizeArticles).mockResolvedValue({
       summarizedArticles: 3,
       failedSummaries: 1,
@@ -54,13 +49,12 @@ describe('runArticleSync', () => {
   });
 
   describe('正常系', () => {
-    it('取り込み・補完・要約の結果をまとめて返し、通知を1回送る', async () => {
+    it('取り込み・要約・まとめの結果をまとめて返し、通知を1回送る', async () => {
       const result = await runArticleSync();
 
       expect(result).toStrictEqual({
         newArticles: 2,
         updatedArticles: 0,
-        enrichedArticles: 1,
         summarizedArticles: 3,
         failedSummaries: 1,
         summaryAborted: false,

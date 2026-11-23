@@ -1,3 +1,5 @@
+import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
+import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 
 import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
@@ -8,8 +10,9 @@ import {
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
-import { mapWithArticleOg } from './article-og';
 import { readingWindowStart } from './reading-window';
+
+const OG_CONCURRENCY = 5;
 
 type FeedArticle = {
   articleSourceId: number;
@@ -115,9 +118,17 @@ export async function syncArticles(): Promise<SyncResult> {
   }
 
   if (newArticles.length > 0) {
-    const newArticleRows = await mapWithArticleOg(
+    const newArticleRows = await mapWithConcurrency(
       newArticles,
-      (article, og) => ({ ...article, ...og }),
+      OG_CONCURRENCY,
+      async (article) => {
+        const og = await fetchOgMetadata(article.url);
+        return {
+          ...article,
+          imageUrl: og.imageUrl ?? null,
+          description: og.description ?? null,
+        };
+      },
     );
     await insertArticlesIgnoringDuplicates(newArticleRows);
   }
