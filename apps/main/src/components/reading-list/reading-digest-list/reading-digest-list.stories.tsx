@@ -1,6 +1,7 @@
-import { expect, within } from 'storybook/test';
+import { expect, spyOn, waitFor, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
+import { mountStoryUrl } from '../../../../.storybook/url-state-story';
 import type {
   ReadingArticle,
   ReadingDay,
@@ -81,6 +82,7 @@ const meta = preview.meta({
   title: 'app/reading-list/reading-digest-list',
   component: ReadingDigestList,
   args: { days },
+  beforeEach: mountStoryUrl,
 });
 
 const dayOf = (canvasElement: HTMLElement, name: RegExp): HTMLElement => {
@@ -170,5 +172,33 @@ export const DayWithoutDigest = meta.story({
     await expect(
       within(day).getByRole('link', { name: 'Introducing spatial CSS' }),
     ).toBeVisible();
+  },
+});
+
+// 一覧が移った先の要素
+let scrolledTo: Element[] = [];
+
+// URL の fragment が日付を指していれば、描いたあとにその日へ移る（RSS の項目のリンク）
+export const ScrollsToFragmentDay = meta.story({
+  parameters: { hash: '#2026-11-17', vrt: { skip: true } },
+  beforeEach: () => {
+    scrolledTo = [];
+    const scroll = spyOn(
+      Element.prototype,
+      'scrollIntoView',
+    ).mockImplementation(function record(this: Element) {
+      scrolledTo.push(this);
+    });
+    return () => {
+      scroll.mockRestore();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const day = dayOf(canvasElement, /11月17日\(火\)/u);
+
+    await expect(day).toHaveAttribute('id', '2026-11-17');
+    await waitFor(async () => {
+      await expect(scrolledTo).toStrictEqual([day]);
+    });
   },
 });
