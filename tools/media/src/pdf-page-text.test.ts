@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { extractPageBlocks } from './pdf-page-text';
-import type { PdfTextContentItem } from './pdf-page-text';
+import { extractPageBlocks } from './pdf-page-text.ts';
+import type { PdfTextContentItem } from './pdf-page-text.ts';
 
 const view = [0, 0, 1000, 500];
 

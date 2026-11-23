@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - tools/*
 
 allowBuilds:
   esbuild: false

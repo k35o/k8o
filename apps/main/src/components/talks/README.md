@@ -15,10 +15,10 @@ PDF のデッキは、ページの画像を枠（観覧・発表者モード・�
 ### 1. 変換して上げる
 
 ```bash
-fnox exec -P vercel -- pnpm run -F main upload:talk-deck ./my-talk.pdf --slug my-talk --notes ./my-talk-notes.md
+fnox exec -P vercel -- pnpm run -F @repo/media upload:talk-deck ./my-talk.pdf --slug my-talk --notes ./my-talk-notes.md
 ```
 
-`--notes` は発表者ノートのテキストで、省ける。`---` だけの行でページごとに分け、n 番目の塊が n ページ目のノートになる。ノートは発表者モードにだけ出るが、ページのデータには入るので、読まれて困ることは書かない。
+道具は `tools/media` にある（`tools/media/CLAUDE.md`）。パスはコマンドを流した場所から解く。`--notes` は発表者ノートのテキストで、省ける。`---` だけの行でページごとに分け、n 番目の塊が n ページ目のノートになる。ノートは発表者モードにだけ出るが、ページのデータには入るので、読まれて困ることは書かない。
 
 ```
 表紙。挨拶して題を読む。
@@ -33,7 +33,7 @@ fnox exec -P vercel -- pnpm run -F main upload:talk-deck ./my-talk.pdf --slug my
 4 ページ目のノート（3 ページ目は無し）。
 ```
 
-`public/talks/my-talk/`（git は見ない）と、ストアの `talks/my-talk/` に次を書く。元の PDF はストアにだけ置く。同じ slug で流し直すと置き換わる。`--local` は手元に書くだけで上げない。
+`apps/main/public/talks/my-talk/`（git は見ない）と、ストアの `talks/my-talk/` に次を書く。元の PDF はストアにだけ置く。同じ slug で流し直すと置き換わる。`--local` は手元に書くだけで上げない。
 
 ```
 deck.json               ページごとの寸法・ノートと、文字・リンクの位置
@@ -123,7 +123,7 @@ MDX では import せずに使う。`slide-mdx` の部品を、`slide-article` �
 | `**bold**` | (slides の `<strong>` は primary teal) |
 | `> 引用` | blockquote (primary 縦線) |
 
-画像は markdown `![]()` ではなく `<Image src="..." width={...} height={...} />` を使う。画像は `pnpm run -F main optimize:image` で AVIF にして `apps/main/public/talks/<slug>-<名前>.avif` に置き、`src` に `/talks/<slug>-<名前>.avif` を渡す。
+画像は markdown `![]()` ではなく `<Image src="..." width={...} height={...} />` を使う。画像は `pnpm run -F @repo/media optimize:image` で AVIF にして `apps/main/public/talks/<slug>-<名前>.avif` に置き、`src` に `/talks/<slug>-<名前>.avif` を渡す。
 
 ## キーボード操作
 

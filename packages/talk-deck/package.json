@@ -1,0 +1,29 @@
+{
+  "name": "@repo/talk-deck",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PDF から作るトークのデッキの形（deck.json とファイルの置き場所）",
+  "type": "module",
+  "exports": {
+    "./deck": {
+      "types": "./src/deck.ts",
+      "default": "./src/deck.ts"
+    },
+    "./files": {
+      "types": "./src/files.ts",
+      "default": "./src/files.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "vitest": "catalog:"
+  }
+}

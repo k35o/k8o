@@ -1,0 +1,25 @@
+{
+  "name": "@repo/media",
+  "version": "1.0.0",
+  "private": true,
+  "description": "画像を AVIF にし、トークの PDF をデッキにして上げる、手で流す道具",
+  "type": "module",
+  "scripts": {
+    "optimize:image": "node src/optimize-image.ts",
+    "upload:talk-deck": "node src/upload-talk-deck.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "1.1.1",
+    "@repo/talk-deck": "workspace:*",
+    "@vercel/blob": "2.9.0",
+    "pdfjs-dist": "6.5.438",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "vitest": "catalog:"
+  }
+}
