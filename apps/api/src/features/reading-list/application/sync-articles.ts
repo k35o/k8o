@@ -5,7 +5,7 @@ import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import {
-  findArticleTitles,
+  findArticleTitlesByUrls,
   findSyncSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
@@ -92,7 +92,10 @@ export async function syncArticles(): Promise<SyncResult> {
     }
   }
 
-  const existingArticles = await findArticleTitles();
+  const existingArticles =
+    allCandidates.length === 0
+      ? []
+      : await findArticleTitlesByUrls(allCandidates.map(({ url }) => url));
   const existingByUrl = new Map(existingArticles.map((a) => [a.url, a.title]));
 
   const newArticles: FeedArticle[] = [];
