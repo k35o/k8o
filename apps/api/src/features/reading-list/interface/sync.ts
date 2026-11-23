@@ -1,8 +1,6 @@
 // push-notification は別 feature だが、通知の配線は HTTP 境界(interface)の責務と
 // して interface 間 import を許容する（browser-support/interface/sync.ts と同じ扱い）。
 import { sendPushNotification } from '../../push-notification/interface/commands';
-import { enrichArticleMetadata } from '../application/enrich-articles';
-import type { EnrichResult } from '../application/enrich-articles';
 import { generateDigests } from '../application/generate-digests';
 import type { DigestResult } from '../application/generate-digests';
 import { READING_LIST_URL } from '../application/reading-list-url';
@@ -17,15 +15,11 @@ const SUMMARY_DEADLINE_MS = 180_000;
 // 日ごとの話題は要約のあとに作る。締め切りの直前に始めた 1 日（生成で最大約 60 秒）を残す
 const DIGEST_DEADLINE_MS = 225_000;
 
-export type ArticleSyncSummary = SyncResult &
-  EnrichResult &
-  SummarizeResult &
-  DigestResult;
+export type ArticleSyncSummary = SyncResult & SummarizeResult & DigestResult;
 
 export async function runArticleSync(): Promise<ArticleSyncSummary> {
   const startedAt = Date.now();
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
-  const { enrichedArticles } = await enrichArticleMetadata();
   const { summarizedArticles, failedSummaries, summaryAborted } =
     await summarizeArticles(startedAt + SUMMARY_DEADLINE_MS).catch(
       (error: unknown) => {
@@ -75,7 +69,6 @@ export async function runArticleSync(): Promise<ArticleSyncSummary> {
   return {
     newArticles,
     updatedArticles,
-    enrichedArticles,
     summarizedArticles,
     failedSummaries,
     summaryAborted,

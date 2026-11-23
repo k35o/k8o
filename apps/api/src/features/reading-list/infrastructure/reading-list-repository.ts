@@ -95,17 +95,6 @@ export const updateArticleTitles = async (
   );
 };
 
-export const findEnrichTargets = (since: string, limit: number) =>
-  db.query.articles.findMany({
-    columns: { id: true, url: true },
-    where: and(
-      isNull(db._schema.articles.imageUrl),
-      isNull(db._schema.articles.description),
-      gte(db._schema.articles.publishedAt, since),
-    ),
-    limit,
-  });
-
 export type SummaryTarget = {
   id: number;
   url: string;
@@ -209,14 +198,4 @@ export const countSummaryProgress = async (
     unsummarized: unsummarized[0]?.value ?? 0,
     summaryGaveUp: gaveUp[0]?.value ?? 0,
   };
-};
-
-export const updateArticleOgById = async (
-  id: number,
-  og: { imageUrl: string | null; description: string | null },
-): Promise<void> => {
-  await db
-    .update(db._schema.articles)
-    .set(og)
-    .where(eq(db._schema.articles.id, id));
 };
