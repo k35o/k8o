@@ -1,5 +1,15 @@
 import { db } from '@repo/database';
-import { and, count, desc, eq, gte, isNull, lt, ne } from '@repo/database/orm';
+import {
+  and,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNull,
+  lt,
+  ne,
+} from '@repo/database/orm';
 
 // 記事を取り込むソース。manual は取り込まない
 export const findSyncSources = () =>
@@ -57,9 +67,12 @@ export const findArticleSources = (): Promise<ReadingListSource[]> =>
     orderBy: (sources) => [sources.title],
   });
 
-export const findArticleTitles = () =>
+export const findArticleTitlesByUrls = (
+  urls: string[],
+): Promise<Array<{ url: string; title: string }>> =>
   db.query.articles.findMany({
     columns: { url: true, title: true },
+    where: inArray(db._schema.articles.url, urls),
   });
 
 export type NewArticleRow = {
