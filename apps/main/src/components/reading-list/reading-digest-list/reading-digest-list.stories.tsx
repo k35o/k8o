@@ -1,68 +1,61 @@
 import { expect, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
-import type { ReadingList } from '../reading-list-source/reading-list-source';
+import type {
+  ReadingArticle,
+  ReadingDay,
+} from '../reading-list-source/reading-list-source';
 import { ReadingDigestList } from './reading-digest-list';
 
-const vercel = { id: 1, title: 'Vercel', siteUrl: 'https://vercel.com/blog' };
-const cssTricks = {
-  id: 2,
-  title: 'CSS-Tricks',
-  siteUrl: 'https://css-tricks.com',
+const gptLive: ReadingArticle = {
+  id: 4,
+  title: 'GPT-Live 1.1 now available on AI Gateway',
+  url: 'https://vercel.com/changelog/gpt-live',
+  publishedAt: '2026-11-19T05:00:00.000Z',
+  imageUrl: null,
+  text: 'OpenAIの全二重音声モデル「GPT-Live 1.1」がAI Gatewayで利用可能になりました。話しながら同時に聞き取れるため、通話相手は返答の途中で間を置いたり、割り込んだり、補足を加えたりできます。',
+  sourceTitle: 'Vercel',
 };
 
-const articles: ReadingList['articles'] = [
-  {
-    id: 4,
-    title: 'GPT-Live 1.1 now available on AI Gateway',
-    url: 'https://vercel.com/changelog/gpt-live',
-    publishedAt: '2026-11-19T05:00:00.000Z',
-    imageUrl: null,
-    description: null,
-    summary:
-      'OpenAIの全二重音声モデル「GPT-Live 1.1」がAI Gatewayで利用可能になりました。話しながら同時に聞き取れるため、通話相手は返答の途中で間を置いたり、割り込んだり、補足を加えたりできます。',
-    source: vercel,
-  },
-  {
-    id: 3,
-    title: 'Liquid AI d1.2 is now available on AI Gateway',
-    url: 'https://vercel.com/changelog/liquid',
-    publishedAt: '2026-11-19T04:00:00.000Z',
-    imageUrl: null,
-    description: 'Liquid AI の決定モデルが使えるようになった。',
-    summary: null,
-    source: vercel,
-  },
-  {
-    id: 2,
-    title: 'scroll-state()',
-    url: 'https://css-tricks.com/scroll-state',
-    publishedAt: '2026-11-19T02:00:00.000Z',
-    imageUrl: null,
-    description: null,
-    summary: null,
-    source: cssTricks,
-  },
-  {
-    id: 1,
-    title: 'Introducing spatial CSS',
-    url: 'https://css-tricks.com/spatial',
-    publishedAt: '2026-11-17T02:00:00.000Z',
-    imageUrl: null,
-    description: null,
-    summary: null,
-    source: cssTricks,
-  },
-];
+const liquid: ReadingArticle = {
+  id: 3,
+  title: 'Liquid AI d1.2 is now available on AI Gateway',
+  url: 'https://vercel.com/changelog/liquid',
+  publishedAt: '2026-11-19T04:00:00.000Z',
+  imageUrl: null,
+  text: 'Liquid AI の決定モデルが使えるようになった。',
+  sourceTitle: 'Vercel',
+};
 
-const digests: ReadingList['digests'] = [
+const scrollState: ReadingArticle = {
+  id: 2,
+  title: 'scroll-state()',
+  url: 'https://css-tricks.com/scroll-state',
+  publishedAt: '2026-11-19T02:00:00.000Z',
+  imageUrl: null,
+  text: null,
+  sourceTitle: 'CSS-Tricks',
+};
+
+const spatial: ReadingArticle = {
+  id: 1,
+  title: 'Introducing spatial CSS',
+  url: 'https://css-tricks.com/spatial',
+  publishedAt: '2026-11-17T02:00:00.000Z',
+  imageUrl: null,
+  text: null,
+  sourceTitle: 'CSS-Tricks',
+};
+
+const days: ReadingDay[] = [
   {
     date: '2026-11-19',
+    articleCount: 3,
     overview:
       'CSS の解説が1件と、Vercel のモデル追加が2件。大きな発表は無く、小さな更新が中心の日です。',
     picks: [
       {
-        articleId: 2,
+        article: scrollState,
         reason:
           'スクロールの状態を CSS だけで問い合わせられる。JavaScript の監視を置き換えられる。',
       },
@@ -71,27 +64,39 @@ const digests: ReadingList['digests'] = [
       {
         kind: 'release',
         headline: 'AI Gateway に新しいモデルが2つ加わった',
-        articleIds: [4, 3],
+        articles: [gptLive, liquid],
       },
     ],
+  },
+  {
+    date: '2026-11-17',
+    articleCount: 1,
+    overview: null,
+    picks: [],
+    topics: [{ kind: 'other', headline: 'この日の記事', articles: [spatial] }],
   },
 ];
 
 const meta = preview.meta({
   title: 'app/reading-list/reading-digest-list',
   component: ReadingDigestList,
-  args: { articles, digests },
+  args: { days },
 });
+
+const dayOf = (canvasElement: HTMLElement, name: RegExp): HTMLElement => {
+  const day = within(canvasElement)
+    .getByRole('heading', { name })
+    .closest('section');
+  if (day === null) {
+    throw new Error(`${String(name)} の区画がありません`);
+  }
+  return day;
+};
 
 // 1 日は、全体像・見てほしい記事・残りの話題の順に並ぶ。見てほしい記事は畳まない
 export const Primary = meta.story({
-  play: async ({ canvas }) => {
-    const day = canvas
-      .getByRole('heading', { name: /11月19日\(木\)/u })
-      .closest('section');
-    if (day === null) {
-      throw new Error('11月19日の区画がありません');
-    }
+  play: async ({ canvasElement }) => {
+    const day = dayOf(canvasElement, /11月19日\(木\)/u);
     await expect(
       within(day).getByText(/大きな発表は無く、小さな更新が中心の日です。/u),
     ).toBeVisible();
@@ -151,13 +156,8 @@ export const OpensTopic = meta.story({
 // まとめをまだ作っていない日は、全体像も見てほしい記事も出さず、その日の記事をまとめた 1 行にする
 export const DayWithoutDigest = meta.story({
   parameters: { vrt: { skip: true } },
-  play: async ({ canvas, userEvent }) => {
-    const day = canvas
-      .getByRole('heading', { name: /11月17日\(火\)/u })
-      .closest('section');
-    if (day === null) {
-      throw new Error('11月17日の区画がありません');
-    }
+  play: async ({ canvasElement, userEvent }) => {
+    const day = dayOf(canvasElement, /11月17日\(火\)/u);
     await expect(
       within(day).queryByRole('heading', { name: '見てほしい' }),
     ).toBeNull();

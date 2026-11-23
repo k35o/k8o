@@ -6,7 +6,7 @@ import {
 } from '../infrastructure/digest-repository';
 import { writeDigest } from '../infrastructure/digest-writer';
 import { findRecentArticles } from '../infrastructure/reading-list-repository';
-import type { ReadingListArticle } from '../infrastructure/reading-list-repository';
+import type { ReadingArticle } from '../infrastructure/reading-list-repository';
 import { generateDigests } from './generate-digests';
 
 vi.mock('../infrastructure/digest-repository', () => ({
@@ -23,15 +23,14 @@ vi.mock('../infrastructure/reading-list-repository', () => ({
 const NOW = Date.parse('2026-11-20T00:00:00.000Z');
 const FAR = NOW + 60_000;
 
-const article = (id: number, publishedAt: string): ReadingListArticle => ({
+const article = (id: number, publishedAt: string): ReadingArticle => ({
   id,
   title: `記事${id}`,
   url: `https://example.com/${id}`,
   publishedAt,
   imageUrl: null,
-  description: '説明',
-  summary: null,
-  source: { id: 1, title: 'Example', siteUrl: 'https://example.com' },
+  text: `本文${id}`,
+  sourceTitle: 'Example',
 });
 
 describe('generateDigests', () => {
@@ -98,18 +97,19 @@ describe('generateDigests', () => {
       ]);
     });
 
-    it('要約があれば要約を、無ければ説明を渡す', async () => {
+    it('書き手には、その日の記事を新しい順に渡す', async () => {
       vi.mocked(findRecentArticles).mockResolvedValue([
-        { ...article(2, '2026-11-19T03:00:00.000Z'), summary: '要約' },
+        article(2, '2026-11-19T03:00:00.000Z'),
         article(1, '2026-11-19T01:00:00.000Z'),
       ]);
 
       await generateDigests(NOW, FAR);
 
-      expect(writeDigest).toHaveBeenCalledExactlyOnceWith([
-        { id: 2, title: '記事2', sourceTitle: 'Example', text: '要約' },
-        { id: 1, title: '記事1', sourceTitle: 'Example', text: '説明' },
-      ]);
+      expect(
+        vi
+          .mocked(writeDigest)
+          .mock.calls.map(([articles]) => articles.map(({ id }) => id)),
+      ).toStrictEqual([[2, 1]]);
     });
 
     it('直近の日は、記事が増えていたら作り直す', async () => {

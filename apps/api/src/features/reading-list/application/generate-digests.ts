@@ -4,12 +4,8 @@ import {
 } from '../infrastructure/digest-repository';
 import { writeDigest } from '../infrastructure/digest-writer';
 import { findRecentArticles } from '../infrastructure/reading-list-repository';
-import {
-  articleKeyOf,
-  digestDateOf,
-  groupByDigestDate,
-  normalizeDigest,
-} from './digest-days';
+import { articleKeyOf, normalizeDigest } from './digest-draft';
+import { groupByReadingDate, readingDateOf } from './reading-date';
 import { readingWindowStart } from './reading-window';
 
 // 初めて動かす回と、止まっていたあとの回に、90 日分を一度に作らない。残りは次の回が作る
@@ -31,18 +27,18 @@ export async function generateDigests(
   const since = readingWindowStart(nowMs).toISOString();
   const [articles, existing] = await Promise.all([
     findRecentArticles(since),
-    findDigestKeysSince(digestDateOf(since)),
+    findDigestKeysSince(readingDateOf(since)),
   ]);
   const keyByDate = new Map(
     existing.map(({ date, articleKey }) => [date, articleKey]),
   );
   // その日の記事を取り込み終える前に作ると、途中の形が RSS に配られる。終わった日だけを作る
-  const today = digestDateOf(new Date(nowMs).toISOString());
-  const rewriteSince = digestDateOf(
+  const today = readingDateOf(new Date(nowMs).toISOString());
+  const rewriteSince = readingDateOf(
     new Date(nowMs - REWRITE_DAYS * DAY_MS).toISOString(),
   );
 
-  const targets = groupByDigestDate(articles)
+  const targets = groupByReadingDate(articles)
     .filter(({ date, articles: dayArticles }) => {
       if (date >= today) {
         return false;
@@ -69,14 +65,7 @@ export async function generateDigests(
     }
     const articleIds = dayArticles.map(({ id }) => id);
     try {
-      const outcome = await writeDigest(
-        dayArticles.map((article) => ({
-          id: article.id,
-          title: article.title,
-          sourceTitle: article.source.title,
-          text: article.summary ?? article.description,
-        })),
-      );
+      const outcome = await writeDigest(dayArticles);
       const digest =
         outcome.kind === 'written'
           ? normalizeDigest(outcome.digest, articleIds)

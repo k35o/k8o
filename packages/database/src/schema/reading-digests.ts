@@ -1,6 +1,6 @@
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-// 話題の性質。other は、どの話題にも入らなかった記事をまとめるときに使う
+// 話題の性質。other は、読むときに、どの話題にも入らなかった記事をまとめる話題に使う
 export const READING_DIGEST_KINDS = [
   'release',
   'explainer',
@@ -27,7 +27,8 @@ export type ReadingDigestTopic = {
 };
 
 // reading-list の、日ごとのまとめ。1 日 1 行で、その日の全体像と、特に見てほしい記事と、
-// 残りの記事をまとめた話題を持つ。どの記事も picks か topics のどちらか 1 か所に入る
+// 記事を束ねた話題を持つ。記事は picks か topics の 1 か所にだけ入り、どこにも入らない記事は読むときに
+// 残りの話題にまとめる
 export const readingDigests = sqliteTable('reading_digests', {
   // 日本時間の YYYY-MM-DD
   date: text('date').primaryKey(),

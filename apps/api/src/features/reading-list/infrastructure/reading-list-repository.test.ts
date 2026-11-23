@@ -2,6 +2,7 @@ import { db } from '@repo/database';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  findRecentArticles,
   insertArticlesIgnoringDuplicates,
   releaseSummaryAttempt,
   reserveSummaryAttempt,
@@ -12,9 +13,11 @@ vi.mock('@repo/database', () => ({
   db: {
     insert: vi.fn(),
     update: vi.fn(),
+    query: { articles: { findMany: vi.fn() } },
     _schema: {
       articles: {
         id: 'articles.id',
+        publishedAt: 'articles.published_at',
         url: 'articles.url',
         summary: 'articles.summary',
         summaryAttempts: 'articles.summary_attempts',
@@ -26,6 +29,7 @@ vi.mock('@repo/database', () => ({
 vi.mock('@repo/database/orm', () => ({
   and: (...conditions: unknown[]) => ({ and: conditions }),
   eq: (column: unknown, value: unknown) => ({ eq: [column, value] }),
+  gte: (column: unknown, value: unknown) => ({ gte: [column, value] }),
   isNull: (column: unknown) => ({ isNull: column }),
 }));
 
@@ -35,6 +39,34 @@ const mockUpdate = (rowsAffected = 1) => {
   vi.mocked(db.update).mockReturnValue({ set } as never);
   return { set, where };
 };
+
+describe('findRecentArticles', () => {
+  it('要約があれば要約を、無ければ元の記事の説明を本文にし、ソースの名前を添える', async () => {
+    const row = {
+      id: 1,
+      title: '記事',
+      url: 'https://example.com/a',
+      publishedAt: '2026-11-19T00:00:00.000Z',
+      imageUrl: null,
+      articleSource: { title: 'Example' },
+    };
+    vi.mocked(db.query.articles.findMany).mockResolvedValue([
+      { ...row, description: '説明', summary: '要約' },
+      { ...row, id: 2, description: '説明', summary: null },
+      { ...row, id: 3, description: null, summary: null },
+    ] as never);
+
+    const articles = await findRecentArticles('2026-08-21T00:00:00.000Z');
+
+    expect(
+      articles.map(({ id, text, sourceTitle }) => ({ id, text, sourceTitle })),
+    ).toStrictEqual([
+      { id: 1, text: '要約', sourceTitle: 'Example' },
+      { id: 2, text: '説明', sourceTitle: 'Example' },
+      { id: 3, text: null, sourceTitle: 'Example' },
+    ]);
+  });
+});
 
 describe('insertArticlesIgnoringDuplicates', () => {
   it('URL重複をonConflictDoNothingで握り、cronの二重起動でも冪等に挿入する', async () => {

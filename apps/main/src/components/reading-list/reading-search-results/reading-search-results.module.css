@@ -1,0 +1,13 @@
+/* ページの背景の飾りに文字を直に載せない（日ごとのまとめと同じ下地） */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 5);
+  border-radius: var(--radius-2xl);
+  background-color: color-mix(
+    in oklab,
+    var(--color-bg-raised) 55%,
+    transparent
+  );
+}

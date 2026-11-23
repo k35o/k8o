@@ -1,220 +1,59 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Button, Card, Drawer, EmptyState, Stack } from '@k8ordo/ui';
 import { BookmarkIcon } from '@k8ordo/ui/icons';
-import {
-  startTransition,
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from 'react';
-import type { FC, ReactNode } from 'react';
+import { useDeferredValue, useMemo } from 'react';
+import type { FC } from 'react';
 
-import type { SortOrder } from '../constants/constants';
-import { FilterBar } from '../filter-bar/filter-bar';
-import { ReadingCard } from '../reading-card/reading-card';
+import { SearchableList } from '@/components/site/searchable-list/searchable-list';
+
 import { ReadingDigestList } from '../reading-digest-list/reading-digest-list';
-import type { ReadingList } from '../reading-list-source/reading-list-source';
-import {
-  readingListState,
-  readSourceIds,
-} from '../search-params/search-params';
-import { filterReadings } from './filter-readings';
+import type { ReadingDay } from '../reading-list-source/reading-list-source';
+import { ReadingSearchResults } from '../reading-search-results/reading-search-results';
+import { readingListState } from './reading-list-state';
+import { searchReadings } from './search-readings';
 
-import styles from './reading-list-content.module.css';
+/**
+ * 検索していないあいだは日ごとのまとめを、検索しているあいだは当たった記事を新しい順に並べる
+ */
+export const ReadingListContent: FC<{ days: readonly ReadingDay[] }> = ({
+  days,
+}) => {
+  const [{ q }, update] = useAppState(readingListState);
+  const query = useDeferredValue(q);
+  const isSearching = query.trim() !== '';
 
-const EMPTY_DIGESTS: ReadingList['digests'] = [];
-
-const FIRST_PAINT_COUNT = 20;
-const BATCH_COUNT = 50;
-
-const subscribeNavigation = (onChange: () => void): (() => void) => {
-  // navigation.transition は、navigatesuccess と navigateerror を配り終えてから null になる
-  const onSettled = (): void => {
-    queueMicrotask(onChange);
-  };
-  navigation.addEventListener('currententrychange', onChange);
-  navigation.addEventListener('navigatesuccess', onSettled);
-  navigation.addEventListener('navigateerror', onSettled);
-  return () => {
-    navigation.removeEventListener('currententrychange', onChange);
-    navigation.removeEventListener('navigatesuccess', onSettled);
-    navigation.removeEventListener('navigateerror', onSettled);
-  };
-};
-
-const isTraversing = (): boolean =>
-  navigation.transition?.navigationType === 'traverse';
-
-// 数百件を一度に描くと、DOM を作るのも並べるのも 1 つの長いタスクになる。初めは画面を埋める先頭だけを描き、
-// 残りはフレームごとに次の件数を足して、短いタスクに分けて描く。戻る・進むでは、ルーターが描いた直後に
-// 前のスクロールの位置へ戻すので、全件を一度に描いて高さをそろえておく
-const useShownCount = (total: number): number => {
-  const traversing = useSyncExternalStore(subscribeNavigation, isTraversing);
-  const [count, setCount] = useState(
-    traversing ? Number.POSITIVE_INFINITY : FIRST_PAINT_COUNT,
+  const results = useMemo(
+    () => (isSearching ? searchReadings(days, query) : []),
+    [days, isSearching, query],
   );
-  const isAllShown = count >= total;
-  // transition の更新は、描き終える前に同じ state へ重ねたものとまとめて描かれる。前の分を描き終える前に
-  // 次のフレームが来ても 1 回分だけ足すよう、足す前の値を描き終えた件数から取る
-  const addBatch = useEffectEvent((): void => {
-    startTransition(() => {
-      setCount(count + BATCH_COUNT);
-    });
-  });
-  useEffect(() => {
-    if (isAllShown) {
-      return undefined;
-    }
-    let frame = requestAnimationFrame(function onFrame(): void {
-      addBatch();
-      frame = requestAnimationFrame(onFrame);
-    });
-    return () => {
-      cancelAnimationFrame(frame);
-    };
-  }, [isAllShown]);
-  return count;
-};
-
-export const ReadingListContent: FC<{
-  readingList: ReadingList;
-  filterIcon: ReactNode;
-}> = ({ readingList, filterIcon }) => {
-  const { articles, sources } = readingList;
-  // api の応答は CDN に 1 時間残り、main と api は別々に出る。話題を持たない前の形の応答でも描く
-  const digests =
-    (readingList as Partial<ReadingList>).digests ?? EMPTY_DIGESTS;
-  const [params, update] = useAppState(readingListState);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const query = params.q;
-  const sourceIds = useMemo(
-    () => readSourceIds(params.source),
-    [params.source],
-  );
-  const sortOrder = params.sort;
-
-  const handleQueryChange = useCallback(
-    (value: string) => {
-      update({ q: value });
-    },
-    [update],
-  );
-
-  const handleSourceChange = useCallback(
-    (ids: number[]) => {
-      update({ source: ids.join(',') });
-    },
-    [update],
-  );
-
-  const handleSortChange = useCallback(
-    (value: SortOrder) => {
-      update({ sort: value });
-    },
-    [update],
-  );
-
-  const filteredArticles = useMemo(
-    () => filterReadings(articles, { query, sourceIds, sortOrder }),
-    [articles, query, sourceIds, sortOrder],
-  );
-
-  // 絞り込みも並べ替えもしていないあいだは、日ごとの話題で見せる。探しているあいだは記事を直に並べる
-  const showsDigest =
-    query === '' && sourceIds.length === 0 && sortOrder === 'newest';
-
-  const shownCount = useShownCount(filteredArticles.length);
-  const shownArticles = filteredArticles.slice(0, shownCount);
-
-  const articleCountBySource = new Map<number, number>();
-  for (const article of articles) {
-    const count = articleCountBySource.get(article.source.id) ?? 0;
-    articleCountBySource.set(article.source.id, count + 1);
-  }
-
-  const filterBarProps = {
-    onQueryChange: handleQueryChange,
-    onSortChange: handleSortChange,
-    onSourceChange: handleSourceChange,
-    query,
-    sortOrder,
-    sourceIds,
-    sources: sources.map((source) => ({
-      id: source.id,
-      title: source.title,
-      articleCount: articleCountBySource.get(source.id) ?? 0,
-    })),
-  };
+  const count = isSearching
+    ? results.length
+    : days.reduce((total, day) => total + day.articleCount, 0);
 
   return (
-    <div className={styles.root}>
-      <aside className={styles.aside}>
-        <Card variant="shadow">
-          <div className={styles.filter}>
-            <FilterBar {...filterBarProps} />
-          </div>
-        </Card>
-      </aside>
-      <div className={styles.main}>
-        <div className={styles.toolbar}>
-          <p className={styles.count}>
-            {filteredArticles.length}件の記事
-            {sourceIds.length > 0 &&
-              ` / ${sourceIds.length}件のソースで絞り込み中`}
-          </p>
-          <div className={styles.drawerButton}>
-            <Button
-              onClick={() => {
-                setIsDrawerOpen(true);
-              }}
-              size="sm"
-              startIcon={filterIcon}
-              variant="outline"
-            >
-              絞り込み
-            </Button>
-          </div>
-        </div>
-        {filteredArticles.length === 0 ? (
-          <EmptyState
-            description="検索条件やソースの選択を変更してみてください"
-            icon={<BookmarkIcon size="lg" />}
-            title="条件に一致する記事がありません"
-          />
-        ) : showsDigest ? (
-          <ReadingDigestList articles={filteredArticles} digests={digests} />
-        ) : (
-          <Stack gap="md">
-            {shownArticles.map((article) => (
-              <ReadingCard
-                description={article.description}
-                imageUrl={article.imageUrl}
-                key={article.id}
-                publishedAt={article.publishedAt}
-                sourceTitle={article.source.title}
-                summary={article.summary}
-                title={article.title}
-                url={article.url}
-              />
-            ))}
-          </Stack>
-        )}
-      </div>
-      <Drawer
-        isOpen={isDrawerOpen}
-        onClose={() => {
-          setIsDrawerOpen(false);
-        }}
-        title="絞り込み"
-      >
-        <FilterBar {...filterBarProps} showHeading={false} />
-      </Drawer>
-    </div>
+    <SearchableList
+      countLabel={`${count.toString()}件の記事`}
+      empty={
+        count === 0
+          ? {
+              icon: <BookmarkIcon size="lg" />,
+              title: '条件に一致する記事がありません',
+            }
+          : null
+      }
+      onQueryChange={(typed) => {
+        update({ q: typed });
+      }}
+      placeholder="題・ソースで検索..."
+      query={q}
+      searchLabel="記事を検索"
+    >
+      {isSearching ? (
+        <ReadingSearchResults articles={results} />
+      ) : (
+        <ReadingDigestList days={days} />
+      )}
+    </SearchableList>
   );
 };

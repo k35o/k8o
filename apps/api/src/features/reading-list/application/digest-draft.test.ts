@@ -1,40 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  articleKeyOf,
-  digestDateOf,
-  groupByDigestDate,
-  normalizeDigest,
-} from './digest-days';
-
-describe('digestDateOf', () => {
-  describe('エッジケース', () => {
-    it('日付は日本時間で区切る', () => {
-      expect(digestDateOf('2026-11-19T14:59:59.000Z')).toBe('2026-11-19');
-      expect(digestDateOf('2026-11-19T15:00:00.000Z')).toBe('2026-11-20');
-    });
-  });
-});
-
-describe('groupByDigestDate', () => {
-  describe('正常系', () => {
-    it('記事を日ごとに分け、新しい日から並べる', () => {
-      const days = groupByDigestDate([
-        { id: 3, publishedAt: '2026-11-19T16:00:00.000Z' },
-        { id: 2, publishedAt: '2026-11-19T03:00:00.000Z' },
-        { id: 1, publishedAt: '2026-11-18T03:00:00.000Z' },
-      ]);
-
-      expect(
-        days.map(({ date, articles }) => [date, articles.map(({ id }) => id)]),
-      ).toStrictEqual([
-        ['2026-11-20', [3]],
-        ['2026-11-19', [2]],
-        ['2026-11-18', [1]],
-      ]);
-    });
-  });
-});
+import { articleKeyOf, normalizeDigest } from './digest-draft';
+import type { DigestDraft } from './digest-draft';
 
 describe('articleKeyOf', () => {
   describe('正常系', () => {
@@ -44,9 +11,7 @@ describe('articleKeyOf', () => {
   });
 });
 
-const draft = (
-  overrides: Partial<Parameters<typeof normalizeDigest>[0]> = {},
-): Parameters<typeof normalizeDigest>[0] => ({
+const draft = (overrides: Partial<DigestDraft> = {}): DigestDraft => ({
   overview: 'CSS の話が中心の日。',
   picks: [],
   topics: [],
@@ -107,7 +72,7 @@ describe('normalizeDigest', () => {
       });
     });
 
-    it('どこにも入らなかった記事を、最後の話題にまとめる', () => {
+    it('どこにも入らなかった記事は、まとめに入れない', () => {
       expect(
         normalizeDigest(
           draft({
@@ -117,11 +82,10 @@ describe('normalizeDigest', () => {
         )?.topics,
       ).toStrictEqual([
         { kind: 'release', headline: '話題A', articleIds: [1] },
-        { kind: 'other', headline: 'そのほかの記事', articleIds: [2, 3] },
       ]);
     });
 
-    it('見てほしい記事は 3 件までにし、残りは話題に回す', () => {
+    it('見てほしい記事は 3 件までにする', () => {
       const digest = normalizeDigest(
         draft({
           picks: [1, 2, 3, 4].map((articleId) => ({
@@ -134,9 +98,6 @@ describe('normalizeDigest', () => {
 
       expect(digest?.picks.map(({ articleId }) => articleId)).toStrictEqual([
         1, 2, 3,
-      ]);
-      expect(digest?.topics).toStrictEqual([
-        { kind: 'other', headline: 'そのほかの記事', articleIds: [4] },
       ]);
     });
 
@@ -173,11 +134,25 @@ describe('normalizeDigest', () => {
       ).toStrictEqual({
         overview: 'CSS の話が中心の日。',
         picks: [],
-        topics: [
-          { kind: 'release', headline: '話題A', articleIds: [1] },
-          { kind: 'other', headline: 'そのほかの記事', articleIds: [2] },
-        ],
+        topics: [{ kind: 'release', headline: '話題A', articleIds: [1] }],
       });
+    });
+
+    it('見出しが空か長すぎる話題は捨てる', () => {
+      expect(
+        normalizeDigest(
+          draft({
+            topics: [
+              { kind: 'release', headline: ' ', articleIds: [1] },
+              { kind: 'report', headline: 'あ'.repeat(121), articleIds: [2] },
+              { kind: 'opinion', headline: '話題C', articleIds: [3] },
+            ],
+          }),
+          [1, 2, 3],
+        )?.topics,
+      ).toStrictEqual([
+        { kind: 'opinion', headline: '話題C', articleIds: [3] },
+      ]);
     });
 
     it('全体像が空か長すぎれば null を返す', () => {

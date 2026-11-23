@@ -2,7 +2,7 @@
 
 import { Alert, Button } from '@k8ordo/ui';
 import { use, useEffect, useState } from 'react';
-import type { FC, ReactNode } from 'react';
+import type { FC } from 'react';
 
 import { ReadingListContent } from '../reading-list-content/reading-list-content';
 import {
@@ -10,12 +10,10 @@ import {
   loadReadingList,
 } from '../reading-list-source/reading-list-source';
 
-export const ReadingListLoader: FC<{ filterIcon: ReactNode }> = ({
-  filterIcon,
-}) => {
+export const ReadingListLoader: FC = () => {
   const [request, setRequest] = useState(loadReadingList);
-  const readingList = use(request);
-  const failed = readingList === null;
+  const days = use(request);
+  const failed = days === null;
 
   // 案内を出したら読めなかった結果を捨て、あとで開き直したときに新しく読む
   useEffect(() => {
@@ -50,7 +48,5 @@ export const ReadingListLoader: FC<{ filterIcon: ReactNode }> = ({
     );
   }
 
-  return (
-    <ReadingListContent filterIcon={filterIcon} readingList={readingList} />
-  );
+  return <ReadingListContent days={days} />;
 };
