@@ -9,10 +9,10 @@
 
 ```bash
 pnpm run -F @repo/media optimize:image <入力> <出力.avif> [--max-width <px>]
-fnox exec -P vercel -- pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local]
+fnox exec -P vercel -- pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local] [--replace]
 ```
 
 - 引数のパスは、コマンドを流した場所から解く（`src/invocation-dir.ts`）
-- `upload:talk-deck` の `--local` はストアに触れず、`apps/main/public/talks/<slug>/` に書くだけで、main の dev でそのまま見られる
+- `upload:talk-deck` は、ストアの `talks/<slug>/` に何かあると、`--replace` が無ければ何も書かずに止まる。`--local` はストアに触れず、`apps/main/public/talks/<slug>/` に書くだけで、main の dev でそのまま見られる
 - デッキの形（`deck.json`・ファイルの名前・ストアのパス）は `@repo/talk-deck` から読み、main と同じものを使う。PDF を読む処理（ページの文字の抽出・ノートの分割）は、ここにだけ置く
 - script は素の Node が TS のまま読むので、相対 import に拡張子を書く。モジュールの読み込みが Node で通ることは `src/upload-talk-deck.test.ts` が確かめる

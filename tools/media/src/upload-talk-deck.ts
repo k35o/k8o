@@ -1,11 +1,12 @@
 // トークのスライドの PDF をデッキにして、Vercel Blob の非公開ストアへ上げる。リポジトリは公開なので、
 // デッキの中身はコミットしない。
 //
-// 実行: pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local]
+// 実行: pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local] [--replace]
 // ページごとの AVIF（960w・1920w）と、ページごとの寸法・文字とリンクの位置を持つ deck.json を
 // apps/main/public/talks/<slug>/（git は見ない）に書き、同じものと元の PDF をストアの talks/<slug>/ に置く。元の PDF は
 // 保管のためで、サイトには出ない。ストアに残る前の版のファイルは消す。--notes は発表者ノートのテキストで、--- だけの行でページごとに分ける（n 番目の塊が n ページ目）。
 // --local は書くだけで上げない。上げるには BLOB_READ_WRITE_TOKEN が要る。
+// ストアの talks/<slug>/ に何かあるときは、--replace が無ければ何も書かずに止まる。
 // パスは pnpm を呼んだ場所から解く。
 // サイトに出るのは、talks の行の slug にこの slug を入れる migration をマージしたとき。
 
@@ -33,7 +34,7 @@ import { extractPageBlocks } from './pdf-page-text.ts';
 import { splitNotes } from './split-notes.ts';
 
 const USAGE =
-  '使い方: pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local]';
+  '使い方: pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local] [--replace]';
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,
@@ -41,6 +42,7 @@ const { positionals, values } = parseArgs({
     slug: { type: 'string' },
     notes: { type: 'string' },
     local: { type: 'boolean', default: false },
+    replace: { type: 'boolean', default: false },
   },
 });
 
@@ -63,6 +65,15 @@ if (!values.local && !process.env['BLOB_READ_WRITE_TOKEN']) {
 }
 
 const prefix = pdfDeckBlobPrefix(slug);
+
+if (!values.local && !values.replace) {
+  const { blobs } = await list({ prefix, limit: 1 });
+  if (blobs.length > 0) {
+    throw new Error(
+      `ストアの ${prefix} にデッキがある。置き換えるなら --replace を付ける`,
+    );
+  }
+}
 
 const input = fromInvocationDir(inputArg);
 const outDir = join(

@@ -13,7 +13,7 @@ describe('upload-talk-deck', () => {
       await expect(
         promisify(execFile)(process.execPath, [script]),
       ).rejects.toThrow(
-        '使い方: pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local]',
+        '使い方: pnpm run -F @repo/media upload:talk-deck <PDF> --slug <slug> [--notes <ファイル>] [--local] [--replace]',
       );
     });
 

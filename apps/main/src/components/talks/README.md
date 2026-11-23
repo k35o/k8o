@@ -33,7 +33,7 @@ fnox exec -P vercel -- pnpm run -F @repo/media upload:talk-deck ./my-talk.pdf --
 4 ページ目のノート（3 ページ目は無し）。
 ```
 
-`apps/main/public/talks/my-talk/`（git は見ない）と、ストアの `talks/my-talk/` に次を書く。元の PDF はストアにだけ置く。同じ slug で流し直すと置き換わる。`--local` は手元に書くだけで上げない。
+`apps/main/public/talks/my-talk/`（git は見ない）と、ストアの `talks/my-talk/` に次を書く。元の PDF はストアにだけ置く。ストアに同じ slug のデッキがあると、何も書かずに止まる。置き換えるときは `--replace` を付ける。`--local` は手元に書くだけで上げない。
 
 ```
 deck.json               ページごとの寸法・ノートと、文字・リンクの位置
