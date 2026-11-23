@@ -66,9 +66,9 @@ describe('generateDigests', () => {
   describe('正常系', () => {
     it('話題の無い日を、日本時間の日ごとにまとめて作る', async () => {
       vi.mocked(findRecentArticles).mockResolvedValue([
-        article(3, '2026-11-19T16:00:00.000Z'),
-        article(2, '2026-11-19T03:00:00.000Z'),
-        article(1, '2026-11-19T01:00:00.000Z'),
+        article(3, '2026-11-18T16:00:00.000Z'),
+        article(2, '2026-11-18T03:00:00.000Z'),
+        article(1, '2026-11-18T01:00:00.000Z'),
       ]);
 
       const result = await generateDigests(NOW, FAR);
@@ -82,14 +82,14 @@ describe('generateDigests', () => {
         vi.mocked(saveDigest).mock.calls.map(([digest]) => digest),
       ).toStrictEqual([
         {
-          date: '2026-11-20',
+          date: '2026-11-19',
           overview: '全体像',
           picks: [],
           topics: [{ kind: 'release', headline: '話題', articleIds: [3] }],
           articleKey: '3',
         },
         {
-          date: '2026-11-19',
+          date: '2026-11-18',
           overview: '全体像',
           picks: [],
           topics: [{ kind: 'release', headline: '話題', articleIds: [2, 1] }],
@@ -128,6 +128,20 @@ describe('generateDigests', () => {
   });
 
   describe('エッジケース', () => {
+    it('日本時間でまだ終わっていない日は作らない', async () => {
+      vi.mocked(findRecentArticles).mockResolvedValue([
+        article(2, '2026-11-19T16:00:00.000Z'),
+        article(1, '2026-11-19T14:00:00.000Z'),
+      ]);
+
+      const result = await generateDigests(NOW, FAR);
+
+      expect(
+        vi.mocked(saveDigest).mock.calls.map(([digest]) => digest.date),
+      ).toStrictEqual(['2026-11-19']);
+      expect(result.writtenDigests).toBe(1);
+    });
+
     it('記事が同じ日は作り直さない', async () => {
       vi.mocked(findRecentArticles).mockResolvedValue([
         article(1, '2026-11-19T01:00:00.000Z'),
@@ -169,7 +183,7 @@ describe('generateDigests', () => {
 
       expect(result.writtenDigests).toBe(10);
       expect(vi.mocked(saveDigest).mock.calls.at(-1)?.[0].date).toBe(
-        '2026-11-11',
+        '2026-11-10',
       );
     });
 
@@ -189,8 +203,8 @@ describe('generateDigests', () => {
   describe('異常系', () => {
     it('話題の形にならなかった日を飛ばして、次の日を作る', async () => {
       vi.mocked(findRecentArticles).mockResolvedValue([
-        article(2, '2026-11-19T16:00:00.000Z'),
-        article(1, '2026-11-19T01:00:00.000Z'),
+        article(2, '2026-11-18T16:00:00.000Z'),
+        article(1, '2026-11-18T01:00:00.000Z'),
       ]);
       vi.mocked(writeDigest).mockResolvedValueOnce({
         kind: 'failed',
@@ -208,8 +222,8 @@ describe('generateDigests', () => {
 
     it('API の呼び出しが投げたら、その回の生成をやめる', async () => {
       vi.mocked(findRecentArticles).mockResolvedValue([
-        article(2, '2026-11-19T16:00:00.000Z'),
-        article(1, '2026-11-19T01:00:00.000Z'),
+        article(2, '2026-11-18T16:00:00.000Z'),
+        article(1, '2026-11-18T01:00:00.000Z'),
       ]);
       vi.mocked(writeDigest).mockRejectedValue(new Error('429'));
 
