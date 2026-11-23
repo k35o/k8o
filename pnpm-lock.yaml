@@ -348,8 +348,8 @@ importers:
         specifier: 4.0.177
         version: 4.0.177(react@19.3.1)(zod@4.6.7)
       '@json-render/core':
-        specifier: 0.22.0
-        version: 0.22.0(zod@4.6.7)
+        specifier: 0.23.1
+        version: 0.23.1(zod@4.6.7)
       '@json-render/react':
         specifier: 0.22.0
         version: 0.22.0(react@19.3.1)(zod@4.6.7)
@@ -364,7 +364,7 @@ importers:
         version: 3.0.0(@k8ordo/router@3.0.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 3.0.0(@json-render/core@0.22.0(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@3.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.173(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+        version: 3.0.0(@json-render/core@0.23.1(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@3.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.173(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@repo/ai-database':
         specifier: workspace:*
         version: link:../../packages/ai-database
@@ -1653,6 +1653,11 @@ packages:
 
   '@json-render/core@0.22.0':
     resolution: {integrity: sha512-BIfJ2V3bLYETetBu2KWoxxRPU5cSAf77dDTBgqaV54kEAfyHta1psPJgNk0fDcB3FCrnCZ5KO/X41VDkrNSYgw==}
+    peerDependencies:
+      zod: ^4.0.0
+
+  '@json-render/core@0.23.1':
+    resolution: {integrity: sha512-FVTxhxucSNdcZe9CWQ/767N/vtj4f5YLu5BEY8P8eXYs80tvbKh/26avadTEDaAMfCnnyGRsuA/POzyvA2O85A==}
     peerDependencies:
       zod: ^4.0.0
 
@@ -7113,6 +7118,10 @@ snapshots:
     dependencies:
       zod: 4.6.7
 
+  '@json-render/core@0.23.1(zod@4.6.7)':
+    dependencies:
+      zod: 4.6.7
+
   '@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7)':
     dependencies:
       '@json-render/core': 0.22.0(zod@4.6.7)
@@ -7194,6 +7203,23 @@ snapshots:
       shiki: 4.6.0
     optionalDependencies:
       '@json-render/core': 0.22.0(zod@4.6.7)
+      '@json-render/react': 0.22.0(react@19.3.1)(zod@4.6.7)
+      '@types/react': 19.3.0
+      '@types/react-dom': 19.3.0(@types/react@19.3.0)
+      ai: 7.0.173(zod@4.6.7)
+      typescript: 7.0.2
+      zod: 4.6.7
+
+  '@k8ordo/ui@3.0.0(@json-render/core@0.23.1(zod@4.6.7))(@json-render/react@0.22.0(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@3.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.173(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@k8ordo/i18n': 3.0.0(typescript@7.0.2)
+      clsx: 2.1.1
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      server-only: 0.0.1
+      shiki: 4.6.0
+    optionalDependencies:
+      '@json-render/core': 0.23.1(zod@4.6.7)
       '@json-render/react': 0.22.0(react@19.3.1)(zod@4.6.7)
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
