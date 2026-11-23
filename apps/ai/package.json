@@ -19,7 +19,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "catalog:",
     "@ai-sdk/react": "4.0.177",
-    "@json-render/core": "0.22.0",
+    "@json-render/core": "0.23.1",
     "@json-render/react": "0.22.0",
     "@k8ordo/color-scheme": "catalog:",
     "@k8ordo/i18n": "catalog:",
