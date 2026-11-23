@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 
-import sharp from 'sharp';
+import { imageSizeFromFile } from 'image-size/fromFile';
 import { describe, expect, it } from 'vitest';
 
 import { GET } from '../routes/manifest.webmanifest/route';
@@ -25,9 +25,13 @@ describe('GET /manifest.webmanifest', () => {
 
     it('どのアイコンも public の PNG で、寸法が sizes と合う', async () => {
       for (const { src, sizes, type } of await iconsOf()) {
-        const { format, width, height } = await sharp(
+        const {
+          type: format,
+          width,
+          height,
+        } = await imageSizeFromFile(
           fileURLToPath(new URL(`../../public${src}`, import.meta.url)),
-        ).metadata();
+        );
 
         expect(type).toBe('image/png');
         expect(format).toBe('png');

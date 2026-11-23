@@ -2,8 +2,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { cwd } from 'node:process';
 
+import { imageSizeFromFile } from 'image-size/fromFile';
 import type { Nodes } from 'mdast';
-import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 import { esmImportSources, mdxParser } from '@/shared/mdx/mdx-tree';
@@ -111,9 +111,9 @@ const imageMismatches = async (slug: string): Promise<string[]> => {
       );
       continue;
     }
-    const actual = await sharp(
+    const actual = await imageSizeFromFile(
       join(dirname(blogPath(slug)), source),
-    ).metadata();
+    );
     if (!isSameAspectRatio(width, height, actual)) {
       mismatches.push(
         `${source}: ${String(width)}×${String(height)}（実寸 ${String(actual.width)}×${String(actual.height)}）`,
