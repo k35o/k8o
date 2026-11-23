@@ -1,4 +1,3 @@
-import { ListIcon } from '@k8ordo/ui/icons';
 import { HttpResponse, http } from 'msw/http';
 import { Suspense, useState } from 'react';
 import type { FC, ReactNode } from 'react';
@@ -6,40 +5,61 @@ import { expect, fn, userEvent, waitFor } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import { resetReadingList } from '../reading-list-source/reading-list-source';
-import type { ReadingList } from '../reading-list-source/reading-list-source';
+import type { ReadingDay } from '../reading-list-source/reading-list-source';
 import { ReadingListLoader } from './reading-list-loader';
 
 const READING_LIST_URL = 'https://api.k8o.me/public/reading-list';
 
-const readingList: ReadingList = {
-  articles: [
+// api は記事・ソース・まとめも返すが、一覧が読むのは days だけ
+const readingList: { days: ReadingDay[] } = {
+  days: [
     {
-      id: 2,
-      title: 'TanStack Routerで型安全なルーティング',
-      url: 'https://zenn.dev/example/articles/tanstack-router',
-      publishedAt: '2026-10-20T00:00:00.000Z',
-      imageUrl: null,
-      description: 'TanStack Routerの使い方を紹介します。',
-      summary: null,
-      source: { id: 1, title: 'Zenn', siteUrl: 'https://zenn.dev' },
+      date: '2026-10-20',
+      articleCount: 1,
+      overview: null,
+      picks: [],
+      topics: [
+        {
+          kind: 'other',
+          headline: 'この日の記事',
+          articles: [
+            {
+              id: 2,
+              title: 'TanStack Routerで型安全なルーティング',
+              url: 'https://zenn.dev/example/articles/tanstack-router',
+              publishedAt: '2026-10-20T00:00:00.000Z',
+              imageUrl: null,
+              text: 'TanStack Routerの使い方を紹介します。',
+              sourceTitle: 'Zenn',
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 1,
-      title: 'Baseline 2026 のふりかえり',
-      url: 'https://web.dev/articles/baseline-2026',
-      publishedAt: '2026-10-18T00:00:00.000Z',
-      imageUrl: null,
-      description: null,
-      summary: '2026年に Baseline に入った機能をまとめた記事。',
-      source: { id: 2, title: 'web.dev', siteUrl: 'https://web.dev' },
+      date: '2026-10-18',
+      articleCount: 1,
+      overview: null,
+      picks: [],
+      topics: [
+        {
+          kind: 'other',
+          headline: 'この日の記事',
+          articles: [
+            {
+              id: 1,
+              title: 'Baseline 2026 のふりかえり',
+              url: 'https://web.dev/articles/baseline-2026',
+              publishedAt: '2026-10-18T00:00:00.000Z',
+              imageUrl: null,
+              text: '2026年に Baseline に入った機能をまとめた記事。',
+              sourceTitle: 'web.dev',
+            },
+          ],
+        },
+      ],
     },
   ],
-  sources: [
-    { id: 1, title: 'Zenn' },
-    { id: 2, title: 'web.dev' },
-  ],
-  digests: [],
-  days: [],
 };
 
 const requested = fn();
@@ -52,7 +72,6 @@ const Fallback: FC<{ children: ReactNode }> = ({ children }) => (
 const meta = preview.meta({
   title: 'app/reading-list/reading-list-loader',
   component: ReadingListLoader,
-  args: { filterIcon: <ListIcon /> },
   beforeEach: () => {
     requested.mockClear();
     resetReadingList();

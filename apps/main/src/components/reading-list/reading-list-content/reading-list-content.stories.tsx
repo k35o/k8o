@@ -1,79 +1,96 @@
 import { Router, defineRoutes } from '@k8ordo/router';
-import { ListIcon } from '@k8ordo/ui/icons';
 import { useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import {
-  expect,
-  screen,
-  spyOn,
-  userEvent,
-  waitFor,
-  within,
-} from 'storybook/test';
+import { expect, spyOn, userEvent, waitFor } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import {
   expectParamInUrl,
   mountStoryUrl,
 } from '../../../../.storybook/url-state-story';
-import type { ReadingList } from '../reading-list-source/reading-list-source';
+import type {
+  ReadingArticle,
+  ReadingDay,
+} from '../reading-list-source/reading-list-source';
 import { ReadingListContent } from './reading-list-content';
 
-const zenn = { id: 1, title: 'Zenn', siteUrl: 'https://zenn.dev' };
-const webDev = { id: 2, title: 'web.dev', siteUrl: 'https://web.dev' };
-
-const readingList: ReadingList = {
-  articles: [
-    {
-      id: 2,
-      title: 'TanStack Routerで型安全なルーティング',
-      url: 'https://zenn.dev/example/articles/tanstack-router',
-      publishedAt: '2026-10-20T00:00:00.000Z',
-      imageUrl: null,
-      description: 'TanStack Routerの使い方を紹介します。',
-      summary: null,
-      source: zenn,
-    },
-    {
-      id: 1,
-      title: 'Baseline 2026 のふりかえり',
-      url: 'https://web.dev/articles/baseline-2026',
-      publishedAt: '2026-10-18T00:00:00.000Z',
-      imageUrl: null,
-      description: null,
-      summary: '2026年に Baseline に入った機能をまとめた記事。',
-      source: webDev,
-    },
-  ],
-  sources: [
-    { id: 1, title: 'Zenn' },
-    { id: 2, title: 'web.dev' },
-  ],
-  digests: [],
-  days: [],
+const tanstack: ReadingArticle = {
+  id: 2,
+  title: 'TanStack Routerで型安全なルーティング',
+  url: 'https://zenn.dev/example/articles/tanstack-router',
+  publishedAt: '2026-10-20T00:00:00.000Z',
+  imageUrl: null,
+  text: 'TanStack Routerの使い方を紹介します。',
+  sourceTitle: 'Zenn',
 };
 
-const seriesOf = (length: number): ReadingList => ({
-  articles: Array.from({ length }, (_, index) => ({
-    id: 100 + index,
-    title: `連載 第${String(index + 1)}回`,
-    url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
-    publishedAt: new Date(Date.UTC(2026, 9, 30 - index)).toISOString(),
-    imageUrl: null,
-    description: null,
-    summary: null,
-    source: zenn,
-  })),
-  sources: readingList.sources,
-  digests: [],
-  days: [],
-});
+const baseline: ReadingArticle = {
+  id: 1,
+  title: 'Baseline 2026 のふりかえり',
+  url: 'https://web.dev/articles/baseline-2026',
+  publishedAt: '2026-10-18T00:00:00.000Z',
+  imageUrl: null,
+  text: '2026年に Baseline に入った機能をまとめた記事。',
+  sourceTitle: 'web.dev',
+};
+
+const days: ReadingDay[] = [
+  {
+    date: '2026-10-20',
+    articleCount: 1,
+    overview: 'ルーティングの記事が1件の日。',
+    picks: [],
+    topics: [
+      {
+        kind: 'explainer',
+        headline: 'TanStack Router の使い方の紹介が出た',
+        articles: [tanstack],
+      },
+    ],
+  },
+  {
+    date: '2026-10-18',
+    articleCount: 1,
+    overview: null,
+    picks: [],
+    topics: [{ kind: 'other', headline: 'この日の記事', articles: [baseline] }],
+  },
+];
+
+// 連載の記事を 1 日の 1 つの話題に入れる。「連載」で検索すると全件が当たる
+const seriesOf = (length: number): ReadingDay[] => [
+  {
+    date: '2026-10-30',
+    articleCount: length,
+    overview: null,
+    picks: [],
+    topics: [
+      {
+        kind: 'other',
+        headline: 'この日の記事',
+        articles: Array.from({ length }, (_, index) => ({
+          id: 100 + index,
+          title: `連載 第${String(index + 1)}回`,
+          url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
+          publishedAt: new Date(
+            Date.UTC(2026, 9, 30, 0, 0, 0) - index * 60_000,
+          ).toISOString(),
+          imageUrl: null,
+          text: null,
+          sourceTitle: 'Zenn',
+        })),
+      },
+    ],
+  },
+];
 
 // 初めの描画で先頭だけを描く件数より多い
 const series = seriesOf(30);
 
 // 先頭の 20 件のあと、50 件ずつ 2 回足して描き終える
 const longSeries = seriesOf(120);
+
+const SEARCHING_SERIES = 'q=連載';
 
 // 一覧はフレームごとに描き足すので、フレームを止めて Story の手で 1 つずつ進める
 let heldFrames = new Map<number, FrameRequestCallback>();
@@ -132,16 +149,54 @@ const UnderRouter: FC<{ children: ReactNode }> = ({ children }) => {
 const meta = preview.meta({
   title: 'app/reading-list/reading-list-content',
   component: ReadingListContent,
-  args: { readingList, filterIcon: <ListIcon /> },
+  args: { days },
   beforeEach: mountStoryUrl,
 });
 
-// 記事を直に並べるのは、絞り込みか並べ替えをしているあいだ。初めの表示は日ごとの話題になる
-const LISTING = 'sort=oldest';
+// 正常系: 検索していないあいだは、日ごとのまとめで見せる
+export const ShowsDigestByDefault = meta.story({
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('2件の記事')).toBeInTheDocument();
+    const topic = canvas.getByRole('button', {
+      name: /TanStack Router の使い方の紹介が出た/u,
+    });
+    await expect(
+      canvas.queryByRole('link', {
+        name: 'TanStack Routerで型安全なルーティング',
+      }),
+    ).toBeNull();
 
-export const RendersAllArticles = meta.story({
-  args: { readingList: series },
-  parameters: { query: LISTING },
+    await userEvent.click(topic);
+
+    await expect(
+      canvas.getByRole('link', {
+        name: 'TanStack Routerで型安全なルーティング',
+      }),
+    ).toBeVisible();
+  },
+});
+
+// 正常系: 検索しているあいだは、当たった記事を公開日を添えて新しい順に並べる
+export const SearchesTitleAndSource = meta.story({
+  parameters: { query: 'q=web.dev' },
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByText('1件の記事')).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('textbox', { name: '記事を検索' }),
+    ).toHaveValue('web.dev');
+    await expect(
+      canvas.getByRole('link', { name: 'Baseline 2026 のふりかえり' }),
+    ).toBeVisible();
+    await expect(canvas.getByText('web.dev・2026年10月18日')).toBeVisible();
+    await expect(
+      canvas.queryByRole('button', { name: /この日の記事/u }),
+    ).toBeNull();
+  },
+});
+
+export const RendersAllResults = meta.story({
+  args: { days: series },
+  parameters: { query: SEARCHING_SERIES },
   play: async ({ canvas }) => {
     await expect(await canvas.findByText('連載 第30回')).toBeInTheDocument();
     await expect(canvas.getAllByRole('link')).toHaveLength(30);
@@ -151,8 +206,8 @@ export const RendersAllArticles = meta.story({
 
 // 正常系: 初めは先頭の 20 件だけを描き、フレームが来るたびに 50 件ずつ足す
 export const AddsBatchPerFrame = meta.story({
-  args: { readingList: longSeries },
-  parameters: { query: LISTING, vrt: { skip: true } },
+  args: { days: longSeries },
+  parameters: { query: SEARCHING_SERIES, vrt: { skip: true } },
   beforeEach: holdFrames,
   play: async ({ canvas }) => {
     await expect(await canvas.findAllByRole('link')).toHaveLength(20);
@@ -174,8 +229,8 @@ export const AddsBatchPerFrame = meta.story({
 
 // エッジケース: 描き終える前にフレームが続けて来ても、足すのは 1 回分の 50 件だけ
 export const AddsOneBatchUntilRendered = meta.story({
-  args: { readingList: longSeries },
-  parameters: { query: LISTING, vrt: { skip: true } },
+  args: { days: longSeries },
+  parameters: { query: SEARCHING_SERIES, vrt: { skip: true } },
   beforeEach: holdFrames,
   play: async ({ canvas }) => {
     await expect(await canvas.findAllByRole('link')).toHaveLength(20);
@@ -193,8 +248,8 @@ export const AddsOneBatchUntilRendered = meta.story({
 
 // 正常系: 戻る・進むで開いたときは、router が前の位置へ戻す前に全件を描いておく
 export const ShowsAllOnTraverse = meta.story({
-  args: { readingList: series },
-  parameters: { query: LISTING, vrt: { skip: true } },
+  args: { days: series },
+  parameters: { query: SEARCHING_SERIES, vrt: { skip: true } },
   beforeEach: () => {
     // <Router> は表に無い pathname では何も描かないので、一覧の pathname で始める
     history.replaceState(
@@ -223,7 +278,7 @@ export const ShowsAllOnTraverse = meta.story({
 });
 
 export const SearchBeyondFirstPaint = meta.story({
-  args: { readingList: series },
+  args: { days: series },
   parameters: { query: 'q=第29回' },
   play: async ({ canvas }) => {
     await expect(await canvas.findByText('連載 第29回')).toBeInTheDocument();
@@ -231,122 +286,34 @@ export const SearchBeyondFirstPaint = meta.story({
   },
 });
 
-export const OpenWithUrlValues = meta.story({
-  parameters: { query: 'q=tanstack&source=1,abc,2&sort=oldest' },
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByText('1件の記事 / 2件のソースで絞り込み中'),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByText('TanStack Routerで型安全なルーティング'),
-    ).toBeInTheDocument();
-
-    await userEvent.click(canvas.getByRole('button', { name: '絞り込み' }));
-    await expect(
-      await screen.findByRole('textbox', { name: '検索' }),
-    ).toHaveValue('tanstack');
-    await expect(screen.getByRole('combobox', { name: '並び順' })).toHaveValue(
-      'oldest',
-    );
-  },
-});
-
-// 正常系: ドロワーの見出しは Drawer の題の「絞り込み」1 つだけで、絞り込みの欄の見出しを重ねない
-export const DrawerHeading = meta.story({
-  play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: '絞り込み' }));
-    const drawer = await screen.findByRole('dialog', { name: '絞り込み' });
-
-    await expect(
-      within(drawer)
-        .getAllByRole('heading')
-        .map((heading) => heading.textContent),
-    ).toStrictEqual(['絞り込み']);
-  },
-});
-
-export const WriteFiltersToUrl = meta.story({
+// 正常系: 打った語は、履歴を増やさずに URL の q に書く
+export const WriteQueryToUrl = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvas }) => {
     const entries = navigation.entries().length;
 
-    await userEvent.click(canvas.getByRole('button', { name: '絞り込み' }));
-    await userEvent.selectOptions(
-      await screen.findByRole('combobox', { name: '並び順' }),
-      'oldest',
+    await userEvent.type(
+      canvas.getByRole('textbox', { name: '記事を検索' }),
+      'zenn',
     );
-    await expectParamInUrl('sort', 'oldest');
-    await userEvent.type(screen.getByRole('textbox', { name: '検索' }), 'ba');
-    await expectParamInUrl('q', 'ba');
 
-    const sources = screen.getByRole('combobox', { name: 'ソース' });
-    await userEvent.click(sources);
-    await userEvent.click(
-      await screen.findByRole('option', { name: 'web.dev (1)' }),
-    );
-    await expectParamInUrl('source', '2');
+    await expectParamInUrl('q', 'zenn');
     await expect(
-      canvas.getByText('1件の記事 / 1件のソースで絞り込み中'),
-    ).toBeInTheDocument();
+      await canvas.findByRole('link', {
+        name: 'TanStack Routerで型安全なルーティング',
+      }),
+    ).toBeVisible();
     await expect(navigation.entries()).toHaveLength(entries);
   },
 });
 
-export const WriteOverOtherKeys = meta.story({
-  parameters: {
-    query: 'zz=1&sort=foo&source=1,abc&q=a&q=b',
-    vrt: { skip: true },
-  },
+// 異常系: 当たる記事が無ければ、そう案内する
+export const NoResults = meta.story({
+  parameters: { query: 'q=Firefox' },
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: '絞り込み' }));
-    await userEvent.selectOptions(
-      await screen.findByRole('combobox', { name: '並び順' }),
-      'oldest',
-    );
-    await expect(location.search).toMatch(
-      /[?&]zz=1&q=a&source=1%2Cabc&sort=oldest$/u,
-    );
-  },
-});
-
-// 正常系: 絞り込みも並べ替えもしていないあいだは、日ごとの話題で見せる
-export const ShowsDigestByDefault = meta.story({
-  args: {
-    readingList: {
-      ...readingList,
-      digests: [
-        {
-          date: '2026-10-20',
-          overview: 'ルーティングの記事が1件の日。',
-          picks: [],
-          topics: [
-            {
-              kind: 'explainer',
-              headline: 'TanStack Router の使い方の紹介が出た',
-              articleIds: [2],
-            },
-          ],
-          createdAt: '2026-10-21T00:05:00.000Z',
-        },
-      ],
-    },
-  },
-  play: async ({ canvas, userEvent: user }) => {
-    const topic = await canvas.findByRole('button', {
-      name: /TanStack Router の使い方の紹介が出た/u,
-    });
     await expect(
-      canvas.queryByRole('link', {
-        name: 'TanStack Routerで型安全なルーティング',
-      }),
-    ).toBeNull();
-
-    await user.click(topic);
-
-    await expect(
-      canvas.getByRole('link', {
-        name: 'TanStack Routerで型安全なルーティング',
-      }),
+      await canvas.findByText('条件に一致する記事がありません'),
     ).toBeVisible();
+    await expect(canvas.getByText('0件の記事')).toBeInTheDocument();
   },
 });

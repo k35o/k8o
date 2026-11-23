@@ -1,5 +1,4 @@
 import { Heading, Stack } from '@k8ordo/ui';
-import { ListIcon } from '@k8ordo/ui/icons';
 import type { FC } from 'react';
 
 import { BrowserOnly } from '@/components/site/browser-only/browser-only';
@@ -11,8 +10,8 @@ import { RssLink } from '../rss-link/rss-link';
 
 import styles from './reading-list-index.module.css';
 
-// 一覧の値は api から、絞り込みの値は URL から、どちらもブラウザでしか読めないので、骨組みを置いて
-// ブラウザでだけ描く。ListIcon はどのページも読むファイルに載せないよう、サーバーで描いて渡す
+// 一覧の値は api から、検索の値は URL から、どちらもブラウザでしか読めないので、骨組みを置いて
+// ブラウザでだけ描く
 export const ReadingListIndex: FC = () => (
   <div className={styles.root}>
     <Stack gap="xl">
@@ -27,7 +26,7 @@ export const ReadingListIndex: FC = () => (
       </div>
       <ReadingListPreload />
       <BrowserOnly fallback={<ReadingListSkeleton />}>
-        <ReadingListLoader filterIcon={<ListIcon />} />
+        <ReadingListLoader />
       </BrowserOnly>
     </Stack>
   </div>
