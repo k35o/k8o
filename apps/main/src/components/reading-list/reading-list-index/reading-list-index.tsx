@@ -21,7 +21,7 @@ export const ReadingListIndex: FC = () => (
           <RssLink />
         </div>
         <p className={styles.lead}>
-          AIとWebフロントエンドまわりの記事を集めています。
+          AIとWebフロントエンドまわりの記事を集めています。まとめと要約はClaudeが書いています。
         </p>
       </div>
       <ReadingListPreload />
