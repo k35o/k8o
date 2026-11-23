@@ -36,12 +36,17 @@ export async function generateDigests(
   const keyByDate = new Map(
     existing.map(({ date, articleKey }) => [date, articleKey]),
   );
+  // その日の記事を取り込み終える前に作ると、途中の形が RSS に配られる。終わった日だけを作る
+  const today = digestDateOf(new Date(nowMs).toISOString());
   const rewriteSince = digestDateOf(
     new Date(nowMs - REWRITE_DAYS * DAY_MS).toISOString(),
   );
 
   const targets = groupByDigestDate(articles)
     .filter(({ date, articles: dayArticles }) => {
+      if (date >= today) {
+        return false;
+      }
       const key = keyByDate.get(date);
       if (key === undefined) {
         return true;
