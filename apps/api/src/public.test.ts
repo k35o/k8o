@@ -1411,6 +1411,7 @@ describe('公開 API', () => {
           overview: 'CSS の話が中心の日。',
           picks: [{ articleId: 10, reason: '書き方が変わる。' }],
           topics: [],
+          createdAt: '2026-07-19T00:05:00.000Z',
         };
         vi.mocked(findDigestsSince).mockResolvedValue([digest]);
 
@@ -1561,14 +1562,33 @@ describe('公開 API', () => {
 
   describe('GET /public/reading-list/feed', () => {
     const PATH = '/public/reading-list/feed';
+    const DIGESTS: Awaited<ReturnType<typeof findDigestsSince>> = [
+      {
+        date: '2026-07-18',
+        overview: 'CSS の話が中心の日。',
+        picks: [],
+        topics: [
+          { kind: 'explainer', headline: 'CSS の解説が出た', articleIds: [10] },
+        ],
+        createdAt: '2026-07-19T00:05:00.000Z',
+      },
+      {
+        date: '2026-07-17',
+        overview: 'ブラウザの <更新> が中心の日。',
+        picks: [{ articleId: 11, reason: '書き方が変わる' }],
+        topics: [],
+        createdAt: '2026-07-18T00:05:00.000Z',
+      },
+    ];
 
     beforeEach(() => {
       vi.useFakeTimers({ toFake: ['Date'] });
       vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+      vi.mocked(findDigestsSince).mockResolvedValue(DIGESTS);
     });
 
     describe('正常系', () => {
-      it('直近90日の記事を、self を k8o.me の URL にした RSS で返し、AI の要約にだけ【AI要約】を付ける', async () => {
+      it('まとめのある日を 1 日 1 件の HTML にし、self を k8o.me の URL にした RSS で返す', async () => {
         const res = await app.request(PATH);
 
         expect(res.status).toBe(200);
@@ -1581,32 +1601,33 @@ describe('公開 API', () => {
             '<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">' +
             '<channel>' +
             '<title>k8o Readings</title>' +
-            '<description>AIとWebフロントエンドまわりの記事を集めています。</description>' +
+            '<description>AIとWebフロントエンドまわりの記事を、日ごとにまとめています。</description>' +
             '<link>https://k8o.me/reading-list</link>' +
             '<atom:link href="https://k8o.me/reading-list/feed" rel="self" type="application/rss+xml"/>' +
             '<language>ja</language>' +
             '<item>' +
-            '<title>AI が要約した記事</title>' +
-            '<description>【AI要約】要約 &lt;b&gt;</description>' +
-            '<link>https://example.com/a</link>' +
-            '<guid isPermaLink="false">https://example.com/a</guid>' +
-            '<category>Example &amp; Blog</category>' +
-            '<pubDate>Sat, 18 Jul 2026 09:00:00 GMT</pubDate>' +
+            '<title>7月18日(土)のReadings</title>' +
+            '<description>' +
+            '&lt;p&gt;CSS の話が中心の日。&lt;/p&gt;' +
+            '&lt;h3&gt;話題&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;CSS の解説が出た（1件）&lt;/li&gt;&lt;/ul&gt;' +
+            '&lt;p&gt;まとめはClaudeが書いています。&lt;/p&gt;' +
+            '</description>' +
+            '<link>https://k8o.me/reading-list#2026-07-18</link>' +
+            '<guid isPermaLink="false">https://k8o.me/reading-list#2026-07-18</guid>' +
+            '<pubDate>Sun, 19 Jul 2026 00:05:00 GMT</pubDate>' +
             '</item>' +
             '<item>' +
-            '<title>説明だけの記事</title>' +
-            '<description>元記事の説明</description>' +
-            '<link>https://example.com/b?x=1&amp;y=2</link>' +
-            '<guid isPermaLink="false">https://example.com/b?x=1&amp;y=2</guid>' +
-            '<category>Example &amp; Blog</category>' +
-            '<pubDate>Fri, 17 Jul 2026 09:00:00 GMT</pubDate>' +
-            '</item>' +
-            '<item>' +
-            '<title>説明も要約も無い記事</title>' +
-            '<link>https://example.com/c</link>' +
-            '<guid isPermaLink="false">https://example.com/c</guid>' +
-            '<category>Example &amp; Blog</category>' +
-            '<pubDate>Thu, 16 Jul 2026 09:00:00 GMT</pubDate>' +
+            '<title>7月17日(金)のReadings</title>' +
+            '<description>' +
+            '&lt;p&gt;ブラウザの &amp;lt;更新&amp;gt; が中心の日。&lt;/p&gt;' +
+            '&lt;h3&gt;見てほしい記事&lt;/h3&gt;&lt;ul&gt;' +
+            '&lt;li&gt;&lt;a href=&quot;https://example.com/b?x=1&amp;amp;y=2&quot;&gt;説明だけの記事&lt;/a&gt;（Example &amp;amp; Blog）&lt;br&gt;書き方が変わる&lt;/li&gt;' +
+            '&lt;/ul&gt;' +
+            '&lt;p&gt;まとめはClaudeが書いています。&lt;/p&gt;' +
+            '</description>' +
+            '<link>https://k8o.me/reading-list#2026-07-17</link>' +
+            '<guid isPermaLink="false">https://k8o.me/reading-list#2026-07-17</guid>' +
+            '<pubDate>Sat, 18 Jul 2026 00:05:00 GMT</pubDate>' +
             '</item>' +
             '</channel>' +
             '</rss>',
@@ -1614,6 +1635,7 @@ describe('公開 API', () => {
         expect(findRecentArticles).toHaveBeenCalledWith(
           '2026-04-21T00:00:00.000Z',
         );
+        expect(findDigestsSince).toHaveBeenCalledWith('2026-04-21');
       });
 
       it('同じ ETag の If-None-Match には、本文を送らずに 304 を返し、Cache-Control と ETag を保つ', async () => {
@@ -1632,9 +1654,9 @@ describe('公開 API', () => {
     });
 
     describe('異常系', () => {
-      it('記事が変わると、前の ETag の If-None-Match にも本文を返す', async () => {
+      it('まとめが変わると、前の ETag の If-None-Match にも本文を返す', async () => {
         const etag = String((await app.request(PATH)).headers.get('etag'));
-        vi.mocked(findRecentArticles).mockResolvedValue([SUMMARIZED_ARTICLE]);
+        vi.mocked(findDigestsSince).mockResolvedValue(DIGESTS.slice(0, 1));
 
         const res = await app.request(PATH, {
           headers: { 'If-None-Match': etag },
@@ -1642,14 +1664,14 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(200);
         expect(res.headers.get('etag')).not.toBe(etag);
-        await expect(res.text()).resolves.toContain(
-          '<title>AI が要約した記事</title>',
+        await expect(res.text()).resolves.not.toContain(
+          '<title>7月17日(金)のReadings</title>',
         );
       });
     });
 
     describe('エッジケース', () => {
-      it('直近90日に記事が無くても、channel だけのフィードを返す', async () => {
+      it('まとめがあっても、その日の記事が直近90日に無ければ配らない', async () => {
         vi.mocked(findRecentArticles).mockResolvedValue([]);
 
         const res = await app.request(PATH);

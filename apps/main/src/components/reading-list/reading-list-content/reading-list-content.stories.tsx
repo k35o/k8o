@@ -326,6 +326,7 @@ export const ShowsDigestByDefault = meta.story({
               articleIds: [2],
             },
           ],
+          createdAt: '2026-10-21T00:05:00.000Z',
         },
       ],
     },

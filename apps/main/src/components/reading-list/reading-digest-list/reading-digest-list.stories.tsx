@@ -74,6 +74,7 @@ const digests: ReadingList['digests'] = [
         articleIds: [4, 3],
       },
     ],
+    createdAt: '2026-11-20T00:05:00.000Z',
   },
 ];
 
