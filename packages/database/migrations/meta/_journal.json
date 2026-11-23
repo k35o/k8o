@@ -694,6 +694,13 @@
       "when": 1795314499614,
       "tag": "0098_talks_jsconf_jp_2026_deck",
       "breakpoints": true
+    },
+    {
+      "idx": 99,
+      "version": "6",
+      "when": 1795423385601,
+      "tag": "0099_reading_sources_drop_site_url",
+      "breakpoints": true
     }
   ]
 }

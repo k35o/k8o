@@ -42,7 +42,6 @@ const source = (
     id: 1,
     title: 'web.dev',
     url: 'https://web.dev/feed.xml',
-    siteUrl: 'https://web.dev',
     type: 'feed' as const,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',

@@ -1,0 +1,1 @@
+ALTER TABLE `article_sources` DROP COLUMN `site_url`;

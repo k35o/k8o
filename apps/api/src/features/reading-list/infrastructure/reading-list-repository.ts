@@ -8,14 +8,9 @@ import {
   inArray,
   isNull,
   lt,
-  ne,
 } from '@repo/database/orm';
 
-// 記事を取り込むソース。manual は取り込まない
-export const findSyncSources = () =>
-  db.query.articleSources.findMany({
-    where: ne(db._schema.articleSources.type, 'manual'),
-  });
+export const findSyncSources = () => db.query.articleSources.findMany();
 
 export type ReadingArticle = {
   id: number;

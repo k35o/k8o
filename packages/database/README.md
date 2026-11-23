@@ -62,7 +62,6 @@ erDiagram
     integer id PK
     text title
     text url UK
-    text site_url
     text type
     text created_at
     text updated_at
