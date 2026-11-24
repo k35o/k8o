@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
 import { fetchDevsiteBlogItems } from '../infrastructure/devsite-blog-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
+import { fetchGithubReleaseItems } from '../infrastructure/github-release-source';
 import {
   findArticleTitlesByUrls,
   findArticleSources,
@@ -18,6 +19,10 @@ vi.mock('../infrastructure/browser-release-source', () => ({
 
 vi.mock('../infrastructure/devsite-blog-source', () => ({
   fetchDevsiteBlogItems: vi.fn(),
+}));
+
+vi.mock('../infrastructure/github-release-source', () => ({
+  fetchGithubReleaseItems: vi.fn(),
 }));
 
 vi.mock('../infrastructure/feed-source', () => ({
@@ -40,7 +45,7 @@ const source = (
     id: number;
     title: string;
     url: string;
-    type: 'feed' | 'browser-releases' | 'devsite-blog';
+    type: 'feed' | 'browser-releases' | 'devsite-blog' | 'github-releases';
   }> = {},
 ) =>
   ({
@@ -235,6 +240,37 @@ describe('syncArticles', () => {
           imageUrl: 'https://web.dev/og.png',
           description: 'OGP の説明',
           body: null,
+        }),
+      ]);
+    });
+
+    it('GitHub のリリースのソースは、ソースの名前を題に使う版の一覧から記事を追加する', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([
+        source({
+          title: 'Zod',
+          url: 'https://github.com/colinhacks/zod/releases.atom',
+          type: 'github-releases',
+        }),
+      ]);
+      vi.mocked(fetchGithubReleaseItems).mockResolvedValue([
+        {
+          title: 'Zod 4.6',
+          link: 'https://github.com/colinhacks/zod/releases/tag/v4.6.0',
+          publishedAt: '2026-03-10T00:00:00.000Z',
+        },
+      ]);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(1);
+      expect(fetchGithubReleaseItems).toHaveBeenCalledWith(
+        'https://github.com/colinhacks/zod/releases.atom',
+        'Zod',
+      );
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        expect.objectContaining({
+          title: 'Zod 4.6',
+          url: 'https://github.com/colinhacks/zod/releases/tag/v4.6.0',
         }),
       ]);
     });

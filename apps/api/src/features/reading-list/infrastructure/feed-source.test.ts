@@ -129,6 +129,31 @@ describe('fetchFeedItems', () => {
   });
 
   describe('エッジケース', () => {
+    it('リンクを href ではなく中身に書いた Atom のフィードも読む', async () => {
+      vi.mocked(safeFetch).mockResolvedValue(
+        feedResponse(
+          [
+            '<feed xmlns="http://www.w3.org/2005/Atom"><title>Releases</title>',
+            '<link>https://react-spectrum.adobe.com/releases/</link>',
+            '<entry><title>v1.8.0</title>',
+            '<link rel="alternate" type="text/html" href="https://react-spectrum.adobe.com/releases/v1-8-0.html"></link>',
+            '<published>2026-10-08T00:00:00.000Z</published>',
+            '<updated>2026-10-08T00:00:00.000Z</updated></entry></feed>',
+          ].join(''),
+        ),
+      );
+
+      const items = await fetchFeedItems('https://example.com/feed');
+
+      expect(items).toStrictEqual([
+        {
+          title: 'v1.8.0',
+          link: 'https://react-spectrum.adobe.com/releases/v1-8-0.html',
+          publishedAt: '2026-10-08T00:00:00.000Z',
+        },
+      ]);
+    });
+
     it('不正なAtom日付はsanitizeで空にしてパースを壊さない', async () => {
       vi.mocked(safeFetch).mockResolvedValue(
         feedResponse(

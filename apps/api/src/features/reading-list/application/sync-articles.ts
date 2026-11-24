@@ -6,6 +6,7 @@ import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-sour
 import { fetchDevsiteBlogItems } from '../infrastructure/devsite-blog-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import type { FeedItem } from '../infrastructure/feed-source';
+import { fetchGithubReleaseItems } from '../infrastructure/github-release-source';
 import {
   findArticleTitlesByUrls,
   findArticleSources,
@@ -46,6 +47,8 @@ const fetchSourceItems = (source: ArticleSource): Promise<FeedItem[]> => {
       return fetchBrowserReleaseItems(source.url);
     case 'devsite-blog':
       return fetchDevsiteBlogItems(source.url);
+    case 'github-releases':
+      return fetchGithubReleaseItems(source.url, source.title);
   }
 };
 

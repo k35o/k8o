@@ -11,11 +11,13 @@ import {
 import { articles } from './articles.ts';
 
 // feed は RSS、browser-releases は browser-compat-data の版の一覧、devsite-blog は
-// Google の DevSite（developer.chrome.com・web.dev）のブログの一覧から記事を作る
+// Google の DevSite（developer.chrome.com・web.dev）のブログの一覧、github-releases は
+// GitHub のリポジトリのリリースのマイナー以上の版から記事を作る
 export const ARTICLE_SOURCE_TYPES = [
   'feed',
   'browser-releases',
   'devsite-blog',
+  'github-releases',
 ] as const;
 
 export type ArticleSourceType = (typeof ARTICLE_SOURCE_TYPES)[number];
