@@ -19,6 +19,18 @@ function sanitizeFeedDates(xml: string): string {
   );
 }
 
+// Atom のリンクは href に書く決まりだが、中身に書くフィードがある。rss-parser は属性の無い
+// link で落ちるので href に移す。RSS 2.0 は中身に書くのが決まりなので触らない
+function sanitizeAtomLinks(xml: string): string {
+  if (!/<feed[\s>]/u.test(xml)) {
+    return xml;
+  }
+  return xml.replaceAll(
+    /<link>([^<]+)<\/link>/gu,
+    (_match: string, href: string) => `<link href="${href.trim()}"/>`,
+  );
+}
+
 export type FeedItem = {
   title: string | undefined;
   link: string | undefined;
@@ -48,7 +60,9 @@ export async function fetchFeedItems(url: string): Promise<FeedItem[]> {
     );
   }
   const xml = await response.text();
-  const feed = await parser.parseString(sanitizeFeedDates(xml));
+  const feed = await parser.parseString(
+    sanitizeAtomLinks(sanitizeFeedDates(xml)),
+  );
   return feed.items.map((item) => {
     const feedItem: FeedItem = {
       title: item.title,
