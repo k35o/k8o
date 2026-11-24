@@ -9,12 +9,13 @@ import {
   isNull,
   lt,
 } from '@repo/database/orm';
+import type { ArticleSourceType } from '@repo/database/schema';
 
 export type ArticleSource = {
   id: number;
   title: string;
   url: string;
-  type: 'feed' | 'browser-releases';
+  type: ArticleSourceType;
   createdAt: string;
 };
 

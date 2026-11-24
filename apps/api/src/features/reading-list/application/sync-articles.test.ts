@@ -2,6 +2,7 @@ import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
+import { fetchDevsiteBlogItems } from '../infrastructure/devsite-blog-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import {
   findArticleTitlesByUrls,
@@ -13,6 +14,10 @@ import { syncArticles } from './sync-articles';
 
 vi.mock('../infrastructure/browser-release-source', () => ({
   fetchBrowserReleaseItems: vi.fn(),
+}));
+
+vi.mock('../infrastructure/devsite-blog-source', () => ({
+  fetchDevsiteBlogItems: vi.fn(),
 }));
 
 vi.mock('../infrastructure/feed-source', () => ({
@@ -35,7 +40,7 @@ const source = (
     id: number;
     title: string;
     url: string;
-    type: 'feed' | 'browser-releases';
+    type: 'feed' | 'browser-releases' | 'devsite-blog';
   }> = {},
 ) =>
   ({
@@ -103,6 +108,38 @@ describe('syncArticles', () => {
           title: 'Chrome 146',
           url: 'https://chromestatus.com/release-notes/146',
           publishedAt: '2026-03-10T00:00:00.000Z',
+        }),
+      ]);
+    });
+
+    it('DevSite のブログのソースは、ブログの一覧から記事を追加する', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([
+        source({
+          title: 'Chrome for Developers',
+          url: 'https://developer.chrome.com/_d/dynamic_content?hl=en',
+          type: 'devsite-blog',
+        }),
+      ]);
+      vi.mocked(fetchDevsiteBlogItems).mockResolvedValue([
+        {
+          title: 'Chrome 146 beta',
+          link: 'https://developer.chrome.com/blog/chrome-146-beta?hl=en',
+          publishedAt: '2026-03-10T08:00:00.000Z',
+        },
+      ]);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(1);
+      expect(fetchDevsiteBlogItems).toHaveBeenCalledWith(
+        'https://developer.chrome.com/_d/dynamic_content?hl=en',
+      );
+      expect(fetchFeedItems).not.toHaveBeenCalled();
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        expect.objectContaining({
+          title: 'Chrome 146 beta',
+          url: 'https://developer.chrome.com/blog/chrome-146-beta?hl=en',
+          publishedAt: '2026-03-10T08:00:00.000Z',
         }),
       ]);
     });

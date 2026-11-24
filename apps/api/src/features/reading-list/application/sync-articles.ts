@@ -3,16 +3,30 @@ import { fetchOgMetadata } from '@repo/helpers/og/fetch-og-metadata';
 import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 
 import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
+import { fetchDevsiteBlogItems } from '../infrastructure/devsite-blog-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
+import type { FeedItem } from '../infrastructure/feed-source';
 import {
   findArticleTitlesByUrls,
   findArticleSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
+import type { ArticleSource } from '../infrastructure/reading-list-repository';
 import { readingWindowStart } from './reading-window';
 
 const OG_CONCURRENCY = 5;
+
+const fetchSourceItems = (source: ArticleSource): Promise<FeedItem[]> => {
+  switch (source.type) {
+    case 'feed':
+      return fetchFeedItems(source.url);
+    case 'browser-releases':
+      return fetchBrowserReleaseItems(source.url);
+    case 'devsite-blog':
+      return fetchDevsiteBlogItems(source.url);
+  }
+};
 
 type FeedArticle = {
   articleSourceId: number;
@@ -34,10 +48,7 @@ export async function syncArticles(): Promise<SyncResult> {
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {
-      const items =
-        source.type === 'browser-releases'
-          ? await fetchBrowserReleaseItems(source.url)
-          : await fetchFeedItems(source.url);
+      const items = await fetchSourceItems(source);
       const candidates: FeedArticle[] = [];
 
       for (const item of items) {

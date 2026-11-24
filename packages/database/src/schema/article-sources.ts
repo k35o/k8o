@@ -10,8 +10,15 @@ import {
 
 import { articles } from './articles.ts';
 
-// feed は RSS、browser-releases は browser-compat-data の版の一覧から記事を作る
-const ARTICLE_SOURCE_TYPES = ['feed', 'browser-releases'] as const;
+// feed は RSS、browser-releases は browser-compat-data の版の一覧、devsite-blog は
+// Google の DevSite（developer.chrome.com・web.dev）のブログの一覧から記事を作る
+export const ARTICLE_SOURCE_TYPES = [
+  'feed',
+  'browser-releases',
+  'devsite-blog',
+] as const;
+
+export type ArticleSourceType = (typeof ARTICLE_SOURCE_TYPES)[number];
 
 export const articleSources = sqliteTable(
   'article_sources',

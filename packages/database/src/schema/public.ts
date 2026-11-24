@@ -7,6 +7,8 @@ export type {
   BrowserSupportSyncResult,
   BrowserSupportSyncTrigger,
 } from './browser-support-sync-runs.ts';
+export { ARTICLE_SOURCE_TYPES } from './article-sources.ts';
+export type { ArticleSourceType } from './article-sources.ts';
 export { READING_DIGEST_KINDS } from './reading-digests.ts';
 export type {
   ReadingDigestKind,
