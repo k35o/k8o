@@ -14,7 +14,7 @@ export const registerReadingListTools = (server: McpServer): void => {
     {
       title: 'reading-list の記事ソース一覧',
       description:
-        'reading-list が毎日記事を取り込むソースを登録順に返す。type は feed（RSS・Atom）、browser-releases（browser-compat-data の版の一覧）、devsite-blog（developer.chrome.com・web.dev のブログの一覧）のどれか。ソースはマイグレーションで足す。',
+        'reading-list が毎日記事を取り込むソースを登録順に返す。type は feed（RSS・Atom）、browser-releases（browser-compat-data の版の一覧）、devsite-blog（developer.chrome.com・web.dev のブログの一覧）、github-releases（GitHub のリリースのマイナー以上の版。URL のフラグメントはタグの頭）のどれか。ソースはマイグレーションで足す。',
       inputSchema: z.object({}),
       outputSchema: z.object({
         sources: z.array(
