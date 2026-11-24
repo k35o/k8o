@@ -10,8 +10,8 @@ import {
 
 import { articles } from './articles.ts';
 
-// feed は RSS、browser-releases は browser-compat-data の版の一覧から記事を作る。manual は取り込まない
-const ARTICLE_SOURCE_TYPES = ['feed', 'manual', 'browser-releases'] as const;
+// feed は RSS、browser-releases は browser-compat-data の版の一覧から記事を作る
+const ARTICLE_SOURCE_TYPES = ['feed', 'browser-releases'] as const;
 
 export const articleSources = sqliteTable(
   'article_sources',
@@ -19,7 +19,6 @@ export const articleSources = sqliteTable(
     id: integer('id').primaryKey({ autoIncrement: true }),
     title: text('title').notNull(),
     url: text('url').notNull(),
-    siteUrl: text('site_url').notNull(),
     type: text('type', { enum: ARTICLE_SOURCE_TYPES }).notNull(),
     createdAt: text('created_at')
       .notNull()

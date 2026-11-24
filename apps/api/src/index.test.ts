@@ -38,7 +38,6 @@ const cronRequest = (path: string, authorization?: string): Promise<Response> =>
 const articleSummary = {
   newArticles: 2,
   updatedArticles: 1,
-  enrichedArticles: 0,
   summarizedArticles: 3,
   failedSummaries: 1,
   summaryAborted: false,

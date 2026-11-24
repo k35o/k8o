@@ -1,37 +1,23 @@
-import { Stack } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import type { FC } from 'react';
-
-import { ReadingCardSkeleton } from '../reading-card/skeleton';
 
 import styles from './reading-list-skeleton.module.css';
 
 export const ReadingListSkeleton: FC = () => (
   <div className={styles.root}>
-    <aside className={styles.aside}>
-      <div className={styles.filter}>
-        <div className={styles.filterStack}>
-          <div className={styles.filterHeading} />
-          <div className={styles.filterInput} />
-          <div className={styles.filterInput} />
-          <div className={styles.filterInput} />
-          <div className={styles.filterSeparator} />
-          {range(0, 5).map((n) => (
-            <div className={styles.filterTag} key={`tag-skeleton-${n}`} />
-          ))}
-        </div>
-      </div>
-    </aside>
-    <div className={styles.main}>
-      <div className={styles.toolbar}>
-        <div className={styles.count} />
-        <div className={styles.button} />
-      </div>
-      <Stack gap="md">
-        {range(0, 8).map((n) => (
-          <ReadingCardSkeleton key={`reading-card-skeleton-${n}`} />
-        ))}
-      </Stack>
+    <div className={styles.toolbar}>
+      <div className={styles.search} />
+      <div className={styles.count} />
     </div>
+    {range(0, 3).map((day) => (
+      <div className={styles.day} key={`day-skeleton-${day}`}>
+        <div className={styles.date} />
+        <div className={styles.line} />
+        <div className={styles.shortLine} />
+        {range(0, 3).map((topic) => (
+          <div className={styles.topic} key={`topic-skeleton-${topic}`} />
+        ))}
+      </div>
+    ))}
   </div>
 );

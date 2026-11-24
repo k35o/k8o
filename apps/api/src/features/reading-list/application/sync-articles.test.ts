@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-source';
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import {
-  findArticleTitles,
+  findArticleTitlesByUrls,
   findSyncSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
@@ -25,7 +25,7 @@ vi.mock('@repo/helpers/og/fetch-og-metadata', () => ({
 
 vi.mock('../infrastructure/reading-list-repository', () => ({
   findSyncSources: vi.fn(),
-  findArticleTitles: vi.fn(),
+  findArticleTitlesByUrls: vi.fn(),
   insertArticlesIgnoringDuplicates: vi.fn(),
   updateArticleTitles: vi.fn(),
 }));
@@ -42,18 +42,26 @@ const source = (
     id: 1,
     title: 'web.dev',
     url: 'https://web.dev/feed.xml',
-    siteUrl: 'https://web.dev',
     type: 'feed' as const,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
   }) as never;
 
+// DB に入っている記事。渡された URL のものだけを返す
+const givenStoredArticles = (
+  stored: Array<{ url: string; title: string }>,
+): void => {
+  vi.mocked(findArticleTitlesByUrls).mockImplementation(async (urls) =>
+    stored.filter(({ url }) => urls.includes(url)),
+  );
+};
+
 describe('syncArticles', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-12T00:00:00Z'));
-    vi.mocked(findArticleTitles).mockResolvedValue([]);
+    givenStoredArticles([]);
     vi.mocked(fetchOgMetadata).mockResolvedValue({
       title: undefined,
       description: undefined,
@@ -215,7 +223,7 @@ describe('syncArticles', () => {
           publishedAt: '2026-03-10T00:00:00Z',
         },
       ]);
-      vi.mocked(findArticleTitles).mockResolvedValue([
+      givenStoredArticles([
         { url: 'https://web.dev/blog/existing', title: '古いタイトル' },
       ]);
 
@@ -237,7 +245,7 @@ describe('syncArticles', () => {
           publishedAt: '2026-03-10T00:00:00Z',
         },
       ]);
-      vi.mocked(findArticleTitles).mockResolvedValue([
+      givenStoredArticles([
         { url: 'https://web.dev/blog/existing', title: '同じタイトル' },
       ]);
 
@@ -412,7 +420,7 @@ describe('syncArticles', () => {
           publishedAt: '2026-03-11T00:00:00Z',
         },
       ]);
-      vi.mocked(findArticleTitles).mockResolvedValue([
+      givenStoredArticles([
         { url: 'https://web.dev/blog/existing', title: '既存の記事' },
       ]);
 

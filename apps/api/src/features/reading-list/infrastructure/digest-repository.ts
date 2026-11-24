@@ -12,9 +12,22 @@ export type ReadingDigest = {
   topics: ReadingDigestTopic[];
 };
 
-export const findDigestsSince = (sinceDate: string): Promise<ReadingDigest[]> =>
+export type StoredReadingDigest = ReadingDigest & {
+  // まとめを初めて作った時刻
+  createdAt: string;
+};
+
+export const findDigestsSince = (
+  sinceDate: string,
+): Promise<StoredReadingDigest[]> =>
   db.query.readingDigests.findMany({
-    columns: { date: true, overview: true, picks: true, topics: true },
+    columns: {
+      date: true,
+      overview: true,
+      picks: true,
+      topics: true,
+      createdAt: true,
+    },
     where: gte(db._schema.readingDigests.date, sinceDate),
     orderBy: (digests) => [desc(digests.date)],
   });

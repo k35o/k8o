@@ -1,0 +1,62 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing);
+  min-width: 0;
+}
+
+/* 狭い幅では題と要約の幅を削るので出さない */
+.thumbnail {
+  display: none;
+  flex-shrink: 0;
+  width: calc(var(--spacing) * 36);
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-subtle);
+  object-fit: cover;
+
+  @media (width >= 40rem) {
+    display: block;
+  }
+}
+
+.title {
+  align-self: flex-start;
+  font-weight: var(--font-weight-bold);
+
+  @media (hover: hover) {
+    &:any-link:hover {
+      color: var(--color-primary-fg);
+    }
+  }
+}
+
+.note {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.summary {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.meta {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}

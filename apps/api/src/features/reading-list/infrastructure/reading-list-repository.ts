@@ -1,26 +1,32 @@
 import { db } from '@repo/database';
-import { and, count, desc, eq, gte, isNull, lt, ne } from '@repo/database/orm';
+import {
+  and,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNull,
+  lt,
+} from '@repo/database/orm';
 
-// 記事を取り込むソース。manual は取り込まない
-export const findSyncSources = () =>
-  db.query.articleSources.findMany({
-    where: ne(db._schema.articleSources.type, 'manual'),
-  });
+export const findSyncSources = () => db.query.articleSources.findMany();
 
-export type ReadingListArticle = {
+export type ReadingArticle = {
   id: number;
   title: string;
   url: string;
   publishedAt: string;
   imageUrl: string | null;
-  description: string | null;
-  summary: string | null;
-  source: { id: number; title: string; siteUrl: string };
+  // 要約があれば要約、無ければ元の記事の説明
+  text: string | null;
+  sourceTitle: string;
 };
 
+// 新しい順
 export const findRecentArticles = async (
   since: string,
-): Promise<ReadingListArticle[]> => {
+): Promise<ReadingArticle[]> => {
   const rows = await db.query.articles.findMany({
     columns: {
       id: true,
@@ -32,7 +38,7 @@ export const findRecentArticles = async (
       summary: true,
     },
     with: {
-      articleSource: { columns: { id: true, title: true, siteUrl: true } },
+      articleSource: { columns: { title: true } },
     },
     where: gte(db._schema.articles.publishedAt, since),
     orderBy: (articles) => [desc(articles.publishedAt)],
@@ -43,23 +49,17 @@ export const findRecentArticles = async (
     url: article.url,
     publishedAt: article.publishedAt,
     imageUrl: article.imageUrl,
-    description: article.description,
-    summary: article.summary,
-    source: article.articleSource,
+    text: article.summary ?? article.description,
+    sourceTitle: article.articleSource.title,
   }));
 };
 
-export type ReadingListSource = { id: number; title: string };
-
-export const findArticleSources = (): Promise<ReadingListSource[]> =>
-  db.query.articleSources.findMany({
-    columns: { id: true, title: true },
-    orderBy: (sources) => [sources.title],
-  });
-
-export const findArticleTitles = () =>
+export const findArticleTitlesByUrls = (
+  urls: string[],
+): Promise<Array<{ url: string; title: string }>> =>
   db.query.articles.findMany({
     columns: { url: true, title: true },
+    where: inArray(db._schema.articles.url, urls),
   });
 
 export type NewArticleRow = {
@@ -94,17 +94,6 @@ export const updateArticleTitles = async (
     ),
   );
 };
-
-export const findEnrichTargets = (since: string, limit: number) =>
-  db.query.articles.findMany({
-    columns: { id: true, url: true },
-    where: and(
-      isNull(db._schema.articles.imageUrl),
-      isNull(db._schema.articles.description),
-      gte(db._schema.articles.publishedAt, since),
-    ),
-    limit,
-  });
 
 export type SummaryTarget = {
   id: number;
@@ -209,14 +198,4 @@ export const countSummaryProgress = async (
     unsummarized: unsummarized[0]?.value ?? 0,
     summaryGaveUp: gaveUp[0]?.value ?? 0,
   };
-};
-
-export const updateArticleOgById = async (
-  id: number,
-  og: { imageUrl: string | null; description: string | null },
-): Promise<void> => {
-  await db
-    .update(db._schema.articles)
-    .set(og)
-    .where(eq(db._schema.articles.id, id));
 };
