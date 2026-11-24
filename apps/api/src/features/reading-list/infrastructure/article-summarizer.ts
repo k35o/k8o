@@ -55,8 +55,12 @@ const buildPrompt = (title: string, text: string): string => {
 export async function summarizeArticle(article: {
   url: string;
   title: string;
+  body: string | null;
 }): Promise<SummaryOutcome> {
-  const fetched = await fetchArticleText(article.url);
+  const fetched =
+    article.body === null
+      ? await fetchArticleText(article.url)
+      : ({ ok: true, text: article.body } as const);
   if (!fetched.ok) {
     return failed(`本文を取得できない（${fetched.reason}）`);
   }

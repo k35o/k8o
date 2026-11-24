@@ -40,6 +40,40 @@ describe('fetchFeedItems', () => {
       ]);
     });
 
+    it('項目の本文（content:encoded か description）から HTML を外し、空白を詰めて text にする', async () => {
+      vi.mocked(safeFetch).mockResolvedValue(
+        feedResponse(
+          [
+            '<?xml version="1.0"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>t</title>',
+            '<item><title>2.1.331</title><link>https://code.claude.com/docs/en/changelog#2-1-331</link>',
+            '<pubDate>Mon, 23 Nov 2026 21:40:51 GMT</pubDate>',
+            '<content:encoded><![CDATA[<p><strong>Added</strong></p> <ul> <li>Added <code>oidc</code> support</li> <li>Fixed a bug</li></ul>]]></content:encoded></item>',
+            '<item><title>Release notes</title><link>https://platform.claude.com/docs/en/release-notes/overview#linked-billing</link>',
+            '<pubDate>Tue, 17 Nov 2026 00:00:00 GMT</pubDate>',
+            '<description><![CDATA[ <ul> <li>We launched <a href="https://platform.claude.com/docs">Linked billing</a> in beta.</li> </ul> ]]></description></item>',
+            '</channel></rss>',
+          ].join(''),
+        ),
+      );
+
+      const items = await fetchFeedItems('https://example.com/feed');
+
+      expect(items).toStrictEqual([
+        {
+          title: '2.1.331',
+          link: 'https://code.claude.com/docs/en/changelog#2-1-331',
+          publishedAt: '2026-11-23T21:40:51.000Z',
+          text: 'Added Added oidc support Fixed a bug',
+        },
+        {
+          title: 'Release notes',
+          link: 'https://platform.claude.com/docs/en/release-notes/overview#linked-billing',
+          publishedAt: '2026-11-17T00:00:00.000Z',
+          text: 'We launched Linked billing in beta.',
+        },
+      ]);
+    });
+
     it('応答しないフィードで関数の上限を食い潰さないよう、タイムアウトを付けて取得する', async () => {
       vi.mocked(safeFetch).mockResolvedValue(
         feedResponse(

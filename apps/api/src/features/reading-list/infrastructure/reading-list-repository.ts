@@ -82,6 +82,7 @@ export type NewArticleRow = {
   publishedAt: string;
   imageUrl: string | null;
   description: string | null;
+  body: string | null;
 };
 
 // Vercel Cron は同じ回を二重に起動し得るため、unique 違反を握って冪等にする
@@ -112,6 +113,7 @@ export type SummaryTarget = {
   id: number;
   url: string;
   title: string;
+  body: string | null;
   summaryAttempts: number;
 };
 
@@ -121,7 +123,13 @@ export const findSummaryTargets = (
   limit: number,
 ): Promise<SummaryTarget[]> =>
   db.query.articles.findMany({
-    columns: { id: true, url: true, title: true, summaryAttempts: true },
+    columns: {
+      id: true,
+      url: true,
+      title: true,
+      body: true,
+      summaryAttempts: true,
+    },
     where: and(
       isNull(db._schema.articles.summary),
       lt(db._schema.articles.summaryAttempts, maxAttempts),

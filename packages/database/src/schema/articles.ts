@@ -23,6 +23,9 @@ export const articles = sqliteTable(
     publishedAt: text('published_at').notNull(),
     imageUrl: text('image_url'),
     description: text('description'),
+    // フィードの項目が持つ本文。リンクがページの中の場所を指す項目だけが持つ。ページ全体には
+    // ほかの項目も載っているので、要約はページを取得せずにこれを読む
+    body: text('body'),
     summary: text('summary'),
     // 要約を試みた回数。生成の前に予約するので、要約済みの記事でも1以上になりうる。
     // API の呼び出しが失敗した回は数えない。上限に達した記事は、それ以上要約しない

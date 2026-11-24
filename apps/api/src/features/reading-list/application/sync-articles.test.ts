@@ -144,6 +144,101 @@ describe('syncArticles', () => {
       ]);
     });
 
+    it('ページの中の場所を指す項目は、フィードの本文を本文と説明にし、OGP を取らない', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
+      vi.mocked(fetchFeedItems).mockResolvedValue([
+        {
+          title: '2.1.331',
+          link: 'https://code.claude.com/docs/en/changelog#2-1-331',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text: 'Added Code Mode support in terminal sessions.',
+        },
+      ]);
+
+      await syncArticles();
+
+      expect(fetchOgMetadata).not.toHaveBeenCalled();
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        {
+          articleSourceId: 1,
+          title: '2.1.331',
+          url: 'https://code.claude.com/docs/en/changelog#2-1-331',
+          publishedAt: '2026-03-11T00:00:00.000Z',
+          imageUrl: null,
+          description: 'Added Code Mode support in terminal sessions.',
+          body: 'Added Code Mode support in terminal sessions.',
+        },
+      ]);
+    });
+
+    it('同じ題が並ぶフィードでは、ページの中の場所を指す項目の題をどれも本文の最初の文にする', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
+      vi.mocked(fetchFeedItems).mockResolvedValue([
+        {
+          title: 'Claude Platform release notes — March 11, 2026',
+          link: 'https://platform.claude.com/docs/en/release-notes/overview#linked-billing',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text: 'We launched Linked billing in beta. Your customers can now pay for the usage.',
+        },
+        {
+          title: 'Claude Platform release notes — March 11, 2026',
+          link: 'https://platform.claude.com/docs/en/release-notes/overview#storage-events',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text: 'We added two event types to organization webhooks.',
+        },
+        {
+          title: 'Claude Platform release notes — March 10, 2026',
+          link: 'https://platform.claude.com/docs/en/release-notes/overview#files-api',
+          publishedAt: '2026-03-10T00:00:00Z',
+          text: 'We released the Files API.',
+        },
+      ]);
+
+      await syncArticles();
+
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        expect.objectContaining({
+          title: 'We launched Linked billing in beta.',
+          url: 'https://platform.claude.com/docs/en/release-notes/overview#linked-billing',
+        }),
+        expect.objectContaining({
+          title: 'We added two event types to organization webhooks.',
+          url: 'https://platform.claude.com/docs/en/release-notes/overview#storage-events',
+        }),
+        expect.objectContaining({
+          title: 'We released the Files API.',
+          url: 'https://platform.claude.com/docs/en/release-notes/overview#files-api',
+        }),
+      ]);
+    });
+
+    it('ページの外を指す項目は、本文があっても OGP を取り、本文を持たない', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
+      vi.mocked(fetchFeedItems).mockResolvedValue([
+        {
+          title: '記事',
+          link: 'https://web.dev/blog/article-1',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text: '記事の抜粋',
+        },
+      ]);
+      vi.mocked(fetchOgMetadata).mockResolvedValue({
+        title: undefined,
+        description: 'OGP の説明',
+        imageUrl: 'https://web.dev/og.png',
+      });
+
+      await syncArticles();
+
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        expect.objectContaining({
+          imageUrl: 'https://web.dev/og.png',
+          description: 'OGP の説明',
+          body: null,
+        }),
+      ]);
+    });
+
     it('新しい記事をDBに追加する', async () => {
       vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
@@ -463,6 +558,59 @@ describe('syncArticles', () => {
       const result = await syncArticles();
 
       expect(result.newArticles).toBe(1);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('題にする最初の文が 120 字を超えたら、119 字で切って省略記号を付ける', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
+      const longSentence = `We launched ${'a'.repeat(200)}.`;
+      vi.mocked(fetchFeedItems).mockResolvedValue([
+        {
+          title: 'Release notes',
+          link: 'https://example.com/notes#a',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text: longSentence,
+        },
+        {
+          title: 'Release notes',
+          link: 'https://example.com/notes#b',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text: 'We fixed a bug.',
+        },
+      ]);
+
+      await syncArticles();
+
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        expect.objectContaining({
+          title: `We launched ${'a'.repeat(107)}…`,
+          url: 'https://example.com/notes#a',
+        }),
+        expect.objectContaining({ url: 'https://example.com/notes#b' }),
+      ]);
+    });
+
+    it('本文が 300 字を超えたら、説明には 299 字で切って省略記号を付け、本文は全文を残す', async () => {
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
+      const text = 'a'.repeat(500);
+      vi.mocked(fetchFeedItems).mockResolvedValue([
+        {
+          title: '2.1.331',
+          link: 'https://code.claude.com/docs/en/changelog#2-1-331',
+          publishedAt: '2026-03-11T00:00:00Z',
+          text,
+        },
+      ]);
+
+      await syncArticles();
+
+      expect(insertArticlesIgnoringDuplicates).toHaveBeenCalledWith([
+        expect.objectContaining({
+          description: `${'a'.repeat(299)}…`,
+          body: text,
+        }),
+      ]);
     });
   });
 

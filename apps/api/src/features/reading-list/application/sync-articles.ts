@@ -16,6 +16,27 @@ import type { ArticleSource } from '../infrastructure/reading-list-repository';
 import { readingWindowStart } from './reading-window';
 
 const OG_CONCURRENCY = 5;
+const MAX_TITLE_CHARS = 120;
+const MAX_DESCRIPTION_CHARS = 300;
+
+const graphemeSegmenter = new Intl.Segmenter(undefined, {
+  granularity: 'grapheme',
+});
+
+const truncate = (text: string, max: number): string => {
+  const graphemes = Array.from(
+    graphemeSegmenter.segment(text),
+    ({ segment }) => segment,
+  );
+  return graphemes.length <= max
+    ? text
+    : `${graphemes.slice(0, max - 1).join('')}…`;
+};
+
+const firstSentence = (text: string): string => {
+  const end = text.search(/[.!?。](?=\s|$)/u);
+  return end === -1 ? text : text.slice(0, end + 1);
+};
 
 const fetchSourceItems = (source: ArticleSource): Promise<FeedItem[]> => {
   switch (source.type) {
@@ -33,6 +54,7 @@ type FeedArticle = {
   title: string;
   url: string;
   publishedAt: string;
+  body: string | null;
 };
 
 export type SyncResult = {
@@ -50,6 +72,10 @@ export async function syncArticles(): Promise<SyncResult> {
     sources.map(async (source) => {
       const items = await fetchSourceItems(source);
       const candidates: FeedArticle[] = [];
+      const titles = items.flatMap(({ title }) =>
+        title === undefined ? [] : [title],
+      );
+      const titlesRepeat = new Set(titles).size < titles.length;
 
       for (const item of items) {
         if (
@@ -75,11 +101,22 @@ export async function syncArticles(): Promise<SyncResult> {
           continue;
         }
 
+        // ページの中の場所を指す項目のページには、ほかの項目も載っている。本文はページではなく
+        // フィードの項目から取る。題が日付のように項目の間で重なるフィードは、題で項目を
+        // 見分けられないので、本文の最初の文を題にする
+        const body =
+          item.text !== undefined && new URL(item.link).hash !== ''
+            ? item.text
+            : null;
         candidates.push({
           articleSourceId: source.id,
-          title: item.title,
+          title:
+            body !== null && titlesRepeat
+              ? truncate(firstSentence(body), MAX_TITLE_CHARS)
+              : item.title,
           url: item.link,
           publishedAt: publishedDate.toISOString(),
+          body,
         });
       }
 
@@ -136,6 +173,13 @@ export async function syncArticles(): Promise<SyncResult> {
       newArticles,
       OG_CONCURRENCY,
       async (article) => {
+        if (article.body !== null) {
+          return {
+            ...article,
+            imageUrl: null,
+            description: truncate(article.body, MAX_DESCRIPTION_CHARS),
+          };
+        }
         const og = await fetchOgMetadata(article.url);
         return {
           ...article,
