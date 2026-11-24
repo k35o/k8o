@@ -1,6 +1,6 @@
 import { notFound } from '@k8ordo/framework';
+import type { PdfDeck } from '@repo/talk-deck/deck';
 
-import type { PdfDeck } from '@/features/talks/application/pdf-deck';
 import {
   findPdfDeck,
   getTalks as _getTalks,

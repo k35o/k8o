@@ -116,7 +116,7 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 - **見出し階層**: `# H1`は記事タイトルの1つだけ（非表示）。実セクションは`##`から。階層を飛ばさない（`##`の次に`####`を置かない）。同名見出しの重複に注意（アンカーID衝突）。段の飛びは`components/site/mdx-base/article-outline.test.ts`が落とす。
 - **テーブルは使わない**（要修正）: markdownテーブル（`| … | … |`）は**横スクロールに弱く、特にモバイルや縦書き表示で崩れる**。本文では使わず、箇条書き・段落・定義（`用語：説明`）、または必要なら画像（`<Image>`）で代替する。機械検出は機械コマンド(4)。
 - **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。`<LinkCard>`を足したら`pnpm run -F main generate:link-card-metadata`を流したか（抜けは`features/blog/application/article-files.test.ts`が落とす）。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出るURL（`http://`やOGPを持たないページ）は`{}`のままでよい。`--refresh`は使わない。
-- **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。`_images/`の画像が`pnpm run -F main optimize:image`で変換したAVIFか。width と height の縦横比は`features/blog/application/article-files.test.ts`が確かめる。
+- **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。`_images/`の画像が`pnpm run -F @repo/media optimize:image`で変換したAVIFか。width と height の縦横比は`features/blog/application/article-files.test.ts`が確かめる。
 - **数式**: カンマで区切った数（`$(64,128,192)$`）は、カンマの後ろに空白を書いているか（`$(64, 128, 192)$`）。空白が無いと Temml が1つの数にまとめ、カンマの後ろが詰まる。
 
 ## レポート形式

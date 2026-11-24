@@ -34,9 +34,11 @@ apps/ai/            → AIツール群（ai.k8o.me）            → apps/ai/CLA
 packages/database/  → k8o の DB（Drizzle ORM + Turso）  → packages/database/CLAUDE.md
 packages/ai-database/ → ai の DB（認証と ai_*）        → packages/ai-database/CLAUDE.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/CLAUDE.md
+packages/talk-deck/ → PDF から作るトークのデッキの形       → packages/talk-deck/CLAUDE.md
 packages/typescript-config・code-highlight → 共有設定・コードハイライト
 packages/mdx-preset/ → main の MDX に通す remark・rehype の preset（数式・コードハイライト）と数式の CSS
 packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール（k8o/*）
+tools/media/        → 外の素材を取り込む、手で流す道具（画像の AVIF 化・PDF のデッキ化） → tools/media/CLAUDE.md
 ```
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。

@@ -2,10 +2,11 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 
 import { getTalks as readTalks } from '@repo/api/build-data';
+import { parsePdfDeck } from '@repo/talk-deck/deck';
+import type { PdfDeck } from '@repo/talk-deck/deck';
 
 import { deckMdxPath, pdfDeckPath } from './path';
-import { parsePdfDeck, pdfPageSources } from './pdf-deck';
-import type { PdfDeck } from './pdf-deck';
+import { pdfPageSources } from './pdf-deck';
 
 type DeckKind = 'mdx' | 'pdf';
 

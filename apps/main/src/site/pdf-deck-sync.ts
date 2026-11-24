@@ -1,18 +1,14 @@
 import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-import { get, list } from '@vercel/blob';
-
 import {
   PDF_DECK_MANIFEST,
+  PDF_DECK_SOURCE,
   PDF_PAGE_WIDTHS,
+  pdfDeckBlobPrefix,
   pdfPageImage,
-} from './pdf-deck-files.ts';
-
-// 元の PDF。保管のためにストアにだけ置き、サイトには出さない
-export const PDF_DECK_SOURCE = 'deck.pdf';
-
-export const pdfDeckBlobPrefix = (slug: string): string => `talks/${slug}/`;
+} from '@repo/talk-deck/files';
+import { get, list } from '@vercel/blob';
 
 // size が分からないストアのファイルは、毎回取り直す
 type StoreFile = { pathname: string; size?: number };
@@ -22,9 +18,7 @@ export type PdfDeckStore = {
   download: (pathname: string, to: string) => Promise<void>;
 };
 
-export const listBlobs = async (
-  prefix: string,
-): Promise<Array<{ pathname: string; size: number; url: string }>> => {
+const listBlobs = async (prefix: string): Promise<StoreFile[]> => {
   let result = await list({ prefix });
   const blobs = [...result.blobs];
   while (result.cursor !== undefined) {

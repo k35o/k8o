@@ -1,4 +1,4 @@
-import type { PdfBlock, PdfLine, PdfTextTag } from './pdf-deck.ts';
+import type { PdfBlock, PdfLine, PdfTextTag } from '@repo/talk-deck/deck';
 
 // pdfjs-dist の getTextContent({ includeMarkedContent: true }) の items の、使う分だけの形
 export type PdfTextContentItem =

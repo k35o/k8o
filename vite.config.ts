@@ -90,8 +90,8 @@ export default defineConfig({
         },
       },
       {
-        // 共有パッケージと main の scripts は Node が TS のまま読むので、相対 import に拡張子を書く
-        files: ['packages/**', 'apps/main/scripts/**'],
+        // 共有パッケージと道具と main の scripts は Node が TS のまま読むので、相対 import に拡張子を書く
+        files: ['packages/**', 'tools/**', 'apps/main/scripts/**'],
         rules: {
           'import/extensions': ['error', 'always', { ignorePackages: true }],
         },

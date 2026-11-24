@@ -2,9 +2,9 @@ import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 
+import { imageSizeFromFile } from 'image-size/fromFile';
 import type { ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 import compositionSidebar from '@/content/blog/chromatic-storybook-publish/_images/composition-sidebar.avif';
@@ -126,10 +126,10 @@ describe('記事の画像の版', () => {
       '%s は、隣にある元の画像と縦横比が同じで、名前の幅を持つ',
       async (variant) => {
         const width = Number(/\.(\d+)w\.avif$/u.exec(variant)?.[1]);
-        const original = await sharp(
+        const original = await imageSizeFromFile(
           variant.replace(/\.\d+w\.avif$/u, '.avif'),
-        ).metadata();
-        const actual = await sharp(variant).metadata();
+        );
+        const actual = await imageSizeFromFile(variant);
 
         expect(actual.width).toBe(width);
         expect(
