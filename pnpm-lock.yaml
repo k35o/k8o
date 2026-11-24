@@ -249,8 +249,8 @@ catalogs:
       specifier: 1.7.25
       version: 1.7.25
     chromatic:
-      specifier: 18.14.4
-      version: 18.14.4
+      specifier: 18.14.5
+      version: 18.14.5
     drizzle-kit:
       specifier: 0.31.11
       version: 0.31.11
@@ -643,7 +643,7 @@ importers:
         version: 5.1.0(@vitest/browser-preview@5.1.0)(@vitest/ui@5.1.0)(msw@3.0.6(@types/node@26.6.6)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(playwright@1.65.1)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.1.0)
       chromatic:
         specifier: 'catalog:'
-        version: 18.14.4
+        version: 18.14.5
       image-size:
         specifier: 2.1.0
         version: 2.1.0
@@ -4379,8 +4379,8 @@ packages:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
 
-  chromatic@18.14.4:
-    resolution: {integrity: sha512-XQJ5JnVFPtxQa+X+VrW0tyct9RNs8GVPMdgJ4IyUCtZlNs0oo0CmgyOFNE0N0jXb0+tsHYPw0afP8ke4FGPTmQ==}
+  chromatic@18.14.5:
+    resolution: {integrity: sha512-FKSNgph3UnlQ9adzpENaHzPsxOfaVFdurvudxoEVwXOWGHRZ58l4h5cfXMGXF5GzxmiJ08nK4cqYxjna2Eqe7w==}
     engines: {node: '>=22.0.0'}
     hasBin: true
     peerDependencies:
@@ -9141,7 +9141,7 @@ snapshots:
     dependencies:
       readdirp: 5.1.1
 
-  chromatic@18.14.4:
+  chromatic@18.14.5:
     dependencies:
       semver: 7.8.6
 
