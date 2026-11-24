@@ -5,7 +5,7 @@ import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-sour
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import {
   findArticleTitlesByUrls,
-  findSyncSources,
+  findArticleSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
@@ -24,7 +24,7 @@ vi.mock('@repo/helpers/og/fetch-og-metadata', () => ({
 }));
 
 vi.mock('../infrastructure/reading-list-repository', () => ({
-  findSyncSources: vi.fn(),
+  findArticleSources: vi.fn(),
   findArticleTitlesByUrls: vi.fn(),
   insertArticlesIgnoringDuplicates: vi.fn(),
   updateArticleTitles: vi.fn(),
@@ -44,7 +44,6 @@ const source = (
     url: 'https://web.dev/feed.xml',
     type: 'feed' as const,
     createdAt: '2026-01-01T00:00:00Z',
-    updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
   }) as never;
 
@@ -75,7 +74,7 @@ describe('syncArticles', () => {
 
   describe('正常系', () => {
     it('ブラウザの版の一覧のソースは、版ごとの記事として追加する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([
+      vi.mocked(findArticleSources).mockResolvedValue([
         source({
           title: 'Chrome',
           url: 'https://raw.githubusercontent.com/mdn/browser-compat-data/main/browsers/chrome.json',
@@ -109,7 +108,7 @@ describe('syncArticles', () => {
     });
 
     it('新しい記事をDBに追加する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '新しい記事',
@@ -127,7 +126,7 @@ describe('syncArticles', () => {
     });
 
     it('新規記事に取得した OGP（画像・説明）を保存する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '新しい記事',
@@ -156,7 +155,7 @@ describe('syncArticles', () => {
     });
 
     it('OGP が取得できなかった新規記事は imageUrl/description を null で保存する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '新しい記事',
@@ -177,7 +176,7 @@ describe('syncArticles', () => {
     });
 
     it('ソースがない場合は何も追加しない', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([]);
+      vi.mocked(findArticleSources).mockResolvedValue([]);
 
       const result = await syncArticles();
 
@@ -188,7 +187,7 @@ describe('syncArticles', () => {
     });
 
     it('複数ソースから並列に取得する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([
+      vi.mocked(findArticleSources).mockResolvedValue([
         source(),
         source({ id: 2, title: 'Zenn', url: 'https://zenn.dev/feed' }),
       ]);
@@ -215,7 +214,7 @@ describe('syncArticles', () => {
     });
 
     it('既存記事のtitleが変わっていたら更新する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '更新されたタイトル',
@@ -237,7 +236,7 @@ describe('syncArticles', () => {
     });
 
     it('titleが同じ場合は更新しない', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '同じタイトル',
@@ -259,7 +258,7 @@ describe('syncArticles', () => {
 
   describe('フィルタリング', () => {
     it('3ヶ月より前の記事はスキップする', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '古い記事',
@@ -279,7 +278,7 @@ describe('syncArticles', () => {
     });
 
     it('title・link・publishedAtのいずれかが欠けている記事はスキップする', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         { title: 'タイトルのみ', link: undefined, publishedAt: undefined },
         {
@@ -305,7 +304,7 @@ describe('syncArticles', () => {
     });
 
     it('publishedAt がパース不能な記事はスキップする', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: 'パース不能な日付',
@@ -334,7 +333,7 @@ describe('syncArticles', () => {
     });
 
     it('非 ISO 形式の publishedAt は ISO 8601 に正規化して保存する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: 'RFC 2822 日付の記事',
@@ -355,7 +354,7 @@ describe('syncArticles', () => {
     });
 
     it('https 以外のスキームの link はスキップして保存しない', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: 'XSS を狙う記事',
@@ -384,7 +383,7 @@ describe('syncArticles', () => {
     });
 
     it('同一同期内で重複する URL は1件だけ追加する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '記事',
@@ -407,7 +406,7 @@ describe('syncArticles', () => {
     });
 
     it('既にDBに存在するURLの記事は追加しない', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: '既存の記事',
@@ -432,7 +431,7 @@ describe('syncArticles', () => {
 
   describe('異常系', () => {
     it('フィード取得に失敗したソースを報告する', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([source()]);
+      vi.mocked(findArticleSources).mockResolvedValue([source()]);
       vi.mocked(fetchFeedItems).mockRejectedValue(new Error('Network error'));
 
       const result = await syncArticles();
@@ -442,7 +441,7 @@ describe('syncArticles', () => {
     });
 
     it('一部のソースが失敗しても他のソースは処理を続ける', async () => {
-      vi.mocked(findSyncSources).mockResolvedValue([
+      vi.mocked(findArticleSources).mockResolvedValue([
         source({
           title: '失敗するソース',
           url: 'https://fail.example.com/feed',

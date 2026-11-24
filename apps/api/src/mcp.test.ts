@@ -12,6 +12,7 @@ import {
 } from './features/browser-support/infrastructure/browser-support-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
+import { findArticleSources } from './features/reading-list/infrastructure/reading-list-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
 import {
   findReports,
@@ -35,6 +36,12 @@ vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
 vi.mock('./features/overview/infrastructure/overview-repository', () => ({
   findOverview: vi.fn(),
 }));
+vi.mock(
+  './features/reading-list/infrastructure/reading-list-repository',
+  () => ({
+    findArticleSources: vi.fn(),
+  }),
+);
 vi.mock('./features/reading-list/interface/queries', () => ({
   getSummaryProgress: vi.fn(),
 }));
@@ -166,6 +173,7 @@ describe('MCP の tool', () => {
           { name: 'list_inquiries', annotations: READ_ONLY },
           { name: 'list_blogs', annotations: READ_ONLY },
           { name: 'list_reports', annotations: READ_ONLY },
+          { name: 'list_article_sources', annotations: READ_ONLY },
         ]);
       });
     });
@@ -176,7 +184,7 @@ describe('MCP の tool', () => {
 
         const { tools } = await modernClient.listTools();
 
-        expect(tools).toHaveLength(4);
+        expect(tools).toHaveLength(5);
         expect(modernClient.getServerCapabilities()?.tools).toStrictEqual({
           listChanged: false,
         });
@@ -598,6 +606,53 @@ describe('MCP の tool', () => {
         };
         expect(content.items[0]?.url).toHaveLength(500);
         expect(content.items[0]?.untrustedBody).toHaveLength(2000);
+      });
+    });
+  });
+
+  describe('list_article_sources', () => {
+    describe('正常系', () => {
+      it('登録している記事のソースを、種類と URL と登録日時とともに返す', async () => {
+        vi.mocked(findArticleSources).mockResolvedValue([
+          {
+            id: 1,
+            title: 'Chrome',
+            url: 'https://raw.githubusercontent.com/mdn/browser-compat-data/main/browsers/chrome.json',
+            type: 'browser-releases',
+            createdAt: '2026-11-21T00:00:00.000Z',
+          },
+          {
+            id: 2,
+            title: 'React',
+            url: 'https://react.dev/rss.xml',
+            type: 'feed',
+            createdAt: '2026-11-24T00:00:00.000Z',
+          },
+        ]);
+
+        const result = await client.callTool({
+          name: 'list_article_sources',
+          arguments: {},
+        });
+
+        expect(structured(result)).toStrictEqual({
+          sources: [
+            {
+              id: 1,
+              title: 'Chrome',
+              url: 'https://raw.githubusercontent.com/mdn/browser-compat-data/main/browsers/chrome.json',
+              type: 'browser-releases',
+              createdAt: '2026-11-21T00:00:00.000Z',
+            },
+            {
+              id: 2,
+              title: 'React',
+              url: 'https://react.dev/rss.xml',
+              type: 'feed',
+              createdAt: '2026-11-24T00:00:00.000Z',
+            },
+          ],
+        });
       });
     });
   });

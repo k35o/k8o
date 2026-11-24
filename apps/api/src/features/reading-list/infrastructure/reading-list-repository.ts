@@ -10,7 +10,19 @@ import {
   lt,
 } from '@repo/database/orm';
 
-export const findSyncSources = () => db.query.articleSources.findMany();
+export type ArticleSource = {
+  id: number;
+  title: string;
+  url: string;
+  type: 'feed' | 'browser-releases';
+  createdAt: string;
+};
+
+export const findArticleSources = (): Promise<ArticleSource[]> =>
+  db.query.articleSources.findMany({
+    columns: { id: true, title: true, url: true, type: true, createdAt: true },
+    orderBy: (sources) => [sources.id],
+  });
 
 export type ReadingArticle = {
   id: number;

@@ -6,7 +6,7 @@ import { fetchBrowserReleaseItems } from '../infrastructure/browser-release-sour
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import {
   findArticleTitlesByUrls,
-  findSyncSources,
+  findArticleSources,
   insertArticlesIgnoringDuplicates,
   updateArticleTitles,
 } from '../infrastructure/reading-list-repository';
@@ -28,7 +28,7 @@ export type SyncResult = {
 };
 
 export async function syncArticles(): Promise<SyncResult> {
-  const sources = await findSyncSources();
+  const sources = await findArticleSources();
 
   const ninetyDaysAgo = readingWindowStart(Date.now());
 
