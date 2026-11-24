@@ -53,7 +53,7 @@ export const getTags = async (): Promise<Tag[]> =>
     talkIds: row.talkTag.map(({ talkId }) => talkId),
   }));
 
-// 公開時刻より前のデッキの slug は返さない。ビルドがデッキを取り込まず、トークは k8o.me のデッキを持たないものとして出る
+// 開催日の新しい順。公開時刻より前のデッキの slug は返さない。ビルドがデッキを取り込まず、トークは k8o.me のデッキを持たないものとして出る
 export const getTalks = async (now: Date = new Date()): Promise<Talk[]> =>
   (await findTalkRows()).map((row) => ({
     id: row.id,
