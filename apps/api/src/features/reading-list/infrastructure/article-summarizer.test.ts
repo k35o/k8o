@@ -16,7 +16,11 @@ vi.mock('./article-text', () => ({
   fetchArticleText: vi.fn(),
 }));
 
-const ARTICLE = { url: 'https://example.com/a', title: '記事のタイトル' };
+const ARTICLE = {
+  url: 'https://example.com/a',
+  title: '記事のタイトル',
+  body: null,
+};
 const BODY = 'Article body sentence. '.repeat(40);
 const SUMMARY =
   'CSS の新しい機能を使って、要素同士の重なりを検出する方法を紹介している。スクロール駆動アニメーションを組み合わせ、JavaScript を使わずに重なりの状態に応じてスタイルを切り替える。対応ブラウザと、既存の手法との違いにも触れている。';
@@ -69,6 +73,27 @@ describe('summarizeArticle', () => {
       expect(options?.instructions).toContain('NO_ARTICLE_BODY');
       expect(promptOfFirstCall()).toBe(
         `<title>記事のタイトル</title>\n<article>\n${BODY}\n</article>`,
+      );
+    });
+
+    it('本文を持つ記事は、ページを取得せずにその本文を要約する', async () => {
+      vi.mocked(generateText).mockResolvedValue(
+        generated({ text: SUMMARY, finishReason: 'stop' }),
+      );
+      const ownBody = 'Added Code Mode support in terminal sessions. '.repeat(
+        10,
+      );
+
+      const outcome = await summarizeArticle({
+        url: 'https://code.claude.com/docs/en/changelog#2-1-331',
+        title: '2.1.331',
+        body: ownBody,
+      });
+
+      expect(outcome).toStrictEqual({ kind: 'summarized', summary: SUMMARY });
+      expect(fetchArticleText).not.toHaveBeenCalled();
+      expect(promptOfFirstCall()).toBe(
+        `<title>2.1.331</title>\n<article>\n${ownBody}\n</article>`,
       );
     });
 

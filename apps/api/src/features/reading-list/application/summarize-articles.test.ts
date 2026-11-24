@@ -27,6 +27,7 @@ const target = (id: number, summaryAttempts = 0) => ({
   id,
   url: `https://example.com/${id}`,
   title: `記事${id}`,
+  body: null,
   summaryAttempts,
 });
 

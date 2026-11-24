@@ -1,7 +1,9 @@
 import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import Parser from 'rss-parser';
 
-const parser = new Parser();
+type ContentItem = { 'content:encodedSnippet'?: string };
+
+const parser = new Parser<Record<string, unknown>, ContentItem>();
 // 同じ関数の中で要約も動くので、1本のフィードが応答しないまま上限の300秒を食い潰さないようにする
 const FEED_TIMEOUT_MS = 10_000;
 
@@ -23,6 +25,16 @@ export type FeedItem = {
   // rss-parser はパース不能な pubDate のとき isoDate を設定しないため、
   // 生文字列が混ざりうる。保存前の検証・正規化は呼び出し側で行う。
   publishedAt: string | undefined;
+  text?: string;
+};
+
+const itemText = (item: Parser.Item & ContentItem): string | undefined => {
+  const snippet = item['content:encodedSnippet'] ?? item.contentSnippet;
+  if (snippet === undefined) {
+    return undefined;
+  }
+  const text = snippet.replaceAll(/\s+/gu, ' ').trim();
+  return text === '' ? undefined : text;
 };
 
 export async function fetchFeedItems(url: string): Promise<FeedItem[]> {
@@ -37,9 +49,16 @@ export async function fetchFeedItems(url: string): Promise<FeedItem[]> {
   }
   const xml = await response.text();
   const feed = await parser.parseString(sanitizeFeedDates(xml));
-  return feed.items.map((item) => ({
-    title: item.title,
-    link: item.link,
-    publishedAt: item.isoDate ?? item.pubDate,
-  }));
+  return feed.items.map((item) => {
+    const feedItem: FeedItem = {
+      title: item.title,
+      link: item.link,
+      publishedAt: item.isoDate ?? item.pubDate,
+    };
+    const text = itemText(item);
+    if (text !== undefined) {
+      feedItem.text = text;
+    }
+    return feedItem;
+  });
 }

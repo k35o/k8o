@@ -74,6 +74,7 @@ erDiagram
     text published_at
     text image_url
     text description
+    text body
     text summary
     integer summary_attempts
     text created_at

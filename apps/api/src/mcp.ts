@@ -3,6 +3,7 @@ import { createMcpHandler, McpServer } from '@modelcontextprotocol/server';
 import { registerBlogTools } from './features/blog/interface/mcp-tools';
 import { registerInquiryTools } from './features/inquiries/interface/mcp-tools';
 import { registerOverviewTools } from './features/overview/interface/mcp-tools';
+import { registerReadingListTools } from './features/reading-list/interface/mcp-tools';
 import { registerReportTools } from './features/reports/interface/mcp-tools';
 
 const createMcpServer = (): McpServer => {
@@ -16,6 +17,7 @@ const createMcpServer = (): McpServer => {
   registerInquiryTools(server);
   registerBlogTools(server);
   registerReportTools(server);
+  registerReadingListTools(server);
   return server;
 };
 

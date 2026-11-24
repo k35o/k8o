@@ -81,6 +81,7 @@ describe('insertArticlesIgnoringDuplicates', () => {
       publishedAt: '2026-01-01T00:00:00.000Z',
       imageUrl: null,
       description: null,
+      body: null,
     };
     await insertArticlesIgnoringDuplicates([row]);
 
