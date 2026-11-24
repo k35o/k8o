@@ -29,4 +29,5 @@ export const findTalkRows = () =>
       blog: { columns: { id: true, slug: true } },
       talkTag: { with: { tag: { columns: { id: true, name: true } } } },
     },
+    orderBy: (talk, { desc }) => [desc(talk.eventDate), desc(talk.id)],
   });
