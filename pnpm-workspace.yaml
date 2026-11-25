@@ -33,7 +33,7 @@ catalog:
   '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.1.1
   ai: 7.0.176
-  better-auth: 1.7.25
+  better-auth: 1.7.26
   chromatic: 18.14.6
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.4
