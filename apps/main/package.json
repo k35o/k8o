@@ -64,7 +64,7 @@
     "@vitest/browser-playwright": "catalog:",
     "chromatic": "catalog:",
     "image-size": "2.1.0",
-    "msw": "3.0.6",
+    "msw": "3.0.7",
     "msw-storybook-addon": "3.0.3",
     "oxc-transform-react": "catalog:",
     "playwright": "1.65.1",
