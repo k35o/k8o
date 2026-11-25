@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Generate token
         id: generate-token
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
           private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
