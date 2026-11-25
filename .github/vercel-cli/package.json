@@ -2,7 +2,7 @@
   "name": "vercel-cli",
   "private": true,
   "devDependencies": {
-    "vercel": "66.1.0"
+    "vercel": "66.2.0"
   },
   "packageManager": "pnpm@12.22.0"
 }
