@@ -34,7 +34,7 @@ catalog:
   '@vitest/browser-playwright': 5.1.1
   ai: 7.0.176
   better-auth: 1.7.26
-  chromatic: 18.14.6
+  chromatic: 18.15.0
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.4
   hono: 4.13.19
