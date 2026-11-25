@@ -5,35 +5,35 @@ version: 'v0.0.3'
 workflows:
     '.github/workflows/browser-support-monitor.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/create-github-app-token@v3.3.0'
-        - 'jdx/mise-action@v5.2.9'
+        - 'actions/create-github-app-token@v3.4.0'
+        - 'jdx/mise-action@v5.2.10'
     '.github/workflows/chromatic.yml':
         - 'actions/checkout@v7.0.1'
-        - 'chromaui/action@v18.14.6'
-        - 'jdx/mise-action@v5.2.9'
+        - 'chromaui/action@v18.15.0'
+        - 'jdx/mise-action@v5.2.10'
     '.github/workflows/ci.yml':
         - 'actions/cache@v6.1.0'
         - 'actions/checkout@v7.0.1'
-        - 'jdx/mise-action@v5.2.9'
+        - 'jdx/mise-action@v5.2.10'
     '.github/workflows/knip.yml':
         - 'actions/checkout@v7.0.1'
-        - 'jdx/mise-action@v5.2.9'
+        - 'jdx/mise-action@v5.2.10'
         - 'k35o/patrol-board@v0.0.3'
     '.github/workflows/pavo.yml': []
     '.github/workflows/renovate.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/create-github-app-token@v3.3.0'
+        - 'actions/create-github-app-token@v3.4.0'
         - 'renovatebot/github-action@v46.3.14'
     '.github/workflows/vercel-prebuilt.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/create-github-app-token@v3.3.0'
-        - 'jdx/mise-action@v5.2.9'
+        - 'actions/create-github-app-token@v3.4.0'
+        - 'jdx/mise-action@v5.2.10'
     '.github/workflows/vrt.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/download-artifact@v8.0.2'
         - 'actions/github-script@v9.0.0'
         - 'actions/upload-artifact@v7.0.2'
-        - 'jdx/mise-action@v5.2.9'
+        - 'jdx/mise-action@v5.2.10'
 dependencies:
     'actions/cache@v6.1.0':
         ref: 'v6.1.0'
@@ -45,9 +45,9 @@ dependencies:
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
-    'actions/create-github-app-token@v3.3.0':
-        ref: 'v3.3.0'
-        commit: 'sha1-64ab729a6294000f5aa4a4bc0b73d1f32bc45510'
+    'actions/create-github-app-token@v3.4.0':
+        ref: 'v3.4.0'
+        commit: 'sha1-f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc'
         owner_id: 44036562
         repo_id: 642580244
     'actions/download-artifact@v8.0.2':
@@ -65,14 +65,14 @@ dependencies:
         commit: 'sha1-cf430e030ddbb5b0abf93d22962f4752f3646cd9'
         owner_id: 44036562
         repo_id: 192625955
-    'chromaui/action@v18.14.6':
-        ref: 'v18.14.6'
-        commit: 'sha1-86505fc3fa3b2ed5f39eda89f34f4051ea8ff0c8'
+    'chromaui/action@v18.15.0':
+        ref: 'v18.15.0'
+        commit: 'sha1-b46fae7df99a74cc2201b00cb59ec498c3346530'
         owner_id: 24584319
         repo_id: 213995974
-    'jdx/mise-action@v5.2.9':
-        ref: 'v5.2.9'
-        commit: 'sha1-236a21c3b91f5db6d4e174b348674a0f0caac06d'
+    'jdx/mise-action@v5.2.10':
+        ref: 'v5.2.10'
+        commit: 'sha1-90f833d396d0cc3674b631d2d225e306476c303a'
         owner_id: 216188
         repo_id: 738284564
     'k35o/patrol-board@v0.0.3':
