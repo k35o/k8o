@@ -33,7 +33,9 @@ const unlabeledBlocks = ['Hello', 'World'].map((text) => (
   </div>
 ));
 
-// 選択は startTransition と ViewTransition を通して非同期にコミットされるため、反映を待つ
+// 選択は startTransition と ViewTransition を通して非同期にコミットされるため、反映を待つ。
+// 反映のあとも view transition が終わるまで待つ。Chromium 159 は、vitest の中で動いている
+// view transition に次の view transition を重ねると、テストのページごと落ちる
 const expectSelectedTab = async (
   canvasElement: HTMLElement,
   name: string,
@@ -43,6 +45,7 @@ const expectSelectedTab = async (
       within(canvasElement).getByRole('tab', { selected: true }),
     ).toHaveAccessibleName(name);
   });
+  await document.activeViewTransition?.finished;
 };
 
 const meta = preview.meta({
