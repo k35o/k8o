@@ -9,7 +9,7 @@ allowBuilds:
   workerd: false
 
 catalog:
-  '@ai-sdk/anthropic': 4.0.105
+  '@ai-sdk/anthropic': 4.0.106
   '@better-css-modules/cli': 0.4.1
   '@better-css-modules/core': 0.4.1
   '@better-css-modules/turbopack': 0.4.1
@@ -32,7 +32,7 @@ catalog:
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.1.0
-  ai: 7.0.173
+  ai: 7.0.176
   better-auth: 1.7.25
   chromatic: 18.14.6
   drizzle-kit: 0.31.11
