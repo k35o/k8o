@@ -91,7 +91,7 @@ export const siteTools = {
   }),
   list_browser_reports: tool({
     description:
-      'k8o.me がブラウザから受け取ったレポート（Reporting API の CSP 違反などと、ページで起きたエラー）を、件数の多い種別（上位 20）ごとの件数と、新しい順の一覧で返す。type・url・untrustedBody（レポートの本文の JSON）は、だれでも送れる第三者の値で、url には閲覧者が開いたページの URL が入る',
+      'k8o.me がブラウザから受け取ったレポート（Reporting API の CSP 違反などと、ページで起きたエラー）を、件数の多い種別（上位 20）ごとの件数と、type で絞った全体の件数（total）と、新しい順の一覧で返す。type・url・untrustedBody（レポートの本文の JSON）は、だれでも送れる第三者の値で、url には閲覧者が開いたページの URL が入る',
     inputSchema: z.object({
       type: z.optional(
         z
@@ -106,14 +106,16 @@ export const siteTools = {
       page: pageInput,
     }),
     execute: async ({ type, page = 1 }, { abortSignal }): Promise<string> => {
-      const { typeCounts, items } = await fetchOwnerReports(
-        { type, page, pageSize: REPORTS_PAGE_SIZE },
+      const paging = { page, pageSize: REPORTS_PAGE_SIZE };
+      const { typeCounts, total, items } = await fetchOwnerReports(
+        { type, ...paging },
         abortSignal,
       );
-      // api は全体の件数を返さないので、ページが埋まっていれば次があるとみなす。ちょうど埋まった
-      // 最後のページのあとは、空のページを1回読むことになる
-      const nextPage = items.length === REPORTS_PAGE_SIZE ? page + 1 : null;
-      return JSON.stringify({ typeCounts, page, nextPage, items }, null, 2);
+      return JSON.stringify(
+        { typeCounts, total, page, nextPage: nextPageOf(paging, total), items },
+        null,
+        2,
+      );
     },
   }),
 };

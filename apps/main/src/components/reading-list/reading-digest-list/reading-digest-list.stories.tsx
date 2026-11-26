@@ -27,9 +27,9 @@ const liquid: ReadingArticle = {
   url: 'https://vercel.com/changelog/liquid',
   publishedAt: '2026-11-19T04:00:00.000Z',
   imageUrl: null,
-  text: 'Liquid AI の決定モデルが使えるようになった。',
-  summary: 'Liquid AI の決定モデルが使えるようになった。',
-  description: null,
+  text: 'You can now access Liquid AI d1.2 through AI Gateway.',
+  summary: null,
+  description: 'You can now access Liquid AI d1.2 through AI Gateway.',
   sourceTitle: 'Vercel',
 };
 
@@ -61,7 +61,6 @@ const days: ReadingDay[] = [
   {
     date: '2026-11-19',
     articleCount: 3,
-    remainingArticles: [],
     overview:
       'CSS の解説が1件と、Vercel のモデル追加が2件。大きな発表は無く、小さな更新が中心の日です。',
     picks: [
@@ -78,14 +77,15 @@ const days: ReadingDay[] = [
         articles: [gptLive, liquid],
       },
     ],
+    remainingArticles: [],
   },
   {
     date: '2026-11-17',
     articleCount: 1,
-    remainingArticles: [],
     overview: null,
     picks: [],
-    topics: [{ kind: 'other', headline: 'この日の記事', articles: [spatial] }],
+    topics: [],
+    remainingArticles: [spatial],
   },
 ];
 
@@ -153,7 +153,7 @@ export const OpensTopic = meta.story({
     ).toBeVisible();
     await expect(canvas.getByText(/OpenAIの全二重音声モデル/u)).toBeVisible();
     await expect(
-      canvas.getByText('Liquid AI の決定モデルが使えるようになった。'),
+      canvas.getByText('You can now access Liquid AI d1.2 through AI Gateway.'),
     ).toBeVisible();
 
     await userEvent.click(topic);

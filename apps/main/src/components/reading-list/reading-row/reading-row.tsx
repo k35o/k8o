@@ -41,6 +41,7 @@ export const ReadingRow: FC<{
   note?: string;
   showsDate?: boolean;
 }> = memo(function ReadingRow({ article, note, showsDate = false }) {
+  const body = article.summary ?? article.description;
   return (
     <li className={styles.root}>
       <div className={styles.text}>
@@ -57,9 +58,7 @@ export const ReadingRow: FC<{
           <p className={styles.title}>{article.title}</p>
         )}
         {note === undefined ? (
-          article.text !== null && (
-            <p className={styles.summary}>{article.text}</p>
-          )
+          body !== null && <p className={styles.summary}>{body}</p>
         ) : (
           <p className={styles.note}>{note}</p>
         )}

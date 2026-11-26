@@ -23,13 +23,13 @@ export const BrowserSupportLive: FC<{
   snapshot: BrowserSupportSnapshot;
   blogMap: Record<string, BlogLink>;
 }> = ({ snapshot, blogMap }) => {
-  const { meta, features, recentChanges, nowMs } = useLiveSnapshot(
+  const { dataset, features, recentChanges, generatedAt } = useLiveSnapshot(
     'browser-support',
     loadSnapshot,
     snapshot,
   );
 
-  if (meta === null) {
+  if (dataset === null) {
     return (
       <p className={styles.syncing}>
         データを同期しています。しばらくしてから再度アクセスしてください。
@@ -49,7 +49,7 @@ export const BrowserSupportLive: FC<{
           blogMap={blogMap}
           currentYear={latestYear}
           features={features}
-          nowMs={nowMs}
+          nowMs={Date.parse(generatedAt)}
         />
       </BrowserOnly>
       {/* データ基準の常時表示は鮮度の計器を兼ねる: 更新が止まればここの日付が
@@ -62,7 +62,8 @@ export const BrowserSupportLive: FC<{
         >
           web-features
         </Anchor>{' '}
-        v{meta.upstreamVersion}（{formatDate(new Date(meta.ingestedAt))} 取得）
+        v{dataset.upstreamVersion}（{formatDate(new Date(dataset.ingestedAt))}{' '}
+        取得）
       </p>
     </Stack>
   );

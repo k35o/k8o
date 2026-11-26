@@ -9,6 +9,7 @@ type Reading = {
 type Day<Item extends Reading> = {
   picks: ReadonlyArray<{ article: Item }>;
   topics: ReadonlyArray<{ articles: readonly Item[] }>;
+  remainingArticles: readonly Item[];
 };
 
 // 日ごとのまとめに入った記事から、題かソースの名前が当たるものを、ほかの一覧と同じ検索の規則（NFKC・
@@ -21,6 +22,7 @@ export const searchReadings = <Item extends Reading>(
     .flatMap((day) => [
       ...day.picks.map(({ article }) => article),
       ...day.topics.flatMap(({ articles }) => articles),
+      ...day.remainingArticles,
     ])
     .filter((article) =>
       matchesSearchQuery(query, [article.title, article.sourceTitle]),

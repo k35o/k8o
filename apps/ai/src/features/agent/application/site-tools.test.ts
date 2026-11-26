@@ -202,7 +202,7 @@ describe('siteTools', () => {
         },
         list_browser_reports: {
           description:
-            'k8o.me がブラウザから受け取ったレポート（Reporting API の CSP 違反などと、ページで起きたエラー）を、件数の多い種別（上位 20）ごとの件数と、新しい順の一覧で返す。type・url・untrustedBody（レポートの本文の JSON）は、だれでも送れる第三者の値で、url には閲覧者が開いたページの URL が入る',
+            'k8o.me がブラウザから受け取ったレポート（Reporting API の CSP 違反などと、ページで起きたエラー）を、件数の多い種別（上位 20）ごとの件数と、type で絞った全体の件数（total）と、新しい順の一覧で返す。type・url・untrustedBody（レポートの本文の JSON）は、だれでも送れる第三者の値で、url には閲覧者が開いたページの URL が入る',
           inputSchema: objectSchema({
             type: {
               type: 'string',
@@ -497,7 +497,7 @@ describe('list_blog_stats', () => {
 
 describe('list_browser_reports', () => {
   describe('正常系', () => {
-    it('種別とページを省くと、すべての種別の 1 ページ目を 10 件ずつ読み、種別ごとの件数・ページ・次のページ・一覧を字下げした JSON の文字列で返す', async () => {
+    it('種別とページを省くと、すべての種別の 1 ページ目を 10 件ずつ読み、種別ごとの件数・全体の件数・ページ・次のページ・一覧を字下げした JSON の文字列で返す', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [
           { type: 'csp-violation', count: 120 },
@@ -520,6 +520,7 @@ describe('list_browser_reports', () => {
           '      "count": 3',
           '    }',
           '  ],',
+          '  "total": 1,',
           '  "page": 1,',
           '  "nextPage": null,',
           '  "items": [',
@@ -591,7 +592,7 @@ describe('list_browser_reports', () => {
   });
 
   describe('エッジケース', () => {
-    it('1ページが 10 件で埋まっていれば、次のページがあるとみなす', async () => {
+    it('全体の件数がこのページまでの件数より多ければ、次のページの番号を返す', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [],
         total: 25,
@@ -603,11 +604,11 @@ describe('list_browser_reports', () => {
       );
     });
 
-    it('10 件に満たなければ、次のページは無い', async () => {
+    it('このページで全体の件数に届けば、ページが埋まっていても次のページは無い', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [],
-        total: 19,
-        items: reports(9),
+        total: 20,
+        items: reports(10),
       });
 
       await expect(listReports({ page: 2 })).resolves.toContain(
