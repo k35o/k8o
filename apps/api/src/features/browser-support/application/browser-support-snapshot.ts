@@ -20,15 +20,26 @@ type BrowserSupportSnapshot = {
   nowMs: number;
 };
 
+const findRecentChanges = (
+  nowMs: number,
+): Promise<BrowserSupportFeatureChange[]> =>
+  findRecentFeatureChanges(
+    new Date(nowMs - RECENT_CHANGES_WINDOW_MS).toISOString(),
+    RECENT_CHANGES_LIMIT,
+  );
+
+export const getBrowserSupportRecentChanges = async (
+  nowMs: number,
+): Promise<{ recentChanges: BrowserSupportFeatureChange[] }> => ({
+  recentChanges: await findRecentChanges(nowMs),
+});
+
 export const getBrowserSupportSnapshot = async (
   nowMs: number,
 ): Promise<BrowserSupportSnapshot> => {
   const [active, recentChanges] = await Promise.all([
     findActiveDataset(),
-    findRecentFeatureChanges(
-      new Date(nowMs - RECENT_CHANGES_WINDOW_MS).toISOString(),
-      RECENT_CHANGES_LIMIT,
-    ),
+    findRecentChanges(nowMs),
   ]);
   if (active === null) {
     return { meta: null, features: [], recentChanges, nowMs };

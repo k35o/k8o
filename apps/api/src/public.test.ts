@@ -1130,6 +1130,47 @@ describe('公開 API', () => {
     });
   });
 
+  describe('GET /public/browser-support/recent-changes', () => {
+    const PATH = '/public/browser-support/recent-changes';
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+    });
+
+    describe('正常系', () => {
+      it('直近30日の更新だけを返し、機能の一覧は読まない', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          recentChanges: [FEATURE_CHANGE],
+        });
+        expect(findRecentFeatureChanges).toHaveBeenCalledWith(
+          '2026-06-20T00:00:00.000Z',
+          100,
+        );
+        expect(findActiveDataset).not.toHaveBeenCalled();
+      });
+
+      it('CDN に1時間持たせ、DB が落ちても古い値を返させる', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('直近30日に更新が無ければ、空の配列を返す', async () => {
+        vi.mocked(findRecentFeatureChanges).mockResolvedValue([]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.json()).resolves.toStrictEqual({ recentChanges: [] });
+      });
+    });
+  });
+
   describe('GET /public/browser-support/features/:featureId', () => {
     const PATH = '/public/browser-support/features';
 
