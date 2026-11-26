@@ -27,6 +27,9 @@ const DAYS = [
         ],
       },
     ],
+    remainingArticles: [
+      article('DevTools の新機能', '2026-11-20T02:00:00Z', 'Chrome'),
+    ],
   },
   {
     picks: [],
@@ -41,6 +44,7 @@ const DAYS = [
         ],
       },
     ],
+    remainingArticles: [],
   },
 ];
 
@@ -60,6 +64,12 @@ describe('searchReadings', () => {
       expect(titlesOf(searchReadings(DAYS, 'web.dev'))).toStrictEqual([
         'CSS の scroll-state()',
         'Baseline 2026',
+      ]);
+    });
+
+    it('まとめのどこにも入らなかった記事にも当たる', () => {
+      expect(titlesOf(searchReadings(DAYS, 'DevTools'))).toStrictEqual([
+        'DevTools の新機能',
       ]);
     });
 

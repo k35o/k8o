@@ -39,7 +39,6 @@ const days: ReadingDay[] = [
   {
     date: '2026-10-20',
     articleCount: 1,
-    remainingArticles: [],
     overview: 'ルーティングの記事が1件の日。',
     picks: [],
     topics: [
@@ -49,14 +48,15 @@ const days: ReadingDay[] = [
         articles: [tanstack],
       },
     ],
+    remainingArticles: [],
   },
   {
     date: '2026-10-18',
     articleCount: 1,
-    remainingArticles: [],
     overview: null,
     picks: [],
-    topics: [{ kind: 'other', headline: 'この日の記事', articles: [baseline] }],
+    topics: [],
+    remainingArticles: [baseline],
   },
 ];
 
@@ -65,7 +65,6 @@ const series: ReadingDay[] = [
   {
     date: '2026-10-30',
     articleCount: 30,
-    remainingArticles: [],
     overview: null,
     picks: [],
     topics: [
@@ -87,6 +86,7 @@ const series: ReadingDay[] = [
         })),
       },
     ],
+    remainingArticles: [],
   },
 ];
 

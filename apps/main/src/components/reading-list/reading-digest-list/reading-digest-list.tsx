@@ -15,7 +15,7 @@ import styles from './reading-digest-list.module.css';
 
 type Topic = ReadingDay['topics'][number];
 
-// other は、話題に分けていない記事のまとまりなので、札を出さない
+// other は性質を分けない話題なので、札を出さない
 const KIND_LABEL: Record<Topic['kind'], string | null> = {
   release: 'リリース',
   explainer: '解説',
@@ -29,10 +29,13 @@ const KIND_LABEL: Record<Topic['kind'], string | null> = {
 const sourcesOf = (articles: readonly ReadingArticle[]): string =>
   [...new Set(articles.map((article) => article.sourceTitle))].join('、');
 
-const TopicItem: FC<{ topic: Topic }> = ({ topic }) => {
+const TopicItem: FC<{
+  kindLabel: string | null;
+  headline: string;
+  articles: readonly ReadingArticle[];
+}> = ({ kindLabel, headline, articles }) => {
   const [isOpen, setIsOpen] = useState(false);
   const articlesId = useId();
-  const kindLabel = KIND_LABEL[topic.kind];
 
   return (
     <li>
@@ -53,16 +56,16 @@ const TopicItem: FC<{ topic: Topic }> = ({ topic }) => {
             {kindLabel !== null && (
               <span className={styles.kind}>{kindLabel}</span>
             )}
-            {topic.headline}
+            {headline}
           </span>
           <span className={styles.sources}>
-            {sourcesOf(topic.articles)}・{topic.articles.length}件
+            {sourcesOf(articles)}・{articles.length}件
           </span>
         </span>
       </button>
       <ul className={styles.articles} hidden={!isOpen} id={articlesId}>
         {isOpen &&
-          topic.articles.map((article) => (
+          articles.map((article) => (
             <ReadingRow article={article} key={article.id} />
           ))}
       </ul>
@@ -71,8 +74,8 @@ const TopicItem: FC<{ topic: Topic }> = ({ topic }) => {
 };
 
 /**
- * 日ごとに、その日の全体像・特に見てほしい記事・残りの話題の順に並べる。話題を押すと、その話題の
- * 記事が開く。日の区画は日付（YYYY-MM-DD）を id に持ち、URL の fragment がそれを指していれば、
+ * 日ごとに、その日の全体像・特に見てほしい記事・残りの話題・まとめに入らなかった記事の順に並べる。話題を
+ * 押すと、その話題の記事が開く。日の区画は日付（YYYY-MM-DD）を id に持ち、URL の fragment がそれを指していれば、
  * 描いたあとにその日まで移る
  */
 export const ReadingDigestList: FC<{ days: readonly ReadingDay[] }> = ({
@@ -114,15 +117,31 @@ export const ReadingDigestList: FC<{ days: readonly ReadingDay[] }> = ({
               </ul>
             </div>
           )}
-          {day.topics.length > 0 && (
+          {(day.topics.length > 0 || day.remainingArticles.length > 0) && (
             <div className={styles.block}>
               {day.picks.length > 0 && (
                 <h4 className={styles.label}>そのほか</h4>
               )}
               <ul className={styles.topics}>
                 {day.topics.map((topic) => (
-                  <TopicItem key={topic.headline} topic={topic} />
+                  <TopicItem
+                    articles={topic.articles}
+                    headline={topic.headline}
+                    key={topic.headline}
+                    kindLabel={KIND_LABEL[topic.kind]}
+                  />
                 ))}
+                {day.remainingArticles.length > 0 && (
+                  <TopicItem
+                    articles={day.remainingArticles}
+                    headline={
+                      day.picks.length === 0 && day.topics.length === 0
+                        ? 'この日の記事'
+                        : 'そのほかの記事'
+                    }
+                    kindLabel={null}
+                  />
+                )}
               </ul>
             </div>
           )}
