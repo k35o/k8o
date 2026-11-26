@@ -10,6 +10,4 @@ export type PushLogs = InferResponseType<
   200
 >;
 
-export const getPushLogs = async (): Promise<PushLogs> => ({
-  logs: await getPublicPushLogs(),
-});
+export const getPushLogs = (): Promise<PushLogs> => getPublicPushLogs();
