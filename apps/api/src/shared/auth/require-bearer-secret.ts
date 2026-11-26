@@ -11,7 +11,9 @@ export const requireBearerSecret = (...envNames: readonly string[]) =>
       isAuthorizedBearerRequest(c.req.raw, process.env[envName]),
     );
     if (!authorized) {
-      throw new HTTPException(401, { res: c.json({ ok: false }, 401) });
+      throw new HTTPException(401, {
+        res: c.json({ ok: false, error: 'unauthorized' } as const, 401),
+      });
     }
     await next();
   });

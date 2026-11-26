@@ -121,7 +121,10 @@ describe('オーナー API の認可', () => {
       const res = await ownerRequest('/owner/blogs');
 
       expect(res.status).toBe(401);
-      await expect(res.json()).resolves.toStrictEqual({ ok: false });
+      await expect(res.json()).resolves.toStrictEqual({
+        ok: false,
+        error: 'unauthorized',
+      });
       expect(fetchMock).not.toHaveBeenCalled();
     });
 

@@ -318,6 +318,10 @@ describe('公開 API', () => {
           const res = await post(VIEWS_PATH, headers);
 
           expect(res.status).toBe(403);
+          await expect(res.json()).resolves.toStrictEqual({
+            ok: false,
+            error: 'forbidden',
+          });
           expect(incrementBlogView).not.toHaveBeenCalled();
         },
       );
@@ -514,6 +518,21 @@ describe('公開 API', () => {
         });
 
         expect(res.status).toBe(400);
+        expect(insertInquiry).not.toHaveBeenCalled();
+      });
+
+      it('壊れた JSON は 400 の invalid_request にして保存しない', async () => {
+        const res = await app.request('/public/inquiries', {
+          method: 'POST',
+          headers: { Origin: ORIGIN, 'Content-Type': 'application/json' },
+          body: '{"message":',
+        });
+
+        expect(res.status).toBe(400);
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'invalid_request',
+        });
         expect(insertInquiry).not.toHaveBeenCalled();
       });
 
@@ -1074,6 +1093,10 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(404);
         expect(res.headers.get('cache-control')).toBe('no-store');
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'not_found',
+        });
       });
     });
   });

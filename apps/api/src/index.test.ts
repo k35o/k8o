@@ -76,7 +76,10 @@ describe('cron ルート', () => {
         const res = await cronRequest(path);
 
         expect(res.status).toBe(401);
-        await expect(res.json()).resolves.toStrictEqual({ ok: false });
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'unauthorized',
+        });
         expect(runArticleSync).not.toHaveBeenCalled();
         expect(runBrowserSupportSync).not.toHaveBeenCalled();
       },
@@ -97,7 +100,10 @@ describe('cron ルート', () => {
         const res = await cronRequest('/cron/sync-articles', authorization);
 
         expect(res.status).toBe(401);
-        await expect(res.json()).resolves.toStrictEqual({ ok: false });
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'unauthorized',
+        });
         expect(runArticleSync).not.toHaveBeenCalled();
         expect(runBrowserSupportSync).not.toHaveBeenCalled();
       },
