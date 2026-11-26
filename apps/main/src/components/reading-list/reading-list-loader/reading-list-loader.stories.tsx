@@ -15,6 +15,7 @@ const readingList: { days: ReadingDay[] } = {
     {
       date: '2026-10-20',
       articleCount: 1,
+      remainingArticles: [],
       overview: null,
       picks: [],
       topics: [
@@ -29,6 +30,8 @@ const readingList: { days: ReadingDay[] } = {
               publishedAt: '2026-10-20T00:00:00.000Z',
               imageUrl: null,
               text: 'TanStack Routerの使い方を紹介します。',
+              summary: 'TanStack Routerの使い方を紹介します。',
+              description: null,
               sourceTitle: 'Zenn',
             },
           ],
@@ -38,6 +41,7 @@ const readingList: { days: ReadingDay[] } = {
     {
       date: '2026-10-18',
       articleCount: 1,
+      remainingArticles: [],
       overview: null,
       picks: [],
       topics: [
@@ -52,6 +56,8 @@ const readingList: { days: ReadingDay[] } = {
               publishedAt: '2026-10-18T00:00:00.000Z',
               imageUrl: null,
               text: '2026年に Baseline に入った機能をまとめた記事。',
+              summary: '2026年に Baseline に入った機能をまとめた記事。',
+              description: null,
               sourceTitle: 'web.dev',
             },
           ],

@@ -41,15 +41,38 @@ const mockUpdate = (rowsAffected = 1) => {
 };
 
 describe('findRecentArticles', () => {
+  const row = {
+    id: 1,
+    title: '記事',
+    url: 'https://example.com/a',
+    publishedAt: '2026-11-19T00:00:00.000Z',
+    imageUrl: null,
+    articleSource: { title: 'Example' },
+  };
+
+  it('要約と元の記事の説明を、どちらも持つ記事にもそれぞれ返す', async () => {
+    vi.mocked(db.query.articles.findMany).mockResolvedValue([
+      { ...row, description: '説明', summary: '要約' },
+      { ...row, id: 2, description: '説明', summary: null },
+      { ...row, id: 3, description: null, summary: null },
+    ] as never);
+
+    const articles = await findRecentArticles('2026-08-21T00:00:00.000Z');
+
+    expect(
+      articles.map(({ id, summary, description }) => ({
+        id,
+        summary,
+        description,
+      })),
+    ).toStrictEqual([
+      { id: 1, summary: '要約', description: '説明' },
+      { id: 2, summary: null, description: '説明' },
+      { id: 3, summary: null, description: null },
+    ]);
+  });
+
   it('要約があれば要約を、無ければ元の記事の説明を本文にし、ソースの名前を添える', async () => {
-    const row = {
-      id: 1,
-      title: '記事',
-      url: 'https://example.com/a',
-      publishedAt: '2026-11-19T00:00:00.000Z',
-      imageUrl: null,
-      articleSource: { title: 'Example' },
-    };
     vi.mocked(db.query.articles.findMany).mockResolvedValue([
       { ...row, description: '説明', summary: '要約' },
       { ...row, id: 2, description: '説明', summary: null },

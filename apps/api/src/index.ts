@@ -25,6 +25,7 @@ const app = new Hono()
     '/mcp',
     (c) =>
       originValidationResponse(c.req.raw, []) ?? mcpHandler.fetch(c.req.raw),
-  );
+  )
+  .notFound((c) => c.json({ ok: false, error: 'not_found' } as const, 404));
 
 export default app;

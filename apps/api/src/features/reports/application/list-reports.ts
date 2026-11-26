@@ -22,6 +22,7 @@ type ReportListItem = {
 
 type ReportList = {
   typeCounts: ReportTypeCount[];
+  total: number;
   items: ReportListItem[];
 };
 
@@ -34,7 +35,7 @@ export const listReports = async ({
   page: number;
   pageSize: number;
 }): Promise<ReportList> => {
-  const [typeCounts, reports] = await Promise.all([
+  const [typeCounts, { items, total }] = await Promise.all([
     findReportTypeCounts(),
     findReports({ type, page, pageSize }),
   ]);
@@ -43,7 +44,8 @@ export const listReports = async ({
       type: toUntrustedText(row.type, SHORT_TEXT_MAX_LENGTH),
       count: row.count,
     })),
-    items: reports.map((report) => ({
+    total,
+    items: items.map((report) => ({
       id: report.id,
       receivedAt: report.createdAt,
       type: toUntrustedText(report.type, SHORT_TEXT_MAX_LENGTH),

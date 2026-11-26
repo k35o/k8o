@@ -55,7 +55,7 @@ export const pushSubscriptionPublicRoutes = new Hono()
   });
 
 export const pushLogPublicRoutes = new Hono().get('/', async (c) =>
-  c.json({ logs: await getPublicPushLogs() }, 200, {
+  c.json(await getPublicPushLogs(), 200, {
     'Cache-Control': publicCacheControl({ maxAge: 60, sMaxAge: 600 }),
   }),
 );

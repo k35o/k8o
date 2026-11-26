@@ -30,6 +30,8 @@ const article = (id: number, publishedAt: string): ReadingArticle => ({
   publishedAt,
   imageUrl: null,
   text: `本文${id}`,
+  summary: `本文${id}`,
+  description: null,
   sourceTitle: 'Example',
 });
 

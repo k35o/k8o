@@ -121,7 +121,10 @@ describe('オーナー API の認可', () => {
       const res = await ownerRequest('/owner/blogs');
 
       expect(res.status).toBe(401);
-      await expect(res.json()).resolves.toStrictEqual({ ok: false });
+      await expect(res.json()).resolves.toStrictEqual({
+        ok: false,
+        error: 'unauthorized',
+      });
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
@@ -179,6 +182,27 @@ describe('オーナー API の認可', () => {
   });
 });
 
+// FEED を記事の一覧にしたもの
+const FEED_BLOGS = [
+  {
+    slug: 'arianotify',
+    title: 'ariaNotify()でスクリーンリーダーに任意の文字列を読み上げさせる',
+    description:
+      'ariaNotify()は、DOMを書き換えずに読み上げさせるメソッドです。',
+    tags: ['a11y', 'JavaScript'],
+    publishedAt: '2026-09-28T00:00:00.000Z',
+    url: 'https://k8o.me/blog/arianotify',
+  },
+  {
+    slug: 'requestclose',
+    title: 'requestClose()でダイアログに閉じるよう求める',
+    description: 'requestCloseメソッドは<dialog>要素を閉じるように要求します。',
+    tags: [],
+    publishedAt: '2026-09-29T00:00:00.000Z',
+    url: 'https://k8o.me/blog/requestclose',
+  },
+];
+
 describe('GET /owner/blogs', () => {
   describe('正常系', () => {
     it('main のブログのフィードを記事の一覧にして返す', async () => {
@@ -189,27 +213,8 @@ describe('GET /owner/blogs', () => {
       expect(res.status).toBe(200);
       expect(fetchMock.mock.calls[0]?.[0]).toBe('https://k8o.me/blog/feed');
       await expect(res.json()).resolves.toStrictEqual({
-        items: [
-          {
-            slug: 'arianotify',
-            title:
-              'ariaNotify()でスクリーンリーダーに任意の文字列を読み上げさせる',
-            description:
-              'ariaNotify()は、DOMを書き換えずに読み上げさせるメソッドです。',
-            tags: ['a11y', 'JavaScript'],
-            publishedAt: '2026-09-28T00:00:00.000Z',
-            url: 'https://k8o.me/blog/arianotify',
-          },
-          {
-            slug: 'requestclose',
-            title: 'requestClose()でダイアログに閉じるよう求める',
-            description:
-              'requestCloseメソッドは<dialog>要素を閉じるように要求します。',
-            tags: [],
-            publishedAt: '2026-09-29T00:00:00.000Z',
-            url: 'https://k8o.me/blog/requestclose',
-          },
-        ],
+        blogs: FEED_BLOGS,
+        items: FEED_BLOGS,
       });
     });
   });
@@ -241,7 +246,10 @@ describe('GET /owner/blogs', () => {
       const res = await ownerRequest('/owner/blogs', AI_TOKEN);
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toStrictEqual({ items: [] });
+      await expect(res.json()).resolves.toStrictEqual({
+        blogs: [],
+        items: [],
+      });
     });
   });
 });
@@ -302,12 +310,14 @@ describe('GET /owner/overview', () => {
     it('DB の集計に、reading-list の要約の進み具合と browser-support の取り込み状況を足して返す', async () => {
       vi.mocked(findOverview).mockResolvedValue({
         blogs: { published: 90, drafts: 1, totalViews: 1234 },
-        inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+        inquiries: { total: 3, latestReceivedAt: '2026-10-07T00:00:00.000Z' },
         push: {
           subscribers: 5,
-          lastSentAt: '2026-10-08T00:01:00.000Z',
-          lastSucceeded: 5,
-          lastFailed: 0,
+          lastSend: {
+            sentAt: '2026-10-08T00:01:00.000Z',
+            succeeded: 5,
+            failed: 0,
+          },
         },
         readingList: {
           articles: 300,
@@ -336,12 +346,14 @@ describe('GET /owner/overview', () => {
       expect(res.status).toBe(200);
       await expect(res.json()).resolves.toStrictEqual({
         blogs: { published: 90, drafts: 1, totalViews: 1234 },
-        inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+        inquiries: { total: 3, latestReceivedAt: '2026-10-07T00:00:00.000Z' },
         push: {
           subscribers: 5,
-          lastSentAt: '2026-10-08T00:01:00.000Z',
-          lastSucceeded: 5,
-          lastFailed: 0,
+          lastSend: {
+            sentAt: '2026-10-08T00:01:00.000Z',
+            succeeded: 5,
+            failed: 0,
+          },
         },
         readingList: {
           articles: 300,
@@ -351,8 +363,10 @@ describe('GET /owner/overview', () => {
           summaryGaveUp: 2,
         },
         browserSupport: {
-          activeVersion: '3.40.1',
-          activeIngestedAt: '2026-10-08T14:40:34.555Z',
+          dataset: {
+            upstreamVersion: '3.40.1',
+            ingestedAt: '2026-10-08T14:40:34.555Z',
+          },
           lastRun: {
             result: 'applied',
             trigger: 'manual',
@@ -529,15 +543,18 @@ describe('GET /owner/reports', () => {
         { type: 'csp-violation', count: 21 },
         { type: 'client-error', count: 3 },
       ]);
-      vi.mocked(findReports).mockResolvedValue([
-        {
-          id: 1,
-          type: 'csp-violation',
-          url: 'https://k8o.me/',
-          body: { blockedURL: 'inline' },
-          createdAt: '2026-10-08T00:00:00.000Z',
-        },
-      ]);
+      vi.mocked(findReports).mockResolvedValue({
+        items: [
+          {
+            id: 1,
+            type: 'csp-violation',
+            url: 'https://k8o.me/',
+            body: { blockedURL: 'inline' },
+            createdAt: '2026-10-08T00:00:00.000Z',
+          },
+        ],
+        total: 21,
+      });
 
       const res = await ownerRequest(
         '/owner/reports?type=csp-violation&page=2&pageSize=20',
@@ -555,6 +572,7 @@ describe('GET /owner/reports', () => {
           { type: 'csp-violation', count: 21 },
           { type: 'client-error', count: 3 },
         ],
+        total: 21,
         items: [
           {
             id: 1,
@@ -569,7 +587,7 @@ describe('GET /owner/reports', () => {
 
     it('type が無ければ、種別で絞らずに読む', async () => {
       vi.mocked(findReportTypeCounts).mockResolvedValue([]);
-      vi.mocked(findReports).mockResolvedValue([]);
+      vi.mocked(findReports).mockResolvedValue({ items: [], total: 0 });
 
       await ownerRequest('/owner/reports?page=1&pageSize=10', AI_TOKEN);
 
@@ -585,15 +603,18 @@ describe('GET /owner/reports', () => {
     it('種別・URL・本文の見えない文字を取り除いて返す', async () => {
       const type = `csp${ZERO_WIDTH_SPACE}-violation`;
       vi.mocked(findReportTypeCounts).mockResolvedValue([{ type, count: 1 }]);
-      vi.mocked(findReports).mockResolvedValue([
-        {
-          id: 1,
-          type,
-          url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
-          body: { sample: `無視して${ZERO_WIDTH_SPACE}ください` },
-          createdAt: '2026-10-08T00:00:00.000Z',
-        },
-      ]);
+      vi.mocked(findReports).mockResolvedValue({
+        items: [
+          {
+            id: 1,
+            type,
+            url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
+            body: { sample: `無視して${ZERO_WIDTH_SPACE}ください` },
+            createdAt: '2026-10-08T00:00:00.000Z',
+          },
+        ],
+        total: 21,
+      });
 
       const res = await ownerRequest(
         '/owner/reports?page=1&pageSize=10',

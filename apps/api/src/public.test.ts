@@ -153,7 +153,7 @@ const ACTIVE_DATASET = {
   upstreamVersion: '3.34.2',
   ingestedAt: '2026-07-19T06:00:00.000Z',
   dataset: {
-    schemaVersion: 1,
+    schemaVersion: 2,
     upstreamVersion: '3.34.2',
     features: [ANCHOR_POSITIONING, GRID, LIMITED_OLD],
     redirects: { 'old-grid': 'grid' },
@@ -176,6 +176,8 @@ const SUMMARIZED_ARTICLE = {
   publishedAt: '2026-07-18T09:00:00.000Z',
   imageUrl: 'https://example.com/a.png',
   text: '要約 <b>',
+  summary: '要約 <b>',
+  description: '元記事の説明 <i>',
   sourceTitle: 'Example & Blog',
 };
 const DESCRIBED_ARTICLE = {
@@ -185,6 +187,8 @@ const DESCRIBED_ARTICLE = {
   publishedAt: '2026-07-17T09:00:00.000Z',
   imageUrl: null,
   text: '元記事の説明',
+  summary: null,
+  description: '元記事の説明',
   sourceTitle: 'Example & Blog',
 };
 const BARE_ARTICLE = {
@@ -194,6 +198,8 @@ const BARE_ARTICLE = {
   publishedAt: '2026-07-16T09:00:00.000Z',
   imageUrl: null,
   text: null,
+  summary: null,
+  description: null,
   sourceTitle: 'Example & Blog',
 };
 
@@ -318,6 +324,10 @@ describe('公開 API', () => {
           const res = await post(VIEWS_PATH, headers);
 
           expect(res.status).toBe(403);
+          await expect(res.json()).resolves.toStrictEqual({
+            ok: false,
+            error: 'forbidden',
+          });
           expect(incrementBlogView).not.toHaveBeenCalled();
         },
       );
@@ -514,6 +524,21 @@ describe('公開 API', () => {
         });
 
         expect(res.status).toBe(400);
+        expect(insertInquiry).not.toHaveBeenCalled();
+      });
+
+      it('壊れた JSON は 400 の invalid_request にして保存しない', async () => {
+        const res = await app.request('/public/inquiries', {
+          method: 'POST',
+          headers: { Origin: ORIGIN, 'Content-Type': 'application/json' },
+          body: '{"message":',
+        });
+
+        expect(res.status).toBe(400);
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'invalid_request',
+        });
         expect(insertInquiry).not.toHaveBeenCalled();
       });
 
@@ -1074,6 +1099,10 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(404);
         expect(res.headers.get('cache-control')).toBe('no-store');
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'not_found',
+        });
       });
     });
   });
@@ -1092,12 +1121,17 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(200);
         await expect(res.json()).resolves.toStrictEqual({
-          meta: {
+          dataset: {
             upstreamVersion: '3.34.2',
             ingestedAt: '2026-07-19T06:00:00.000Z',
           },
           features: [ANCHOR_POSITIONING, GRID],
           recentChanges: [FEATURE_CHANGE],
+          generatedAt: '2026-07-20T00:00:00.000Z',
+          meta: {
+            upstreamVersion: '3.34.2',
+            ingestedAt: '2026-07-19T06:00:00.000Z',
+          },
           nowMs: 1_784_505_600_000,
         });
         expect(findRecentFeatureChanges).toHaveBeenCalledWith(
@@ -1121,9 +1155,11 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(200);
         await expect(res.json()).resolves.toStrictEqual({
-          meta: null,
+          dataset: null,
           features: [],
           recentChanges: [FEATURE_CHANGE],
+          generatedAt: '2026-07-20T00:00:00.000Z',
+          meta: null,
           nowMs: 1_784_505_600_000,
         });
       });
@@ -1267,6 +1303,11 @@ describe('公開 API', () => {
         expect(res.status).toBe(200);
         await expect(res.json()).resolves.toStrictEqual({
           status: 'ok',
+          dataset: {
+            upstreamVersion: '3.34.2',
+            ingestedAt: '2026-07-19T06:00:00.000Z',
+            minVersions: { chrome: '120' },
+          },
           activeVersion: '3.34.2',
           activeIngestedAt: '2026-07-19T06:00:00.000Z',
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
@@ -1354,6 +1395,7 @@ describe('公開 API', () => {
         expect(res.status).toBe(503);
         await expect(res.json()).resolves.toStrictEqual({
           status: 'stale',
+          dataset: null,
           activeVersion: null,
           activeIngestedAt: null,
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
@@ -1376,6 +1418,7 @@ describe('公開 API', () => {
           expect(res.headers.get('cache-control')).toBe('no-store');
           await expect(res.json()).resolves.toStrictEqual({
             status: 'degraded',
+            dataset: null,
             activeVersion: null,
             activeIngestedAt: null,
             lastSuccessAt: null,
@@ -1450,32 +1493,23 @@ describe('公開 API', () => {
                 { article: SUMMARIZED_ARTICLE, reason: '書き方が変わる。' },
               ],
               topics: [],
+              remainingArticles: [],
             },
             {
               date: '2026-07-17',
               articleCount: 1,
               overview: null,
               picks: [],
-              topics: [
-                {
-                  kind: 'other',
-                  headline: 'この日の記事',
-                  articles: [DESCRIBED_ARTICLE],
-                },
-              ],
+              topics: [],
+              remainingArticles: [DESCRIBED_ARTICLE],
             },
             {
               date: '2026-07-16',
               articleCount: 1,
               overview: null,
               picks: [],
-              topics: [
-                {
-                  kind: 'other',
-                  headline: 'この日の記事',
-                  articles: [BARE_ARTICLE],
-                },
-              ],
+              topics: [],
+              remainingArticles: [BARE_ARTICLE],
             },
           ],
         });
@@ -1522,13 +1556,8 @@ describe('公開 API', () => {
               articleCount: 1,
               overview: null,
               picks: [],
-              topics: [
-                {
-                  kind: 'other',
-                  headline: 'この日の記事',
-                  articles: [SUMMARIZED_ARTICLE],
-                },
-              ],
+              topics: [],
+              remainingArticles: [SUMMARIZED_ARTICLE],
             },
           ],
         });
@@ -1626,6 +1655,7 @@ describe('公開 API', () => {
             overview: 'ブラウザの説明の日。',
             picks: [{ article: DESCRIBED_ARTICLE, reason: '仕様が固まった。' }],
             topics: [],
+            remainingArticles: [],
           },
         });
       });
@@ -1814,6 +1844,43 @@ describe('公開 API', () => {
     });
 
     describe('エッジケース', () => {
+      it('まとめのどこにも入らなかった記事は、話題の最後に「そのほかの記事」として数える', async () => {
+        vi.mocked(findRecentArticles).mockResolvedValue([
+          { ...BARE_ARTICLE, id: 13, publishedAt: '2026-07-18T10:00:00.000Z' },
+          SUMMARIZED_ARTICLE,
+        ]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.text()).resolves.toContain(
+          '&lt;h3&gt;話題&lt;/h3&gt;&lt;ul&gt;' +
+            '&lt;li&gt;CSS の解説が出た（1件）&lt;/li&gt;' +
+            '&lt;li&gt;そのほかの記事（1件）&lt;/li&gt;' +
+            '&lt;/ul&gt;',
+        );
+      });
+
+      it('見てほしい記事も話題も無いまとめの日は、その日の記事を「この日の記事」として数える', async () => {
+        vi.mocked(findDigestsSince).mockResolvedValue([
+          {
+            date: '2026-07-18',
+            overview: 'CSS の話が中心の日。',
+            picks: [],
+            topics: [],
+            createdAt: '2026-07-19T00:05:00.000Z',
+          },
+        ]);
+        vi.mocked(findRecentArticles).mockResolvedValue([SUMMARIZED_ARTICLE]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.text()).resolves.toContain(
+          '&lt;h3&gt;話題&lt;/h3&gt;&lt;ul&gt;' +
+            '&lt;li&gt;この日の記事（1件）&lt;/li&gt;' +
+            '&lt;/ul&gt;',
+        );
+      });
+
       it('まとめがあっても、その日の記事が直近90日に無ければ配らない', async () => {
         vi.mocked(findRecentArticles).mockResolvedValue([]);
 

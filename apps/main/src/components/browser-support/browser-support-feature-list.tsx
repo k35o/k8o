@@ -17,7 +17,7 @@ import type { FC } from 'react';
 import { toBrowserFamilies } from '@/components/site/browser-support-status/browser-families';
 import { STATUS_META } from '@/components/site/browser-support-status/status-meta';
 import type { BlogLink } from '@/features/blog/interface/queries';
-import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
+import type { BrowserSupportFeedFeature } from '@/features/browser-support/interface/queries';
 
 import { matchesFeatureFilters } from './matches-feature-filters/matches-feature-filters';
 import type { StatusVisibility } from './matches-feature-filters/matches-feature-filters';
@@ -31,7 +31,7 @@ import styles from './browser-support-feature-list.module.css';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
-const BrowserSupport: FC<{ feature: BrowserSupportFeature }> = ({
+const BrowserSupport: FC<{ feature: BrowserSupportFeedFeature }> = ({
   feature,
 }) => (
   <ul className={styles.support}>
@@ -50,7 +50,7 @@ const BrowserSupport: FC<{ feature: BrowserSupportFeature }> = ({
 );
 
 const FeatureList: FC<{
-  features: BrowserSupportFeature[];
+  features: BrowserSupportFeedFeature[];
   blogMap: Record<string, BlogLink>;
   visibility: StatusVisibility;
   query: string;
@@ -113,7 +113,7 @@ const FeatureList: FC<{
 });
 
 export const BrowserSupportFeatureList: FC<{
-  features: BrowserSupportFeature[];
+  features: BrowserSupportFeedFeature[];
   blogMap: Record<string, BlogLink>;
   currentYear: string;
   nowMs: number;

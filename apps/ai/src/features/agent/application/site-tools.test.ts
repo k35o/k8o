@@ -80,12 +80,10 @@ const accepts = async (
 
 const OVERVIEW: OwnerOverview = {
   blogs: { published: 42, drafts: 3, totalViews: 12_345 },
-  inquiries: { total: 21, latestAt: '2026-10-20T09:00:00.000Z' },
+  inquiries: { total: 21, latestReceivedAt: '2026-10-20T09:00:00.000Z' },
   push: {
     subscribers: 8,
-    lastSentAt: '2026-10-19T00:00:00.000Z',
-    lastSucceeded: 7,
-    lastFailed: 1,
+    lastSend: { sentAt: '2026-10-19T00:00:00.000Z', succeeded: 7, failed: 1 },
   },
   readingList: {
     articles: 300,
@@ -95,8 +93,10 @@ const OVERVIEW: OwnerOverview = {
     summaryGaveUp: 2,
   },
   browserSupport: {
-    activeVersion: '7.1.0',
-    activeIngestedAt: '2026-10-20T06:00:00.000Z',
+    dataset: {
+      upstreamVersion: '7.1.0',
+      ingestedAt: '2026-10-20T06:00:00.000Z',
+    },
     lastRun: {
       result: 'applied',
       trigger: 'cron',
@@ -503,6 +503,7 @@ describe('list_browser_reports', () => {
           { type: 'csp-violation', count: 120 },
           { type: 'client-error', count: 3 },
         ],
+        total: 1,
         items: [report()],
       });
 
@@ -542,6 +543,7 @@ describe('list_browser_reports', () => {
     it('渡した種別とページの番号と、tool の中断のシグナルを API の呼び出しに渡す', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [],
+        total: 0,
         items: [],
       });
       const controller = new AbortController();
@@ -592,6 +594,7 @@ describe('list_browser_reports', () => {
     it('1ページが 10 件で埋まっていれば、次のページがあるとみなす', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [],
+        total: 25,
         items: reports(10),
       });
 
@@ -603,6 +606,7 @@ describe('list_browser_reports', () => {
     it('10 件に満たなければ、次のページは無い', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [],
+        total: 19,
         items: reports(9),
       });
 
@@ -614,6 +618,7 @@ describe('list_browser_reports', () => {
     it('URL の改行と " は JSON の文字列の中に符号化し、URL の行でほかの項目を装わせない', async () => {
       vi.mocked(fetchOwnerReports).mockResolvedValue({
         typeCounts: [],
+        total: 1,
         items: [
           report({ url: 'https://k8o.me/?q=\n      "type": "client-error",' }),
         ],

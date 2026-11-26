@@ -1,6 +1,6 @@
 import { getPublishedBlogs } from '@repo/api/build-data';
 
-import { findSlidesHref } from '@/features/talks/application/talks';
+import { getTalks } from '@/features/talks/interface/queries';
 
 import { findBlogMetadata } from './blog';
 
@@ -18,8 +18,10 @@ export type Blog = {
   featureIds: string[];
 };
 
-// 公開済みで MDX のある記事を、api の一覧の並び（新しい順）のまま返す。題・説明・日付は MDX から足す
+// 公開済みで MDX のある記事を、api の一覧の並び（新しい順）のまま返す。題・説明・日付は MDX から、
+// スライドのリンク先は記事を解説に持つトークから足す
 export const getBlogs = async (): Promise<Blog[]> => {
+  const talks = await getTalks();
   const blogs = await Promise.all(
     (await getPublishedBlogs()).map(async (blog) => {
       const metadata = await findBlogMetadata(blog.slug);
@@ -30,7 +32,10 @@ export const getBlogs = async (): Promise<Blog[]> => {
         id: blog.id,
         slug: blog.slug,
         tags: blog.tags,
-        slidesHref: blog.talk === null ? null : await findSlidesHref(blog.talk),
+        slidesHref:
+          talks.find(
+            (talk) => talk.blog?.id === blog.id && talk.slidesHref !== null,
+          )?.slidesHref ?? null,
         title: metadata.title,
         description: metadata.description,
         createdAt: metadata.createdAt,

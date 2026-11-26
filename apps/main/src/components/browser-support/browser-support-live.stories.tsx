@@ -2,7 +2,7 @@ import { HttpResponse, http } from 'msw/http';
 import { expect, fn, waitFor } from 'storybook/test';
 
 import type {
-  BrowserSupportFeature,
+  BrowserSupportFeedFeature,
   BrowserSupportSnapshot,
 } from '@/features/browser-support/interface/queries';
 
@@ -11,7 +11,7 @@ import { BrowserSupportLive } from './browser-support-live';
 
 const SNAPSHOT_URL = 'https://api.k8o.me/public/browser-support';
 
-const allBrowsers = (version: string): BrowserSupportFeature['support'] =>
+const allBrowsers = (version: string): BrowserSupportFeedFeature['support'] =>
   (
     [
       'chrome',
@@ -24,7 +24,7 @@ const allBrowsers = (version: string): BrowserSupportFeature['support'] =>
     ] as const
   ).map((browser) => ({ browser, version, date: '2024-01-01' }));
 
-const popover: BrowserSupportFeature = {
+const popover: BrowserSupportFeedFeature = {
   featureId: 'popover',
   name: 'Popover API',
   status: 'widely',
@@ -33,7 +33,7 @@ const popover: BrowserSupportFeature = {
   support: allBrowsers('114'),
 };
 
-const iteratorConcat: BrowserSupportFeature = {
+const iteratorConcat: BrowserSupportFeedFeature = {
   featureId: 'iterator-concat',
   name: 'Iterator.concat()',
   status: 'newly',
@@ -43,6 +43,11 @@ const iteratorConcat: BrowserSupportFeature = {
 };
 
 const buildTime: BrowserSupportSnapshot = {
+  dataset: {
+    upstreamVersion: '3.52.0',
+    ingestedAt: '2026-10-20T06:00:00.000Z',
+  },
+  generatedAt: '2026-10-20T06:00:00.000Z',
   meta: { upstreamVersion: '3.52.0', ingestedAt: '2026-10-20T06:00:00.000Z' },
   features: [popover],
   recentChanges: [
@@ -60,6 +65,11 @@ const buildTime: BrowserSupportSnapshot = {
 
 // ビルドのあと、api の同期で Iterator.concat() が Baseline に入った
 const latest: BrowserSupportSnapshot = {
+  dataset: {
+    upstreamVersion: '3.53.0',
+    ingestedAt: '2026-10-22T06:00:00.000Z',
+  },
+  generatedAt: '2026-10-22T06:00:00.000Z',
   meta: { upstreamVersion: '3.53.0', ingestedAt: '2026-10-22T06:00:00.000Z' },
   features: [iteratorConcat, popover],
   recentChanges: [
@@ -129,7 +139,14 @@ export const KeepsBuildTimeOnFailure = meta.story({
 
 export const Syncing = meta.story({
   args: {
-    snapshot: { meta: null, features: [], recentChanges: [], nowMs: 0 },
+    snapshot: {
+      dataset: null,
+      features: [],
+      recentChanges: [],
+      generatedAt: '1970-01-01T00:00:00.000Z',
+      meta: null,
+      nowMs: 0,
+    },
   },
   play: async ({ canvas }) => {
     await expect(
@@ -142,7 +159,14 @@ export const Syncing = meta.story({
 
 export const ReplacesSyncing = meta.story({
   args: {
-    snapshot: { meta: null, features: [], recentChanges: [], nowMs: 0 },
+    snapshot: {
+      dataset: null,
+      features: [],
+      recentChanges: [],
+      generatedAt: '1970-01-01T00:00:00.000Z',
+      meta: null,
+      nowMs: 0,
+    },
   },
   beforeEach: ({ msw }) => {
     msw.use(http.get(SNAPSHOT_URL, () => HttpResponse.json(latest)));

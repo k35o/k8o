@@ -3,12 +3,10 @@ import { count, desc, max, sum } from '@repo/database/orm';
 
 export type Overview = {
   blogs: { published: number; drafts: number; totalViews: number };
-  inquiries: { total: number; latestAt: string | null };
+  inquiries: { total: number; latestReceivedAt: string | null };
   push: {
     subscribers: number;
-    lastSentAt: string | null;
-    lastSucceeded: number | null;
-    lastFailed: number | null;
+    lastSend: { sentAt: string; succeeded: number; failed: number } | null;
   };
   readingList: {
     articles: number;
@@ -35,7 +33,10 @@ export const findOverview = async (): Promise<Overview> => {
       .select({ value: sum(db._schema.blogViews.views) })
       .from(db._schema.blogViews),
     db
-      .select({ value: count(), latestAt: max(db._schema.comments.createdAt) })
+      .select({
+        value: count(),
+        latestReceivedAt: max(db._schema.comments.createdAt),
+      })
       .from(db._schema.comments),
     db.select({ value: count() }).from(db._schema.pushSubscriptions),
     db
@@ -64,13 +65,11 @@ export const findOverview = async (): Promise<Overview> => {
     },
     inquiries: {
       total: inquiryRow[0]?.value ?? 0,
-      latestAt: inquiryRow[0]?.latestAt ?? null,
+      latestReceivedAt: inquiryRow[0]?.latestReceivedAt ?? null,
     },
     push: {
       subscribers: subscriberRow[0]?.value ?? 0,
-      lastSentAt: lastPush[0]?.sentAt ?? null,
-      lastSucceeded: lastPush[0]?.succeeded ?? null,
-      lastFailed: lastPush[0]?.failed ?? null,
+      lastSend: lastPush[0] ?? null,
     },
     readingList: {
       articles: articleRow[0]?.value ?? 0,

@@ -171,7 +171,7 @@ describe('MCP の tool', () => {
         ).toStrictEqual([
           { name: 'get_overview', annotations: READ_ONLY },
           { name: 'list_inquiries', annotations: READ_ONLY },
-          { name: 'list_blogs', annotations: READ_ONLY },
+          { name: 'list_blog_stats', annotations: READ_ONLY },
           { name: 'list_reports', annotations: READ_ONLY },
           { name: 'list_article_sources', annotations: READ_ONLY },
         ]);
@@ -340,7 +340,7 @@ describe('MCP の tool', () => {
     });
   });
 
-  describe('list_blogs', () => {
+  describe('list_blog_stats', () => {
     describe('正常系', () => {
       it('検索結果をそのまま返す', async () => {
         const blogs = {
@@ -359,7 +359,7 @@ describe('MCP の tool', () => {
         vi.mocked(findBlogs).mockResolvedValue(blogs);
 
         const result = await client.callTool({
-          name: 'list_blogs',
+          name: 'list_blog_stats',
           arguments: {},
         });
 
@@ -369,7 +369,7 @@ describe('MCP の tool', () => {
       it('指定が無ければ全件を作成日の新しい順に 20 件ずつ検索する', async () => {
         vi.mocked(findBlogs).mockResolvedValue({ total: 0, items: [] });
 
-        await client.callTool({ name: 'list_blogs', arguments: {} });
+        await client.callTool({ name: 'list_blog_stats', arguments: {} });
 
         expect(findBlogs).toHaveBeenCalledWith({
           status: 'all',
@@ -383,7 +383,7 @@ describe('MCP の tool', () => {
         vi.mocked(findBlogs).mockResolvedValue({ total: 0, items: [] });
 
         await client.callTool({
-          name: 'list_blogs',
+          name: 'list_blog_stats',
           arguments: { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
         });
 
@@ -399,7 +399,7 @@ describe('MCP の tool', () => {
     describe('異常系', () => {
       it('知らない status ならエラーを返す', async () => {
         const result = await client.callTool({
-          name: 'list_blogs',
+          name: 'list_blog_stats',
           arguments: { status: 'archived' },
         });
 
@@ -414,12 +414,14 @@ describe('MCP の tool', () => {
       it('リポジトリの集計に、reading-list の要約の進み具合と browser-support の取り込み状況を足して返す', async () => {
         const overview = {
           blogs: { published: 90, drafts: 1, totalViews: 1234 },
-          inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+          inquiries: { total: 3, latestReceivedAt: '2026-10-07T00:00:00.000Z' },
           push: {
             subscribers: 5,
-            lastSentAt: '2026-10-08T00:01:00.000Z',
-            lastSucceeded: 5,
-            lastFailed: 0,
+            lastSend: {
+              sentAt: '2026-10-08T00:01:00.000Z',
+              succeeded: 5,
+              failed: 0,
+            },
           },
           readingList: {
             articles: 300,
@@ -457,8 +459,10 @@ describe('MCP の tool', () => {
             summaryGaveUp: 2,
           },
           browserSupport: {
-            activeVersion: '3.40.1',
-            activeIngestedAt: '2026-10-08T14:40:34.555Z',
+            dataset: {
+              upstreamVersion: '3.40.1',
+              ingestedAt: '2026-10-08T14:40:34.555Z',
+            },
             lastRun: {
               result: 'applied',
               trigger: 'manual',
@@ -473,12 +477,10 @@ describe('MCP の tool', () => {
       it('同期やpushの履歴がまだ無くても返せる', async () => {
         const overview = {
           blogs: { published: 0, drafts: 0, totalViews: 0 },
-          inquiries: { total: 0, latestAt: null },
+          inquiries: { total: 0, latestReceivedAt: null },
           push: {
             subscribers: 0,
-            lastSentAt: null,
-            lastSucceeded: null,
-            lastFailed: null,
+            lastSend: null,
           },
           readingList: {
             articles: 0,
@@ -507,8 +509,7 @@ describe('MCP の tool', () => {
             summaryGaveUp: 0,
           },
           browserSupport: {
-            activeVersion: null,
-            activeIngestedAt: null,
+            dataset: null,
             lastRun: null,
           },
         });
@@ -522,15 +523,18 @@ describe('MCP の tool', () => {
         vi.mocked(findReportTypeCounts).mockResolvedValue([
           { type: 'csp-violation', count: 1 },
         ]);
-        vi.mocked(findReports).mockResolvedValue([
-          {
-            id: 1,
-            type: 'csp-violation',
-            url: 'https://k8o.me/',
-            body: { blockedURL: 'inline' },
-            createdAt: '2026-10-08T00:00:00.000Z',
-          },
-        ]);
+        vi.mocked(findReports).mockResolvedValue({
+          items: [
+            {
+              id: 1,
+              type: 'csp-violation',
+              url: 'https://k8o.me/',
+              body: { blockedURL: 'inline' },
+              createdAt: '2026-10-08T00:00:00.000Z',
+            },
+          ],
+          total: 1,
+        });
 
         const result = await client.callTool({
           name: 'list_reports',
@@ -544,6 +548,7 @@ describe('MCP の tool', () => {
         });
         expect(structured(result)).toStrictEqual({
           typeCounts: [{ type: 'csp-violation', count: 1 }],
+          total: 1,
           items: [
             {
               id: 1,
@@ -561,15 +566,18 @@ describe('MCP の tool', () => {
       it('種別・URL の見えない文字を取り除く', async () => {
         const type = `csp${ZERO_WIDTH_SPACE}-violation`;
         vi.mocked(findReportTypeCounts).mockResolvedValue([{ type, count: 1 }]);
-        vi.mocked(findReports).mockResolvedValue([
-          {
-            id: 1,
-            type,
-            url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
-            body: {},
-            createdAt: '2026-10-08T00:00:00.000Z',
-          },
-        ]);
+        vi.mocked(findReports).mockResolvedValue({
+          items: [
+            {
+              id: 1,
+              type,
+              url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
+              body: {},
+              createdAt: '2026-10-08T00:00:00.000Z',
+            },
+          ],
+          total: 1,
+        });
 
         const result = await client.callTool({
           name: 'list_reports',
@@ -586,15 +594,18 @@ describe('MCP の tool', () => {
     describe('エッジケース', () => {
       it('長すぎる本文と URL を切り詰める', async () => {
         vi.mocked(findReportTypeCounts).mockResolvedValue([]);
-        vi.mocked(findReports).mockResolvedValue([
-          {
-            id: 1,
-            type: 'csp-violation',
-            url: `https://k8o.me/${'a'.repeat(600)}`,
-            body: { sample: 'x'.repeat(3000) },
-            createdAt: '2026-10-08T00:00:00.000Z',
-          },
-        ]);
+        vi.mocked(findReports).mockResolvedValue({
+          items: [
+            {
+              id: 1,
+              type: 'csp-violation',
+              url: `https://k8o.me/${'a'.repeat(600)}`,
+              body: { sample: 'x'.repeat(3000) },
+              createdAt: '2026-10-08T00:00:00.000Z',
+            },
+          ],
+          total: 1,
+        });
 
         const result = await client.callTool({
           name: 'list_reports',

@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { findBlogMetadata } from '@/features/blog/application/blog';
 import { getBlogDemos } from '@/features/blog/application/demos';
 import { getMarkdown } from '@/features/blog/application/markdown';
+import { getTalks } from '@/features/talks/interface/queries';
 
 import {
   findBlogContent,
@@ -19,6 +20,9 @@ import {
 } from './queries';
 
 vi.mock('@repo/api/build-data', () => ({ getPublishedBlogs: vi.fn() }));
+vi.mock('@/features/talks/interface/queries', () => ({
+  getTalks: vi.fn(() => Promise.resolve([])),
+}));
 vi.mock('@/features/blog/application/blog', () => ({
   findBlogMetadata: vi.fn(),
   getBlogToc: vi.fn(),
@@ -49,12 +53,28 @@ const published = (
   id: number,
   slug: string,
   tags: PublishedBlog['tags'] = [],
-  talk: PublishedBlog['talk'] = null,
 ): PublishedBlog => ({
   id,
   slug,
   tags,
-  talk,
+});
+
+// 記事を解説に持つトーク。slidesHref はデッキのあるトークだけが持つ
+const talkOf = (
+  blogId: number,
+  slidesHref: string | null,
+): Awaited<ReturnType<typeof getTalks>>[number] => ({
+  id: 9,
+  title: 'トーク',
+  eventUrl: 'https://example.com/event',
+  eventName: 'イベント',
+  eventDate: '2026-01-01',
+  eventLocation: null,
+  blog: { id: blogId, slug: 'blog' },
+  tags: [],
+  deck: slidesHref === null ? null : { slug: 'talk', kind: 'pdf' },
+  cover: null,
+  slidesHref,
 });
 
 // MDX の frontmatter。missing に挙げた記事は MDX が無い
@@ -142,8 +162,9 @@ describe('findBlogContent', () => {
   describe('正常系', () => {
     it('一覧の記事を、タグの ID と名前つきで返す。デッキの無いトークの記事は、スライドのリンク先を持たない', async () => {
       vi.mocked(getPublishedBlogs).mockResolvedValue([
-        published(1, 'blog-a', [CSS], { slug: null }),
+        published(1, 'blog-a', [CSS]),
       ]);
+      vi.mocked(getTalks).mockResolvedValueOnce([talkOf(1, null)]);
       mockMetadata();
 
       await expect(findBlogContent('blog-a')).resolves.toStrictEqual({
@@ -156,6 +177,20 @@ describe('findBlogContent', () => {
         createdAt: '2026-01-01T00:00:00.000Z',
         updatedAt: '2026-01-02T00:00:00.000Z',
       });
+    });
+
+    it('記事を解説に持つトークのうち、デッキのあるトークのスライドへリンクする', async () => {
+      vi.mocked(getPublishedBlogs).mockResolvedValue([published(1, 'blog-a')]);
+      vi.mocked(getTalks).mockResolvedValueOnce([
+        talkOf(2, '/talks/other'),
+        talkOf(1, null),
+        talkOf(1, '/talks/panda'),
+      ]);
+      mockMetadata();
+
+      const blog = await findBlogContent('blog-a');
+
+      expect(blog?.slidesHref).toBe('/talks/panda');
     });
   });
 

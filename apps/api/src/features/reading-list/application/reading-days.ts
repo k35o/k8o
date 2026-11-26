@@ -16,13 +16,11 @@ export type ReadingDay = {
     headline: string;
     articles: ReadingArticle[];
   }>;
+  // まとめのどこにも入らなかった記事。まとめの無い日は、その日の記事のすべて
+  remainingArticles: ReadingArticle[];
 };
 
-const UNTITLED_HEADLINE = 'この日の記事';
-const REST_HEADLINE = 'そのほかの記事';
-
-// 新しい順の記事を日ごとに分け、その日のまとめの見てほしい記事と話題に入れる。まとめの無い日の記事と、
-// まとめのどこにも入らなかった記事は、最後の話題にまとめる
+// 新しい順の記事を日ごとに分け、その日のまとめの見てほしい記事と話題に入れる
 export const toReadingDays = (
   articles: readonly ReadingArticle[],
   digests: readonly ReadingDigest[],
@@ -42,7 +40,7 @@ export const toReadingDays = (
     const picks = (digest?.picks ?? []).flatMap(({ articleId, reason }) =>
       take(articleId).map((article) => ({ article, reason })),
     );
-    const topics: ReadingDay['topics'] = (digest?.topics ?? []).flatMap(
+    const topics = (digest?.topics ?? []).flatMap(
       ({ kind, headline, articleIds }) => {
         const topicArticles = articleIds.flatMap(take);
         return topicArticles.length === 0
@@ -50,22 +48,13 @@ export const toReadingDays = (
           : [{ kind, headline, articles: topicArticles }];
       },
     );
-    if (remaining.size > 0) {
-      topics.push({
-        kind: 'other',
-        headline:
-          picks.length === 0 && topics.length === 0
-            ? UNTITLED_HEADLINE
-            : REST_HEADLINE,
-        articles: [...remaining.values()],
-      });
-    }
     return {
       date,
       articleCount: dayArticles.length,
       overview: digest?.overview ?? null,
       picks,
       topics,
+      remainingArticles: [...remaining.values()],
     };
   });
 };

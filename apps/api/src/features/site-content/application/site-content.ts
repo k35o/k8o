@@ -11,8 +11,6 @@ export type PublishedBlog = {
   id: number;
   slug: string;
   tags: TagRef[];
-  // 記事を解説に持つトークの、k8o.me のデッキの名前
-  talk: { slug: string | null } | null;
 };
 
 export type Tag = {
@@ -40,7 +38,6 @@ export const getPublishedBlogs = async (): Promise<PublishedBlog[]> =>
     id: row.id,
     slug: row.slug,
     tags: row.blogTag.map(({ tag }) => tag),
-    talk: row.talks[0] ?? null,
   }));
 
 export const getTags = async (): Promise<Tag[]> =>
@@ -53,7 +50,8 @@ export const getTags = async (): Promise<Tag[]> =>
     talkIds: row.talkTag.map(({ talkId }) => talkId),
   }));
 
-// 開催日の新しい順。公開時刻より前のデッキの slug は返さない。ビルドがデッキを取り込まず、トークは k8o.me のデッキを持たないものとして出る
+// 開催日の新しい順。公開時刻より前のデッキの slug は返さない。ビルドがデッキを取り込まず、トークは k8o.me のデッキを持たないものとして出る。
+// 解説の記事は公開済みのものだけを返す
 export const getTalks = async (now: Date = new Date()): Promise<Talk[]> =>
   (await findTalkRows()).map((row) => ({
     id: row.id,
@@ -63,6 +61,9 @@ export const getTalks = async (now: Date = new Date()): Promise<Talk[]> =>
     eventName: row.eventName,
     eventDate: row.eventDate,
     eventLocation: row.eventLocation,
-    blog: row.blog,
+    blog:
+      row.blog === null || !row.blog.published
+        ? null
+        : { id: row.blog.id, slug: row.blog.slug },
     tags: row.talkTag.map(({ tag }) => tag),
   }));

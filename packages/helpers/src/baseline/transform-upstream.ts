@@ -169,10 +169,18 @@ const parseFeatureEntry = (
       name: typeof entry['name'] === 'string' ? entry['name'] : featureId,
       status: supportStatus,
       baselineDate,
-      resolvedDate: baselineDate ?? lastShippedDate(support) ?? '',
+      resolvedDate: baselineDate ?? lastShippedDate(support),
       support,
     },
   };
+};
+
+// 日付の定まらない機能は最後に置く
+const byResolvedDateDesc = (a: BaselineFeature, b: BaselineFeature): number => {
+  if (a.resolvedDate === null || b.resolvedDate === null) {
+    return Number(a.resolvedDate === null) - Number(b.resolvedDate === null);
+  }
+  return b.resolvedDate.localeCompare(a.resolvedDate);
 };
 
 const REDIRECT_MAX_DEPTH = 5;
@@ -266,9 +274,7 @@ export const transformUpstreamData = (
     dataset: {
       schemaVersion: BASELINE_DATASET_SCHEMA_VERSION,
       upstreamVersion,
-      features: features.toSorted((a, b) =>
-        b.resolvedDate.localeCompare(a.resolvedDate),
-      ),
+      features: features.toSorted(byResolvedDateDesc),
       redirects,
       minVersions: computeDatasetMinVersions(features),
     },
@@ -338,7 +344,7 @@ if (import.meta.vitest) {
     name: 'Feature',
     status,
     baselineDate: null,
-    resolvedDate: '',
+    resolvedDate: null,
     support: support.map(([browser, version]) => ({
       browser,
       version,
@@ -437,9 +443,44 @@ if (import.meta.vitest) {
         });
       });
 
-      it('features は resolvedDate 降順に整列される', () => {
-        const dates = dataset.features.map((f) => f.resolvedDate);
-        expect(dates).toStrictEqual([...dates].toSorted().toReversed());
+      it('features は resolvedDate 降順に整列され、日付の定まらない機能は最後に来る', () => {
+        const { dataset: ordered } = transformUpstreamData(
+          {
+            browsers: {},
+            features: {
+              undated: {
+                kind: 'feature',
+                status: { baseline: false, support: {} },
+              },
+              older: {
+                kind: 'feature',
+                status: {
+                  baseline: 'high',
+                  baseline_low_date: '2020-01-15',
+                  baseline_high_date: '2022-07-15',
+                  support: {},
+                },
+              },
+              newer: {
+                kind: 'feature',
+                status: {
+                  baseline: 'low',
+                  baseline_low_date: '2026-04-01',
+                  support: {},
+                },
+              },
+            },
+          },
+          '1.0.0',
+        );
+
+        expect(
+          ordered.features.map((f) => [f.featureId, f.resolvedDate]),
+        ).toStrictEqual([
+          ['newer', '2026-04-01'],
+          ['older', '2022-07-15'],
+          ['undated', null],
+        ]);
       });
 
       it('baseline 機能から minVersions を算出する', () => {
@@ -547,7 +588,7 @@ if (import.meta.vitest) {
           '1.0.0',
         );
         expect(dataset.features[0]?.baselineDate).toBeNull();
-        expect(dataset.features[0]?.resolvedDate).toBe('');
+        expect(dataset.features[0]?.resolvedDate).toBeNull();
       });
     });
   });

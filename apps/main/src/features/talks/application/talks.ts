@@ -42,14 +42,6 @@ const findDeckKind = async (slug: string | null): Promise<DeckKind | null> => {
   return null;
 };
 
-// スライドのリンク先。k8o.me にデッキのあるトークだけが持つ
-export const findSlidesHref = async (talk: {
-  slug: string | null;
-}): Promise<string | null> =>
-  talk.slug !== null && (await findDeckKind(talk.slug)) !== null
-    ? `/talks/${talk.slug}`
-    : null;
-
 // 一覧に出す表紙。PDF から作ったデッキの 1 ページ目
 const findCover = async (
   deck: { slug: string; kind: DeckKind } | null,
