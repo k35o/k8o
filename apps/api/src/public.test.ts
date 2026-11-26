@@ -19,7 +19,10 @@ import {
   deleteSubscription,
   insertSubscription,
 } from './features/push-notification/infrastructure/subscription-repository';
-import { findDigestsSince } from './features/reading-list/infrastructure/digest-repository';
+import {
+  findDigestsSince,
+  findLatestDigestBetween,
+} from './features/reading-list/infrastructure/digest-repository';
 import { findRecentArticles } from './features/reading-list/infrastructure/reading-list-repository';
 import { insertReports } from './features/reports/infrastructure/report-repository';
 import app from './index';
@@ -65,6 +68,7 @@ vi.mock(
 );
 vi.mock('./features/reading-list/infrastructure/digest-repository', () => ({
   findDigestsSince: vi.fn(),
+  findLatestDigestBetween: vi.fn(),
 }));
 vi.mock('./features/reports/infrastructure/report-repository', () => ({
   insertReports: vi.fn(),
@@ -1126,6 +1130,47 @@ describe('公開 API', () => {
     });
   });
 
+  describe('GET /public/browser-support/recent-changes', () => {
+    const PATH = '/public/browser-support/recent-changes';
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+    });
+
+    describe('正常系', () => {
+      it('直近30日の更新だけを返し、機能の一覧は読まない', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          recentChanges: [FEATURE_CHANGE],
+        });
+        expect(findRecentFeatureChanges).toHaveBeenCalledWith(
+          '2026-06-20T00:00:00.000Z',
+          100,
+        );
+        expect(findActiveDataset).not.toHaveBeenCalled();
+      });
+
+      it('CDN に1時間持たせ、DB が落ちても古い値を返させる', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('直近30日に更新が無ければ、空の配列を返す', async () => {
+        vi.mocked(findRecentFeatureChanges).mockResolvedValue([]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.json()).resolves.toStrictEqual({ recentChanges: [] });
+      });
+    });
+  });
+
   describe('GET /public/browser-support/features/:featureId', () => {
     const PATH = '/public/browser-support/features';
 
@@ -1551,6 +1596,109 @@ describe('公開 API', () => {
         });
 
         expect(res.status).toBe(304);
+      });
+    });
+  });
+
+  describe('GET /public/reading-list/latest', () => {
+    const PATH = '/public/reading-list/latest';
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+      vi.mocked(findLatestDigestBetween).mockResolvedValue({
+        date: '2026-07-17',
+        overview: 'ブラウザの説明の日。',
+        picks: [{ articleId: 11, reason: '仕様が固まった。' }],
+        topics: [],
+      });
+    });
+
+    describe('正常系', () => {
+      it('まとめのある最新の日を、記事の本文や画像まで含めて返す', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          day: {
+            date: '2026-07-17',
+            articleCount: 1,
+            overview: 'ブラウザの説明の日。',
+            picks: [{ article: DESCRIBED_ARTICLE, reason: '仕様が固まった。' }],
+            topics: [],
+          },
+        });
+      });
+
+      it('GET /public/reading-list の同じ日と同じ値を返す', async () => {
+        vi.mocked(findDigestsSince).mockResolvedValue([
+          {
+            date: '2026-07-17',
+            overview: 'ブラウザの説明の日。',
+            picks: [{ articleId: 11, reason: '仕様が固まった。' }],
+            topics: [],
+            createdAt: '2026-07-18T00:05:00.000Z',
+          },
+        ]);
+        const list = await (await app.request('/public/reading-list')).json();
+
+        const res = await app.request(PATH);
+
+        await expect(res.json()).resolves.toStrictEqual({
+          day: list.days.find(
+            ({ date }: { date: string }) => date === '2026-07-17',
+          ),
+        });
+      });
+
+      it('直近90日の出した日のまとめから選び、その日の始まり（日本時間）からの記事を読む', async () => {
+        await app.request(PATH);
+
+        expect(findLatestDigestBetween).toHaveBeenCalledWith(
+          '2026-04-21',
+          '2026-07-20',
+        );
+        expect(findRecentArticles).toHaveBeenCalledWith(
+          '2026-07-16T15:00:00.000Z',
+        );
+      });
+
+      it('CDN に1時間持たせ、本文から作った ETag を付ける', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+        expect(res.headers.get('etag')).toMatch(/^"[0-9a-f]{40}"$/u);
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('日本時間 9 時より前は、一覧と同じく前日のまとめを選ばない', async () => {
+        // 日本時間では 7 月 20 日の 8 時
+        vi.setSystemTime(new Date('2026-07-19T23:00:00.000Z'));
+
+        await app.request(PATH);
+
+        expect(findLatestDigestBetween).toHaveBeenCalledWith(
+          '2026-04-21',
+          '2026-07-19',
+        );
+      });
+
+      it('直近90日にまとめが無ければ、記事を読まずに day を null にする', async () => {
+        vi.mocked(findLatestDigestBetween).mockResolvedValue(null);
+
+        const res = await app.request(PATH);
+
+        await expect(res.json()).resolves.toStrictEqual({ day: null });
+        expect(findRecentArticles).not.toHaveBeenCalled();
+      });
+
+      it('まとめの日の記事が残っていなければ、day を null にする', async () => {
+        vi.mocked(findRecentArticles).mockResolvedValue([SUMMARIZED_ARTICLE]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.json()).resolves.toStrictEqual({ day: null });
       });
     });
   });

@@ -6,6 +6,7 @@ import { validate } from '../../../shared/http/validate';
 import { getBrowserSupportHealth } from '../application/browser-support-health';
 import {
   findFeatureStatus,
+  getBrowserSupportRecentChanges,
   getBrowserSupportSnapshot,
 } from '../application/browser-support-snapshot';
 
@@ -20,6 +21,13 @@ const featureParamSchema = z.object({
 export const browserSupportPublicRoutes = new Hono()
   .get('/', async (c) =>
     c.json(await getBrowserSupportSnapshot(Date.now()), 200, CACHE_HEADERS),
+  )
+  .get('/recent-changes', async (c) =>
+    c.json(
+      await getBrowserSupportRecentChanges(Date.now()),
+      200,
+      CACHE_HEADERS,
+    ),
   )
   .get(
     '/features/:featureId',
