@@ -4,7 +4,10 @@ import {
   findActiveDataset,
   findRecentFeatureChanges,
 } from '../infrastructure/browser-support-repository';
-import type { BrowserSupportFeatureChange } from '../infrastructure/browser-support-repository';
+import type {
+  ActiveDatasetMeta,
+  BrowserSupportFeatureChange,
+} from '../infrastructure/browser-support-repository';
 import {
   RECENT_CHANGES_LIMIT,
   RECENT_CHANGES_WINDOW_MS,
@@ -14,10 +17,13 @@ import {
 import type { FeedFeature } from './baseline-select';
 
 type BrowserSupportSnapshot = {
-  meta: { upstreamVersion: string; ingestedAt: string } | null;
+  dataset: ActiveDatasetMeta | null;
   features: FeedFeature[];
   recentChanges: BrowserSupportFeatureChange[];
-  // CDN に置かれた応答を読む側が「直近1週間」を数える基準。選んだ時刻と同じ値を返す
+  // 機能を選んだ時刻。CDN に置かれた応答を読む側も、この時刻を基準に新しさを数える
+  generatedAt: string;
+  // main が読んでいた名前。main が dataset と generatedAt を読むようになったら消す
+  meta: ActiveDatasetMeta | null;
   nowMs: number;
 };
 
@@ -42,16 +48,27 @@ export const getBrowserSupportSnapshot = async (
     findActiveDataset(),
     findRecentChanges(nowMs),
   ]);
+  const generatedAt = new Date(nowMs).toISOString();
   if (active === null) {
-    return { meta: null, features: [], recentChanges, nowMs };
+    return {
+      dataset: null,
+      features: [],
+      recentChanges,
+      generatedAt,
+      meta: null,
+      nowMs,
+    };
   }
+  const dataset = {
+    upstreamVersion: active.upstreamVersion,
+    ingestedAt: active.ingestedAt,
+  };
   return {
-    meta: {
-      upstreamVersion: active.upstreamVersion,
-      ingestedAt: active.ingestedAt,
-    },
+    dataset,
     features: selectFeedFeatures(active.dataset, nowMs),
     recentChanges,
+    generatedAt,
+    meta: dataset,
     nowMs,
   };
 };

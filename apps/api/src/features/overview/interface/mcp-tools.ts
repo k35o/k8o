@@ -41,8 +41,9 @@ export const registerOverviewTools = (server: McpServer): void => {
           summaryGaveUp: z.number(),
         }),
         browserSupport: z.object({
-          activeVersion: z.string().nullable(),
-          activeIngestedAt: z.string().nullable(),
+          dataset: z
+            .object({ upstreamVersion: z.string(), ingestedAt: z.string() })
+            .nullable(),
           lastRun: z
             .object({
               result: z.string(),

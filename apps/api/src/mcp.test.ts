@@ -459,8 +459,10 @@ describe('MCP の tool', () => {
             summaryGaveUp: 2,
           },
           browserSupport: {
-            activeVersion: '3.40.1',
-            activeIngestedAt: '2026-10-08T14:40:34.555Z',
+            dataset: {
+              upstreamVersion: '3.40.1',
+              ingestedAt: '2026-10-08T14:40:34.555Z',
+            },
             lastRun: {
               result: 'applied',
               trigger: 'manual',
@@ -507,8 +509,7 @@ describe('MCP の tool', () => {
             summaryGaveUp: 0,
           },
           browserSupport: {
-            activeVersion: null,
-            activeIngestedAt: null,
+            dataset: null,
             lastRun: null,
           },
         });

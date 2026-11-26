@@ -93,8 +93,10 @@ const OVERVIEW: OwnerOverview = {
     summaryGaveUp: 2,
   },
   browserSupport: {
-    activeVersion: '7.1.0',
-    activeIngestedAt: '2026-10-20T06:00:00.000Z',
+    dataset: {
+      upstreamVersion: '7.1.0',
+      ingestedAt: '2026-10-20T06:00:00.000Z',
+    },
     lastRun: {
       result: 'applied',
       trigger: 'cron',

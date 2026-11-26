@@ -1115,12 +1115,17 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(200);
         await expect(res.json()).resolves.toStrictEqual({
-          meta: {
+          dataset: {
             upstreamVersion: '3.34.2',
             ingestedAt: '2026-07-19T06:00:00.000Z',
           },
           features: [ANCHOR_POSITIONING, GRID],
           recentChanges: [FEATURE_CHANGE],
+          generatedAt: '2026-07-20T00:00:00.000Z',
+          meta: {
+            upstreamVersion: '3.34.2',
+            ingestedAt: '2026-07-19T06:00:00.000Z',
+          },
           nowMs: 1_784_505_600_000,
         });
         expect(findRecentFeatureChanges).toHaveBeenCalledWith(
@@ -1144,9 +1149,11 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(200);
         await expect(res.json()).resolves.toStrictEqual({
-          meta: null,
+          dataset: null,
           features: [],
           recentChanges: [FEATURE_CHANGE],
+          generatedAt: '2026-07-20T00:00:00.000Z',
+          meta: null,
           nowMs: 1_784_505_600_000,
         });
       });
@@ -1290,6 +1297,11 @@ describe('公開 API', () => {
         expect(res.status).toBe(200);
         await expect(res.json()).resolves.toStrictEqual({
           status: 'ok',
+          dataset: {
+            upstreamVersion: '3.34.2',
+            ingestedAt: '2026-07-19T06:00:00.000Z',
+            minVersions: { chrome: '120' },
+          },
           activeVersion: '3.34.2',
           activeIngestedAt: '2026-07-19T06:00:00.000Z',
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
@@ -1377,6 +1389,7 @@ describe('公開 API', () => {
         expect(res.status).toBe(503);
         await expect(res.json()).resolves.toStrictEqual({
           status: 'stale',
+          dataset: null,
           activeVersion: null,
           activeIngestedAt: null,
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
@@ -1399,6 +1412,7 @@ describe('公開 API', () => {
           expect(res.headers.get('cache-control')).toBe('no-store');
           await expect(res.json()).resolves.toStrictEqual({
             status: 'degraded',
+            dataset: null,
             activeVersion: null,
             activeIngestedAt: null,
             lastSuccessAt: null,

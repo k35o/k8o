@@ -5,11 +5,11 @@ import {
   findRecentSyncRuns,
 } from '../infrastructure/browser-support-repository';
 import type {
+  ActiveDatasetMeta,
   ActiveDatasetRecord,
   BrowserSupportSyncResult,
   SyncRunSummary,
 } from '../infrastructure/browser-support-repository';
-import type { BrowserSupportSyncStatus } from './browser-support-sync-status';
 
 // 同期の心拍が生きていると見なす上限。日次 cron に、発火時刻のずれと単発の失敗の余裕を足す
 const HEARTBEAT_STALE_MS = 30 * 60 * 60 * 1000;
@@ -23,9 +23,16 @@ const HEARTBEAT_RESULTS: ReadonlySet<BrowserSupportSyncResult> = new Set([
   'skipped_major',
 ]);
 
-type BrowserSupportHealth = BrowserSupportSyncStatus & {
+type BrowserSupportHealth = {
   status: 'ok' | 'stale' | 'degraded';
+  dataset:
+    | (ActiveDatasetMeta & { minVersions: BaselineDataset['minVersions'] })
+    | null;
   lastSuccessAt: string | null;
+  lastRun: SyncRunSummary | null;
+  // 外形監視の workflow が読んでいた名前。workflow が dataset を読むようになったら消す
+  activeVersion: string | null;
+  activeIngestedAt: string | null;
   minVersions: BaselineDataset['minVersions'] | null;
 };
 
@@ -44,6 +51,7 @@ export const getBrowserSupportHealth = async (
     console.error('browser-support の health の読み取りに失敗しました:', error);
     return {
       status: 'degraded',
+      dataset: null,
       activeVersion: null,
       activeIngestedAt: null,
       lastSuccessAt: null,
@@ -60,6 +68,14 @@ export const getBrowserSupportHealth = async (
 
   return {
     status: heartbeatAlive && active !== null ? 'ok' : 'stale',
+    dataset:
+      active === null
+        ? null
+        : {
+            upstreamVersion: active.upstreamVersion,
+            ingestedAt: active.ingestedAt,
+            minVersions: active.dataset.minVersions,
+          },
     activeVersion: active?.upstreamVersion ?? null,
     activeIngestedAt: active?.ingestedAt ?? null,
     lastSuccessAt,

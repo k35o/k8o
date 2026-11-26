@@ -43,6 +43,11 @@ const iteratorConcat: BrowserSupportFeedFeature = {
 };
 
 const buildTime: BrowserSupportSnapshot = {
+  dataset: {
+    upstreamVersion: '3.52.0',
+    ingestedAt: '2026-10-20T06:00:00.000Z',
+  },
+  generatedAt: '2026-10-20T06:00:00.000Z',
   meta: { upstreamVersion: '3.52.0', ingestedAt: '2026-10-20T06:00:00.000Z' },
   features: [popover],
   recentChanges: [
@@ -60,6 +65,11 @@ const buildTime: BrowserSupportSnapshot = {
 
 // ビルドのあと、api の同期で Iterator.concat() が Baseline に入った
 const latest: BrowserSupportSnapshot = {
+  dataset: {
+    upstreamVersion: '3.53.0',
+    ingestedAt: '2026-10-22T06:00:00.000Z',
+  },
+  generatedAt: '2026-10-22T06:00:00.000Z',
   meta: { upstreamVersion: '3.53.0', ingestedAt: '2026-10-22T06:00:00.000Z' },
   features: [iteratorConcat, popover],
   recentChanges: [
@@ -129,7 +139,14 @@ export const KeepsBuildTimeOnFailure = meta.story({
 
 export const Syncing = meta.story({
   args: {
-    snapshot: { meta: null, features: [], recentChanges: [], nowMs: 0 },
+    snapshot: {
+      dataset: null,
+      features: [],
+      recentChanges: [],
+      generatedAt: '1970-01-01T00:00:00.000Z',
+      meta: null,
+      nowMs: 0,
+    },
   },
   play: async ({ canvas }) => {
     await expect(
@@ -142,7 +159,14 @@ export const Syncing = meta.story({
 
 export const ReplacesSyncing = meta.story({
   args: {
-    snapshot: { meta: null, features: [], recentChanges: [], nowMs: 0 },
+    snapshot: {
+      dataset: null,
+      features: [],
+      recentChanges: [],
+      generatedAt: '1970-01-01T00:00:00.000Z',
+      meta: null,
+      nowMs: 0,
+    },
   },
   beforeEach: ({ msw }) => {
     msw.use(http.get(SNAPSHOT_URL, () => HttpResponse.json(latest)));
