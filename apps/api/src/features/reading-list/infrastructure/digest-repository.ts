@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { desc, gte } from '@repo/database/orm';
+import { and, desc, gte, lt } from '@repo/database/orm';
 import type {
   ReadingDigestPick,
   ReadingDigestTopic,
@@ -31,6 +31,20 @@ export const findDigestsSince = (
     where: gte(db._schema.readingDigests.date, sinceDate),
     orderBy: (digests) => [desc(digests.date)],
   });
+
+// sinceDate の日から、beforeDate の前の日までで、いちばん新しいまとめ
+export const findLatestDigestBetween = async (
+  sinceDate: string,
+  beforeDate: string,
+): Promise<ReadingDigest | null> =>
+  (await db.query.readingDigests.findFirst({
+    columns: { date: true, overview: true, picks: true, topics: true },
+    where: and(
+      gte(db._schema.readingDigests.date, sinceDate),
+      lt(db._schema.readingDigests.date, beforeDate),
+    ),
+    orderBy: (digests) => [desc(digests.date)],
+  })) ?? null;
 
 export const findDigestKeysSince = (
   sinceDate: string,

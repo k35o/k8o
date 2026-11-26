@@ -1,7 +1,10 @@
 import { formatDate } from '@repo/helpers/date/format';
 import { buildRssFeed } from '@repo/helpers/feed/build-rss';
 
-import { findDigestsSince } from '../infrastructure/digest-repository';
+import {
+  findDigestsSince,
+  findLatestDigestBetween,
+} from '../infrastructure/digest-repository';
 import type { StoredReadingDigest } from '../infrastructure/digest-repository';
 import { findRecentArticles } from '../infrastructure/reading-list-repository';
 import { digestHtml } from './digest-html';
@@ -15,6 +18,9 @@ import { readingWindowStart } from './reading-window';
 // 日本時間 9 時を境に、前日の分を出す。日付の変わり目で出すと、前日の途中の形を見せて、翌朝にもう一度見させる
 const PUBLISH_DELAY_MS = 9 * 60 * 60 * 1000;
 
+const firstUnpublishedDateOf = (nowMs: number): string =>
+  readingDateOf(new Date(nowMs - PUBLISH_DELAY_MS).toISOString());
+
 const findPublishedReadings = async (
   nowMs: number,
 ): Promise<{ days: ReadingDay[]; digests: StoredReadingDigest[] }> => {
@@ -23,9 +29,7 @@ const findPublishedReadings = async (
     findRecentArticles(since),
     findDigestsSince(readingDateOf(since)),
   ]);
-  const firstUnpublishedDate = readingDateOf(
-    new Date(nowMs - PUBLISH_DELAY_MS).toISOString(),
-  );
+  const firstUnpublishedDate = firstUnpublishedDateOf(nowMs);
   return {
     days: toReadingDays(articles, digests).filter(
       ({ date }) => date < firstUnpublishedDate,
@@ -40,6 +44,28 @@ export const getReadingList = async (
 ): Promise<{ days: ReadingDay[] }> => {
   const { days } = await findPublishedReadings(nowMs);
   return { days };
+};
+
+// 出した日のうちまとめのある最新の日を、getReadingList の 1 日と同じ形で返す
+export const getLatestReadingDay = async (
+  nowMs: number,
+): Promise<{ day: ReadingDay | null }> => {
+  const digest = await findLatestDigestBetween(
+    readingDateOf(readingWindowStart(nowMs).toISOString()),
+    firstUnpublishedDateOf(nowMs),
+  );
+  if (digest === null) {
+    return { day: null };
+  }
+  const articles = await findRecentArticles(
+    new Date(`${digest.date}T00:00:00+09:00`).toISOString(),
+  );
+  return {
+    day:
+      toReadingDays(articles, [digest]).find(
+        ({ date }) => date === digest.date,
+      ) ?? null,
+  };
 };
 
 // 出した日のうちまとめのある日を、1 日 1 件で配る

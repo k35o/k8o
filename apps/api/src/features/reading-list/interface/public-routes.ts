@@ -5,6 +5,7 @@ import { createMiddleware } from 'hono/factory';
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
 import { hasQuery, isReadMethod } from '../../../shared/http/read-request';
 import {
+  getLatestReadingDay,
   getReadingList,
   getReadingListFeed,
 } from '../application/reading-list';
@@ -28,6 +29,11 @@ export const redirectReadingListFeedQuery = createMiddleware(
 export const readingListPublicRoutes = new Hono()
   .get('/', etag(), async (c) =>
     c.json(await getReadingList(Date.now()), 200, {
+      'Cache-Control': CACHE_CONTROL,
+    }),
+  )
+  .get('/latest', etag(), async (c) =>
+    c.json(await getLatestReadingDay(Date.now()), 200, {
       'Cache-Control': CACHE_CONTROL,
     }),
   )
