@@ -58,32 +58,26 @@ const days: ReadingDay[] = [
   },
 ];
 
-// 連載の記事を 1 日の 1 つの話題に入れる
+// まとめの無い日に、連載の記事が 30 件ある
 const series: ReadingDay[] = [
   {
     date: '2026-10-30',
     articleCount: 30,
     overview: null,
     picks: [],
-    topics: [
-      {
-        kind: 'other',
-        headline: 'この日の記事',
-        articles: Array.from({ length: 30 }, (_, index) => ({
-          id: 100 + index,
-          title: `連載 第${String(index + 1)}回`,
-          url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
-          publishedAt: new Date(
-            Date.UTC(2026, 9, 30, 0, 0, 0) - index * 60_000,
-          ).toISOString(),
-          imageUrl: null,
-          summary: null,
-          description: null,
-          sourceTitle: 'Zenn',
-        })),
-      },
-    ],
-    remainingArticles: [],
+    topics: [],
+    remainingArticles: Array.from({ length: 30 }, (_, index) => ({
+      id: 100 + index,
+      title: `連載 第${String(index + 1)}回`,
+      url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
+      publishedAt: new Date(
+        Date.UTC(2026, 9, 30, 0, 0, 0) - index * 60_000,
+      ).toISOString(),
+      imageUrl: null,
+      summary: null,
+      description: null,
+      sourceTitle: 'Zenn',
+    })),
   },
 ];
 
