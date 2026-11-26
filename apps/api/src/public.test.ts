@@ -1498,6 +1498,51 @@ describe('公開 API', () => {
     });
 
     describe('エッジケース', () => {
+      const TODAY_ARTICLE = {
+        ...BARE_ARTICLE,
+        id: 21,
+        publishedAt: '2026-07-19T15:00:00.000Z',
+      };
+      const YESTERDAY_ARTICLE = {
+        ...BARE_ARTICLE,
+        id: 20,
+        publishedAt: '2026-07-19T14:59:59.000Z',
+      };
+
+      it('日本時間 9 時の同期のあとは、前日までの日を返し、当日の記事は返さない', async () => {
+        vi.mocked(findRecentArticles).mockResolvedValue([
+          TODAY_ARTICLE,
+          YESTERDAY_ARTICLE,
+          SUMMARIZED_ARTICLE,
+        ]);
+
+        const res = await app.request('/public/reading-list');
+
+        const { days } = (await res.json()) as {
+          days: Array<{ date: string }>;
+        };
+        expect(days.map(({ date }) => date)).toStrictEqual([
+          '2026-07-19',
+          '2026-07-18',
+        ]);
+      });
+
+      it('日本時間 9 時の同期の前は、前日の記事も返さない', async () => {
+        vi.setSystemTime(new Date('2026-07-19T23:59:59.000Z'));
+        vi.mocked(findRecentArticles).mockResolvedValue([
+          TODAY_ARTICLE,
+          YESTERDAY_ARTICLE,
+          SUMMARIZED_ARTICLE,
+        ]);
+
+        const res = await app.request('/public/reading-list');
+
+        const { days } = (await res.json()) as {
+          days: Array<{ date: string }>;
+        };
+        expect(days.map(({ date }) => date)).toStrictEqual(['2026-07-18']);
+      });
+
       it('圧縮した CDN が弱い ETag にして配っても、その If-None-Match に 304 を返す', async () => {
         const etag = await readingListEtag();
 
@@ -1630,6 +1675,16 @@ describe('公開 API', () => {
         const xml = await res.text();
         expect(xml).toContain('<title>k8o Readings</title>');
         expect(xml).not.toContain('<item>');
+      });
+
+      it('前日のまとめが日本時間 9 時より前にできていても、9 時までは配らない', async () => {
+        vi.setSystemTime(new Date('2026-07-18T23:00:00.000Z'));
+
+        const res = await app.request(PATH);
+
+        const xml = await res.text();
+        expect(xml).not.toContain('<title>7月18日(土)のReadings</title>');
+        expect(xml).toContain('<title>7月17日(金)のReadings</title>');
       });
 
       it.each([

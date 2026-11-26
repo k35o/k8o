@@ -4,7 +4,6 @@ import { buildRssFeed } from '@repo/helpers/feed/build-rss';
 import { findDigestsSince } from '../infrastructure/digest-repository';
 import type { StoredReadingDigest } from '../infrastructure/digest-repository';
 import { findRecentArticles } from '../infrastructure/reading-list-repository';
-import type { ReadingArticle } from '../infrastructure/reading-list-repository';
 import { digestHtml } from './digest-html';
 import { readingDateOf } from './reading-date';
 import { toReadingDays } from './reading-days';
@@ -12,30 +11,41 @@ import type { ReadingDay } from './reading-days';
 import { READING_LIST_FEED_URL, READING_LIST_URL } from './reading-list-url';
 import { readingWindowStart } from './reading-window';
 
-const findRecentReadings = (
+// 日付の変わり目ではなく、前日までの記事を取り込み終える同期（vercel.json の cron、00:00 UTC）の
+// 日本時間 9 時を境に、前日の分を出す。日付の変わり目で出すと、前日の途中の形を見せて、翌朝にもう一度見させる
+const PUBLISH_DELAY_MS = 9 * 60 * 60 * 1000;
+
+const findPublishedReadings = async (
   nowMs: number,
-): Promise<[ReadingArticle[], StoredReadingDigest[]]> => {
+): Promise<{ days: ReadingDay[]; digests: StoredReadingDigest[] }> => {
   const since = readingWindowStart(nowMs).toISOString();
-  return Promise.all([
+  const [articles, digests] = await Promise.all([
     findRecentArticles(since),
     findDigestsSince(readingDateOf(since)),
   ]);
+  const firstUnpublishedDate = readingDateOf(
+    new Date(nowMs - PUBLISH_DELAY_MS).toISOString(),
+  );
+  return {
+    days: toReadingDays(articles, digests).filter(
+      ({ date }) => date < firstUnpublishedDate,
+    ),
+    digests,
+  };
 };
 
-// 直近 90 日の記事を、日ごとのまとめに入れて新しい日から返す
+// 直近 90 日のうち出した日の記事を、日ごとのまとめに入れて新しい日から返す
 export const getReadingList = async (
   nowMs: number,
 ): Promise<{ days: ReadingDay[] }> => {
-  const [articles, digests] = await findRecentReadings(nowMs);
-  return { days: toReadingDays(articles, digests) };
+  const { days } = await findPublishedReadings(nowMs);
+  return { days };
 };
 
-// まとめのある日を、1 日 1 件で配る
+// 出した日のうちまとめのある日を、1 日 1 件で配る
 export const getReadingListFeed = async (nowMs: number): Promise<string> => {
-  const [articles, digests] = await findRecentReadings(nowMs);
-  const dayByDate = new Map(
-    toReadingDays(articles, digests).map((day) => [day.date, day]),
-  );
+  const { days, digests } = await findPublishedReadings(nowMs);
+  const dayByDate = new Map(days.map((day) => [day.date, day]));
   return buildRssFeed({
     title: 'k8o Readings',
     description:
