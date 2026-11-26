@@ -9,6 +9,11 @@ type ReportRecord = {
   createdAt: string;
 };
 
+type FindReportsResult = {
+  items: ReportRecord[];
+  total: number;
+};
+
 type ReportInput = {
   type: string;
   url: string;
@@ -31,7 +36,7 @@ export const findReportTypeCounts = (): Promise<ReportTypeCount[]> =>
     .orderBy(desc(count()))
     .limit(TYPE_COUNT_LIMIT);
 
-export const findReports = ({
+export const findReports = async ({
   type,
   page,
   pageSize,
@@ -39,27 +44,27 @@ export const findReports = ({
   type: string | undefined;
   page: number;
   pageSize: number;
-}): Promise<ReportRecord[]> =>
-  db
-    .select({
-      id: db._schema.reportingReports.id,
-      type: db._schema.reportingReports.type,
-      url: db._schema.reportingReports.url,
-      body: db._schema.reportingReports.body,
-      createdAt: db._schema.reportingReports.createdAt,
-    })
-    .from(db._schema.reportingReports)
-    .where(
-      type === undefined
-        ? undefined
-        : eq(db._schema.reportingReports.type, type),
-    )
-    .orderBy(
-      desc(db._schema.reportingReports.createdAt),
-      desc(db._schema.reportingReports.id),
-    )
-    .limit(pageSize)
-    .offset((page - 1) * pageSize);
+}): Promise<FindReportsResult> => {
+  const reports = db._schema.reportingReports;
+  const where = type === undefined ? undefined : eq(reports.type, type);
+  const [totalRow, items] = await Promise.all([
+    db.select({ value: count() }).from(reports).where(where),
+    db
+      .select({
+        id: reports.id,
+        type: reports.type,
+        url: reports.url,
+        body: reports.body,
+        createdAt: reports.createdAt,
+      })
+      .from(reports)
+      .where(where)
+      .orderBy(desc(reports.createdAt), desc(reports.id))
+      .limit(pageSize)
+      .offset((page - 1) * pageSize),
+  ]);
+  return { items, total: totalRow[0]?.value ?? 0 };
+};
 
 export const insertReports = async (reports: ReportInput[]): Promise<void> => {
   if (reports.length === 0) {

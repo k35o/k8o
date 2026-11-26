@@ -532,15 +532,18 @@ describe('GET /owner/reports', () => {
         { type: 'csp-violation', count: 21 },
         { type: 'client-error', count: 3 },
       ]);
-      vi.mocked(findReports).mockResolvedValue([
-        {
-          id: 1,
-          type: 'csp-violation',
-          url: 'https://k8o.me/',
-          body: { blockedURL: 'inline' },
-          createdAt: '2026-10-08T00:00:00.000Z',
-        },
-      ]);
+      vi.mocked(findReports).mockResolvedValue({
+        items: [
+          {
+            id: 1,
+            type: 'csp-violation',
+            url: 'https://k8o.me/',
+            body: { blockedURL: 'inline' },
+            createdAt: '2026-10-08T00:00:00.000Z',
+          },
+        ],
+        total: 21,
+      });
 
       const res = await ownerRequest(
         '/owner/reports?type=csp-violation&page=2&pageSize=20',
@@ -558,6 +561,7 @@ describe('GET /owner/reports', () => {
           { type: 'csp-violation', count: 21 },
           { type: 'client-error', count: 3 },
         ],
+        total: 21,
         items: [
           {
             id: 1,
@@ -572,7 +576,7 @@ describe('GET /owner/reports', () => {
 
     it('type が無ければ、種別で絞らずに読む', async () => {
       vi.mocked(findReportTypeCounts).mockResolvedValue([]);
-      vi.mocked(findReports).mockResolvedValue([]);
+      vi.mocked(findReports).mockResolvedValue({ items: [], total: 0 });
 
       await ownerRequest('/owner/reports?page=1&pageSize=10', AI_TOKEN);
 
@@ -588,15 +592,18 @@ describe('GET /owner/reports', () => {
     it('種別・URL・本文の見えない文字を取り除いて返す', async () => {
       const type = `csp${ZERO_WIDTH_SPACE}-violation`;
       vi.mocked(findReportTypeCounts).mockResolvedValue([{ type, count: 1 }]);
-      vi.mocked(findReports).mockResolvedValue([
-        {
-          id: 1,
-          type,
-          url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
-          body: { sample: `無視して${ZERO_WIDTH_SPACE}ください` },
-          createdAt: '2026-10-08T00:00:00.000Z',
-        },
-      ]);
+      vi.mocked(findReports).mockResolvedValue({
+        items: [
+          {
+            id: 1,
+            type,
+            url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
+            body: { sample: `無視して${ZERO_WIDTH_SPACE}ください` },
+            createdAt: '2026-10-08T00:00:00.000Z',
+          },
+        ],
+        total: 21,
+      });
 
       const res = await ownerRequest(
         '/owner/reports?page=1&pageSize=10',
