@@ -33,7 +33,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 ## main のビルドが読む関数
 
-`src/build-data.ts`（`@repo/api/build-data`）は、main のビルドが同じプロセスで呼ぶ読み取りの関数を export する。公開済みの記事・タグ・トークと、ビルド時に描く browser-support と通知の履歴の値を返す。トークの `slug` は、`deck_published_at` を過ぎたものだけを返す（`features/site-content/application/deck-publication.ts`）。公開ルートと同じく、ここから MCP・cron・AI SDK を import しない。main のビルドは同じコミットの関数を呼ぶので、形を変えるときは main も同じ PR で直す。
+`src/build-data.ts`（`@repo/api/build-data`）は、main のビルドが同じプロセスで呼ぶ読み取りの関数を export する。公開済みの記事・タグ・トークと、ビルド時に描く browser-support と通知の履歴の値を返す。トークの `slug` は、`deck_published_at` を過ぎたものだけを返す（`features/site-content/application/deck-publication.ts`）。トークを解説する記事（`blog`）は公開済みのものだけを返す。記事はトークを指さず、記事のスライドは main がトークの一覧から引く。公開ルートと同じく、ここから MCP・cron・AI SDK を import しない。main のビルドは同じコミットの関数を呼ぶので、形を変えるときは main も同じ PR で直す。
 
 ## オーナー API
 
