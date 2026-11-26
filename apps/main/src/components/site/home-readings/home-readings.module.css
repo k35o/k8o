@@ -33,8 +33,6 @@
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) * 3);
-  padding-left: calc(var(--spacing) * 4);
-  border-left: 2px solid var(--color-primary-border);
 }
 
 .pick {
