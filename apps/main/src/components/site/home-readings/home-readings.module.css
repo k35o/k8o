@@ -1,0 +1,99 @@
+.meta {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-sm);
+}
+
+/* 全体像の続きは Readings のページで読めるので、横の列では 3 行で切る。読み上げには全文が残る */
+.overview {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.picks {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.label {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-sm);
+}
+
+.pickList {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+  padding-left: calc(var(--spacing) * 4);
+  border-left: 2px solid var(--color-primary-border);
+}
+
+.pick {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 0.5);
+}
+
+/* 記事の題は英語の長いものがあるので 2 行で切る。読み上げには全文が残る */
+.pickTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-relaxed);
+  text-underline-offset: 0.2em;
+  transition: color var(--duration-fast) var(--easing-out);
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-primary-fg);
+      text-decoration-line: underline;
+    }
+  }
+
+  &:focus-visible {
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+}
+
+.external {
+  display: inline-flex;
+  margin-left: var(--spacing);
+  color: var(--color-fg-mute);
+  vertical-align: middle;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.source {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
