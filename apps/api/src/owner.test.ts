@@ -182,27 +182,6 @@ describe('オーナー API の認可', () => {
   });
 });
 
-// FEED を記事の一覧にしたもの
-const FEED_BLOGS = [
-  {
-    slug: 'arianotify',
-    title: 'ariaNotify()でスクリーンリーダーに任意の文字列を読み上げさせる',
-    description:
-      'ariaNotify()は、DOMを書き換えずに読み上げさせるメソッドです。',
-    tags: ['a11y', 'JavaScript'],
-    publishedAt: '2026-09-28T00:00:00.000Z',
-    url: 'https://k8o.me/blog/arianotify',
-  },
-  {
-    slug: 'requestclose',
-    title: 'requestClose()でダイアログに閉じるよう求める',
-    description: 'requestCloseメソッドは<dialog>要素を閉じるように要求します。',
-    tags: [],
-    publishedAt: '2026-09-29T00:00:00.000Z',
-    url: 'https://k8o.me/blog/requestclose',
-  },
-];
-
 describe('GET /owner/blogs', () => {
   describe('正常系', () => {
     it('main のブログのフィードを記事の一覧にして返す', async () => {
@@ -213,8 +192,27 @@ describe('GET /owner/blogs', () => {
       expect(res.status).toBe(200);
       expect(fetchMock.mock.calls[0]?.[0]).toBe('https://k8o.me/blog/feed');
       await expect(res.json()).resolves.toStrictEqual({
-        blogs: FEED_BLOGS,
-        items: FEED_BLOGS,
+        blogs: [
+          {
+            slug: 'arianotify',
+            title:
+              'ariaNotify()でスクリーンリーダーに任意の文字列を読み上げさせる',
+            description:
+              'ariaNotify()は、DOMを書き換えずに読み上げさせるメソッドです。',
+            tags: ['a11y', 'JavaScript'],
+            publishedAt: '2026-09-28T00:00:00.000Z',
+            url: 'https://k8o.me/blog/arianotify',
+          },
+          {
+            slug: 'requestclose',
+            title: 'requestClose()でダイアログに閉じるよう求める',
+            description:
+              'requestCloseメソッドは<dialog>要素を閉じるように要求します。',
+            tags: [],
+            publishedAt: '2026-09-29T00:00:00.000Z',
+            url: 'https://k8o.me/blog/requestclose',
+          },
+        ],
       });
     });
   });
@@ -246,10 +244,7 @@ describe('GET /owner/blogs', () => {
       const res = await ownerRequest('/owner/blogs', AI_TOKEN);
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toStrictEqual({
-        blogs: [],
-        items: [],
-      });
+      await expect(res.json()).resolves.toStrictEqual({ blogs: [] });
     });
   });
 });
