@@ -1301,11 +1301,8 @@ describe('公開 API', () => {
             ingestedAt: '2026-07-19T06:00:00.000Z',
             minVersions: { chrome: '120' },
           },
-          activeVersion: '3.34.2',
-          activeIngestedAt: '2026-07-19T06:00:00.000Z',
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
           lastRun: NOOP_RUN,
-          minVersions: { chrome: '120' },
         });
       });
 
@@ -1389,11 +1386,8 @@ describe('公開 API', () => {
         await expect(res.json()).resolves.toStrictEqual({
           status: 'stale',
           dataset: null,
-          activeVersion: null,
-          activeIngestedAt: null,
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
           lastRun: NOOP_RUN,
-          minVersions: null,
         });
       });
 
@@ -1412,11 +1406,8 @@ describe('公開 API', () => {
           await expect(res.json()).resolves.toStrictEqual({
             status: 'degraded',
             dataset: null,
-            activeVersion: null,
-            activeIngestedAt: null,
             lastSuccessAt: null,
             lastRun: null,
-            minVersions: null,
           });
         },
       );
