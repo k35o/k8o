@@ -2,7 +2,7 @@ import { HttpResponse, http } from 'msw/http';
 import { expect, fn, waitFor } from 'storybook/test';
 
 import type {
-  BrowserSupportFeature,
+  BrowserSupportFeedFeature,
   BrowserSupportSnapshot,
 } from '@/features/browser-support/interface/queries';
 
@@ -11,7 +11,7 @@ import { BrowserSupportLive } from './browser-support-live';
 
 const SNAPSHOT_URL = 'https://api.k8o.me/public/browser-support';
 
-const allBrowsers = (version: string): BrowserSupportFeature['support'] =>
+const allBrowsers = (version: string): BrowserSupportFeedFeature['support'] =>
   (
     [
       'chrome',
@@ -24,7 +24,7 @@ const allBrowsers = (version: string): BrowserSupportFeature['support'] =>
     ] as const
   ).map((browser) => ({ browser, version, date: '2024-01-01' }));
 
-const popover: BrowserSupportFeature = {
+const popover: BrowserSupportFeedFeature = {
   featureId: 'popover',
   name: 'Popover API',
   status: 'widely',
@@ -33,7 +33,7 @@ const popover: BrowserSupportFeature = {
   support: allBrowsers('114'),
 };
 
-const iteratorConcat: BrowserSupportFeature = {
+const iteratorConcat: BrowserSupportFeedFeature = {
   featureId: 'iterator-concat',
   name: 'Iterator.concat()',
   status: 'newly',

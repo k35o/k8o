@@ -1,7 +1,7 @@
 import { expect, userEvent, within } from 'storybook/test';
 
 import type { BlogLink } from '@/features/blog/interface/queries';
-import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
+import type { BrowserSupportFeedFeature } from '@/features/browser-support/interface/queries';
 
 import preview from '../../../.storybook/preview';
 import {
@@ -17,7 +17,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const toDate = (offsetMs: number): string =>
   new Date(now - offsetMs).toISOString().slice(0, 10);
 
-const allBrowsers = (version: string): BrowserSupportFeature['support'] =>
+const allBrowsers = (version: string): BrowserSupportFeedFeature['support'] =>
   (
     [
       'chrome',
@@ -30,13 +30,13 @@ const allBrowsers = (version: string): BrowserSupportFeature['support'] =>
     ] as const
   ).map((browser) => ({ browser, version, date: '2024-01-01' }));
 
-const chromeOnly: BrowserSupportFeature['support'] = [
+const chromeOnly: BrowserSupportFeedFeature['support'] = [
   { browser: 'chrome', version: '150', date: '2026-06-30' },
   { browser: 'chrome_android', version: '150', date: '2026-06-30' },
   { browser: 'edge', version: '150', date: '2026-06-30' },
 ];
 
-const FEATURES: BrowserSupportFeature[] = [
+const FEATURES: BrowserSupportFeedFeature[] = [
   {
     featureId: 'popover',
     name: 'Popover API',

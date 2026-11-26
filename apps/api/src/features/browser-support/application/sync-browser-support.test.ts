@@ -51,7 +51,7 @@ const feature = (
 });
 
 const makeDataset = (features: BaselineFeature[]): BaselineDataset => ({
-  schemaVersion: 1,
+  schemaVersion: 2,
   upstreamVersion: '3.2.0',
   features,
   redirects: {},

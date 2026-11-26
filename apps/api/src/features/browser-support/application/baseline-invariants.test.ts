@@ -6,7 +6,7 @@ import { checkBaselineInvariants } from './baseline-invariants';
 const makeDataset = (
   overrides: Partial<BaselineDataset> = {},
 ): BaselineDataset => ({
-  schemaVersion: 1,
+  schemaVersion: 2,
   upstreamVersion: '3.34.2',
   features: [],
   redirects: {},

@@ -9,26 +9,26 @@ import { selectFeatureStatus, selectFeedFeatures } from './baseline-select';
 const feature = (
   featureId: string,
   status: BaselineFeature['status'],
-  resolvedDate: string,
+  resolvedDate: string | null,
 ): BaselineFeature => ({
   featureId,
   name: featureId,
   status,
-  baselineDate: status === 'limited' ? null : resolvedDate || null,
+  baselineDate: status === 'limited' ? null : resolvedDate,
   resolvedDate,
   support: [{ browser: 'chrome', version: '120', date: '2024-01-15' }],
 });
 
 // 取り込み時の保存順(resolvedDate 降順)を再現した fixture。
 const dataset: BaselineDataset = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   upstreamVersion: '3.34.2',
   features: [
     feature('newly-feat', 'newly', '2026-04-01'),
     feature('limited-recent', 'limited', '2026-03-01'),
     feature('widely-feat', 'widely', '2023-07-01'),
     feature('limited-old', 'limited', '2024-01-15'),
-    feature('no-date', 'limited', ''),
+    feature('no-date', 'limited', null),
   ],
   redirects: { 'moved-entry': 'widely-feat' },
   minVersions: { chrome: '120' },

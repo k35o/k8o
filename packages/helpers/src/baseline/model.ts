@@ -21,8 +21,8 @@ export type BaselineFeature = {
   // baseline 到達日(newly/widely のみ)。limited は null。
   baselineDate: string | null;
   // フィード整列用の「直近で動いた日」。baseline は baseline 日、limited は最後に
-  // ブラウザが対応した日。どちらも解決できない場合は '' (フィード非表示)。
-  resolvedDate: string;
+  // ブラウザが対応した日。どちらも解決できない場合は null (フィード非表示)。
+  resolvedDate: string | null;
   support: BaselineBrowserSupport[];
 };
 
@@ -38,7 +38,7 @@ export type BaselineDataset = {
   minVersions: BrowserMinVersions;
 };
 
-export const BASELINE_DATASET_SCHEMA_VERSION = 1;
+export const BASELINE_DATASET_SCHEMA_VERSION = 2;
 
 const CORE_BROWSER_SET: ReadonlySet<string> = new Set(CORE_BROWSERS);
 
@@ -58,7 +58,8 @@ const isBaselineFeature = (value: unknown): value is BaselineFeature =>
     value['status'] === 'limited') &&
   (value['baselineDate'] === null ||
     typeof value['baselineDate'] === 'string') &&
-  typeof value['resolvedDate'] === 'string' &&
+  (value['resolvedDate'] === null ||
+    typeof value['resolvedDate'] === 'string') &&
   Array.isArray(value['support']) &&
   value['support'].every((row) => isSupportRow(row));
 
@@ -120,7 +121,7 @@ if (import.meta.vitest) {
   };
 
   const validDataset: BaselineDataset = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     upstreamVersion: '3.34.2',
     features: [validFeature],
     redirects: { 'old-grid': 'grid' },
@@ -133,6 +134,18 @@ if (import.meta.vitest) {
         expect(parseBaselineDataset(validDataset)).toStrictEqual(validDataset);
       });
 
+      it('日付の定まらない機能（resolvedDate が null）も受け付ける', () => {
+        const undated = {
+          ...validFeature,
+          baselineDate: null,
+          resolvedDate: null,
+        };
+
+        expect(
+          parseBaselineDataset({ ...validDataset, features: [undated] }),
+        ).toStrictEqual({ ...validDataset, features: [undated] });
+      });
+
       it('シリアライズを経由した複製も受け付ける', () => {
         expect(
           parseBaselineDataset(structuredClone(validDataset)),
@@ -143,7 +156,7 @@ if (import.meta.vitest) {
     describe('異常系', () => {
       it('schemaVersion が異なると null', () => {
         expect(
-          parseBaselineDataset({ ...validDataset, schemaVersion: 2 }),
+          parseBaselineDataset({ ...validDataset, schemaVersion: 1 }),
         ).toBeNull();
       });
 

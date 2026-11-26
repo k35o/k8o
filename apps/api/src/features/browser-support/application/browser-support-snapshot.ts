@@ -11,10 +11,11 @@ import {
   selectFeatureStatus,
   selectFeedFeatures,
 } from './baseline-select';
+import type { FeedFeature } from './baseline-select';
 
 type BrowserSupportSnapshot = {
   meta: { upstreamVersion: string; ingestedAt: string } | null;
-  features: BaselineFeature[];
+  features: FeedFeature[];
   recentChanges: BrowserSupportFeatureChange[];
   // CDN に置かれた応答を読む側が「直近1週間」を数える基準。選んだ時刻と同じ値を返す
   nowMs: number;

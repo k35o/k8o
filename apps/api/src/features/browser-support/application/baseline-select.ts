@@ -13,15 +13,17 @@ export const RECENT_CHANGES_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 // 上流の一括再計算などで異常に膨らんだ場合の表示上限
 export const RECENT_CHANGES_LIMIT = 100;
 
+export type FeedFeature = BaselineFeature & { resolvedDate: string };
+
 // features は取り込み時に resolvedDate 降順で保存されているため、ここでは並べ替えない。
 export const selectFeedFeatures = (
   dataset: BaselineDataset,
   nowMs: number,
-): BaselineFeature[] => {
+): FeedFeature[] => {
   const recentCutoff = nowMs - RECENT_LIMITED_WINDOW_MS;
-  return dataset.features.filter((feature) => {
+  return dataset.features.filter((feature): feature is FeedFeature => {
     // 日付が定まらない機能はフィード(年別・整列)に載せない。
-    if (feature.resolvedDate === '') {
+    if (feature.resolvedDate === null) {
       return false;
     }
     if (

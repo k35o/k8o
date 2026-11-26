@@ -21,6 +21,8 @@ export type BrowserSupportFeature = InferResponseType<
   BrowserSupportApi['features'][':featureId']['$get'],
   200
 >['feature'];
+export type BrowserSupportFeedFeature =
+  BrowserSupportSnapshot['features'][number];
 export type BrowserSupportFeatureChange =
   BrowserSupportSnapshot['recentChanges'][number];
 export type BrowserAvailability = BrowserSupportFeature['support'][number];

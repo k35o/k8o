@@ -153,7 +153,7 @@ const ACTIVE_DATASET = {
   upstreamVersion: '3.34.2',
   ingestedAt: '2026-07-19T06:00:00.000Z',
   dataset: {
-    schemaVersion: 1,
+    schemaVersion: 2,
     upstreamVersion: '3.34.2',
     features: [ANCHOR_POSITIONING, GRID, LIMITED_OLD],
     redirects: { 'old-grid': 'grid' },
