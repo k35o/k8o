@@ -176,6 +176,8 @@ const SUMMARIZED_ARTICLE = {
   publishedAt: '2026-07-18T09:00:00.000Z',
   imageUrl: 'https://example.com/a.png',
   text: '要約 <b>',
+  summary: '要約 <b>',
+  description: '元記事の説明 <i>',
   sourceTitle: 'Example & Blog',
 };
 const DESCRIBED_ARTICLE = {
@@ -185,6 +187,8 @@ const DESCRIBED_ARTICLE = {
   publishedAt: '2026-07-17T09:00:00.000Z',
   imageUrl: null,
   text: '元記事の説明',
+  summary: null,
+  description: '元記事の説明',
   sourceTitle: 'Example & Blog',
 };
 const BARE_ARTICLE = {
@@ -194,6 +198,8 @@ const BARE_ARTICLE = {
   publishedAt: '2026-07-16T09:00:00.000Z',
   imageUrl: null,
   text: null,
+  summary: null,
+  description: null,
   sourceTitle: 'Example & Blog',
 };
 

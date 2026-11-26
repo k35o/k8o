@@ -15,6 +15,9 @@ const gptLive: ReadingArticle = {
   publishedAt: '2026-11-19T05:00:00.000Z',
   imageUrl: null,
   text: 'OpenAIの全二重音声モデル「GPT-Live 1.1」がAI Gatewayで利用可能になりました。話しながら同時に聞き取れるため、通話相手は返答の途中で間を置いたり、割り込んだり、補足を加えたりできます。',
+  summary:
+    'OpenAIの全二重音声モデル「GPT-Live 1.1」がAI Gatewayで利用可能になりました。話しながら同時に聞き取れるため、通話相手は返答の途中で間を置いたり、割り込んだり、補足を加えたりできます。',
+  description: null,
   sourceTitle: 'Vercel',
 };
 
@@ -25,6 +28,8 @@ const liquid: ReadingArticle = {
   publishedAt: '2026-11-19T04:00:00.000Z',
   imageUrl: null,
   text: 'Liquid AI の決定モデルが使えるようになった。',
+  summary: 'Liquid AI の決定モデルが使えるようになった。',
+  description: null,
   sourceTitle: 'Vercel',
 };
 
@@ -35,6 +40,8 @@ const scrollState: ReadingArticle = {
   publishedAt: '2026-11-19T02:00:00.000Z',
   imageUrl: null,
   text: null,
+  summary: null,
+  description: null,
   sourceTitle: 'CSS-Tricks',
 };
 
@@ -45,6 +52,8 @@ const spatial: ReadingArticle = {
   publishedAt: '2026-11-17T02:00:00.000Z',
   imageUrl: null,
   text: null,
+  summary: null,
+  description: null,
   sourceTitle: 'CSS-Tricks',
 };
 

@@ -18,6 +18,8 @@ const tanstack: ReadingArticle = {
   publishedAt: '2026-10-20T00:00:00.000Z',
   imageUrl: null,
   text: 'TanStack Routerの使い方を紹介します。',
+  summary: 'TanStack Routerの使い方を紹介します。',
+  description: null,
   sourceTitle: 'Zenn',
 };
 
@@ -28,6 +30,8 @@ const baseline: ReadingArticle = {
   publishedAt: '2026-10-18T00:00:00.000Z',
   imageUrl: null,
   text: '2026年に Baseline に入った機能をまとめた記事。',
+  summary: '2026年に Baseline に入った機能をまとめた記事。',
+  description: null,
   sourceTitle: 'web.dev',
 };
 
@@ -77,6 +81,8 @@ const series: ReadingDay[] = [
           ).toISOString(),
           imageUrl: null,
           text: null,
+          summary: null,
+          description: null,
           sourceTitle: 'Zenn',
         })),
       },

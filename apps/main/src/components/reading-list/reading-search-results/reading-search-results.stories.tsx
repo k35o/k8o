@@ -18,6 +18,8 @@ const seriesOf = (length: number): ReadingArticle[] =>
     ).toISOString(),
     imageUrl: null,
     text: null,
+    summary: null,
+    description: null,
     sourceTitle: 'Zenn',
   }));
 
