@@ -9,7 +9,7 @@ workflows:
         - 'jdx/mise-action@v5.2.10'
     '.github/workflows/chromatic.yml':
         - 'actions/checkout@v7.0.1'
-        - 'chromaui/action@v18.15.0'
+        - 'chromaui/action@v18.15.1'
         - 'jdx/mise-action@v5.2.10'
     '.github/workflows/ci.yml':
         - 'actions/cache@v6.1.0'
@@ -65,9 +65,9 @@ dependencies:
         commit: 'sha1-cf430e030ddbb5b0abf93d22962f4752f3646cd9'
         owner_id: 44036562
         repo_id: 192625955
-    'chromaui/action@v18.15.0':
-        ref: 'v18.15.0'
-        commit: 'sha1-b46fae7df99a74cc2201b00cb59ec498c3346530'
+    'chromaui/action@v18.15.1':
+        ref: 'v18.15.1'
+        commit: 'sha1-9cb4d65a86fe1c4c67a76a8d90f35a51a118e55f'
         owner_id: 24584319
         repo_id: 213995974
     'jdx/mise-action@v5.2.10':
