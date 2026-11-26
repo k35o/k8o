@@ -1,8 +1,31 @@
 .root {
   display: flex;
+  position: relative;
   align-items: center;
   gap: calc(var(--spacing) * 4);
-  padding-block: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 3);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--duration-fast) var(--easing-out);
+
+  @media (hover: hover) {
+    &:has(.title:any-link:hover) {
+      background-color: var(--color-bg-mute);
+
+      /* 強制カラーでは下地の色が出ないので、行を囲んで示す */
+      @media (forced-colors: active) {
+        outline: thin solid var(--color-system-highlight);
+      }
+    }
+  }
+
+  &:has(.title:focus-visible) {
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
 }
 
 .text {
@@ -32,11 +55,47 @@
   align-self: flex-start;
   font-weight: var(--font-weight-bold);
 
-  @media (hover: hover) {
-    &:any-link:hover {
+  &:any-link {
+    transition: color var(--duration-fast) var(--easing-out);
+
+    /* 行のどこを押しても移れるように、リンクを行いっぱいに広げる */
+    &::after {
+      position: absolute;
+      content: '';
+      inset: 0;
+    }
+
+    /* フォーカスの輪は、リンクが広がっている行に描く */
+    &:focus-visible {
+      outline-style: none;
       color: var(--color-primary-fg);
     }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--color-primary-fg);
+      }
+    }
   }
+}
+
+.external {
+  display: inline-flex;
+  margin-left: var(--spacing);
+  color: var(--color-fg-mute);
+  vertical-align: middle;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 .note {

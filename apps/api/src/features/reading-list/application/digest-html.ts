@@ -36,7 +36,7 @@ export const digestHtml = (overview: string, day: ReadingDay): string => {
     ...(day.picks.length === 0
       ? []
       : [
-          '<h3>見てほしい記事</h3><ul>',
+          '<h3>注目の記事</h3><ul>',
           ...day.picks.map(
             ({ article, reason }) =>
               `<li><a href="${escapeHtml(article.url)}">${escapeHtml(article.title)}</a>（${escapeHtml(article.sourceTitle)}）<br>${escapeHtml(reason)}</li>`,

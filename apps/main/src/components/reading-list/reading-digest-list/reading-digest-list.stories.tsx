@@ -102,7 +102,7 @@ const dayOf = (canvasElement: HTMLElement, name: RegExp): HTMLElement => {
   return day;
 };
 
-// 1 日は、全体像・見てほしい記事・残りの話題の順に並ぶ。見てほしい記事は畳まない
+// 1 日は、全体像・注目の記事・話題の順に並ぶ。注目の記事は畳まない
 export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const day = dayOf(canvasElement, /11月19日\(木\)/u);
@@ -110,10 +110,12 @@ export const Primary = meta.story({
       within(day).getByText(/大きな発表は無く、小さな更新が中心の日です。/u),
     ).toBeVisible();
     await expect(
-      within(day).getByRole('heading', { name: '見てほしい' }),
+      within(day).getByRole('heading', { name: '注目の記事' }),
     ).toBeVisible();
     await expect(
-      within(day).getByRole('link', { name: 'scroll-state()' }),
+      within(day).getByRole('link', {
+        name: 'scroll-state() （新しいタブで開く）',
+      }),
     ).toHaveAttribute('href', 'https://css-tricks.com/scroll-state');
     await expect(
       within(day).getByText(/JavaScript の監視を置き換えられる。/u),
@@ -124,6 +126,25 @@ export const Primary = meta.story({
       }),
     ).toHaveAttribute('aria-expanded', 'false');
     await expect(within(day).getAllByRole('link')).toHaveLength(1);
+  },
+});
+
+// 記事の行は、題の外（理由・出どころ）を押しても元の記事へのリンクに当たる
+export const LinksWholeRow = meta.story({
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas }) => {
+    const link = canvas.getByRole('link', {
+      name: 'scroll-state() （新しいタブで開く）',
+    });
+    for (const text of [
+      canvas.getByText(/JavaScript の監視を置き換えられる。/u),
+      canvas.getByText('CSS-Tricks'),
+    ]) {
+      const { left, top, width, height } = text.getBoundingClientRect();
+      await expect(
+        document.elementFromPoint(left + width / 2, top + height / 2),
+      ).toBe(link);
+    }
   },
 });
 
@@ -139,12 +160,12 @@ export const OpensTopic = meta.story({
     await expect(topic).toHaveAttribute('aria-expanded', 'true');
     await expect(
       canvas.getByRole('link', {
-        name: 'GPT-Live 1.1 now available on AI Gateway',
+        name: 'GPT-Live 1.1 now available on AI Gateway （新しいタブで開く）',
       }),
     ).toHaveAttribute('href', 'https://vercel.com/changelog/gpt-live');
     await expect(
       canvas.getByRole('link', {
-        name: 'Liquid AI d1.2 is now available on AI Gateway',
+        name: 'Liquid AI d1.2 is now available on AI Gateway （新しいタブで開く）',
       }),
     ).toBeVisible();
     await expect(canvas.getByText(/OpenAIの全二重音声モデル/u)).toBeVisible();
@@ -156,19 +177,19 @@ export const OpensTopic = meta.story({
 
     await expect(
       canvas.queryByRole('link', {
-        name: 'GPT-Live 1.1 now available on AI Gateway',
+        name: 'GPT-Live 1.1 now available on AI Gateway （新しいタブで開く）',
       }),
     ).toBeNull();
   },
 });
 
-// まとめをまだ作っていない日は、全体像も見てほしい記事も出さず、その日の記事をまとめた 1 行にする
+// まとめをまだ作っていない日は、全体像も注目の記事も出さず、その日の記事をまとめた 1 行にする
 export const DayWithoutDigest = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement, userEvent }) => {
     const day = dayOf(canvasElement, /11月17日\(火\)/u);
     await expect(
-      within(day).queryByRole('heading', { name: '見てほしい' }),
+      within(day).queryByRole('heading', { name: '注目の記事' }),
     ).toBeNull();
     const topic = within(day).getByRole('button', {
       name: 'この日の記事 CSS-Tricks・1件',
@@ -177,7 +198,9 @@ export const DayWithoutDigest = meta.story({
     await userEvent.click(topic);
 
     await expect(
-      within(day).getByRole('link', { name: 'Introducing spatial CSS' }),
+      within(day).getByRole('link', {
+        name: 'Introducing spatial CSS （新しいタブで開く）',
+      }),
     ).toBeVisible();
   },
 });
