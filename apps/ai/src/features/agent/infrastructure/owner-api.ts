@@ -26,7 +26,7 @@ const ownerApi = hc<OwnerApi>('https://api.k8o.me', {
 export type OwnerBlog = InferResponseType<
   typeof ownerApi.owner.blogs.$get,
   200
->['items'][number];
+>['blogs'][number];
 
 export type OwnerOverview = InferResponseType<
   typeof ownerApi.owner.overview.$get,
@@ -78,7 +78,7 @@ export const fetchOwnerBlogs = async (
 ): Promise<OwnerBlog[]> => {
   const res = await ownerApi.owner.blogs.$get({}, requestOptions(signal));
   assertOk('/owner/blogs', res);
-  return (await res.json()).items;
+  return (await res.json()).blogs;
 };
 
 export const fetchOwnerBlogMarkdown = async (

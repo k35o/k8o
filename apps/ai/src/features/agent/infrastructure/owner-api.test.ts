@@ -116,7 +116,7 @@ afterEach(() => {
 describe('fetchOwnerBlogs', () => {
   describe('正常系', () => {
     it('本番の api の記事一覧を、トークンを Bearer で添えて読む', async () => {
-      fetchMock.mockResolvedValue(Response.json({ items: [BLOG] }));
+      fetchMock.mockResolvedValue(Response.json({ blogs: [BLOG] }));
 
       await expect(fetchOwnerBlogs(undefined)).resolves.toStrictEqual([BLOG]);
       expect(requestedUrl()).toBe('https://api.k8o.me/owner/blogs');
@@ -124,7 +124,7 @@ describe('fetchOwnerBlogs', () => {
     });
 
     it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
-      fetchMock.mockResolvedValue(Response.json({ items: [] }));
+      fetchMock.mockResolvedValue(Response.json({ blogs: [] }));
       const controller = new AbortController();
 
       await fetchOwnerBlogs(controller.signal);
@@ -194,7 +194,7 @@ describe('fetchOwnerBlogs', () => {
       ['16進', '0123abcdef'],
     ])('%s で作ったトークンは、そのまま Bearer で送る', async (_, token) => {
       vi.stubEnv('OWNER_API_TOKEN', token);
-      fetchMock.mockResolvedValue(Response.json({ items: [] }));
+      fetchMock.mockResolvedValue(Response.json({ blogs: [] }));
 
       await fetchOwnerBlogs(undefined);
 
@@ -203,8 +203,8 @@ describe('fetchOwnerBlogs', () => {
 
     it('呼ぶたびにその時点のトークンを読む', async () => {
       fetchMock
-        .mockResolvedValueOnce(Response.json({ items: [] }))
-        .mockResolvedValueOnce(Response.json({ items: [] }));
+        .mockResolvedValueOnce(Response.json({ blogs: [] }))
+        .mockResolvedValueOnce(Response.json({ blogs: [] }));
       await fetchOwnerBlogs(undefined);
       vi.stubEnv('OWNER_API_TOKEN', 'rotated');
 
