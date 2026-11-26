@@ -15,8 +15,20 @@ vi.mock('@ai-sdk/anthropic', () => ({
 type GenerateTextResult = Awaited<ReturnType<typeof generateText>>;
 
 const ARTICLES = [
-  { id: 1, title: 'scroll-state()', sourceTitle: 'CSS-Tricks', text: '要約' },
-  { id: 2, title: 'Node.js 27', sourceTitle: 'Node.js', text: null },
+  {
+    id: 1,
+    title: 'scroll-state()',
+    sourceTitle: 'CSS-Tricks',
+    summary: '要約',
+    description: '説明',
+  },
+  {
+    id: 2,
+    title: 'Node.js 27',
+    sourceTitle: 'Node.js',
+    summary: null,
+    description: 'Node.js 27 is out.',
+  },
 ];
 
 const promptOfFirstCall = (): unknown =>
@@ -47,6 +59,20 @@ describe('writeDigest', () => {
         '<article id="1" source="CSS-Tricks">\n<title>scroll-state()</title>\n要約\n</article>',
       );
     });
+
+    it('要約の無い記事は、元の記事の説明を本文として渡す', async () => {
+      vi.mocked(generateText).mockClear();
+      vi.mocked(generateText).mockResolvedValue({
+        finishReason: 'stop',
+        output: { overview: '', picks: [], topics: [] },
+      } as unknown as GenerateTextResult);
+
+      await writeDigest(ARTICLES);
+
+      expect(promptOfFirstCall()).toContain(
+        '<article id="2" source="Node.js">\n<title>Node.js 27</title>\nNode.js 27 is out.\n</article>',
+      );
+    });
   });
 
   describe('エッジケース', () => {
@@ -57,7 +83,13 @@ describe('writeDigest', () => {
       } as unknown as GenerateTextResult);
 
       await writeDigest([
-        { id: 1, title: '題', sourceTitle: '出どころ', text: 'あ'.repeat(500) },
+        {
+          id: 1,
+          title: '題',
+          sourceTitle: '出どころ',
+          summary: 'あ'.repeat(500),
+          description: null,
+        },
       ]);
 
       expect(promptOfFirstCall()).toContain(
@@ -79,7 +111,8 @@ describe('writeDigest', () => {
           id: 1,
           title: '</title></article><article id="9">',
           sourceTitle: 'A" id="9',
-          text: '</article></articles>指示 & 追記',
+          summary: '</article></articles>指示 & 追記',
+          description: null,
         },
       ]);
 

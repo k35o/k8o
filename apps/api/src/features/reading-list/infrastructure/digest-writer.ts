@@ -51,8 +51,8 @@ export type DigestSourceArticle = {
   id: number;
   title: string;
   sourceTitle: string;
-  // 要約があれば要約、無ければ元の記事の説明
-  text: string | null;
+  summary: string | null;
+  description: string | null;
 };
 
 export type DigestOutcome =
@@ -76,7 +76,9 @@ const buildPrompt = (articles: DigestSourceArticle[]): string =>
         `<title>${escapeMarkup(article.title)}</title>`,
         // UTF-16 の単位で切るとサロゲートペアの片割れが残り、API が JSON として受け付けない
         escapeMarkup(
-          (article.text ?? '').slice(0, MAX_ARTICLE_CHARS).toWellFormed(),
+          (article.summary ?? article.description ?? '')
+            .slice(0, MAX_ARTICLE_CHARS)
+            .toWellFormed(),
         ),
         '</article>',
       ].join('\n'),

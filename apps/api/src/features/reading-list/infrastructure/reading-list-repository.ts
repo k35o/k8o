@@ -31,9 +31,6 @@ export type ReadingArticle = {
   url: string;
   publishedAt: string;
   imageUrl: string | null;
-  // main が読んでいた名前（要約があれば要約、無ければ元の記事の説明）。main が summary と description を
-  // 読むようになったら消す
-  text: string | null;
   // k8o が Claude で書いた要約
   summary: string | null;
   // 元の記事の説明（OGP か、ページの中を指すフィードの項目の本文）
@@ -67,7 +64,6 @@ export const findRecentArticles = async (
     url: article.url,
     publishedAt: article.publishedAt,
     imageUrl: article.imageUrl,
-    text: article.summary ?? article.description,
     summary: article.summary,
     description: article.description,
     sourceTitle: article.articleSource.title,
