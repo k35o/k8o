@@ -67,7 +67,7 @@ jobs:
             echo "$1" | jq -r '.status // "unreachable"'
           }
           active_version() {
-            echo "$1" | jq -r '.activeVersion // ""'
+            echo "$1" | jq -r '.dataset.upstreamVersion // ""'
           }
           last_success_at() {
             echo "$1" | jq -r '.lastSuccessAt // ""'
@@ -76,7 +76,7 @@ jobs:
           # 読めないときは比べない
           floor_stale() {
             echo "$1" | jq --slurpfile repo "$FLOOR_FILE" \
-              '.minVersions != null and .minVersions != $repo[0].minVersions'
+              '.dataset.minVersions != null and .dataset.minVersions != $repo[0].minVersions'
           }
 
           # ISO8601(UTC)を epoch へ。空や解釈不能なら空を返し、呼び出し側で fail-closed。
