@@ -27,9 +27,9 @@ const liquid: ReadingArticle = {
   url: 'https://vercel.com/changelog/liquid',
   publishedAt: '2026-11-19T04:00:00.000Z',
   imageUrl: null,
-  text: 'Liquid AI の決定モデルが使えるようになった。',
-  summary: 'Liquid AI の決定モデルが使えるようになった。',
-  description: null,
+  text: 'You can now access Liquid AI d1.2 through AI Gateway.',
+  summary: null,
+  description: 'You can now access Liquid AI d1.2 through AI Gateway.',
   sourceTitle: 'Vercel',
 };
 
@@ -153,7 +153,7 @@ export const OpensTopic = meta.story({
     ).toBeVisible();
     await expect(canvas.getByText(/OpenAIの全二重音声モデル/u)).toBeVisible();
     await expect(
-      canvas.getByText('Liquid AI の決定モデルが使えるようになった。'),
+      canvas.getByText('You can now access Liquid AI d1.2 through AI Gateway.'),
     ).toBeVisible();
 
     await userEvent.click(topic);
