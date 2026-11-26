@@ -1,5 +1,6 @@
 'use client';
 
+import { ExternalLinkIcon } from '@k8ordo/ui/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import { isHttpUrl } from '@repo/helpers/url/is-http-url';
 import { memo, useState } from 'react';
@@ -53,6 +54,10 @@ export const ReadingRow: FC<{
             target="_blank"
           >
             {article.title}
+            <span className={styles.external}>
+              <ExternalLinkIcon size="sm" />
+              <span className={styles.srOnly}>（新しいタブで開く）</span>
+            </span>
           </a>
         ) : (
           <p className={styles.title}>{article.title}</p>

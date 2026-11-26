@@ -97,7 +97,7 @@ export const ShowsDigestByDefault = meta.story({
     });
     await expect(
       canvas.queryByRole('link', {
-        name: 'TanStack Routerで型安全なルーティング',
+        name: 'TanStack Routerで型安全なルーティング （新しいタブで開く）',
       }),
     ).toBeNull();
 
@@ -105,7 +105,7 @@ export const ShowsDigestByDefault = meta.story({
 
     await expect(
       canvas.getByRole('link', {
-        name: 'TanStack Routerで型安全なルーティング',
+        name: 'TanStack Routerで型安全なルーティング （新しいタブで開く）',
       }),
     ).toBeVisible();
   },
@@ -120,7 +120,9 @@ export const SearchesTitleAndSource = meta.story({
       canvas.getByRole('textbox', { name: '記事を検索' }),
     ).toHaveValue('web.dev');
     await expect(
-      canvas.getByRole('link', { name: 'Baseline 2026 のふりかえり' }),
+      canvas.getByRole('link', {
+        name: 'Baseline 2026 のふりかえり （新しいタブで開く）',
+      }),
     ).toBeVisible();
     await expect(canvas.getByText('web.dev・2026年10月18日')).toBeVisible();
     await expect(
@@ -152,7 +154,7 @@ export const WriteQueryToUrl = meta.story({
     await expectParamInUrl('q', 'zenn');
     await expect(
       await canvas.findByRole('link', {
-        name: 'TanStack Routerで型安全なルーティング',
+        name: 'TanStack Routerで型安全なルーティング （新しいタブで開く）',
       }),
     ).toBeVisible();
     await expect(navigation.entries()).toHaveLength(entries);

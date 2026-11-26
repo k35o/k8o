@@ -55,7 +55,7 @@
 .picks {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--spacing) * 2);
+  gap: var(--spacing);
   padding-left: calc(var(--spacing) * 4);
   border-left-width: 2px;
   border-left-style: solid;
@@ -144,8 +144,8 @@
 .articles {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-  margin-block: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+  gap: var(--spacing);
+  margin-block: var(--spacing) calc(var(--spacing) * 3);
   margin-left: calc(var(--spacing) * 5);
   padding-left: calc(var(--spacing) * 4);
   border-left-width: 2px;
