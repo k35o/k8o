@@ -255,7 +255,7 @@ export const ReadsDailyCardsBeforeActivity = meta.story({
   },
 });
 
-// 正常系: Readings はその日の一覧へ、見てほしい記事は新しいタブで元の記事へつなぐ
+// 正常系: Readings はその日の一覧へ、注目の記事は新しいタブで元の記事へつなぐ
 export const LinksReadingsToTheDay = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvas }) => {
@@ -360,7 +360,7 @@ export const HidesBaselineWithoutRecentChanges = meta.story({
   },
 });
 
-// エッジケース: 見てほしい記事の無い日は、全体像だけを出す
+// エッジケース: 注目の記事の無い日は、全体像だけを出す
 export const ShowsOverviewWithoutPicks = meta.story({
   parameters: { vrt: { skip: true } },
   beforeEach: ({ msw }) => {
@@ -373,7 +373,7 @@ export const ShowsOverviewWithoutPicks = meta.story({
   play: async ({ canvas }) => {
     await expect(await canvas.findByText(/Reactまわり/u)).toBeInTheDocument();
     await expect(
-      canvas.queryByRole('heading', { name: '見てほしい' }),
+      canvas.queryByRole('heading', { name: '注目の記事' }),
     ).not.toBeInTheDocument();
   },
 });

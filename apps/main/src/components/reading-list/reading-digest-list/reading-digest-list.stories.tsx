@@ -102,7 +102,7 @@ const dayOf = (canvasElement: HTMLElement, name: RegExp): HTMLElement => {
   return day;
 };
 
-// 1 日は、全体像・見てほしい記事・残りの話題の順に並ぶ。見てほしい記事は畳まない
+// 1 日は、全体像・注目の記事・話題の順に並ぶ。注目の記事は畳まない
 export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const day = dayOf(canvasElement, /11月19日\(木\)/u);
@@ -110,7 +110,7 @@ export const Primary = meta.story({
       within(day).getByText(/大きな発表は無く、小さな更新が中心の日です。/u),
     ).toBeVisible();
     await expect(
-      within(day).getByRole('heading', { name: '見てほしい' }),
+      within(day).getByRole('heading', { name: '注目の記事' }),
     ).toBeVisible();
     await expect(
       within(day).getByRole('link', { name: 'scroll-state()' }),
@@ -162,13 +162,13 @@ export const OpensTopic = meta.story({
   },
 });
 
-// まとめをまだ作っていない日は、全体像も見てほしい記事も出さず、その日の記事をまとめた 1 行にする
+// まとめをまだ作っていない日は、全体像も注目の記事も出さず、その日の記事をまとめた 1 行にする
 export const DayWithoutDigest = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement, userEvent }) => {
     const day = dayOf(canvasElement, /11月17日\(火\)/u);
     await expect(
-      within(day).queryByRole('heading', { name: '見てほしい' }),
+      within(day).queryByRole('heading', { name: '注目の記事' }),
     ).toBeNull();
     const topic = within(day).getByRole('button', {
       name: 'この日の記事 CSS-Tricks・1件',

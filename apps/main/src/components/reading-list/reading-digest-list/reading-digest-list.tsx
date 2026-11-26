@@ -72,7 +72,7 @@ const TopicItem: FC<{
 };
 
 /**
- * 日ごとに、その日の全体像・特に見てほしい記事・残りの話題・まとめに入らなかった記事の順に並べる。話題を
+ * 日ごとに、その日の全体像・注目の記事・話題・まとめに入らなかった記事の順に並べる。話題を
  * 押すと、その話題の記事が開く。日の区画は日付（YYYY-MM-DD）を id に持ち、URL の fragment がそれを指していれば、
  * 描いたあとにその日まで移る
  */
@@ -103,7 +103,7 @@ export const ReadingDigestList: FC<{ days: readonly ReadingDay[] }> = ({
           )}
           {day.picks.length > 0 && (
             <div className={styles.block}>
-              <h4 className={styles.label}>見てほしい</h4>
+              <h4 className={styles.label}>注目の記事</h4>
               <ul className={styles.picks}>
                 {day.picks.map(({ article, reason }) => (
                   <ReadingRow
@@ -117,9 +117,7 @@ export const ReadingDigestList: FC<{ days: readonly ReadingDay[] }> = ({
           )}
           {(day.topics.length > 0 || day.remainingArticles.length > 0) && (
             <div className={styles.block}>
-              {day.picks.length > 0 && (
-                <h4 className={styles.label}>そのほか</h4>
-              )}
+              {day.picks.length > 0 && <h4 className={styles.label}>話題</h4>}
               <ul className={styles.topics}>
                 {day.topics.map((topic) => (
                   <TopicItem

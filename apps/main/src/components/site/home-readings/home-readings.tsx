@@ -73,7 +73,7 @@ export const HomeReadings: FC = () => {
       )}
       {day.picks.length > 0 && (
         <div className={styles.picks}>
-          <h3 className={styles.label}>見てほしい</h3>
+          <h3 className={styles.label}>注目の記事</h3>
           <ul className={styles.pickList}>
             {day.picks.map(({ article }) => (
               <Pick article={article} key={article.id} />

@@ -1774,7 +1774,7 @@ describe('公開 API', () => {
             '<title>7月17日(金)のReadings</title>' +
             '<description>' +
             '&lt;p&gt;ブラウザの &amp;lt;更新&amp;gt; が中心の日。&lt;/p&gt;' +
-            '&lt;h3&gt;見てほしい記事&lt;/h3&gt;&lt;ul&gt;' +
+            '&lt;h3&gt;注目の記事&lt;/h3&gt;&lt;ul&gt;' +
             '&lt;li&gt;&lt;a href=&quot;https://example.com/b?x=1&amp;amp;y=2&quot;&gt;説明だけの記事&lt;/a&gt;（Example &amp;amp; Blog）&lt;br&gt;書き方が変わる&lt;/li&gt;' +
             '&lt;/ul&gt;' +
             '&lt;p&gt;まとめはClaudeが書いています。&lt;/p&gt;' +
