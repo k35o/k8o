@@ -21,13 +21,17 @@ export const registerOverviewTools = (server: McpServer): void => {
         }),
         inquiries: z.object({
           total: z.number(),
-          latestAt: z.string().nullable(),
+          latestReceivedAt: z.string().nullable(),
         }),
         push: z.object({
           subscribers: z.number(),
-          lastSentAt: z.string().nullable(),
-          lastSucceeded: z.number().nullable(),
-          lastFailed: z.number().nullable(),
+          lastSend: z
+            .object({
+              sentAt: z.string(),
+              succeeded: z.number(),
+              failed: z.number(),
+            })
+            .nullable(),
         }),
         readingList: z.object({
           articles: z.number(),

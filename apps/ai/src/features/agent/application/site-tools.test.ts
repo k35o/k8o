@@ -80,12 +80,10 @@ const accepts = async (
 
 const OVERVIEW: OwnerOverview = {
   blogs: { published: 42, drafts: 3, totalViews: 12_345 },
-  inquiries: { total: 21, latestAt: '2026-10-20T09:00:00.000Z' },
+  inquiries: { total: 21, latestReceivedAt: '2026-10-20T09:00:00.000Z' },
   push: {
     subscribers: 8,
-    lastSentAt: '2026-10-19T00:00:00.000Z',
-    lastSucceeded: 7,
-    lastFailed: 1,
+    lastSend: { sentAt: '2026-10-19T00:00:00.000Z', succeeded: 7, failed: 1 },
   },
   readingList: {
     articles: 300,

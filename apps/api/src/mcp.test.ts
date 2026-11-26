@@ -414,12 +414,14 @@ describe('MCP の tool', () => {
       it('リポジトリの集計に、reading-list の要約の進み具合と browser-support の取り込み状況を足して返す', async () => {
         const overview = {
           blogs: { published: 90, drafts: 1, totalViews: 1234 },
-          inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+          inquiries: { total: 3, latestReceivedAt: '2026-10-07T00:00:00.000Z' },
           push: {
             subscribers: 5,
-            lastSentAt: '2026-10-08T00:01:00.000Z',
-            lastSucceeded: 5,
-            lastFailed: 0,
+            lastSend: {
+              sentAt: '2026-10-08T00:01:00.000Z',
+              succeeded: 5,
+              failed: 0,
+            },
           },
           readingList: {
             articles: 300,
@@ -473,12 +475,10 @@ describe('MCP の tool', () => {
       it('同期やpushの履歴がまだ無くても返せる', async () => {
         const overview = {
           blogs: { published: 0, drafts: 0, totalViews: 0 },
-          inquiries: { total: 0, latestAt: null },
+          inquiries: { total: 0, latestReceivedAt: null },
           push: {
             subscribers: 0,
-            lastSentAt: null,
-            lastSucceeded: null,
-            lastFailed: null,
+            lastSend: null,
           },
           readingList: {
             articles: 0,

@@ -310,12 +310,14 @@ describe('GET /owner/overview', () => {
     it('DB の集計に、reading-list の要約の進み具合と browser-support の取り込み状況を足して返す', async () => {
       vi.mocked(findOverview).mockResolvedValue({
         blogs: { published: 90, drafts: 1, totalViews: 1234 },
-        inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+        inquiries: { total: 3, latestReceivedAt: '2026-10-07T00:00:00.000Z' },
         push: {
           subscribers: 5,
-          lastSentAt: '2026-10-08T00:01:00.000Z',
-          lastSucceeded: 5,
-          lastFailed: 0,
+          lastSend: {
+            sentAt: '2026-10-08T00:01:00.000Z',
+            succeeded: 5,
+            failed: 0,
+          },
         },
         readingList: {
           articles: 300,
@@ -344,12 +346,14 @@ describe('GET /owner/overview', () => {
       expect(res.status).toBe(200);
       await expect(res.json()).resolves.toStrictEqual({
         blogs: { published: 90, drafts: 1, totalViews: 1234 },
-        inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+        inquiries: { total: 3, latestReceivedAt: '2026-10-07T00:00:00.000Z' },
         push: {
           subscribers: 5,
-          lastSentAt: '2026-10-08T00:01:00.000Z',
-          lastSucceeded: 5,
-          lastFailed: 0,
+          lastSend: {
+            sentAt: '2026-10-08T00:01:00.000Z',
+            succeeded: 5,
+            failed: 0,
+          },
         },
         readingList: {
           articles: 300,
