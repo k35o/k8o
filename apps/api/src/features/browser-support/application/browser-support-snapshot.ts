@@ -22,9 +22,6 @@ type BrowserSupportSnapshot = {
   recentChanges: BrowserSupportFeatureChange[];
   // 機能を選んだ時刻。CDN に置かれた応答を読む側も、この時刻を基準に新しさを数える
   generatedAt: string;
-  // main が読んでいた名前。main が dataset と generatedAt を読むようになったら消す
-  meta: ActiveDatasetMeta | null;
-  nowMs: number;
 };
 
 const findRecentChanges = (
@@ -50,26 +47,16 @@ export const getBrowserSupportSnapshot = async (
   ]);
   const generatedAt = new Date(nowMs).toISOString();
   if (active === null) {
-    return {
-      dataset: null,
-      features: [],
-      recentChanges,
-      generatedAt,
-      meta: null,
-      nowMs,
-    };
+    return { dataset: null, features: [], recentChanges, generatedAt };
   }
-  const dataset = {
-    upstreamVersion: active.upstreamVersion,
-    ingestedAt: active.ingestedAt,
-  };
   return {
-    dataset,
+    dataset: {
+      upstreamVersion: active.upstreamVersion,
+      ingestedAt: active.ingestedAt,
+    },
     features: selectFeedFeatures(active.dataset, nowMs),
     recentChanges,
     generatedAt,
-    meta: dataset,
-    nowMs,
   };
 };
 

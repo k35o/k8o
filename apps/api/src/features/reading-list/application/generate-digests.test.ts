@@ -29,7 +29,6 @@ const article = (id: number, publishedAt: string): ReadingArticle => ({
   url: `https://example.com/${id}`,
   publishedAt,
   imageUrl: null,
-  text: `本文${id}`,
   summary: `本文${id}`,
   description: null,
   sourceTitle: 'Example',

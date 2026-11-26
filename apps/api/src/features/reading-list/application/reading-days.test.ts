@@ -9,7 +9,6 @@ const article = (id: number, publishedAt: string): ReadingArticle => ({
   url: `https://example.com/${id}`,
   publishedAt,
   imageUrl: null,
-  text: `要約${id}`,
   summary: `要約${id}`,
   description: `説明${id}`,
   sourceTitle: 'Example',

@@ -17,7 +17,6 @@ const seriesOf = (length: number): ReadingArticle[] =>
       Date.UTC(2026, 9, 30, 0, 0, 0) - index * 60_000,
     ).toISOString(),
     imageUrl: null,
-    text: null,
     summary: null,
     description: null,
     sourceTitle: 'Zenn',

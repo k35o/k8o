@@ -15,15 +15,13 @@ import styles from './reading-digest-list.module.css';
 
 type Topic = ReadingDay['topics'][number];
 
-// other は性質を分けない話題なので、札を出さない
-const KIND_LABEL: Record<Topic['kind'], string | null> = {
+const KIND_LABEL: Record<Topic['kind'], string> = {
   release: 'リリース',
   explainer: '解説',
   opinion: '考察',
   report: 'レポート',
   announcement: '告知',
   security: 'セキュリティ',
-  other: null,
 };
 
 const sourcesOf = (articles: readonly ReadingArticle[]): string =>

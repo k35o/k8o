@@ -30,10 +30,6 @@ type BrowserSupportHealth = {
     | null;
   lastSuccessAt: string | null;
   lastRun: SyncRunSummary | null;
-  // 外形監視の workflow が読んでいた名前。workflow が dataset を読むようになったら消す
-  activeVersion: string | null;
-  activeIngestedAt: string | null;
-  minVersions: BaselineDataset['minVersions'] | null;
 };
 
 export const getBrowserSupportHealth = async (
@@ -52,11 +48,8 @@ export const getBrowserSupportHealth = async (
     return {
       status: 'degraded',
       dataset: null,
-      activeVersion: null,
-      activeIngestedAt: null,
       lastSuccessAt: null,
       lastRun: null,
-      minVersions: null,
     };
   }
 
@@ -76,10 +69,7 @@ export const getBrowserSupportHealth = async (
             ingestedAt: active.ingestedAt,
             minVersions: active.dataset.minVersions,
           },
-    activeVersion: active?.upstreamVersion ?? null,
-    activeIngestedAt: active?.ingestedAt ?? null,
     lastSuccessAt,
     lastRun: runs[0] ?? null,
-    minVersions: active?.dataset.minVersions ?? null,
   };
 };

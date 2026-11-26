@@ -48,7 +48,6 @@ const buildTime: BrowserSupportSnapshot = {
     ingestedAt: '2026-10-20T06:00:00.000Z',
   },
   generatedAt: '2026-10-20T06:00:00.000Z',
-  meta: { upstreamVersion: '3.52.0', ingestedAt: '2026-10-20T06:00:00.000Z' },
   features: [popover],
   recentChanges: [
     {
@@ -60,7 +59,6 @@ const buildTime: BrowserSupportSnapshot = {
       changedAt: '2026-10-20T06:00:00.000Z',
     },
   ],
-  nowMs: new Date('2026-10-20T06:00:00.000Z').getTime(),
 };
 
 // ビルドのあと、api の同期で Iterator.concat() が Baseline に入った
@@ -70,7 +68,6 @@ const latest: BrowserSupportSnapshot = {
     ingestedAt: '2026-10-22T06:00:00.000Z',
   },
   generatedAt: '2026-10-22T06:00:00.000Z',
-  meta: { upstreamVersion: '3.53.0', ingestedAt: '2026-10-22T06:00:00.000Z' },
   features: [iteratorConcat, popover],
   recentChanges: [
     {
@@ -83,7 +80,6 @@ const latest: BrowserSupportSnapshot = {
     },
     ...buildTime.recentChanges,
   ],
-  nowMs: new Date('2026-10-22T06:00:00.000Z').getTime(),
 };
 
 const requested = fn();
@@ -144,8 +140,6 @@ export const Syncing = meta.story({
       features: [],
       recentChanges: [],
       generatedAt: '1970-01-01T00:00:00.000Z',
-      meta: null,
-      nowMs: 0,
     },
   },
   play: async ({ canvas }) => {
@@ -164,8 +158,6 @@ export const ReplacesSyncing = meta.story({
       features: [],
       recentChanges: [],
       generatedAt: '1970-01-01T00:00:00.000Z',
-      meta: null,
-      nowMs: 0,
     },
   },
   beforeEach: ({ msw }) => {

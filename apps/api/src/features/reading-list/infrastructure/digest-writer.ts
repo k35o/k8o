@@ -28,7 +28,7 @@ const INSTRUCTIONS = [
   'topics: picks に選ばなかった記事を、すべて話題にまとめる。',
   '- 同じ出来事や同じ主題の記事を 1 つの話題にする。関係の無い記事を 1 つの話題にまとめない。話題は 8 個まで',
   '- headline は、その話題で何があったかを、常体（〜した・〜になった）の 1 文（60 字以内）で言い切る。文末に句点を付けない。「〜について」のような題にしない',
-  '- kind は話題の性質: release（リリース・更新）、explainer（解説）、opinion（考察・随筆）、report（調査・事例）、announcement（告知）、security（脆弱性・障害）。other は使わない',
+  '- kind は話題の性質: release（リリース・更新）、explainer（解説）、opinion（考察・随筆）、report（調査・事例）、announcement（告知）、security（脆弱性・障害）',
   '- 読む人にとって大きい話題から順に並べる',
   '',
   'どの記事も、picks か topics のどちらか 1 か所にだけ入れる。製品名・固有名詞・版の番号は記事のとおりに書く。記事に書かれていないことを足さない。英数字と日本語のあいだに空白を入れない。',
@@ -51,8 +51,8 @@ export type DigestSourceArticle = {
   id: number;
   title: string;
   sourceTitle: string;
-  // 要約があれば要約、無ければ元の記事の説明
-  text: string | null;
+  summary: string | null;
+  description: string | null;
 };
 
 export type DigestOutcome =
@@ -76,7 +76,9 @@ const buildPrompt = (articles: DigestSourceArticle[]): string =>
         `<title>${escapeMarkup(article.title)}</title>`,
         // UTF-16 の単位で切るとサロゲートペアの片割れが残り、API が JSON として受け付けない
         escapeMarkup(
-          (article.text ?? '').slice(0, MAX_ARTICLE_CHARS).toWellFormed(),
+          (article.summary ?? article.description ?? '')
+            .slice(0, MAX_ARTICLE_CHARS)
+            .toWellFormed(),
         ),
         '</article>',
       ].join('\n'),

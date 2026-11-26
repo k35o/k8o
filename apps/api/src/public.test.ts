@@ -175,7 +175,6 @@ const SUMMARIZED_ARTICLE = {
   url: 'https://example.com/a',
   publishedAt: '2026-07-18T09:00:00.000Z',
   imageUrl: 'https://example.com/a.png',
-  text: '要約 <b>',
   summary: '要約 <b>',
   description: '元記事の説明 <i>',
   sourceTitle: 'Example & Blog',
@@ -186,7 +185,6 @@ const DESCRIBED_ARTICLE = {
   url: 'https://example.com/b?x=1&y=2',
   publishedAt: '2026-07-17T09:00:00.000Z',
   imageUrl: null,
-  text: '元記事の説明',
   summary: null,
   description: '元記事の説明',
   sourceTitle: 'Example & Blog',
@@ -197,7 +195,6 @@ const BARE_ARTICLE = {
   url: 'https://example.com/c',
   publishedAt: '2026-07-16T09:00:00.000Z',
   imageUrl: null,
-  text: null,
   summary: null,
   description: null,
   sourceTitle: 'Example & Blog',
@@ -1128,11 +1125,6 @@ describe('公開 API', () => {
           features: [ANCHOR_POSITIONING, GRID],
           recentChanges: [FEATURE_CHANGE],
           generatedAt: '2026-07-20T00:00:00.000Z',
-          meta: {
-            upstreamVersion: '3.34.2',
-            ingestedAt: '2026-07-19T06:00:00.000Z',
-          },
-          nowMs: 1_784_505_600_000,
         });
         expect(findRecentFeatureChanges).toHaveBeenCalledWith(
           '2026-06-20T00:00:00.000Z',
@@ -1159,8 +1151,6 @@ describe('公開 API', () => {
           features: [],
           recentChanges: [FEATURE_CHANGE],
           generatedAt: '2026-07-20T00:00:00.000Z',
-          meta: null,
-          nowMs: 1_784_505_600_000,
         });
       });
     });
@@ -1308,11 +1298,8 @@ describe('公開 API', () => {
             ingestedAt: '2026-07-19T06:00:00.000Z',
             minVersions: { chrome: '120' },
           },
-          activeVersion: '3.34.2',
-          activeIngestedAt: '2026-07-19T06:00:00.000Z',
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
           lastRun: NOOP_RUN,
-          minVersions: { chrome: '120' },
         });
       });
 
@@ -1396,11 +1383,8 @@ describe('公開 API', () => {
         await expect(res.json()).resolves.toStrictEqual({
           status: 'stale',
           dataset: null,
-          activeVersion: null,
-          activeIngestedAt: null,
           lastSuccessAt: '2026-07-19T06:00:00.000Z',
           lastRun: NOOP_RUN,
-          minVersions: null,
         });
       });
 
@@ -1419,11 +1403,8 @@ describe('公開 API', () => {
           await expect(res.json()).resolves.toStrictEqual({
             status: 'degraded',
             dataset: null,
-            activeVersion: null,
-            activeIngestedAt: null,
             lastSuccessAt: null,
             lastRun: null,
-            minVersions: null,
           });
         },
       );

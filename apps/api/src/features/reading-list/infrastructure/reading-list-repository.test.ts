@@ -50,7 +50,7 @@ describe('findRecentArticles', () => {
     articleSource: { title: 'Example' },
   };
 
-  it('要約と元の記事の説明を、どちらも持つ記事にもそれぞれ返す', async () => {
+  it('要約と元の記事の説明を、どちらも持つ記事にもそれぞれ返し、ソースの名前を添える', async () => {
     vi.mocked(db.query.articles.findMany).mockResolvedValue([
       { ...row, description: '説明', summary: '要約' },
       { ...row, id: 2, description: '説明', summary: null },
@@ -60,33 +60,16 @@ describe('findRecentArticles', () => {
     const articles = await findRecentArticles('2026-08-21T00:00:00.000Z');
 
     expect(
-      articles.map(({ id, summary, description }) => ({
+      articles.map(({ id, summary, description, sourceTitle }) => ({
         id,
         summary,
         description,
+        sourceTitle,
       })),
     ).toStrictEqual([
-      { id: 1, summary: '要約', description: '説明' },
-      { id: 2, summary: null, description: '説明' },
-      { id: 3, summary: null, description: null },
-    ]);
-  });
-
-  it('要約があれば要約を、無ければ元の記事の説明を本文にし、ソースの名前を添える', async () => {
-    vi.mocked(db.query.articles.findMany).mockResolvedValue([
-      { ...row, description: '説明', summary: '要約' },
-      { ...row, id: 2, description: '説明', summary: null },
-      { ...row, id: 3, description: null, summary: null },
-    ] as never);
-
-    const articles = await findRecentArticles('2026-08-21T00:00:00.000Z');
-
-    expect(
-      articles.map(({ id, text, sourceTitle }) => ({ id, text, sourceTitle })),
-    ).toStrictEqual([
-      { id: 1, text: '要約', sourceTitle: 'Example' },
-      { id: 2, text: '説明', sourceTitle: 'Example' },
-      { id: 3, text: null, sourceTitle: 'Example' },
+      { id: 1, summary: '要約', description: '説明', sourceTitle: 'Example' },
+      { id: 2, summary: null, description: '説明', sourceTitle: 'Example' },
+      { id: 3, summary: null, description: null, sourceTitle: 'Example' },
     ]);
   });
 });

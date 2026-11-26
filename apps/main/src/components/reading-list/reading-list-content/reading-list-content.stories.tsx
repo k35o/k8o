@@ -17,7 +17,6 @@ const tanstack: ReadingArticle = {
   url: 'https://zenn.dev/example/articles/tanstack-router',
   publishedAt: '2026-10-20T00:00:00.000Z',
   imageUrl: null,
-  text: 'TanStack Routerの使い方を紹介します。',
   summary: 'TanStack Routerの使い方を紹介します。',
   description: null,
   sourceTitle: 'Zenn',
@@ -29,7 +28,6 @@ const baseline: ReadingArticle = {
   url: 'https://web.dev/articles/baseline-2026',
   publishedAt: '2026-10-18T00:00:00.000Z',
   imageUrl: null,
-  text: '2026年に Baseline に入った機能をまとめた記事。',
   summary: '2026年に Baseline に入った機能をまとめた記事。',
   description: null,
   sourceTitle: 'web.dev',
@@ -60,33 +58,26 @@ const days: ReadingDay[] = [
   },
 ];
 
-// 連載の記事を 1 日の 1 つの話題に入れる
+// まとめの無い日に、連載の記事が 30 件ある
 const series: ReadingDay[] = [
   {
     date: '2026-10-30',
     articleCount: 30,
     overview: null,
     picks: [],
-    topics: [
-      {
-        kind: 'other',
-        headline: 'この日の記事',
-        articles: Array.from({ length: 30 }, (_, index) => ({
-          id: 100 + index,
-          title: `連載 第${String(index + 1)}回`,
-          url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
-          publishedAt: new Date(
-            Date.UTC(2026, 9, 30, 0, 0, 0) - index * 60_000,
-          ).toISOString(),
-          imageUrl: null,
-          text: null,
-          summary: null,
-          description: null,
-          sourceTitle: 'Zenn',
-        })),
-      },
-    ],
-    remainingArticles: [],
+    topics: [],
+    remainingArticles: Array.from({ length: 30 }, (_, index) => ({
+      id: 100 + index,
+      title: `連載 第${String(index + 1)}回`,
+      url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
+      publishedAt: new Date(
+        Date.UTC(2026, 9, 30, 0, 0, 0) - index * 60_000,
+      ).toISOString(),
+      imageUrl: null,
+      summary: null,
+      description: null,
+      sourceTitle: 'Zenn',
+    })),
   },
 ];
 

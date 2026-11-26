@@ -30,11 +30,7 @@ const statsQuerySchema = z.object({
 });
 
 export const blogOwnerRoutes = new Hono()
-  .get('/', async (c) => {
-    const blogs = await listPublishedBlogs();
-    // items は ai が読んでいた名前。ai が blogs を読むようになったら消す
-    return c.json({ blogs, items: blogs }, 200);
-  })
+  .get('/', async (c) => c.json({ blogs: await listPublishedBlogs() }, 200))
   .get('/:slug', validate('param', slugParamSchema), async (c) => {
     const { slug } = c.req.valid('param');
     const markdown = await getPublishedBlogMarkdown(slug);
