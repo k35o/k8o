@@ -171,7 +171,7 @@ describe('MCP の tool', () => {
         ).toStrictEqual([
           { name: 'get_overview', annotations: READ_ONLY },
           { name: 'list_inquiries', annotations: READ_ONLY },
-          { name: 'list_blogs', annotations: READ_ONLY },
+          { name: 'list_blog_stats', annotations: READ_ONLY },
           { name: 'list_reports', annotations: READ_ONLY },
           { name: 'list_article_sources', annotations: READ_ONLY },
         ]);
@@ -340,7 +340,7 @@ describe('MCP の tool', () => {
     });
   });
 
-  describe('list_blogs', () => {
+  describe('list_blog_stats', () => {
     describe('正常系', () => {
       it('検索結果をそのまま返す', async () => {
         const blogs = {
@@ -359,7 +359,7 @@ describe('MCP の tool', () => {
         vi.mocked(findBlogs).mockResolvedValue(blogs);
 
         const result = await client.callTool({
-          name: 'list_blogs',
+          name: 'list_blog_stats',
           arguments: {},
         });
 
@@ -369,7 +369,7 @@ describe('MCP の tool', () => {
       it('指定が無ければ全件を作成日の新しい順に 20 件ずつ検索する', async () => {
         vi.mocked(findBlogs).mockResolvedValue({ total: 0, items: [] });
 
-        await client.callTool({ name: 'list_blogs', arguments: {} });
+        await client.callTool({ name: 'list_blog_stats', arguments: {} });
 
         expect(findBlogs).toHaveBeenCalledWith({
           status: 'all',
@@ -383,7 +383,7 @@ describe('MCP の tool', () => {
         vi.mocked(findBlogs).mockResolvedValue({ total: 0, items: [] });
 
         await client.callTool({
-          name: 'list_blogs',
+          name: 'list_blog_stats',
           arguments: { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
         });
 
@@ -399,7 +399,7 @@ describe('MCP の tool', () => {
     describe('異常系', () => {
       it('知らない status ならエラーを返す', async () => {
         const result = await client.callTool({
-          name: 'list_blogs',
+          name: 'list_blog_stats',
           arguments: { status: 'archived' },
         });
 

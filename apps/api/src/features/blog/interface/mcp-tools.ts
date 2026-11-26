@@ -13,9 +13,9 @@ import { listBlogStats } from '../application/list-blog-stats';
 
 export const registerBlogTools = (server: McpServer): void => {
   server.registerTool(
-    'list_blogs',
+    'list_blog_stats',
     {
-      title: 'ブログ一覧',
+      title: 'ブログの記事ごとの記録',
       description:
         'ブログ記事を公開状態・閲覧数・フィードバック件数・タグ付きで返す。status で公開済み/下書きに絞り、sort で作成日順か閲覧数順を選ぶ。',
       inputSchema: z.object({
