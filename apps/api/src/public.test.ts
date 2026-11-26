@@ -1487,32 +1487,23 @@ describe('公開 API', () => {
                 { article: SUMMARIZED_ARTICLE, reason: '書き方が変わる。' },
               ],
               topics: [],
+              remainingArticles: [],
             },
             {
               date: '2026-07-17',
               articleCount: 1,
               overview: null,
               picks: [],
-              topics: [
-                {
-                  kind: 'other',
-                  headline: 'この日の記事',
-                  articles: [DESCRIBED_ARTICLE],
-                },
-              ],
+              topics: [],
+              remainingArticles: [DESCRIBED_ARTICLE],
             },
             {
               date: '2026-07-16',
               articleCount: 1,
               overview: null,
               picks: [],
-              topics: [
-                {
-                  kind: 'other',
-                  headline: 'この日の記事',
-                  articles: [BARE_ARTICLE],
-                },
-              ],
+              topics: [],
+              remainingArticles: [BARE_ARTICLE],
             },
           ],
         });
@@ -1559,13 +1550,8 @@ describe('公開 API', () => {
               articleCount: 1,
               overview: null,
               picks: [],
-              topics: [
-                {
-                  kind: 'other',
-                  headline: 'この日の記事',
-                  articles: [SUMMARIZED_ARTICLE],
-                },
-              ],
+              topics: [],
+              remainingArticles: [SUMMARIZED_ARTICLE],
             },
           ],
         });
@@ -1663,6 +1649,7 @@ describe('公開 API', () => {
             overview: 'ブラウザの説明の日。',
             picks: [{ article: DESCRIBED_ARTICLE, reason: '仕様が固まった。' }],
             topics: [],
+            remainingArticles: [],
           },
         });
       });
@@ -1851,6 +1838,43 @@ describe('公開 API', () => {
     });
 
     describe('エッジケース', () => {
+      it('まとめのどこにも入らなかった記事は、話題の最後に「そのほかの記事」として数える', async () => {
+        vi.mocked(findRecentArticles).mockResolvedValue([
+          { ...BARE_ARTICLE, id: 13, publishedAt: '2026-07-18T10:00:00.000Z' },
+          SUMMARIZED_ARTICLE,
+        ]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.text()).resolves.toContain(
+          '&lt;h3&gt;話題&lt;/h3&gt;&lt;ul&gt;' +
+            '&lt;li&gt;CSS の解説が出た（1件）&lt;/li&gt;' +
+            '&lt;li&gt;そのほかの記事（1件）&lt;/li&gt;' +
+            '&lt;/ul&gt;',
+        );
+      });
+
+      it('見てほしい記事も話題も無いまとめの日は、その日の記事を「この日の記事」として数える', async () => {
+        vi.mocked(findDigestsSince).mockResolvedValue([
+          {
+            date: '2026-07-18',
+            overview: 'CSS の話が中心の日。',
+            picks: [],
+            topics: [],
+            createdAt: '2026-07-19T00:05:00.000Z',
+          },
+        ]);
+        vi.mocked(findRecentArticles).mockResolvedValue([SUMMARIZED_ARTICLE]);
+
+        const res = await app.request(PATH);
+
+        await expect(res.text()).resolves.toContain(
+          '&lt;h3&gt;話題&lt;/h3&gt;&lt;ul&gt;' +
+            '&lt;li&gt;この日の記事（1件）&lt;/li&gt;' +
+            '&lt;/ul&gt;',
+        );
+      });
+
       it('まとめがあっても、その日の記事が直近90日に無ければ配らない', async () => {
         vi.mocked(findRecentArticles).mockResolvedValue([]);
 

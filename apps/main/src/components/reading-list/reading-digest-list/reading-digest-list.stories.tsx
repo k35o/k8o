@@ -52,6 +52,7 @@ const days: ReadingDay[] = [
   {
     date: '2026-11-19',
     articleCount: 3,
+    remainingArticles: [],
     overview:
       'CSS の解説が1件と、Vercel のモデル追加が2件。大きな発表は無く、小さな更新が中心の日です。',
     picks: [
@@ -72,6 +73,7 @@ const days: ReadingDay[] = [
   {
     date: '2026-11-17',
     articleCount: 1,
+    remainingArticles: [],
     overview: null,
     picks: [],
     topics: [{ kind: 'other', headline: 'この日の記事', articles: [spatial] }],

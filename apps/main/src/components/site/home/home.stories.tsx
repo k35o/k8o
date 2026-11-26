@@ -117,6 +117,7 @@ const latestReading: { day: ReadingDay } = {
       },
     ],
     topics: [],
+    remainingArticles: [],
   },
 };
 

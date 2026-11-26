@@ -27,17 +27,20 @@ const digest = (
 ) => ({ date, overview: `${date} の全体像`, picks, topics });
 
 const shapeOf = (days: ReturnType<typeof toReadingDays>) =>
-  days.map(({ date, articleCount, overview, picks, topics }) => ({
-    date,
-    articleCount,
-    overview,
-    picks: picks.map(({ article: { id }, reason }) => [id, reason]),
-    topics: topics.map(({ kind, headline, articles }) => [
-      kind,
-      headline,
-      articles.map(({ id }) => id),
-    ]),
-  }));
+  days.map(
+    ({ date, articleCount, overview, picks, topics, remainingArticles }) => ({
+      date,
+      articleCount,
+      overview,
+      picks: picks.map(({ article: { id }, reason }) => [id, reason]),
+      topics: topics.map(({ kind, headline, articles }) => [
+        kind,
+        headline,
+        articles.map(({ id }) => id),
+      ]),
+      remainingArticles: remainingArticles.map(({ id }) => id),
+    }),
+  );
 
 describe('toReadingDays', () => {
   describe('正常系', () => {
@@ -56,7 +59,8 @@ describe('toReadingDays', () => {
           articleCount: 1,
           overview: null,
           picks: [],
-          topics: [['other', 'この日の記事', [4]]],
+          topics: [],
+          remainingArticles: [4],
         },
         {
           date: '2026-11-19',
@@ -64,27 +68,30 @@ describe('toReadingDays', () => {
           overview: '2026-11-19 の全体像',
           picks: [[3, '書き方が変わる。']],
           topics: [['release', '話題A', [2]]],
+          remainingArticles: [],
         },
         {
           date: '2026-11-18',
           articleCount: 1,
           overview: null,
           picks: [],
-          topics: [['other', 'この日の記事', [1]]],
+          topics: [],
+          remainingArticles: [1],
         },
       ]);
     });
   });
 
   describe('エッジケース', () => {
-    it('まとめのどこにも入らなかった記事を、最後の話題にまとめる', () => {
+    it('まとめのどこにも入らなかった記事は、話題にせず残りの記事として返す', () => {
       const days = toReadingDays(ARTICLES, [
         digest('2026-11-19', [{ articleId: 2, reason: '理由' }], []),
       ]);
 
-      expect(shapeOf(days)[1]?.topics).toStrictEqual([
-        ['other', 'そのほかの記事', [3]],
-      ]);
+      expect(shapeOf(days)[1]).toMatchObject({
+        topics: [],
+        remainingArticles: [3],
+      });
     });
 
     it('一覧に無い記事を指す、見てほしい記事と話題を出さない', () => {
@@ -105,6 +112,7 @@ describe('toReadingDays', () => {
         overview: '2026-11-18 の全体像',
         picks: [],
         topics: [['release', '話題A', [1]]],
+        remainingArticles: [],
       });
     });
 

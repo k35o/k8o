@@ -15,6 +15,7 @@ const readingList: { days: ReadingDay[] } = {
     {
       date: '2026-10-20',
       articleCount: 1,
+      remainingArticles: [],
       overview: null,
       picks: [],
       topics: [
@@ -38,6 +39,7 @@ const readingList: { days: ReadingDay[] } = {
     {
       date: '2026-10-18',
       articleCount: 1,
+      remainingArticles: [],
       overview: null,
       picks: [],
       topics: [
