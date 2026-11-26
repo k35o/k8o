@@ -1128,11 +1128,6 @@ describe('公開 API', () => {
           features: [ANCHOR_POSITIONING, GRID],
           recentChanges: [FEATURE_CHANGE],
           generatedAt: '2026-07-20T00:00:00.000Z',
-          meta: {
-            upstreamVersion: '3.34.2',
-            ingestedAt: '2026-07-19T06:00:00.000Z',
-          },
-          nowMs: 1_784_505_600_000,
         });
         expect(findRecentFeatureChanges).toHaveBeenCalledWith(
           '2026-06-20T00:00:00.000Z',
@@ -1159,8 +1154,6 @@ describe('公開 API', () => {
           features: [],
           recentChanges: [FEATURE_CHANGE],
           generatedAt: '2026-07-20T00:00:00.000Z',
-          meta: null,
-          nowMs: 1_784_505_600_000,
         });
       });
     });
