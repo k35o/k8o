@@ -5,6 +5,7 @@ import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
+import { CodeGroupTransitionContext } from '@/components/site/code-block/code-group';
 import { withDemoOrigin } from '@/shared/demo/demo-origin';
 import { toDemoTrustedHTML } from '@/shared/demo/demo-trusted-html';
 
@@ -72,66 +73,70 @@ export const CodeDemoView: FC<Props> = ({
   };
 
   return (
-    <div className={styles.root}>
-      <div className={cn('writing-h', styles.frame)}>
-        <div className="code-annotate-demo-code">{children}</div>
-        <DemoResult
-          actions={
-            <Button
-              color="base"
-              onClick={() => {
-                setIsDetailOpen(true);
-              }}
-              size="sm"
-              startIcon={expandIcon}
-              variant="skeleton"
-            >
-              広げて見る
-            </Button>
-          }
-          allow={allow}
-          demoDocument={demoDocument}
-          name={name}
-          onReplay={reloadIfMissing}
-          ref={observeResult}
-          replayIcon={replayIcon}
-        />
-        <Modal
-          aria-label="動く例を広げて表示"
-          isOpen={isDetailOpen}
-          onClose={closeDetail}
-          side="bottom"
-        >
-          <div className={styles.detailFrame}>
-            <div className={styles.detailBar}>
-              <IconButton label="閉じる" onClick={closeDetail} size="sm">
-                {closeIcon}
-              </IconButton>
-            </div>
-            {isDetailOpen && (
-              <div className={styles.detail}>
-                <div
-                  className={cn(
-                    'code-annotate-demo-code code-annotate-detail',
-                    styles.detailCode,
-                  )}
-                >
-                  {children}
-                </div>
-                <div className={styles.detailResult}>
-                  <DemoResult
-                    allow={allow}
-                    demoDocument={demoDocument}
-                    name={name}
-                    onReplay={reloadIfMissing}
-                    replayIcon={replayIcon}
-                  />
-                </div>
+    // コードのすぐ下に結果があるので、タブの切り替えを view transition で描くと、コードの高さが変わる
+    // 間に新旧の結果の欄が重なって透ける。モーダルではコードの画像が欄からはみ出して重なる
+    <CodeGroupTransitionContext value={false}>
+      <div className={styles.root}>
+        <div className={cn('writing-h', styles.frame)}>
+          <div className="code-annotate-demo-code">{children}</div>
+          <DemoResult
+            actions={
+              <Button
+                color="base"
+                onClick={() => {
+                  setIsDetailOpen(true);
+                }}
+                size="sm"
+                startIcon={expandIcon}
+                variant="skeleton"
+              >
+                広げて見る
+              </Button>
+            }
+            allow={allow}
+            demoDocument={demoDocument}
+            name={name}
+            onReplay={reloadIfMissing}
+            ref={observeResult}
+            replayIcon={replayIcon}
+          />
+          <Modal
+            aria-label="動く例を広げて表示"
+            isOpen={isDetailOpen}
+            onClose={closeDetail}
+            side="bottom"
+          >
+            <div className={styles.detailFrame}>
+              <div className={styles.detailBar}>
+                <IconButton label="閉じる" onClick={closeDetail} size="sm">
+                  {closeIcon}
+                </IconButton>
               </div>
-            )}
-          </div>
-        </Modal>
+              {isDetailOpen && (
+                <div className={styles.detail}>
+                  <div
+                    className={cn(
+                      'code-annotate-demo-code code-annotate-detail',
+                      styles.detailCode,
+                    )}
+                  >
+                    {children}
+                  </div>
+                  <div className={styles.detailResult}>
+                    <DemoResult
+                      allow={allow}
+                      demoDocument={demoDocument}
+                      name={name}
+                      onReplay={reloadIfMissing}
+                      replayIcon={replayIcon}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </Modal>
+        </div>
       </div>
-    </div>
+    </CodeGroupTransitionContext>
   );
 };

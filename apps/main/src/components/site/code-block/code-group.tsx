@@ -2,8 +2,10 @@
 
 import {
   Children,
+  createContext,
   isValidElement,
   startTransition,
+  use,
   useId,
   useState,
   ViewTransition,
@@ -17,16 +19,24 @@ const labelOf = (props: unknown, index: number): string => {
   return label ?? `code ${(index + 1).toString()}`;
 };
 
+// false の中では、タブの切り替えを view transition で描かずにすぐ描き替える
+export const CodeGroupTransitionContext = createContext(true);
+
 export const CodeGroup: FC<{ children?: ReactNode }> = ({ children }) => {
   const blocks = Children.toArray(children).filter((child) =>
     isValidElement(child),
   );
   const [active, setActive] = useState(0);
+  const animates = use(CodeGroupTransitionContext);
   const id = useId();
   const tabId = (index: number): string => `${id}-tab-${index.toString()}`;
   const panelId = (index: number): string => `${id}-panel-${index.toString()}`;
 
   const select = (index: number): void => {
+    if (!animates) {
+      setActive(index);
+      return;
+    }
     startTransition(() => {
       setActive(index);
     });

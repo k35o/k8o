@@ -143,3 +143,14 @@ export const OpensDetail = meta.story({
     });
   },
 });
+
+export const SwitchesTabsWithoutViewTransition = meta.story({
+  play: async ({ canvasElement, userEvent }) => {
+    const tab = within(canvasElement).getByRole('tab', { name: 'css' });
+
+    await userEvent.click(tab);
+
+    await expect(tab).toHaveAttribute('aria-selected', 'true');
+    await expect(document.activeViewTransition).toBeNull();
+  },
+});
