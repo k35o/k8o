@@ -1,3 +1,16 @@
+/* 登録しない custom property は補間されず、端のフェードがスクロールに合わせて伸びずに跳ぶ */
+@property --code-annotate-fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --code-annotate-fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 @layer components {
   /* 色は @k8ordo/ui のセマンティックトークン（:root / .dark の --color-*）を参照する。
      注釈の面はテキストを潰さないよう color-mix で薄める */
@@ -175,6 +188,39 @@
     :scope:has(> .code-annotate-copy):is(.code-annotate-demo-code > *) {
       margin: 0;
       background-color: transparent;
+    }
+
+    /* 全面に1枚のグラデーションを敷くとフォーカスリングまで消えるので、端の帯だけを抜く */
+    :scope:is(.code-annotate-demo-code *) > .shiki {
+      --code-annotate-fade-size: 3rem;
+      mask:
+        linear-gradient(black, black) no-clip subtract,
+        linear-gradient(to right, black, transparent) 0 0 /
+          var(--code-annotate-fade-start) 100% no-repeat no-clip,
+        linear-gradient(to right, transparent, black) 100% 0 /
+          var(--code-annotate-fade-end) 100% no-repeat no-clip;
+      /* animation の一括指定は、ビルドで animation-duration: 0s を足した個別指定に展開され、
+         スクロールに合わせて進まなくなる */
+      animation-name:
+        code-annotate-reveal-fade-start, code-annotate-hide-fade-end;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(self inline);
+      animation-range:
+        0 var(--code-annotate-fade-size),
+        calc(100% - var(--code-annotate-fade-size)) 100%;
+    }
+  }
+
+  @keyframes code-annotate-reveal-fade-start {
+    to {
+      --code-annotate-fade-start: var(--code-annotate-fade-size);
+    }
+  }
+
+  @keyframes code-annotate-hide-fade-end {
+    from {
+      --code-annotate-fade-end: var(--code-annotate-fade-size);
     }
   }
 
