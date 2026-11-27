@@ -12,6 +12,7 @@ export type DemoDocument = {
 // どの例にも入れる下地。例の固有の見た目は記事のコードに書く
 const BASE_STYLE = `:root {
   color-scheme: light dark;
+  accent-color: light-dark(oklch(57.5% 0.145 180), oklch(75% 0.175 180));
 }
 
 body {
@@ -19,6 +20,67 @@ body {
   padding: 1rem;
   font-family: system-ui, sans-serif;
   line-height: 1.5;
+}
+
+/* 例にはサイトの CSS が届かないので、@k8ordo/ui の Button（color="base"・size="sm"）と
+   TextField・Select の値を写す。並べたときに端がそろうよう、高さは 2rem にそろえる。
+   :where() で詳細度を 0 にし、記事のコードに書いた部品の CSS がどれも勝つようにする */
+:where(
+    input:is(:not([type]), [type='text'], [type='search'], [type='email'], [type='url'], [type='tel'], [type='password'], [type='number']),
+    select,
+    textarea
+  ) {
+  box-sizing: border-box;
+  min-block-size: 2rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid light-dark(oklch(75% 0.005 235), oklch(52% 0.006 235));
+  border-radius: 0.75rem;
+  background-color: light-dark(oklch(100% 0 0), oklch(30% 0.002 235));
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+:where(input:focus-visible, select:focus-visible, textarea:focus-visible) {
+  outline: 2px solid light-dark(oklch(66% 0.255 260), oklch(75% 0.21 260));
+  outline-offset: 1px;
+}
+
+:where(button) {
+  box-sizing: border-box;
+  min-block-size: 2rem;
+  padding: 0.25rem 0.75rem;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-color: light-dark(oklch(95.5% 0.0015 235), oklch(25% 0.0015 235));
+  color: light-dark(oklch(25% 0.0015 235), oklch(97.5% 0.001 235));
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (hover: hover) {
+  :where(button:not(:disabled):hover) {
+    background-color: light-dark(oklch(92.5% 0.003 235), oklch(42% 0.003 235));
+  }
+}
+
+:where(button:not(:disabled):active) {
+  background-color: light-dark(oklch(84% 0.004 235), oklch(52% 0.006 235));
+}
+
+:where(button:focus-visible) {
+  outline: 2px solid light-dark(oklch(66% 0.255 260), oklch(75% 0.21 260));
+  outline-offset: 2px;
+}
+
+:where(button:disabled) {
+  cursor: not-allowed;
+  opacity: 0.35;
 }`;
 
 // 記事から配色を受け取り、文書の高さを記事に知らせる。iframe は sandbox で origin を持たず、
