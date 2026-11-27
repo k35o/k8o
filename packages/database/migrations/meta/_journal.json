@@ -743,6 +743,13 @@
       "when": 1795756543965,
       "tag": "0105_publish_media_pseudos",
       "breakpoints": true
+    },
+    {
+      "idx": 106,
+      "version": "6",
+      "when": 1795762657358,
+      "tag": "0106_css_typed_om_article",
+      "breakpoints": true
     }
   ]
 }

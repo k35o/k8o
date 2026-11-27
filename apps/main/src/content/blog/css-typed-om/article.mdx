@@ -1,0 +1,202 @@
+---
+title: 'CSS Typed OMとCSS.px()でCSSの値を数値のまま扱う'
+description: 'CSS Typed OMは、CSSの値を文字列ではなく、数値と単位を持つオブジェクトとして読み書きするAPIです。CSS.px()で値を作り、pxを付け外しせずに計算や単位の変換ができます。Baseline 2026に入りました。'
+createdAt: 2026-11-27
+updatedAt: 2026-11-27
+featureIds:
+  - css-typed-om
+  - numeric-factory-functions
+---
+
+# CSS Typed OMとCSS.px()でCSSの値を数値のまま扱う
+
+<BrowserSupportStatus featureId="css-typed-om" />
+
+## はじめに
+
+CSS Typed OM（CSS Typed Object Model）は、CSSの値を文字列ではなく、数値と単位を持つオブジェクトとしてJavaScriptから読み書きするAPIです。値を作る`CSS.px(120)`のような関数はNumeric factory functionsと呼ばれ、同じ仕様で定められています。Firefox 161が対応し、どちらもBaseline 2026に入りました。
+
+Typed OMを使うと、次のことができます。
+
+```js
+// style属性のwidth: 120pxに、pxを付け外しせずに30pxを足して書き戻す
+const width = box.attributeStyleMap.get('width');
+box.attributeStyleMap.set('width', width.add(CSS.px(30))); // width: 150px
+
+// widthに角度を書くと例外になる
+box.attributeStyleMap.set('width', CSS.deg(10)); // TypeError
+
+// 45degを、Math.cos()に渡せるラジアンに変換する
+CSS.deg(45).to('rad').value; // 約0.785（π / 4）
+
+// スタイルシートでwidth: 50%を指定した要素から、pxに変換される前の50%のまま読む
+half.computedStyleMap().get('width').toString(); // "50%"
+
+// transform: rotate(45deg)を指定した要素から、matrix()を分解せずに角度を読む
+card.computedStyleMap().get('transform')[0].angle.toString(); // "45deg"
+```
+
+## attributeStyleMapでstyle属性を読み書きする
+
+`attributeStyleMap`は、`element.style`と同じstyle属性を読み書きする、`Map`に似たオブジェクトです。`set()`に値を渡して書き、`get()`で読みます。
+
+```html
+<div id="box">box</div>
+<script>
+  const box = document.querySelector('#box');
+
+  box.attributeStyleMap.set('width', CSS.px(120));
+
+  const width = box.attributeStyleMap.get('width');
+  console.log(width.value, width.unit); // 120 "px"
+
+  box.attributeStyleMap.set('width', CSS.px(width.value + 30));
+  console.log(box.style.width); // "150px"
+
+  // 文字列で書いても、get()はCSSUnitValueを返す
+  box.attributeStyleMap.set('width', '200px');
+  console.log(box.attributeStyleMap.get('width').value); // 200
+</script>
+```
+
+`get()`が返す`CSSUnitValue`は、`120px`や`50%`のような、数値と単位の組を表すオブジェクトです。数値は`value`に、単位は`unit`に入っています。
+
+`element.style`にプロパティが受け付けない値を代入しても何も起きないので、書き間違いに気づけません。`attributeStyleMap.set()`は、そうした値に`TypeError`を投げます。
+
+```js
+// 何も起きず、style属性も変わらない
+box.style.width = '10deg';
+
+// TypeError: 幅に角度は入らない
+box.attributeStyleMap.set('width', CSS.deg(10));
+
+// TypeError: 単位の無い数値は入らない
+box.attributeStyleMap.set('width', 10);
+
+// TypeError: プロパティ名はfont-sizeと書く
+box.attributeStyleMap.set('fontSize', CSS.px(16));
+```
+
+## CSS.px()などのNumeric factory functions
+
+<BrowserSupportStatus featureId="numeric-factory-functions" />
+
+`CSS.px(120)`は`new CSSUnitValue(120, 'px')`と同じ値を返します。`CSS.rem()`や`CSS.vw()`、`CSS.deg()`、`CSS.ms()`のように、CSSの単位ごとに関数があります。`%`は`CSS.percent()`、単位の無い数値は`CSS.number()`で作り、`unit`はそれぞれ`percent`と`number`です。
+
+文字列にするとCSSに書く形になるので、`element.style`にもそのまま代入できます。
+
+```js
+String(CSS.percent(50)); // "50%"
+box.style.width = CSS.px(120); // width: 120px
+```
+
+### to()で単位を変換する
+
+`to()`に単位の名前を渡すと、その単位に変換した`CSSUnitValue`が返ります。JavaScriptの`Math.cos()`や`Math.sin()`は角度をラジアンで受け取るので、`deg`で書いた角度は`to('rad')`で変換してから渡します。
+
+```js
+// [!og]
+CSS.deg(45).to('rad').value; // 約0.785（π / 4）
+CSS.s(1.5).to('ms').value; // 1500
+
+CSS.rem(1).to('px'); // TypeError
+CSS.percent(50).to('px'); // TypeError
+```
+
+`rem`や`em`、`%`の長さは要素や親によって変わるので、`to('px')`を呼ぶと`TypeError`が投げられます。`deg`と`rad`、`s`と`ms`のように比率が決まった単位どうしは変換できます。`rem`を`px`で知りたいときは、あとで説明する`computedStyleMap()`で読みます。
+
+`CSS.deg(45).to('rad').value`は、ChromeとSafariでは`Math.PI / 4`と同じ`0.7853981633974483`になり、Firefoxでは`0.7853981852531433`になりました。小数点以下8桁目から値がずれます。
+
+### add()やmul()で計算する
+
+四則演算には`add()`と`sub()`、`mul()`、`div()`を、値の小さいほうや大きいほうを取るには`min()`と`max()`を使います。どれも元の値を変えず、結果を新しい値で返します。同じ単位どうしの計算は、`CSSUnitValue`で返ります。
+
+```js
+CSS.px(10).add(CSS.px(5)); // CSSUnitValue: 15px
+CSS.px(10).mul(2); // CSSUnitValue: 20px
+```
+
+長さに単位の無い数値や時間を足すと、`TypeError`が投げられます。
+
+```js
+CSS.px(10).add(5); // TypeError: 長さに数値は足せない
+CSS.px(10).add(CSS.s(1)); // TypeError: 長さに時間は足せない
+```
+
+`%`と`px`のように単位の違う長さを足すと、`calc()`の式のまま持つ`CSSMathSum`になります。
+
+```js
+const sum = CSS.percent(50).add(CSS.px(10));
+sum.toString(); // "calc(50% + 10px)"
+```
+
+この`CSSMathSum`を`attributeStyleMap.set('width', sum)`で書くと、FirefoxとSafariではstyle属性が`width: calc(50% + 10px)`になります。Chromeでは`TypeError`が投げられます。`set('width', 'calc(50% + 10px)')`のように同じ式を文字列で渡しても、同じ例外になります。仕様ではFirefoxとSafariの動きが正しく、`%`を含む式も`width`に書けることになっています。今のところは、`CSSMathSum`を文字列にして`element.style`に代入するほうが確実で、3つのブラウザのどれでもstyle属性に反映されます。
+
+```js
+box.style.width = sum.toString(); // width: calc(50% + 10px)
+```
+
+## computedStyleMap()で計算値を読む
+
+`attributeStyleMap`はstyle属性しか見ないので、スタイルシートで指定したプロパティを`get()`で読むと`undefined`が返ります。スタイルシートの指定も含めて要素に当たっている値は、`computedStyleMap()`で読みます。こちらは読み取り専用で、`set()`はありません。
+
+```html
+<style>
+  #wrap {
+    width: 400px;
+  }
+  #box {
+    width: 50%;
+  }
+</style>
+<div id="wrap">
+  <div id="box">box</div>
+</div>
+<script>
+  const box = document.querySelector('#box');
+
+  console.log(getComputedStyle(box).width); // "200px"
+
+  const width = box.computedStyleMap().get('width');
+  console.log(width.value, width.unit); // 50 "percent"
+
+  const height = box.computedStyleMap().get('height');
+  console.log(height.value); // "auto"
+
+  console.log(box.attributeStyleMap.get('width')); // undefined
+</script>
+```
+
+同じ`width`でも、`getComputedStyle()`はレイアウトしたあとの幅を`"200px"`という文字列で返し、`computedStyleMap()`はCSSに書いた`50%`を`CSSUnitValue`で返します。`computedStyleMap()`からは`px`の幅を読めないので、レイアウト後の幅は今までどおり`getComputedStyle()`や`getBoundingClientRect()`で読みます。
+
+`%`と違い、`em`や`rem`の長さは`px`に変換されます。ルートの文字サイズが16pxのページで`width: 10rem`を読むと、`value`は160、`unit`は`px`です。
+
+数値と単位の組で表せない値は、`CSSUnitValue`以外の型で返ります。`height`を指定していない`#box`では`height`が`auto`というキーワードになり、`value`に`"auto"`を持つ`CSSKeywordValue`が返ります。`width: calc(100% - 20px)`のような式は、`add()`の節で出てきた`CSSMathSum`で返ります。
+
+### transformから角度を読む
+
+`getComputedStyle()`で`transform`を読むと`matrix()`に変換された値が返るので、回転の角度を知るには行列を分解しなければなりません。`computedStyleMap()`は、書いた関数の並びを`CSSTransformValue`で返します。
+
+```html
+<div id="card" style="transform: translateX(10px) rotate(45deg)">card</div>
+<script>
+  const card = document.querySelector('#card');
+
+  console.log(getComputedStyle(card).transform);
+  // "matrix(0.707107, 0.707107, -0.707107, 0.707107, 10, 0)"
+
+  const transform = card.computedStyleMap().get('transform');
+  console.log(transform.toString()); // "translate(10px, 0px) rotate(45deg)"
+  console.log(transform[1].angle.value); // 45
+</script>
+```
+
+`transform[0]`は`CSSTranslate`、`transform[1]`は`CSSRotate`です。角度は`angle`に`CSSUnitValue`として入っているので、`to('rad')`で変換すればそのまま`Math.cos()`に渡せます。行列が要るときは、`transform.toMatrix()`で`DOMMatrix`に変換できます。
+
+## おわりに
+
+CSS Typed OMは、CSSの値を`CSSUnitValue`のような数値と単位を持つオブジェクトとして扱うAPIです。`attributeStyleMap`と`CSS.px()`でstyle属性を数値のまま読み書きでき、計算には`add()`や`mul()`、単位の変換には`to()`を使います。`element.style`と違い、プロパティが受け付けない値を書くと`TypeError`が投げられます。
+
+`computedStyleMap()`は`50%`や`auto`を書いたままの形で返すので、`transform`の角度も`matrix()`を分解せずに取り出せます。その代わりレイアウト後の大きさは読めず、そこは今までどおり`getComputedStyle()`や`getBoundingClientRect()`を使いましょう。
+
+文字列から`px`を外し、計算して付け直していたコードや、`matrix()`を分解して角度を求めていたコードは、Typed OMで数値と単位のまま書けるようになります。
