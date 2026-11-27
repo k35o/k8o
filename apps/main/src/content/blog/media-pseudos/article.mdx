@@ -1,8 +1,8 @@
 ---
 title: ':playingと:pausedで動画の再生中だけスタイルを変える'
-description: ':playingと:pausedは、videoやaudioが再生中か一時停止中かに当たるCSSの疑似クラスです。:has()と組み合わせ、再生ボタンやスピナーの出し分けをイベントなしで書けます。Chrome 156は未対応です。'
-createdAt: 2026-09-09
-updatedAt: 2026-11-09
+description: ':playingと:pausedは、videoやaudioが再生中か一時停止中かに当たるCSSの疑似クラスです。:has()と組み合わせ、再生ボタンやスピナーの出し分けをイベントなしで書けます。Baseline 2026です。'
+createdAt: 2026-11-27
+updatedAt: 2026-11-27
 featureIds:
   - media-pseudos
 ---
@@ -15,9 +15,9 @@ featureIds:
 
 `:playing`や`:paused`は、`<video>`や`<audio>`が再生中か一時停止中かに当たるCSSの疑似クラスです。`:has()`と組み合わせると、再生ボタンやスピナーを再生の状態に合わせて出し分けられます。
 
-動画の上に再生ボタンを重ねて、再生が始まったら消す。読み込み待ちの間だけスピナーを出す。こうしたプレイヤーUIを作るとき、CSSからは`<video>`が再生中かどうかを知る手段がありませんでした。そのため`play`や`pause`、`waiting`といったイベントを購読して、JavaScriptを経由してスタイルを当てる必要がありました。Chromeでも同じ見た目にするなら、今もこの書き方が要ります。
+動画の上に再生ボタンを重ねて、再生が始まったら消す。読み込み待ちの間だけスピナーを出す。こうしたプレイヤーUIを作るとき、CSSからは`<video>`が再生中かどうかを知る手段がありませんでした。そのため`play`や`pause`、`waiting`といったイベントを購読して、JavaScriptを経由してスタイルを当てる必要がありました。
 
-`:playing`をはじめとするメディア要素の疑似クラスは、この状態をセレクタとして直接書けるようにするものです。Safariは15.4で先行して対応しており、Firefox 150が続きました。Chromeは156でもまだ対応しておらず、Baselineには入っていません。この点は最後の章で触れます。
+`:playing`をはじめとするメディア要素の疑似クラスは、この状態をセレクタとして直接書けるようにするものです。Safari 15.4とFirefox 150に続いてChromeとEdgeが158で対応し、2026年11月にBaseline 2026に入りました。
 
 ## 7つの疑似クラス
 
@@ -31,7 +31,7 @@ featureIds:
 - `:muted` - `muted`が`true`
 - `:volume-locked` - ブラウザが音量をロックしている。iOSのSafariのように本体のボタンでしか音量を変えられない環境
 
-Safari 27.2とFirefox 159は、7つとも`CSS.supports()`で`true`を返しました。
+Chrome、Safari、Firefoxのどれでも、7つとも`CSS.supports()`が`true`を返しました。
 
 ```css
 /* [!og] */
@@ -160,7 +160,7 @@ document.querySelector('#toggle').addEventListener('click', () => {
 });
 ```
 
-SafariかFirefoxで再生するか`play()`を押すと、5本のバーが上下に動き、`:playing`のチップが点灯します。`muted`を反転すると、バーが薄くなります。Chrome 156では、どの操作でもバーは止まったままで、チップはどれも点灯しません。
+再生するか`play()`を押すと、5本のバーが上下に動き、`:playing`のチップが点灯します。`muted`を反転すると、バーが薄くなります。
 
 `:playing`と`:paused`は互いに補集合で、メディア要素は必ずどちらか一方にマッチします。読み込みが終わる前の要素は`paused`が`true`なので`:paused`側です。
 
@@ -170,9 +170,9 @@ SafariかFirefoxで再生するか`play()`を押すと、5本のバーが上下�
 
 `muted`は属性セレクタでも取れそうに見えますが、`audio[muted]`と`audio:muted`は別のものです。`muted`属性が決めるのは要素が作られたときの初期値だけで、あとから付け外ししても音の状態は変わりません。逆にユーザーがコントロールのミュートボタンを押しても、属性は付きません。
 
-Safari 27.2とFirefox 159で試すと、`muted`属性を書いた`<audio>`から属性を外しても`:muted`のままで、属性の無い`<audio>`に属性を足しても`:muted`にはなりませんでした。JavaScriptで要素を作るときも、`createElement()`の直後の`setAttribute('muted', '')`では、Firefox 159の`muted`は`false`のままでした（Safari 27.2では`true`）。音を消すときは`muted`プロパティに`true`を入れます。
+同じ3つのブラウザで試すと、`muted`属性を書いた`<audio>`から属性を外しても`:muted`のままで、属性の無い`<audio>`に属性を足しても`:muted`にはなりませんでした。JavaScriptで要素を作るときも、`createElement()`の直後の`setAttribute('muted', '')`では、ChromeとFirefoxの`muted`は`false`のままでした（Safariでは`true`）。音を消すときは`muted`プロパティに`true`を入れます。
 
-`:muted`が見ているのは`muted`プロパティ、つまり今まさに音が消されているかどうかです。同じことは`:playing`にも言えます。`autoplay`属性を付けていても、ブラウザの自動再生ポリシーで止められた要素は`:paused`のままです。Safari 27.2とFirefox 159では、ページを開いただけで音の出る`<audio>`の`play()`を呼ぶと`NotAllowedError`で拒否され、要素は`:paused`のままでした。
+`:muted`が見ているのは`muted`プロパティ、つまり今まさに音が消されているかどうかです。同じことは`:playing`にも言えます。`autoplay`属性を付けていても、ブラウザの自動再生ポリシーで止められた要素は`:paused`のままです。3つのブラウザのどれでも、ページを開いただけで音の出る`<audio>`の`play()`を呼ぶと`NotAllowedError`で拒否され、要素は`:paused`のままでした。
 
 ```html
 <div class="hero">
@@ -249,19 +249,9 @@ document.querySelector('#attribute').addEventListener('click', () => {
 });
 ```
 
-## Chromeではまだ動かない
+## 対応していないブラウザでの書き方
 
-Chrome 156では、これらの疑似クラスはセレクタとして解釈されません。開発者ツールのコンソールで次を実行すると`false`が返ります。
-
-```js
-CSS.supports('selector(:playing)');
-```
-
-Chromium 156のソースを見ると、該当する機能フラグ`CSSMediaElementPseudos`は[`experimental`](https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.81/third_party/blink/renderer/platform/runtime_enabled_features.json5)のままで、Experimental Web Platform Featuresを有効にしないと動きません。158のタグでは`stable`に変わっていて、[chromestatusの登録](https://chromestatus.com/feature/5068277495758848)でも出荷予定のマイルストーンは158です。
-
-web-featuresのデータもChromeを未対応としていて、Baselineには入っていません。この記事のデモも、SafariかFirefoxで開かないと動きません。
-
-未対応のブラウザでは、`:has(video:playing)`のように未知の疑似クラスを含む規則は丸ごと無効になります。`:has()`の引数は寛容ではないので、外側の`.player`まで含めて規則が捨てられます。再生ボタンを表示する側を既定にしておき、`:playing`で消す向きに書いておけば、未対応のブラウザでもボタンが出続けるだけで壊れません。
+Chrome 157以前のように対応していないブラウザでは、`:has(video:playing)`のように未知の疑似クラスを含む規則は丸ごと無効になります。`:has()`の引数は寛容ではないので、外側の`.player`まで含めて規則が捨てられます。再生ボタンを表示する側を既定にしておき、`:playing`で消す向きに書くと、未対応のブラウザでは再生ボタンが出たままになり、ほかの見た目は変わりません。
 
 ```css
 /* [!callout: 既定では出しておく] */
@@ -275,8 +265,8 @@ web-featuresのデータもChromeを未対応としていて、Baselineには入
 }
 ```
 
-Chrome 156で試すと、2つ目の規則は`document.styleSheets`の`cssRules`に残らず、`.play-button`は`display: grid`のままでした。
+対応前のChromeで試すと、2つ目の規則は`document.styleSheets`の`cssRules`に残らず、`.play-button`は`display: grid`のままでした。
 
 ## おわりに
 
-メディア要素の疑似クラスは、`HTMLMediaElement`が持っている状態をそのままセレクタに写したものです。プレイヤーUIの見た目に関わる部分については、イベントを購読してJavaScriptを経由していたスタイルを、`:has()`と組み合わせたCSSに置き換えられます。再生ボタンのオーバーレイやローディングのスピナーのように、これまで小さなスクリプトを毎回書いていた箇所を宣言的に書けるようになります。Chromeはまだ対応していない（出荷予定は158）ので、それまでは表示する側を既定にした書き方で先行して使えます。
+メディア要素の疑似クラスは、`HTMLMediaElement`が持っている状態をそのままセレクタに写したものです。プレイヤーUIの見た目に関わる部分については、イベントを購読してJavaScriptを経由していたスタイルを、`:has()`と組み合わせたCSSに置き換えられます。再生ボタンのオーバーレイやローディングのスピナーのように、これまで小さなスクリプトを毎回書いていた箇所を宣言的に書けるようになります。対応前のブラウザで開かれる場面では、再生ボタンを表示する側を既定にして書きます。
