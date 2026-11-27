@@ -89,43 +89,39 @@ export const CodeDemoView: FC<Props> = ({
   return (
     <div className={styles.root}>
       <div className={cn('writing-h', styles.frame)}>
-        <div className={styles.layout}>
-          <div className={cn('code-annotate-demo-code', styles.code)}>
-            {children}
+        <div className="code-annotate-demo-code">{children}</div>
+        <div className={styles.result} ref={observeResult}>
+          <div className={styles.toolbar}>
+            <span className={styles.label}>結果</span>
+            <Button
+              color="base"
+              onClick={() => {
+                setRunCount((count) => count + 1);
+                // 読めなかった例は、やり直すときに読み直す
+                if (demoDocument === undefined) void loadDocument();
+              }}
+              size="sm"
+              startIcon={replayIcon}
+              variant="skeleton"
+            >
+              やり直す
+            </Button>
           </div>
-          <div className={styles.result} ref={observeResult}>
-            <div className={styles.toolbar}>
-              <span className={styles.label}>結果</span>
-              <Button
-                color="base"
-                onClick={() => {
-                  setRunCount((count) => count + 1);
-                  // 読めなかった例は、やり直すときに読み直す
-                  if (demoDocument === undefined) void loadDocument();
-                }}
-                size="sm"
-                startIcon={replayIcon}
-                variant="skeleton"
-              >
-                やり直す
-              </Button>
-            </div>
-            <iframe
-              allow={toDemoAllow(allow)}
-              className={styles.preview}
-              key={runCount}
-              ref={connectFrame}
-              // allow-forms は <form method="dialog"> と submit のイベントのため。送信は例の文書の
-              // form-action 'none' が止める。allow-same-origin を足すと、例が記事の origin で動き、
-              // 自分の sandbox を外せる
-              sandbox="allow-scripts allow-forms"
-              // @types/react の srcDoc は文字列だけを受けるが、React は値を変えずに setAttribute に
-              // 渡すので、Trusted Types の受け口に TrustedHTML のまま届く
-              srcDoc={demoDocument as string | undefined}
-              style={height === undefined ? undefined : { blockSize: height }}
-              title={`${name} の結果`}
-            />
-          </div>
+          <iframe
+            allow={toDemoAllow(allow)}
+            className={styles.preview}
+            key={runCount}
+            ref={connectFrame}
+            // allow-forms は <form method="dialog"> と submit のイベントのため。送信は例の文書の
+            // form-action 'none' が止める。allow-same-origin を足すと、例が記事の origin で動き、
+            // 自分の sandbox を外せる
+            sandbox="allow-scripts allow-forms"
+            // @types/react の srcDoc は文字列だけを受けるが、React は値を変えずに setAttribute に
+            // 渡すので、Trusted Types の受け口に TrustedHTML のまま届く
+            srcDoc={demoDocument as string | undefined}
+            style={height === undefined ? undefined : { blockSize: height }}
+            title={`${name} の結果`}
+          />
         </div>
       </div>
     </div>
