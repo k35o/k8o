@@ -38,6 +38,23 @@ const lineElements = (tree: Root): Element[] => {
   );
 };
 
+const codeElements = (tree: Root): Element[] => {
+  const wrapper = tree.children.find(
+    (child): child is Element =>
+      child.type === 'element' && child.tagName === 'div',
+  );
+  const pre = wrapper && findElement(wrapper.children, 'pre');
+  const code = pre && findElement(pre.children, 'code');
+  return code ? code.children.filter(isElement) : [];
+};
+
+const textOf = (node: ElementContent | undefined): string => {
+  if (node === undefined) return '';
+  if (node.type === 'text') return node.value;
+  if (node.type !== 'element') return '';
+  return node.children.map((child) => textOf(child)).join('');
+};
+
 const wrapperElement = (tree: Root): Element | undefined =>
   tree.children.find(
     (child): child is Element =>
@@ -161,6 +178,56 @@ describe('annotateTransformer', () => {
         'clipboard-read clipboard-write',
       );
     });
+
+    it('動く例の [!fold] の範囲を span に包み、その前に読み上げない「⋯」の印を置く', async () => {
+      const tree = await toHast(
+        ['a();', '// [!fold]', 'b();', 'c();', '// [!fold-end]', 'd();'].join(
+          '\n',
+        ),
+        'demo="dots"',
+      );
+      const [first, mark, fold, last] = codeElements(tree);
+
+      expect(textOf(first)).toBe('a();');
+      expect(classListOf(mark)).toStrictEqual(['code-annotate-fold-mark']);
+      expect(mark?.properties.ariaHidden).toBe('true');
+      expect(textOf(mark)).toBe('⋯');
+      expect(classListOf(fold)).toStrictEqual(['code-annotate-fold']);
+      expect(
+        fold?.children.filter(isElement).map((line) => textOf(line)),
+      ).toStrictEqual(['b();', 'c();']);
+      expect(textOf(last)).toBe('d();');
+    });
+
+    it('畳む行に付いたコールアウトの行も、畳む範囲に入れる', async () => {
+      const tree = await toHast(
+        [
+          '// [!fold]',
+          '// [!callout: 飾り]',
+          'a();',
+          '// [!fold-end]',
+          'b();',
+        ].join('\n'),
+        'demo="dots"',
+      );
+      const [, fold, last] = codeElements(tree);
+
+      expect(
+        fold?.children.filter(isElement).map((line) => classListOf(line)),
+      ).toStrictEqual([
+        ['line', 'code-annotate-has-callout'],
+        ['line', 'code-annotate-callout-line'],
+      ]);
+      expect(textOf(last)).toBe('b();');
+    });
+  });
+
+  describe('異常系', () => {
+    it('動く例でないコードブロックの [!fold] は、省いた行を見る手段が無いので投げる', async () => {
+      await expect(
+        toHast(['// [!fold]', 'a();', '// [!fold-end]'].join('\n')),
+      ).rejects.toThrow(/demo=/u);
+    });
   });
 
   describe('エッジケース', () => {
@@ -179,6 +246,32 @@ describe('annotateTransformer', () => {
       const tree = await toHast('plain', undefined, 'text');
 
       expect(wrapperElement(tree)?.properties['data-label']).toBeUndefined();
+    });
+
+    it('畳むだけのブロックには、注釈の gutter を空ける data-annotated を付けない', async () => {
+      const tree = await toHast(
+        ['// [!fold]', 'a();', '// [!fold-end]'].join('\n'),
+        'demo="dots"',
+      );
+
+      expect(
+        wrapperElement(tree)?.properties['data-annotated'],
+      ).toBeUndefined();
+    });
+
+    it('最後の行まで畳んでも、印と畳む span を置く', async () => {
+      const tree = await toHast(
+        ['a();', '// [!fold]', 'b();', '// [!fold-end]'].join('\n'),
+        'demo="dots"',
+      );
+
+      expect(
+        codeElements(tree).map((element) => classListOf(element)[0]),
+      ).toStrictEqual([
+        'line',
+        'code-annotate-fold-mark',
+        'code-annotate-fold',
+      ]);
     });
 
     it('複数の連続指示が同じ対象行に重ねて適用される', async () => {

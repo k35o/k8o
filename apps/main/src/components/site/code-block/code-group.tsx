@@ -55,29 +55,31 @@ export const CodeGroup: FC<{ children?: ReactNode }> = ({ children }) => {
     // ページ遷移など無関係な transition でグループ単体が出入りのアニメーションをしないよう切る
     <ViewTransition enter="none" exit="none" update="code-group">
       <div className="code-annotate-group">
-        <div
-          aria-label="表示するコード"
-          className="code-annotate-group-tabs"
-          role="tablist"
-        >
-          {blocks.map((block, index) => (
-            <button
-              aria-controls={panelId(index)}
-              aria-selected={index === active}
-              className="code-annotate-group-tab"
-              id={tabId(index)}
-              key={block.key}
-              onClick={() => {
-                select(index);
-              }}
-              onKeyDown={handleKeyDown}
-              role="tab"
-              tabIndex={index === active ? 0 : -1}
-              type="button"
-            >
-              {labelOf(block.props, index)}
-            </button>
-          ))}
+        <div className="code-annotate-group-bar">
+          <div
+            aria-label="表示するコード"
+            className="code-annotate-group-tabs"
+            role="tablist"
+          >
+            {blocks.map((block, index) => (
+              <button
+                aria-controls={panelId(index)}
+                aria-selected={index === active}
+                className="code-annotate-group-tab"
+                id={tabId(index)}
+                key={block.key}
+                onClick={() => {
+                  select(index);
+                }}
+                onKeyDown={handleKeyDown}
+                role="tab"
+                tabIndex={index === active ? 0 : -1}
+                type="button"
+              >
+                {labelOf(block.props, index)}
+              </button>
+            ))}
+          </div>
         </div>
         {blocks.map((block, index) => (
           <div

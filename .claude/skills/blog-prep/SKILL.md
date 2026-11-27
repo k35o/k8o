@@ -108,13 +108,21 @@ featureIds:
   /* [!hl] */
   animation-delay: calc(abs(var(--i) - 3) * 50ms);
 }
+/* [!fold] */
+
+.dots {
+  display: flex;
+  gap: 0.5rem;
+}
+/* [!fold-end] */
 ```
 ````
 
-- 同じ名前のブロックを隣り合わせに書くと、1つの例になる。記事ではタブ（html・css・js）の下に結果が出て、どの例にも「やり直す」が付く
+- 同じ名前のブロックを隣り合わせに書くと、1つの例になる。記事ではタブ（html・css・js）の下に結果が出て、結果の欄に「広げて見る」と「やり直す」が付く。「広げて見る」は、畳んだ行も含むコードと結果をモーダルで並べる
 - 言語は `html`・`css`・`js`・`tsx`。`js` は module の script として、HTML の後に動く。1つの例に `js` と `tsx` の両方は書かない
 - `tsx` は React の部品を `export default` で書く。描く（`createRoot`）のはビルドが足すので、記事には書かない。React はサイトと同じ安定版で、`react` と `react-dom` のほかは import できない（ビルドが止まる）。ビルドが本番版の React ごと束ね、例の文書は gzip で 70kB ほどになる
 - 例に固有の見た目（大きさ・色・並べ方）はすべてコードに書き、要の行は `[!hl]` で強調する。サイトのトークンは使えない。テーマで変える色は `light-dark()` で書く（記事のテーマが例に届く）
+- 説明に使わない行（並べ方・余白・大きさなどの見た目）は `[!fold]` から `[!fold-end]` までの行で囲む。記事では「⋯」の 1 行に畳まれ、例は畳んだ行も含めて動く。`[!fold]` は動く例のブロックでだけ書ける（ほかのブロックに書くとビルドが止まる）
 - `button`・`input`・`select`・`textarea` には、例の下地がサイトに近い見た目を当てる。下地の規則は詳細度が 0 なので、例のコードに書いた規則がそのまま勝つ
 - 名前は URL（`/blog/{slug}/demos/{名前}/document.txt`）になるので、小文字の英数字とハイフンで書く。離れたブロックに同じ名前を付けると、`features/blog/application/article-files.test.ts` が落ちる
 - 例は sandbox の iframe（origin を持たない）で動く。fetch・worker・localStorage・cookie は使えない。読めるのはサイトの画像・音源・フォントだけで、例だけが使うファイルは `apps/main/public/demos/{slug}/` に置き、`/demos/{slug}/{名前}` で読む。canvas に描いて読み出す画像は `<img crossorigin="anonymous">` で読む

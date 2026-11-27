@@ -1,4 +1,4 @@
-import { RefreshIcon } from '@k8ordo/ui/icons';
+import { MaximizeIcon, RefreshIcon, XIcon } from '@k8ordo/ui/icons';
 import { expect, waitFor, within } from 'storybook/test';
 
 import { CodeBlock } from '@/components/site/code-block/code-block';
@@ -52,6 +52,8 @@ const meta = preview.meta({
     name: demo.name,
     src,
     replayIcon: <RefreshIcon size="sm" />,
+    expandIcon: <MaximizeIcon size="sm" />,
+    closeIcon: <XIcon size="sm" />,
     children: <CodeGroup>{blocks}</CodeGroup>,
   },
   // iframe の中は記事の例で、sandbox の中に axe は入れない。問い合わせたままやり直しで frame を
@@ -117,5 +119,27 @@ export const AllowsDeclaredPermissions = meta.story({
       'allow',
       'clipboard-read; clipboard-write; screen-wake-lock *',
     );
+  },
+});
+
+export const OpensDetail = meta.story({
+  play: async ({ canvasElement, userEvent }) => {
+    await userEvent.click(
+      within(canvasElement).getByRole('button', { name: '広げて見る' }),
+    );
+
+    const detail = await within(canvasElement).findByRole('dialog', {
+      name: '動く例を広げて表示',
+    });
+    await expect(
+      within(detail)
+        .getAllByRole('tab')
+        .map((tab) => tab.textContent),
+    ).toStrictEqual(['html', 'css', 'js']);
+    await waitFor(async () => {
+      await expect(
+        within(detail).getByTitle<HTMLIFrameElement>('message の結果'),
+      ).toHaveAttribute('srcdoc', demoDocument);
+    });
   },
 });

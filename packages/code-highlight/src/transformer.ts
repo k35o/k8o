@@ -32,6 +32,20 @@ const createCalloutLine = (text: string, indent: number): Element => ({
   ],
 });
 
+const createFoldMark = (): Element => ({
+  type: 'element',
+  tagName: 'span',
+  properties: { class: 'code-annotate-fold-mark', ariaHidden: 'true' },
+  children: [{ type: 'text', value: '⋯' }],
+});
+
+const createFold = (children: ElementContent[]): Element => ({
+  type: 'element',
+  tagName: 'span',
+  properties: { class: 'code-annotate-fold' },
+  children,
+});
+
 // コードフェンスのメタ (```ts title="foo.ts") からファイル名を取り出す。
 // 否定文字クラス + * のみで組み、多項式バックトラッキングを避ける (CodeQL: js/polynomial-redos)
 const parseFilename = (raw: string | undefined): string | undefined => {
@@ -52,6 +66,14 @@ export const annotateTransformer = (): ShikiTransformer => ({
   name: '@repo/code-highlight',
   preprocess(code) {
     const { code: stripped, annotations } = parseAnnotations(code);
+    const hasFold = annotations.some((line) =>
+      line.some((annotation) => annotation.type === 'fold'),
+    );
+    if (hasFold && parseDemoName(this.options.meta?.__raw) === undefined) {
+      throw new Error(
+        '[!fold] は動く例（demo="<名前>"）のコードブロックでだけ使える。省いた行は例の全文のビューでしか見られない',
+      );
+    }
     const indents = stripped
       .split('\n')
       .map((line) => /^\s*/u.exec(line)?.[0].length ?? 0);
@@ -85,6 +107,7 @@ export const annotateTransformer = (): ShikiTransformer => ({
           calloutsForLine.push(annotation.text);
           break;
         case 'og':
+        case 'fold':
           break;
       }
     }
@@ -104,10 +127,12 @@ export const annotateTransformer = (): ShikiTransformer => ({
     }
     const demo = parseDemoName(this.options.meta?.__raw);
     const allow = parseDemoAllow(this.options.meta?.__raw);
-    // og は目印だけで描画に影響しないため、gutter の要否には数えない
+    // og と fold は行に印を付けないため、gutter の要否には数えない
     const state = (this.meta as AnnotateMeta).codeAnnotate;
     const hasVisibleAnnotation = (state?.annotations ?? []).some((line) =>
-      line.some((annotation) => annotation.type !== 'og'),
+      line.some(
+        (annotation) => annotation.type !== 'og' && annotation.type !== 'fold',
+      ),
     );
     const label = filename ?? (hasLang ? lang : undefined);
     return {
@@ -127,38 +152,59 @@ export const annotateTransformer = (): ShikiTransformer => ({
   },
   code(node) {
     const state = (this.meta as AnnotateMeta).codeAnnotate;
-    if (!state || state.callouts.size === 0) return;
+    if (!state) return;
+    const folded = state.annotations.map((line) =>
+      line.some((annotation) => annotation.type === 'fold'),
+    );
+    if (state.callouts.size === 0 && !folded.includes(true)) return;
 
     const result: ElementContent[] = [];
+    let fold: ElementContent[] = [];
+    const closeFold = (): void => {
+      if (fold.length === 0) return;
+      result.push(createFoldMark(), createFold(fold));
+      fold = [];
+    };
+
     let lineIdx = 0;
     for (let i = 0; i < node.children.length; i += 1) {
       const child = node.children[i];
       if (!child) continue;
-      result.push(child);
-
       if (
-        child.type === 'element' &&
-        child.tagName === 'span' &&
-        hasLineClass(child)
+        child.type !== 'element' ||
+        child.tagName !== 'span' ||
+        !hasLineClass(child)
       ) {
-        const texts = state.callouts.get(lineIdx);
-        if (texts) {
-          const next = node.children[i + 1];
-          if (next?.type === 'text' && next.value === '\n') {
-            result.push(next);
-            i += 1;
-          }
-          const indent = state.indents[lineIdx] ?? 0;
-          for (const text of texts) {
-            result.push(createCalloutLine(text, indent), {
-              type: 'text',
-              value: '\n',
-            });
-          }
-        }
-        lineIdx += 1;
+        closeFold();
+        result.push(child);
+        continue;
       }
+
+      const lineNodes: ElementContent[] = [child];
+      const texts = state.callouts.get(lineIdx);
+      const next = node.children[i + 1];
+      if (next?.type === 'text' && next.value === '\n') {
+        lineNodes.push(next);
+        i += 1;
+      }
+      if (texts) {
+        const indent = state.indents[lineIdx] ?? 0;
+        for (const text of texts) {
+          lineNodes.push(createCalloutLine(text, indent), {
+            type: 'text',
+            value: '\n',
+          });
+        }
+      }
+      if (folded[lineIdx] === true) {
+        fold.push(...lineNodes);
+      } else {
+        closeFold();
+        result.push(...lineNodes);
+      }
+      lineIdx += 1;
     }
+    closeFold();
     node.children = result;
   },
 });

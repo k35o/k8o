@@ -13,7 +13,7 @@
 | 注目行の強調 | 地の文で「この行が重要」と言うコードに`[!hl]`/`[!callout:]`が無ければ付ける余地 | 任意 |
 | 差分の表現 | before/after・追加削除を見せるコードに`[!+]`/`[!-]`が使える（現状ほぼ未使用） | 任意 |
 
-**ディレクティブ構文**（`packages/code-highlight/src/parser.ts`）: コメント1行だけの行に書き、次のコード行に適用。パーサは言語に関係なく全コメント形式（`//` `/* */` `#` `--` `<!-- -->`）を受理する（言語と違う形式でも効く）。種類: `[!hl]`(=`[!highlight]`)／`[!+]`／`[!-]`／`[!callout: テキスト]`／`[!og]`（本文上は無表示）。未知ディレクティブはコードに残る／空`[!callout:]`は無視／末尾の宙ぶらりんは消える。`@repo/code-highlight/parser`の`parseAnnotations(code).annotations`で機械的に確認できる（`features/blog/application/og-code.ts`が同じ使い方）。
+**ディレクティブ構文**（`packages/code-highlight/src/parser.ts`）: コメント1行だけの行に書き、次のコード行に適用。パーサは言語に関係なく全コメント形式（`//` `/* */` `#` `--` `<!-- -->`）を受理する（言語と違う形式でも効く）。種類: `[!hl]`(=`[!highlight]`)／`[!+]`／`[!-]`／`[!callout: テキスト]`／`[!og]`（本文上は無表示）。`[!fold]`〜`[!fold-end]`だけは範囲で、間の行を記事では「⋯」に畳む（動く例のブロックでだけ書け、閉じ忘れと入れ子はパーサが投げる）。未知ディレクティブはコードに残る／空`[!callout:]`は無視／末尾の宙ぶらりんは消える。`@repo/code-highlight/parser`の`parseAnnotations(code).annotations`で機械的に確認できる（`features/blog/application/og-code.ts`が同じ使い方）。
 
 ## ブログ固有3: MDXコンポーネントの利用
 
@@ -26,7 +26,7 @@
 | `Image` / `FloatImage` | `src`・`alt`・`width`・`height`（すべて必須。width と height は画像の縦横比に合わせる） / `loading?` |
 | `Alert` | `tone`（`warning`等） / `message` |
 
-- **動く例**: コードブロックのメタに`demo="<名前>"`を書いた HTML・CSS・JS・tsx は、記事の中で動く。説明に要る見た目（大きさ・色・並べ方）がコードに書いてあり、要の行が`[!hl]`で強調されているかを見る。tsx は部品を`export default`で書き、`react`と`react-dom`のほかを import していないかを見る。`_components`で動かしているデモは、動く例に替えられないかを指摘する。
+- **動く例**: コードブロックのメタに`demo="<名前>"`を書いた HTML・CSS・JS・tsx は、記事の中で動く。説明に要る見た目（大きさ・色・並べ方）がコードに書いてあり、要の行が`[!hl]`で強調されているかを見る。説明に使わない見た目の行が`[!fold]`で畳まれず、見せるコードを長くしていないかも見る。tsx は部品を`export default`で書き、`react`と`react-dom`のほかを import していないかを見る。`_components`で動かしているデモは、動く例に替えられないかを指摘する。
 - 見出し・段落・リンク・インラインコードは`apps/main/src/components/site/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
 - **import検証**: MDXが`@/`・`next`・`next-themes`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。
 - **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。

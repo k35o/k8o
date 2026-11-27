@@ -1,15 +1,14 @@
 'use client';
 
-import { useColorScheme } from '@k8ordo/color-scheme';
-import { Button } from '@k8ordo/ui';
+import { Button, IconButton, Modal } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import { toDemoAllow } from '@/shared/demo/demo-allow';
-import { DEMO_MESSAGE, readDemoFrameMessage } from '@/shared/demo/demo-message';
 import { withDemoOrigin } from '@/shared/demo/demo-origin';
 import { toDemoTrustedHTML } from '@/shared/demo/demo-trusted-html';
+
+import { DemoResult } from './demo-result';
 
 import styles from './code-demo-view.module.css';
 
@@ -19,6 +18,8 @@ type Props = {
   // コードブロックのメタの allow に書いた、例に渡す権限
   allow?: string | undefined;
   replayIcon: ReactNode;
+  expandIcon: ReactNode;
+  closeIcon: ReactNode;
   children?: ReactNode;
 };
 
@@ -27,12 +28,12 @@ export const CodeDemoView: FC<Props> = ({
   src,
   allow,
   replayIcon,
+  expandIcon,
+  closeIcon,
   children,
 }) => {
-  const { scheme } = useColorScheme();
   const [demoDocument, setDemoDocument] = useState<TrustedHTML>();
-  const [height, setHeight] = useState<number>();
-  const [runCount, setRunCount] = useState(0);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const loadDocument = async (): Promise<void> => {
     const response = await fetch(src);
@@ -61,68 +62,75 @@ export const CodeDemoView: FC<Props> = ({
     };
   };
 
-  // 例の文書は iframe の作り直し（やり直し）のたびに替わるので、iframe の要素につなぐ。
-  // 配色が替わればつなぎ直して送り直す
-  const connectFrame = (frame: HTMLIFrameElement): (() => void) => {
-    const sendColorScheme = (): void => {
-      frame.contentWindow?.postMessage(
-        { type: DEMO_MESSAGE.colorScheme, colorScheme: scheme },
-        '*',
-      );
-    };
-    const onMessage = (event: MessageEvent): void => {
-      if (event.source !== frame.contentWindow) return;
-      const message = readDemoFrameMessage(event.data);
-      if (message?.type === DEMO_MESSAGE.ready) {
-        sendColorScheme();
-      } else if (message?.type === DEMO_MESSAGE.height) {
-        setHeight(message.height);
-      }
-    };
-    window.addEventListener('message', onMessage);
-    sendColorScheme();
-    return () => {
-      window.removeEventListener('message', onMessage);
-    };
+  // 読めなかった例は、やり直すときに読み直す
+  const reloadIfMissing = (): void => {
+    if (demoDocument === undefined) void loadDocument();
+  };
+
+  const closeDetail = (): void => {
+    setIsDetailOpen(false);
   };
 
   return (
     <div className={styles.root}>
       <div className={cn('writing-h', styles.frame)}>
         <div className="code-annotate-demo-code">{children}</div>
-        <div className={styles.result} ref={observeResult}>
-          <div className={styles.toolbar}>
-            <span className={styles.label}>結果</span>
+        <DemoResult
+          actions={
             <Button
               color="base"
               onClick={() => {
-                setRunCount((count) => count + 1);
-                // 読めなかった例は、やり直すときに読み直す
-                if (demoDocument === undefined) void loadDocument();
+                setIsDetailOpen(true);
               }}
               size="sm"
-              startIcon={replayIcon}
+              startIcon={expandIcon}
               variant="skeleton"
             >
-              やり直す
+              広げて見る
             </Button>
+          }
+          allow={allow}
+          demoDocument={demoDocument}
+          name={name}
+          onReplay={reloadIfMissing}
+          ref={observeResult}
+          replayIcon={replayIcon}
+        />
+        <Modal
+          aria-label="動く例を広げて表示"
+          isOpen={isDetailOpen}
+          onClose={closeDetail}
+          side="bottom"
+        >
+          <div className={styles.detailFrame}>
+            <div className={styles.detailBar}>
+              <IconButton label="閉じる" onClick={closeDetail} size="sm">
+                {closeIcon}
+              </IconButton>
+            </div>
+            {isDetailOpen && (
+              <div className={styles.detail}>
+                <div
+                  className={cn(
+                    'code-annotate-demo-code code-annotate-detail',
+                    styles.detailCode,
+                  )}
+                >
+                  {children}
+                </div>
+                <div className={styles.detailResult}>
+                  <DemoResult
+                    allow={allow}
+                    demoDocument={demoDocument}
+                    name={name}
+                    onReplay={reloadIfMissing}
+                    replayIcon={replayIcon}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          <iframe
-            allow={toDemoAllow(allow)}
-            className={styles.preview}
-            key={runCount}
-            ref={connectFrame}
-            // allow-forms は <form method="dialog"> と submit のイベントのため。送信は例の文書の
-            // form-action 'none' が止める。allow-same-origin を足すと、例が記事の origin で動き、
-            // 自分の sandbox を外せる
-            sandbox="allow-scripts allow-forms"
-            // @types/react の srcDoc は文字列だけを受けるが、React は値を変えずに setAttribute に
-            // 渡すので、Trusted Types の受け口に TrustedHTML のまま届く
-            srcDoc={demoDocument as string | undefined}
-            style={height === undefined ? undefined : { blockSize: height }}
-            title={`${name} の結果`}
-          />
-        </div>
+        </Modal>
       </div>
     </div>
   );

@@ -115,6 +115,31 @@
       border-block-end: 0.5em solid var(--color-fg-info);
     }
 
+    .code-annotate-fold-mark {
+      display: block;
+      color: var(--code-mute);
+      line-height: var(--code-line-height);
+      user-select: none;
+    }
+
+    .code-annotate-fold {
+      display: none;
+    }
+
+    :scope:is(.code-annotate-detail *) .code-annotate-fold {
+      display: block;
+      line-height: var(--code-line-height);
+    }
+
+    :scope:is(.code-annotate-detail *) .code-annotate-fold-mark {
+      display: none;
+    }
+
+    /* 全文のビューは外側の欄が縦にも横にもスクロールするので、pre の中で横にスクロールさせない */
+    :scope:is(.code-annotate-detail *) > .shiki {
+      overflow: visible;
+    }
+
     :scope {
       /* 縦書き記事内でもコードブロックは横書きの島として扱い、
          ヘッダー行とコードが縦に積まれるようにする */
@@ -293,6 +318,24 @@
   .code-annotate-demo-code > .code-annotate-group {
     margin: 0;
     background-color: transparent;
+  }
+
+  .code-annotate-detail .code-annotate-group-bar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    background-color: var(--color-bg-surface);
+  }
+
+  /* 帯の下のぼかしは、止まっているときに 1 行目へ掛からないよう、pre の上の余白と同じ高さにする */
+  .code-annotate-detail .code-annotate-group-bar::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    block-size: 0.5rem;
+    background-image: linear-gradient(var(--color-bg-surface), transparent);
+    pointer-events: none;
   }
 
   @media not print {
