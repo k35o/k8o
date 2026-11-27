@@ -3,7 +3,13 @@ export type Annotation =
   | { type: 'add' }
   | { type: 'remove' }
   | { type: 'callout'; text: string }
-  | { type: 'og' };
+  | { type: 'og' }
+  | { type: 'fold' };
+
+type Directive =
+  | Exclude<Annotation, { type: 'fold' }>
+  | { type: 'fold-start' }
+  | { type: 'fold-end' };
 
 type ParseResult = {
   code: string;
@@ -18,7 +24,7 @@ const COMMENT_PATTERNS: readonly RegExp[] = [
   /^\s*\/\*\s*\[!([^\]]+)\]\s*\*\/\s*$/u,
 ];
 
-const parseDirective = (raw: string): Annotation | null => {
+const parseDirective = (raw: string): Directive | null => {
   const directive = raw.trim();
   if (directive === 'hl' || directive === 'highlight') {
     return { type: 'highlight' };
@@ -26,6 +32,8 @@ const parseDirective = (raw: string): Annotation | null => {
   if (directive === '+') return { type: 'add' };
   if (directive === '-') return { type: 'remove' };
   if (directive === 'og') return { type: 'og' };
+  if (directive === 'fold') return { type: 'fold-start' };
+  if (directive === 'fold-end') return { type: 'fold-end' };
 
   // \s* の直後を \S で始めて境界を一意にする (CodeQL: js/polynomial-redos)
   const callout = /^callout:\s*(\S.*)$/u.exec(directive);
@@ -38,7 +46,7 @@ const parseDirective = (raw: string): Annotation | null => {
   return null;
 };
 
-const matchDirectiveLine = (line: string): Annotation | null => {
+const matchDirectiveLine = (line: string): Directive | null => {
   for (const pattern of COMMENT_PATTERNS) {
     const matched = pattern.exec(line);
     if (matched?.[1] !== undefined) {
@@ -77,16 +85,34 @@ export const parseAnnotations = (code: string): ParseResult => {
   const outLines: string[] = [];
   const annotations: Annotation[][] = [];
   let pending: Annotation[] = [];
+  let folding = false;
 
   for (const line of lines) {
     const directive = matchDirectiveLine(line);
+    if (directive?.type === 'fold-start') {
+      if (folding) {
+        throw new Error('[!fold] の中で [!fold] を開いている');
+      }
+      folding = true;
+      continue;
+    }
+    if (directive?.type === 'fold-end') {
+      if (!folding) {
+        throw new Error('[!fold-end] より前に [!fold] が無い');
+      }
+      folding = false;
+      continue;
+    }
     if (directive) {
       pending.push(directive);
       continue;
     }
     outLines.push(line);
-    annotations.push(pending);
+    annotations.push(folding ? [...pending, { type: 'fold' }] : pending);
     pending = [];
+  }
+  if (folding) {
+    throw new Error('[!fold] を [!fold-end] で閉じていない');
   }
 
   return { code: outLines.join('\n'), annotations };

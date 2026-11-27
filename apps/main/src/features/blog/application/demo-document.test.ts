@@ -33,6 +33,26 @@ describe('buildDemoDocument', () => {
       expect(document.indexOf(meta)).toBeLessThan(document.indexOf('<style'));
     });
 
+    it('下地の部品の規則は詳細度を 0 にし、例の CSS が書いた規則が勝つ', () => {
+      const document = buildDemoDocument(demo);
+      const base = document
+        .slice(
+          document.indexOf('<style>') + '<style>'.length,
+          document.indexOf('</style>'),
+        )
+        .replaceAll(/\/\*[\s\S]*?\*\//gu, '');
+      const selectors = Array.from(
+        base.matchAll(/^\s*[^\s@{}][^{}]*(?=\{)/gmu),
+        ([selector]) => selector.trim(),
+      ).filter((selector) => ![':root', 'body'].includes(selector));
+
+      expect(selectors.join('\n')).toMatch(/button/u);
+      expect(selectors.join('\n')).toMatch(/textarea/u);
+      for (const selector of selectors) {
+        expect(selector).toMatch(/^:where\(.*\)$/su);
+      }
+    });
+
     it('検索に拾わせない', () => {
       expect(buildDemoDocument(demo)).toContain(
         '<meta name="robots" content="noindex">',

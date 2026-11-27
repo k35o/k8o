@@ -1,4 +1,7 @@
 .root {
+  /* 畳んだ行の塊（.code-annotate-fold）は文字の大きさの違う code の中のブロックなので、
+     pre の行の高さを、単位の無い倍率ではなく長さで渡す */
+  --code-line-height: calc(var(--font-size-sm) * var(--line-height-loose));
   margin-block: 0;
   overflow-x: auto;
   font-size: var(--font-size-sm);

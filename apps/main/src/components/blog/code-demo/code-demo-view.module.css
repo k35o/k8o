@@ -1,8 +1,8 @@
 .root {
   margin-block: calc(var(--spacing) * 7);
 
-  /* 縦書きの記事に埋め込まれたときは横書きの島として、幅と高さを画面に収める。.frame は
-     container-type で中身から幅を決めないので、max-width ではなく幅を決める */
+  /* 縦書きの記事に埋め込まれたときは横書きの島として、幅と高さを画面に収める。例ごとにコードの
+     長さで幅が変わらないよう、max-width ではなく幅を決める */
   @container style(--writing: vertical) {
     width: min(42rem, 100svw - 2rem);
     max-height: calc(100svh - 10rem);
@@ -11,53 +11,40 @@
 }
 
 .frame {
-  /* 縦書きの中の横書きの箱は中身に合わせた幅になり、container-type は中身の幅を 0 とみなすので、
-     .root の幅に合わせる */
+  /* 縦書きの中の横書きの箱は中身に合わせた幅になるので、.root の幅に合わせる */
   inline-size: 100%;
-  container-type: inline-size;
   border-radius: var(--radius-xl);
   background-color: var(--color-bg-surface);
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+.detailFrame {
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4)
+    calc(var(--spacing) * 4);
+}
 
-  @container (width >= 48rem) {
+.detailBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: calc(var(--spacing) * 2);
+}
+
+.detail {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: calc(var(--spacing) * 2);
+  max-inline-size: calc(var(--spacing) * 320);
+  block-size: 75svh;
+  margin-inline: auto;
+
+  @media (width >= 64rem) {
+    grid-template-rows: minmax(0, 1fr);
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.code {
-  min-inline-size: 0;
-}
-
-.result {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing);
-  padding: calc(var(--spacing) * 2);
-}
-
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline-start: calc(var(--spacing) * 2);
-}
-
-.label {
-  color: var(--color-fg-mute);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-
-.preview {
-  display: block;
-  inline-size: 100%;
-  block-size: calc(var(--spacing) * 24);
-  border-style: none;
-  border-radius: var(--radius-lg);
-  background-color: var(--color-bg-base);
+.detailCode,
+.detailResult {
+  overflow: auto;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-surface);
 }

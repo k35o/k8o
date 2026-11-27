@@ -100,9 +100,59 @@ describe('parseAnnotations', () => {
       expect(result.code).toBe('const x = 1;');
       expect(result.annotations).toStrictEqual([[{ type: 'og' }]]);
     });
+
+    it('[!fold] から [!fold-end] までの行に fold を付け、2つのディレクティブ行はコードから削除する', () => {
+      const input = [
+        '.chip:playing { color: teal; }',
+        '/* [!fold] */',
+        '.chips { display: flex; }',
+        '/* [!hl] */',
+        '.chip { padding: 0; }',
+        '/* [!fold-end] */',
+        '.chip:paused { color: gray; }',
+      ].join('\n');
+      const result = parseAnnotations(input);
+
+      expect(result.code).toBe(
+        [
+          '.chip:playing { color: teal; }',
+          '.chips { display: flex; }',
+          '.chip { padding: 0; }',
+          '.chip:paused { color: gray; }',
+        ].join('\n'),
+      );
+      expect(result.annotations).toStrictEqual([
+        [],
+        [{ type: 'fold' }],
+        [{ type: 'highlight' }, { type: 'fold' }],
+        [],
+      ]);
+    });
   });
 
   describe('異常系', () => {
+    it('[!fold] を [!fold-end] で閉じていないと投げる', () => {
+      expect(() => parseAnnotations(['// [!fold]', 'a();'].join('\n'))).toThrow(
+        /\[!fold-end\] で閉じていない/u,
+      );
+    });
+
+    it('[!fold] の中で [!fold] を開くと投げる', () => {
+      expect(() =>
+        parseAnnotations(
+          ['// [!fold]', 'a();', '// [!fold]', 'b();', '// [!fold-end]'].join(
+            '\n',
+          ),
+        ),
+      ).toThrow(/\[!fold\] の中で/u);
+    });
+
+    it('[!fold] の無い [!fold-end] は投げる', () => {
+      expect(() =>
+        parseAnnotations(['a();', '// [!fold-end]'].join('\n')),
+      ).toThrow(/前に \[!fold\] が無い/u);
+    });
+
     it('未知のディレクティブが書かれたコメントはそのままコードに残し注釈も付かない', () => {
       const input = ['// [!unknown]', 'const x = 1;'].join('\n');
       const result = parseAnnotations(input);
@@ -155,6 +205,16 @@ describe('parseAnnotations', () => {
 
 describe('stripAnnotationComments', () => {
   describe('正常系', () => {
+    it('[!fold] と [!fold-end] の行を削除し、畳む範囲の行は残す', () => {
+      const input = [
+        '<!-- [!fold] -->',
+        '<div class="chips"></div>',
+        '<!-- [!fold-end] -->',
+      ].join('\n');
+
+      expect(stripAnnotationComments(input)).toBe('<div class="chips"></div>');
+    });
+
     it('hl / og などの表示指示ディレクティブ行を削除する', () => {
       const input = ['// [!hl]', 'const x = 1;', '/* [!og] */', 'x + 1;'].join(
         '\n',
