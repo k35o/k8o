@@ -1,0 +1,6 @@
+rules:
+  # pavo.yml の review.yml は pavo の main を digest で固定していて、main が進むたびにコメントの main とずれる。
+  # uses の行に inline で抑制を書くと、Renovate がコメントを ref として読めず digest を上げなくなる
+  ref-version-mismatch:
+    ignore:
+      - pavo.yml
