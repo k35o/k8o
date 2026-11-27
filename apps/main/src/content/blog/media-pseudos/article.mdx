@@ -52,10 +52,10 @@ featureIds:
 <div class="player">
   <div class="bars">
     <span></span>
-    <span style="animation-delay: 90ms"></span>
-    <span style="animation-delay: 180ms"></span>
-    <span style="animation-delay: 270ms"></span>
-    <span style="animation-delay: 360ms"></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
   <audio controls loop src="/demos/media-pseudos/tone.wav"></audio>
   <ul class="chips">
@@ -70,17 +70,7 @@ featureIds:
 ```
 
 ```css demo="playing"
-@keyframes bounce {
-  from {
-    scale: 1 0.15;
-  }
-  to {
-    scale: 1 1;
-  }
-}
-
 .bars span {
-  transform-origin: bottom;
   animation: bounce 480ms ease-in-out infinite alternate;
   animation-play-state: paused;
 }
@@ -102,9 +92,28 @@ featureIds:
 .player:has(audio:muted) .chip-muted {
   opacity: 1;
 }
+/* [!fold] */
+
+@keyframes bounce {
+  from {
+    scale: 1 0.15;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
 .player {
-  margin-block-end: 1rem;
+  display: grid;
+  gap: 1rem;
+  flex-basis: 100%;
+  margin-block-end: 0.5rem;
 }
 
 .bars {
@@ -120,11 +129,28 @@ featureIds:
   height: 100%;
   border-radius: 1rem;
   background-color: light-dark(teal, turquoise);
+  transform-origin: bottom;
+  animation-fill-mode: backwards;
+}
+
+.bars span:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.bars span:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+.bars span:nth-child(4) {
+  animation-delay: 270ms;
+}
+
+.bars span:nth-child(5) {
+  animation-delay: 360ms;
 }
 
 audio {
   width: 100%;
-  margin-block: 1rem;
 }
 
 .chips {
@@ -140,8 +166,10 @@ audio {
   padding: 0.125rem 0.75rem;
   border: 1px solid;
   border-radius: 1rem;
-  font-family: monospace;
+  font-family: ui-monospace, monospace;
+  font-size: 0.875rem;
 }
+/* [!fold-end] */
 ```
 
 ```js demo="playing"
@@ -209,14 +237,23 @@ ChromeとSafariとFirefoxで試すと、`muted`属性を書いた`<audio>`から
 .player:has(audio:muted) .chip-pseudo {
   opacity: 1;
 }
+/* [!fold] */
+
+body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
 .player {
-  margin-block-end: 1rem;
+  display: grid;
+  gap: 1rem;
+  flex-basis: 100%;
+  margin-block-end: 0.5rem;
 }
 
 audio {
   width: 100%;
-  margin-block-end: 1rem;
 }
 
 .chips {
@@ -232,8 +269,10 @@ audio {
   padding: 0.125rem 0.75rem;
   border: 1px solid;
   border-radius: 1rem;
-  font-family: monospace;
+  font-family: ui-monospace, monospace;
+  font-size: 0.875rem;
 }
+/* [!fold-end] */
 ```
 
 ```js demo="muted"
