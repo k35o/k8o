@@ -183,8 +183,8 @@ catalogs:
       specifier: 0.5.0
       version: 0.5.0
     '@better-css-modules/turbopack':
-      specifier: 0.4.1
-      version: 0.4.1
+      specifier: 0.5.0
+      version: 0.5.0
     '@better-css-modules/vite':
       specifier: 0.5.0
       version: 0.5.0
@@ -413,7 +413,7 @@ importers:
         version: 0.5.0
       '@better-css-modules/turbopack':
         specifier: 'catalog:'
-        version: 0.4.1(next@16.4.6(@babel/core@7.29.13(supports-color@10.2.2))(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
+        version: 0.5.0(next@16.4.6(@babel/core@7.29.13(supports-color@10.2.2))(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       '@better-css-modules/vite':
         specifier: 'catalog:'
         version: 0.5.0(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -1024,16 +1024,12 @@ packages:
     engines: {node: '>=24'}
     hasBin: true
 
-  '@better-css-modules/core@0.4.1':
-    resolution: {integrity: sha512-jPgB4aJAg4zoQuiH3G4iEwUs37iUw0fp1um04EDiPg96S4plAmeCaMYqpeePLhDMOG1vYWNQGJmJCcU2mwODmw==}
-    engines: {node: '>=24'}
-
   '@better-css-modules/core@0.5.0':
     resolution: {integrity: sha512-DyD9EO+B6FZG/YmkSm8Zo0Ig0R3G/repVWxkccB0DIRa9DPEPPVCf4knEgQcb1UyVL90okl6FJgbe/kHhJINMg==}
     engines: {node: '>=24'}
 
-  '@better-css-modules/turbopack@0.4.1':
-    resolution: {integrity: sha512-Xsdww/OpzAKM8r0djWRsRVfK5ms4V1epDcwxuWzr0dpCLAVJLEY3ky19NoFsGPYFkV/ggoLxhBIdJKQFxX15tw==}
+  '@better-css-modules/turbopack@0.5.0':
+    resolution: {integrity: sha512-uu1sktSVGv2ZgVXHfG+gDEMRuFI8PXTUQkZGAupnv5VC7d3mYw9IUvRw8Ec+DaZmcxNBbkNGU/Fr4C20Hln9Jw==}
     engines: {node: '>=24'}
     peerDependencies:
       next: ^16.0.0
@@ -6928,19 +6924,6 @@ snapshots:
       '@better-css-modules/core': 0.5.0
       cac: 7.0.0
 
-  '@better-css-modules/core@0.4.1':
-    dependencies:
-      '@csstools/css-syntax-patches-for-csstree': 1.1.14(css-tree@3.2.1)
-      chokidar: 5.0.0
-      css-tree: 3.2.1
-      jiti: 2.6.1
-      oxc-parser: 0.151.0
-      oxc-resolver: 11.24.2
-      picomatch: 4.0.7
-      postcss: 8.5.31
-      source-map-js: 1.2.2
-      tinyglobby: 0.2.17
-
   '@better-css-modules/core@0.5.0':
     dependencies:
       '@csstools/css-syntax-patches-for-csstree': 1.1.14(css-tree@3.2.1)
@@ -6954,9 +6937,9 @@ snapshots:
       source-map-js: 1.2.2
       tinyglobby: 0.2.17
 
-  '@better-css-modules/turbopack@0.4.1(next@16.4.6(@babel/core@7.29.13(supports-color@10.2.2))(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))':
+  '@better-css-modules/turbopack@0.5.0(next@16.4.6(@babel/core@7.29.13(supports-color@10.2.2))(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))':
     dependencies:
-      '@better-css-modules/core': 0.4.1
+      '@better-css-modules/core': 0.5.0
       next: 16.4.6(@babel/core@7.29.13(supports-color@10.2.2))(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
 
   '@better-css-modules/vite@0.5.0(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
