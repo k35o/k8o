@@ -55,6 +55,13 @@ const parseFilename = (raw: string | undefined): string | undefined => {
   return value !== undefined && value.length > 0 ? value : undefined;
 };
 
+// title="selected.ts" のような引用符の中の語は目印に数えないよう、引用符の中を外してから探す
+const hasSelected = (raw: string | undefined): boolean => {
+  if (raw === undefined) return false;
+  const unquoted = raw.replaceAll(/"[^"]*"|'[^']*'/gu, '');
+  return /(?:^|\s)selected(?:\s|$)/u.test(unquoted);
+};
+
 const hasLineClass = (node: Element): boolean => {
   const raw = node.properties['class'];
   if (typeof raw === 'string') return raw.split(/\s+/u).includes('line');
@@ -146,6 +153,9 @@ export const annotateTransformer = (): ShikiTransformer => ({
         ...(demo === undefined || allow.length === 0
           ? {}
           : { 'data-demo-allow': allow.join(' ') }),
+        ...(hasSelected(this.options.meta?.__raw)
+          ? { 'data-selected': '' }
+          : {}),
       },
       children: [node],
     };

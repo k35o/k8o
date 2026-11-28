@@ -191,3 +191,42 @@ describe('groupAdjacentCodeBlocks（例に渡す権限）', () => {
     });
   });
 });
+
+describe('groupAdjacentCodeBlocks（初めに開くタブ）', () => {
+  const selecting = (label: string, selected = false): Element => {
+    const block = codeBlock(label);
+    if (selected) block.properties['data-selected'] = '';
+    return block;
+  };
+
+  describe('正常系', () => {
+    it('selected を1つ書いたまとまりは、そのブロックに印を残したままグループにする', () => {
+      const tree = rootOf([selecting('html'), selecting('js', true)]);
+
+      groupAdjacentCodeBlocks(tree);
+
+      const group = tree.children[0] as Element;
+      expect(
+        group.children.map((c) => (c as Element).properties['data-selected']),
+      ).toStrictEqual([undefined, '']);
+    });
+  });
+
+  describe('異常系', () => {
+    it('1つのまとまりに selected を2つ書くと投げる', () => {
+      const tree = rootOf([selecting('html', true), selecting('js', true)]);
+
+      expect(() => {
+        groupAdjacentCodeBlocks(tree);
+      }).toThrow('selected は1つのまとまりに1つだけ書ける');
+    });
+
+    it('タブにならない1つだけのコードブロックに selected を書くと投げる', () => {
+      const tree = rootOf([paragraph(), selecting('js', true), paragraph()]);
+
+      expect(() => {
+        groupAdjacentCodeBlocks(tree);
+      }).toThrow('selected は、隣り合うコードブロックのタブの1つにだけ書ける');
+    });
+  });
+});
