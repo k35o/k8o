@@ -179,6 +179,18 @@ describe('annotateTransformer', () => {
       );
     });
 
+    it('メタの selected をラッパーの data-selected にする', async () => {
+      const tree = await toHast('draw();', 'demo="dots" selected', 'js');
+
+      expect(wrapperElement(tree)?.properties['data-selected']).toBe('');
+    });
+
+    it('引用符の中の selected は目印として扱わない', async () => {
+      const tree = await toHast('const x = 1;', 'title="selected item.ts"');
+
+      expect(wrapperElement(tree)?.properties['data-selected']).toBeUndefined();
+    });
+
     it('動く例の [!fold] の範囲を span に包み、その前に読み上げない「⋯」の印を置く', async () => {
       const tree = await toHast(
         ['a();', '// [!fold]', 'b();', 'c();', '// [!fold-end]', 'd();'].join(

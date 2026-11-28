@@ -34,6 +34,9 @@ const demoOf = (block: Element): string | undefined => {
   return typeof raw === 'string' ? raw : undefined;
 };
 
+const isSelected = (block: Element): boolean =>
+  block.properties['data-selected'] !== undefined;
+
 const createGroup = (blocks: Element[]): Element => ({
   type: 'element',
   tagName: GROUP_TAG,
@@ -72,6 +75,15 @@ export const groupAdjacentCodeBlocks = (tree: Root | Parent): void => {
   let pendingBlank: Nodes[] = [];
 
   const flush = (): void => {
+    const selected = run.filter(isSelected).length;
+    if (selected > 1) {
+      throw new Error('selected は1つのまとまりに1つだけ書ける');
+    }
+    if (selected === 1 && run.length < 2) {
+      throw new Error(
+        'selected は、隣り合うコードブロックのタブの1つにだけ書ける',
+      );
+    }
     const blocks = run.length >= 2 ? [createGroup(run)] : run;
     const demo = run[0] === undefined ? undefined : demoOf(run[0]);
     if (demo === undefined) {

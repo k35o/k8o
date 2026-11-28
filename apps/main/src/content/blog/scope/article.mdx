@@ -93,7 +93,7 @@ featureIds:
 </div>
 ```
 
-```css demo="donut"
+```css demo="donut" selected
 @scope (.article) to (.nested-content) {
   img {
     border: 4px solid steelblue;
@@ -171,7 +171,7 @@ body:has(#scoped:not(:checked)) .article img {
 </div>
 ```
 
-```css demo="limit"
+```css demo="limit" selected
 /* チェックを入れているあいだは、直接の子の.nested-contentだけを下限にする */
 @scope (body:has(#child:checked) .article) to (:scope > .nested-content) {
   img {
@@ -232,7 +232,7 @@ body:has(#scoped:not(:checked)) .article img {
 </div>
 ```
 
-```css demo="proximity"
+```css demo="proximity" selected
 @scope (.info-box) {
   .message {
     color: white;
