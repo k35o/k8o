@@ -1,0 +1,168 @@
+---
+title: 'devicePixelRatioでcanvasのぼやけを直す'
+description: 'devicePixelRatioは、CSSの1pxを画面の何ピクセルで表示しているかを返すプロパティです。canvasを高解像度の画面でもぼやけずに描画でき、ページの拡大縮小にも合わせられます。Baseline 2026に入りました。'
+createdAt: 2026-11-28
+updatedAt: 2026-11-28
+featureIds:
+  - devicepixelratio
+---
+
+# devicePixelRatioでcanvasのぼやけを直す
+
+<BrowserSupportStatus featureId="devicepixelratio" />
+
+## はじめに
+
+`window.devicePixelRatio`は、CSSの`1px`を画面のピクセルいくつ分の幅で表示しているかを返すプロパティです。Retinaのような高解像度の画面では2や3になり、ページを拡大縮小すると、値にその倍率が掛かります。Safari 26.4でページの倍率も値に反映されるようになり、Baseline 2026に入りました。
+
+```js
+// [!og]
+// 高解像度でない画面（CSSの1pxを画面の1ピクセルで表示する）
+window.devicePixelRatio; // 1
+
+// Retinaの画面（CSSの1pxを画面の縦横2ピクセルで表示する）
+window.devicePixelRatio; // 2
+
+// 同じRetinaの画面で、ページを150%に拡大したとき
+window.devicePixelRatio; // 3
+```
+
+`devicePixelRatio`は、`<canvas>`に描画するときのように、JavaScriptで画面のピクセル数に合わせて大きさを計算するときに使います。画像を画面の解像度に合わせて出し分けるときは今までどおり`<img>`の`srcset`を、スタイルを出し分けるときはメディアクエリの`resolution`を使います。
+
+## canvasをぼやけずに描画する
+
+`<canvas>`は、描画した内容をピクセルの並んだ画像として持っています。この画像をビットマップと呼びます。`canvas.width`と`canvas.height`はビットマップのピクセル数を決め、CSSの`width`と`height`はそのビットマップをページの中でどの大きさに表示するかを決めます。
+
+たとえば`canvas.width`を240、CSSの`width`を`240px`にすると、横240ピクセルのビットマップを`240px`の幅で表示します。`devicePixelRatio`が2の画面では`240px`の幅に画面のピクセルが480個並ぶので、ブラウザは240ピクセルのビットマップを横に2倍に引き伸ばして表示し、字や線の輪郭がぼやけます。
+
+ぼやけを防ぐには、ビットマップのピクセル数をCSSの大きさの`devicePixelRatio`倍にします。`ctx.scale()`で座標にも同じ倍率を掛けておけば、`fillText()`や`arc()`に渡す座標はCSSの`px`のまま書けます。
+
+```html demo="canvas"
+<p>devicePixelRatio: <output></output></p>
+<canvas id="plain"></canvas>
+<canvas id="sharp"></canvas>
+```
+
+```css demo="canvas"
+canvas {
+  display: block;
+  width: 240px;
+  height: 80px;
+  margin-block-end: 0.5rem;
+  background-color: white;
+}
+```
+
+```js demo="canvas" selected
+const ratio = window.devicePixelRatio;
+document.querySelector('output').textContent = ratio;
+
+function draw(canvas, scale) {
+  // [!hl]
+  canvas.width = Math.round(240 * scale);
+  // [!hl]
+  canvas.height = Math.round(80 * scale);
+
+  const ctx = canvas.getContext('2d');
+  // [!hl]
+  ctx.scale(scale, scale);
+
+  ctx.font = '20px sans-serif';
+  ctx.fillText(`${canvas.width} × ${canvas.height}`, 16, 48);
+  ctx.beginPath();
+  ctx.arc(190, 40, 24, 0, Math.PI * 2);
+  ctx.stroke();
+}
+
+draw(document.querySelector('#plain'), 1);
+draw(document.querySelector('#sharp'), ratio);
+```
+
+上のcanvasはビットマップを240×80で、下のcanvasはその`devicePixelRatio`倍で作っています。`devicePixelRatio`が1の画面では、2つは同じに見えます。ページを拡大してからやり直すと、上のcanvasは字と円の輪郭がぼやけ、下のcanvasはぼやけないままです。
+
+### 値は整数とは限らない
+
+`devicePixelRatio`が1の画面でページを110%に拡大すると、Chromeは`1.100000023841858`を、Firefoxは`1.0909090909090908`を返しました。Firefoxでは`innerWidth`も同じ割合で1366から1252に減っていて、110%を選んでも実際には約109.09%で表示しています。仕様では、CSSの`1px`の大きさを画面の1ピクセルの大きさで割った値を返すことになっているので、どちらのブラウザも仕様どおりです。
+
+`canvas.width`と`canvas.height`は整数しか持てません。Chrome、Firefox、Safariのどれでも、`canvas.width = 150.75`と代入したあとに読むと150でした。小数点以下は切り捨てられるので、上のコードでは`Math.round()`でいちばん近い整数にしてから代入しています。
+
+## 拡大縮小による値の変化を検知する
+
+`canvas.width`と`canvas.height`は、ページを拡大したり、ウィンドウを解像度の違うモニターへ移したりしても変わりません。そのため、`devicePixelRatio`の変化に追従して描画し直す必要があります。
+
+標準には`devicePixelRatio`の変化を知らせるイベントがないので、`matchMedia()`を使って自分で組み立てます。
+
+```js
+function watch() {
+  const query = `(resolution: ${window.devicePixelRatio}dppx)`;
+  matchMedia(query).addEventListener(
+    'change',
+    () => {
+      draw();
+      watch();
+    },
+    { once: true },
+  );
+}
+```
+
+`resolution`は、CSSの`1px`あたりの画面のピクセル数を`dppx`という単位で表すメディアクエリで、`devicePixelRatio`が2の画面は`2dppx`です。
+
+```html demo="resolution"
+<p>devicePixelRatio: <output></output></p>
+<canvas></canvas>
+```
+
+```css demo="resolution"
+canvas {
+  display: block;
+  width: 240px;
+  height: 80px;
+  background-color: white;
+}
+```
+
+```js demo="resolution" selected
+const canvas = document.querySelector('canvas');
+const output = document.querySelector('output');
+
+function draw() {
+  const ratio = window.devicePixelRatio;
+  output.textContent = ratio;
+
+  canvas.width = Math.round(240 * ratio);
+  canvas.height = Math.round(80 * ratio);
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(ratio, ratio);
+
+  ctx.font = '20px sans-serif';
+  ctx.fillText(`${canvas.width} × ${canvas.height}`, 16, 48);
+}
+
+function watch() {
+  const query = `(resolution: ${window.devicePixelRatio}dppx)`;
+  // [!hl]
+  matchMedia(query).addEventListener(
+    'change',
+    () => {
+      draw();
+      watch();
+    },
+    { once: true },
+  );
+}
+
+draw();
+watch();
+```
+
+`canvas.width`に代入すると`ctx.scale()`の倍率も1に戻るので、`draw()`は毎回`ctx.scale()`を呼び直します。
+
+ChromeとFirefoxでは想定どおり動きますが、Safariではページの倍率が変わっても`change`イベントが発火しません。Safariの`resolution`はページの倍率を含まず、拡大しても`(resolution: 2dppx)`が当たったままになるためです。仕様では`resolution`もページの倍率を含むので、ChromeとFirefoxの動きが正しいです。
+
+ちなみに、`ResizeObserver`の`observe()`に`{ box: 'device-pixel-content-box' }`を渡すと、canvasの大きさを画面のピクセル数で受け取れますが、Safariは対応していません。
+
+## おわりに
+
+canvasのビットマップを`devicePixelRatio`倍で作ると、高解像度の画面でもぼやけずに描画できます。Safariでもページの倍率が値に入るようになり、拡大したページに合わせたcanvasも3つのブラウザに共通のコードで作れます。倍率の変化を`resolution`で検知する方法だけは、Safariで`change`イベントが発火しないため、今のところChromeとFirefoxでしか使えません。
