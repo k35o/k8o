@@ -750,6 +750,13 @@
       "when": 1795762657358,
       "tag": "0106_css_typed_om_article",
       "breakpoints": true
+    },
+    {
+      "idx": 107,
+      "version": "6",
+      "when": 1795773194999,
+      "tag": "0107_devicepixelratio_article",
+      "breakpoints": true
     }
   ]
 }
