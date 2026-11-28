@@ -13,7 +13,7 @@ catalog:
   '@better-css-modules/cli': 0.5.0
   '@better-css-modules/core': 0.4.1
   '@better-css-modules/turbopack': 0.4.1
-  '@better-css-modules/vite': 0.4.1
+  '@better-css-modules/vite': 0.5.0
   '@k8o/oxc-config': 1.1.0
   '@k8ordo/color-scheme': 3.0.0
   '@k8ordo/form': 3.0.0
