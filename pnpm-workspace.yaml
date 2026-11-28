@@ -10,7 +10,7 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/anthropic': 4.0.107
-  '@better-css-modules/cli': 0.4.1
+  '@better-css-modules/cli': 0.5.0
   '@better-css-modules/core': 0.4.1
   '@better-css-modules/turbopack': 0.4.1
   '@better-css-modules/vite': 0.4.1
