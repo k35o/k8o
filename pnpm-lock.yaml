@@ -180,8 +180,8 @@ catalogs:
       specifier: 0.5.0
       version: 0.5.0
     '@better-css-modules/core':
-      specifier: 0.4.1
-      version: 0.4.1
+      specifier: 0.5.0
+      version: 0.5.0
     '@better-css-modules/turbopack':
       specifier: 0.4.1
       version: 0.4.1
@@ -410,7 +410,7 @@ importers:
         version: 0.5.0
       '@better-css-modules/core':
         specifier: 'catalog:'
-        version: 0.4.1
+        version: 0.5.0
       '@better-css-modules/turbopack':
         specifier: 'catalog:'
         version: 0.4.1(next@16.4.6(@babel/core@7.29.13(supports-color@10.2.2))(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
@@ -592,7 +592,7 @@ importers:
         version: 0.5.0
       '@better-css-modules/core':
         specifier: 'catalog:'
-        version: 0.4.1
+        version: 0.5.0
       '@better-css-modules/vite':
         specifier: 'catalog:'
         version: 0.4.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
