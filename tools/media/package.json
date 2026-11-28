@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@napi-rs/canvas": "1.1.1",
+    "@napi-rs/canvas": "1.2.0",
     "@repo/talk-deck": "workspace:*",
     "@vercel/blob": "2.9.0",
     "pdfjs-dist": "6.5.438",
