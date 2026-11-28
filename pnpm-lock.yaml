@@ -177,8 +177,8 @@ catalogs:
       specifier: 4.0.107
       version: 4.0.107
     '@better-css-modules/cli':
-      specifier: 0.4.1
-      version: 0.4.1
+      specifier: 0.5.0
+      version: 0.5.0
     '@better-css-modules/core':
       specifier: 0.4.1
       version: 0.4.1
@@ -407,7 +407,7 @@ importers:
     devDependencies:
       '@better-css-modules/cli':
         specifier: 'catalog:'
-        version: 0.4.1
+        version: 0.5.0
       '@better-css-modules/core':
         specifier: 'catalog:'
         version: 0.4.1
@@ -589,7 +589,7 @@ importers:
     devDependencies:
       '@better-css-modules/cli':
         specifier: 'catalog:'
-        version: 0.4.1
+        version: 0.5.0
       '@better-css-modules/core':
         specifier: 'catalog:'
         version: 0.4.1
@@ -1019,13 +1019,17 @@ packages:
   '@better-auth/utils@0.5.1':
     resolution: {integrity: sha512-WETqw5vQ52uQ/xwWR4E8rTgT6fDEr/wnS+otDNkBCa/69281FCF32OKDdQUcahMCnjsvqXBNiEvAQHFB0EVRRg==}
 
-  '@better-css-modules/cli@0.4.1':
-    resolution: {integrity: sha512-DM1Dj/LD4x/en3IgAuTwtR66okBL0b5Mj4NmvZR2jw8umm08cHxBH7xEO0Yfs9xiOhhIFWcUD0871eCsRfuSXQ==}
+  '@better-css-modules/cli@0.5.0':
+    resolution: {integrity: sha512-u2ySQNBNtCq+Y9xZPNCW70p94YU5jm5WULdAb1cxvpnqx+B5c1VU7MMw5jp3xCdNyayBQJpvSLZrRI91kcvhuQ==}
     engines: {node: '>=24'}
     hasBin: true
 
   '@better-css-modules/core@0.4.1':
     resolution: {integrity: sha512-jPgB4aJAg4zoQuiH3G4iEwUs37iUw0fp1um04EDiPg96S4plAmeCaMYqpeePLhDMOG1vYWNQGJmJCcU2mwODmw==}
+    engines: {node: '>=24'}
+
+  '@better-css-modules/core@0.5.0':
+    resolution: {integrity: sha512-DyD9EO+B6FZG/YmkSm8Zo0Ig0R3G/repVWxkccB0DIRa9DPEPPVCf4knEgQcb1UyVL90okl6FJgbe/kHhJINMg==}
     engines: {node: '>=24'}
 
   '@better-css-modules/turbopack@0.4.1':
@@ -6919,12 +6923,25 @@ snapshots:
     dependencies:
       '@noble/hashes': 2.4.0
 
-  '@better-css-modules/cli@0.4.1':
+  '@better-css-modules/cli@0.5.0':
     dependencies:
-      '@better-css-modules/core': 0.4.1
+      '@better-css-modules/core': 0.5.0
       cac: 7.0.0
 
   '@better-css-modules/core@0.4.1':
+    dependencies:
+      '@csstools/css-syntax-patches-for-csstree': 1.1.14(css-tree@3.2.1)
+      chokidar: 5.0.0
+      css-tree: 3.2.1
+      jiti: 2.6.1
+      oxc-parser: 0.151.0
+      oxc-resolver: 11.24.2
+      picomatch: 4.0.7
+      postcss: 8.5.31
+      source-map-js: 1.2.2
+      tinyglobby: 0.2.17
+
+  '@better-css-modules/core@0.5.0':
     dependencies:
       '@csstools/css-syntax-patches-for-csstree': 1.1.14(css-tree@3.2.1)
       chokidar: 5.0.0
