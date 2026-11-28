@@ -54,7 +54,7 @@ await navigator.clipboard.writeText('Hello, world!');
 <button id="paste" type="button">クリップボードからペースト</button>
 ```
 
-```js demo="text"
+```js demo="text" selected
 const input = document.querySelector('#text');
 
 document.querySelector('#copy').addEventListener('click', async () => {
@@ -171,7 +171,7 @@ ClipboardItem.supports('application/json'); // false
 <p><output id="status"></output></p>
 ```
 
-```js demo="image"
+```js demo="image" selected
 const source = document.querySelector('#source');
 const pasted = document.querySelector('#pasted');
 const status = document.querySelector('#status');

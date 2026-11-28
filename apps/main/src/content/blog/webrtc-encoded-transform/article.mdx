@@ -61,7 +61,7 @@ WebRTC Encoded Transformは、WebRTCで送受信する映像や音声を、エ�
 </script>
 ```
 
-```js title="worker.js"
+```js title="worker.js" selected
 self.addEventListener('rtctransform', (event) => {
   const { readable, writable } = event.transformer;
   readable
