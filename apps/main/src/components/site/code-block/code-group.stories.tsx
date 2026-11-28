@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { expect, waitFor, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
@@ -9,19 +10,27 @@ import styles from './code-group.stories.module.css';
 import '@repo/code-highlight/styles.css';
 
 // rehype が出力する形に合わせ、data-label を持つ div で pre を包む
-const packageManagerBlocks = [
-  { label: 'pnpm', command: 'pnpm add react@19.3.0 react-dom@19.3.0' },
-  { label: 'npm', command: 'npm install react@19.3.0 react-dom@19.3.0' },
-  { label: 'yarn', command: 'yarn add react@19.3.0 react-dom@19.3.0' },
-].map(({ label, command }) => (
-  <div className="code-annotate-block" data-label={label} key={label}>
-    <CodeBlock className="shiki" data-lang="bash">
-      <code>
-        <span className="line">{command}</span>
-      </code>
-    </CodeBlock>
-  </div>
-));
+const packageManagerBlocksSelecting = (selected?: string): ReactElement[] =>
+  [
+    { label: 'pnpm', command: 'pnpm add react@19.3.0 react-dom@19.3.0' },
+    { label: 'npm', command: 'npm install react@19.3.0 react-dom@19.3.0' },
+    { label: 'yarn', command: 'yarn add react@19.3.0 react-dom@19.3.0' },
+  ].map(({ label, command }) => (
+    <div
+      className="code-annotate-block"
+      data-label={label}
+      data-selected={label === selected ? '' : undefined}
+      key={label}
+    >
+      <CodeBlock className="shiki" data-lang="bash">
+        <code>
+          <span className="line">{command}</span>
+        </code>
+      </CodeBlock>
+    </div>
+  ));
+
+const packageManagerBlocks = packageManagerBlocksSelecting();
 
 const unlabeledBlocks = ['Hello', 'World'].map((text) => (
   <div className="code-annotate-block" key={text}>
@@ -74,6 +83,24 @@ export const Primary = meta.story({
     ).toHaveAccessibleName('pnpm');
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'pnpm add react@19.3.0 react-dom@19.3.0',
+    );
+  },
+});
+
+export const OpensSelectedTabFirst = meta.story({
+  args: {
+    children: packageManagerBlocksSelecting('npm'),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getAllByRole('tab').map((tab) => tab.textContent),
+    ).toStrictEqual(['pnpm', 'npm', 'yarn']);
+    await expect(
+      canvas.getByRole('tab', { selected: true }),
+    ).toHaveAccessibleName('npm');
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'npm install react@19.3.0 react-dom@19.3.0',
     );
   },
 });

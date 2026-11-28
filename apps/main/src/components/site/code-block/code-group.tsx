@@ -12,12 +12,15 @@ import {
 } from 'react';
 import type { FC, KeyboardEvent, ReactNode } from 'react';
 
-type BlockProps = { 'data-label'?: string };
+type BlockProps = { 'data-label'?: string; 'data-selected'?: string };
 
 const labelOf = (props: unknown, index: number): string => {
   const label = (props as BlockProps)['data-label'];
   return label ?? `code ${(index + 1).toString()}`;
 };
+
+const isSelected = (props: unknown): boolean =>
+  (props as BlockProps)['data-selected'] !== undefined;
 
 // false の中では、タブの切り替えを view transition で描かずにすぐ描き替える
 export const CodeGroupTransitionContext = createContext(true);
@@ -26,7 +29,12 @@ export const CodeGroup: FC<{ children?: ReactNode }> = ({ children }) => {
   const blocks = Children.toArray(children).filter((child) =>
     isValidElement(child),
   );
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(() =>
+    Math.max(
+      blocks.findIndex((block) => isSelected(block.props)),
+      0,
+    ),
+  );
   const animates = use(CodeGroupTransitionContext);
   const id = useId();
   const tabId = (index: number): string => `${id}-tab-${index.toString()}`;
